@@ -1,0 +1,18 @@
+#mainLayout {
+    @apply h-screen grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: 80px 1fr;
+    overflow: hidden
+}
+
+#nav-bar {
+    @apply bg-darkBackground flex justify-between items-center col-start-2 row-start-1 ;
+}
+
+#side-bar {
+    @apply bg-purpleMain py-5 flex flex-col col-start-1 row-span-2 border-purpleBorder border-r-[2px];
+}
+
+#home {
+    @apply  bg-darkBackground min-h-screen pt-6 ;
+}

@@ -1,0 +1,91 @@
+h1{
+    @apply  text-white
+}
+
+h3 {
+    @apply text-[20px] text-white;
+}
+
+.pending{
+    @apply border-2 p-2 rounded-lg text-pendingdTheme border-pendingdTheme
+}
+
+.done-button {
+    @apply bg-purpleBorder flex justify-center cursor-pointer p-3 px-6 text-2xl rounded-lg text-white;
+}
+
+.delete-step {
+    @apply  cursor-pointer  text-2xl  px-2 opacity-50 transition-all ease-in ;
+}
+
+.delete-step:hover {
+    @apply text-rose-700 -translate-y-2 opacity-100;
+}
+
+/* ลิงก์ */
+.link {
+    @apply font-bold no-underline;
+}
+.link:visited {
+    @apply text-black;
+}
+
+/* Popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.popup-content {
+    z-index: 1001;
+}
+
+input[type="checkbox"] {
+    width: 30px ;
+    height: 30px ;
+    background-color: #22223C ;
+    border-radius: 30px ;
+    transition: all 0.2s ease-in-out ;
+    /* เพิ่ม appearance เพื่อรีเซ็ตสไตล์เริ่มต้นของ browser */
+    appearance: none ;
+    -webkit-appearance: none ;
+    -moz-appearance: none ;
+}
+
+input[type="checkbox"]:hover {
+    background-color: #121212 ;
+   
+}
+
+.dropdown {
+    display: none; /* ซ่อน dropdown เริ่มต้น */
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
+  
+  .category-container:hover .dropdown,
+  .tag-container:hover .dropdown {
+    display: block; /* แสดง dropdown เมื่อ hover */
+  }
+  
+  .dropdown-item {
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+    color: rgb(225, 120, 120);
+  }
+  
+  .dropdown-item:hover {
+    background-color: #ddd; /* เปลี่ยนสีพื้นหลังเมื่อ hover บนรายการ */
+  }
+  
+

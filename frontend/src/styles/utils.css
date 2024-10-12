@@ -1,0 +1,6 @@
+.hoverMenu:hover {
+    @apply bg-purpleNormal;
+    box-shadow: -4px 24px 17px -12px rgba(0, 0, 0, 0.59);
+    -webkit-box-shadow: -4px 24px 17px -12px rgba(0, 0, 0, 0.59);
+    -moz-box-shadow: -4px 24px 17px -12px rgba(0, 0, 0, 0.59);
+}
