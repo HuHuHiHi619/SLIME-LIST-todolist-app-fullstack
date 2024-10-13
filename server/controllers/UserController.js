@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const { upload, UPLOADS_DIR } = require("../middleware/upload");
 const path = require("path");
+const { isValidObjectId , Types} = require("mongoose");
+const { handleError } = require("./helperController");
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
@@ -175,3 +177,20 @@ exports.refreshedToken = async (req, res) => {
       .json({ error: "Invalid or expired refresh token, please login again" });
   }
 };
+
+exports.getUserData = async (req,res) => {
+    const formatUser = req.user && isValidObjectId(req.user.id) ? new Types.ObjectId(req.user.id) : null;
+    if(!formatUser){
+      return res.status(400).json({error:'Unauthorized'});
+    }
+    try{
+      const userData = await User.findById(formatUser);
+      if(!userData){
+        return res.status(404).json({ error: 'User not found'})
+      }
+      console.log('User found:',userData)
+      return res.status(200).json(userData)
+    } catch(error) {
+      handleError(res,error)
+    }
+}

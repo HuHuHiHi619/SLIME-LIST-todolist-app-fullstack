@@ -8,10 +8,13 @@ const {
   login,
   deleteAllUser,
   refreshedToken,
+  getUserData,
 } = require("../controllers/UserController");
 const { updatedUserAttempt } = require('../controllers/TasksController')
 const { upload } = require("../middleware/upload");
+const authMiddleware = require("../middleware/auth");
 
+router.get("/user/:id/profile",authMiddleware,getUserData)
 router.post(
   "/register",
   upload,
