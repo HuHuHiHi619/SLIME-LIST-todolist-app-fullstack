@@ -142,17 +142,27 @@ exports.login = async (req, res) => {
   }
 };
 
-// check users
-exports.listUsers = async (req, res) => {
-  try {
-    const users = await User.find({}, "user createdAt");
-    res.status(200).json(users);
-    console.log("User!!!");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Server Error");
+// Logout
+exports.logout = async (req,res) => {
+  try{
+    res.clearCookie('accessToken', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      path: '/'
+  });
+  res.clearCookie('refreshToken', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      path: '/'
+  });
+  } catch(error) {
+    console.error('Logout error:',error)
+    return res.status(500).json({error:'Server error',details: error.message});
   }
-};
+  return res.status(200).json({message:'Log out successful!'})
+}
 
 // Refresh token
 exports.refreshedToken = async (req, res) => {
@@ -184,7 +194,7 @@ exports.getUserData = async (req,res) => {
       return res.status(400).json({error:'Unauthorized'});
     }
     try{
-      const userData = await User.findById(formatUser);
+      const userData = await User.findById(formatUser).select('-password');
       if(!userData){
         return res.status(404).json({ error: 'User not found'})
       }

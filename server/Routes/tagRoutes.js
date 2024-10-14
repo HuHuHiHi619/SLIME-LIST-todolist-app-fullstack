@@ -5,9 +5,9 @@ const authMiddlewareOptional = require('../middleware/authOptional');
 const guestMiddleware = require('../middleware/guestId');
 
 
-router.get('/tags',guestMiddleware,authMiddlewareOptional,getTag);
-router.post('/tags',guestMiddleware,authMiddlewareOptional,createTag);
+router.get('/tags',authMiddlewareOptional(true),guestMiddleware,getTag);
+router.post('/tags',authMiddlewareOptional(true),guestMiddleware,createTag);
 
-router.delete('/tags',guestMiddleware,authMiddlewareOptional,removeTag);
+router.delete('/tags',authMiddlewareOptional(true),guestMiddleware,removeTag);
 
 module.exports = router

@@ -1,9 +1,8 @@
 const express = require('express');
-const authMiddleware = require('../middleware/auth');
-const guestMiddleware = require('../middleware/guestId');
 const { getNotifications } = require('../utils/notification');
+const authMiddlewareOptional = require('../middleware/authOptional');
 const router = express.Router();
 
-router.get('/notification',authMiddleware,guestMiddleware,getNotifications);
+router.get('/notification',authMiddlewareOptional(false),getNotifications);
 
 module.exports = router

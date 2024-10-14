@@ -34,3 +34,33 @@ export const userLogin = async (data) => {
         throw error;
     }
 };
+
+export const userLogout = async () => {
+    try{
+        const response = await axios.post(`${API_URL}/logout`,{},{
+            headers: {
+                "Content-type":"application/json"
+            },
+            withCredentials: true
+        })
+        return response.data
+    } catch(error){
+        console.error('Error during logout', error.response?.data || error.message);
+        throw error
+    }
+}
+
+export const getUserData = async (id) => {
+    try{
+        const response = await axios.get(`${API_URL}/${id}/profile`,{
+            headers:{
+                "Content-type":"application/json"
+            },
+            withCredentials: true
+        })
+        console.log(response);
+        return response.data
+    } catch(error){
+        console.error('Error fetching userData',error.response?.data || error.message);
+    }
+}

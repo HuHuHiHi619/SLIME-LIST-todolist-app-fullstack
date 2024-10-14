@@ -4,14 +4,14 @@ const { promisify } = require('util')
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const jwtVerify = promisify(jwt.verify);
 
-const authMiddlewareOptional = async (req, res, next) => {
+const authMiddlewareOptional = (allowGuest = false) => async (req, res, next) => {
     console.log("Cookies received:", req.cookies);  // ดูว่าคุกกี้ถูกส่งมาหรือไม่
 
     const token = req.cookies.accessToken;
 
     if (!token) {
         console.log('req.cookies.guestId',req.cookies.guestId)
-        if(req.cookies.guestId){
+        if(allowGuest && req.cookies.guestId){
             req.user = null;
             req.guestId = req.cookies.guestId;
             console.log('Guest ID from cookies:',req.guestId);

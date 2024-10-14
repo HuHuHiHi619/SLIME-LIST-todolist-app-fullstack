@@ -12,8 +12,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CreateEntity from "../create/CreateEntity";
 import SidebarLink from "../fixbar/SidebarLink";
+import Logout from "../authen/Logout";
 import { getCategoryData } from "../../../functions/category";
 import { getTagData } from "../../../functions/tag";
+import { useSelector } from "react-redux";
 
 function Sidebar() {
   const [activeMenu, setActiveMenu] = useState("");
@@ -23,7 +25,8 @@ function Sidebar() {
   const [popupMode, setPopupMode] = useState("");
   const navigate = useNavigate();
   const popupRef = useRef(null);
-
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
+ 
   const handlePopup = (mode) => {
     setPopupMode(mode);
     setIsPopup(!isPopup);
@@ -166,6 +169,9 @@ function Sidebar() {
           activeMenu={activeMenu}
           handleActiveMenu={handleActiveMenu}
         />
+        <div>
+          { isAuthenticated && <Logout />}
+        </div>
       </div>
       {/* Create entity popup*/}
       <CreateEntity

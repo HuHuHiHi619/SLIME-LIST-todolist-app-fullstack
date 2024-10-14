@@ -255,8 +255,8 @@ function CreateTask({onAddTask}) {
               className="w-[150px] cursor-pointer shadow border-[2px] border-categoryTheme bg-transparent rounded-lg p-4 pl-11 font-bold text-categoryTheme leading-tight focus:outline-none focus:shadow-outline block"
             >
               <option value="" disabled>Tag</option>
-              { tags.map((tag) => (
-                <option placeholder="Tag" key={tag._id} value={tag._id}>{tag.tagName}</option>
+              { (tags || []).map((tag) => (
+                <option placeholder="Tag" key={tag._id} value={tag.tagName}>{tag.tagName}</option>
               ))}
             </select>
             <FontAwesomeIcon

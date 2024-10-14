@@ -1,20 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const { body } = require('express-validator');
-const  authMiddlewareOptional  = require('../middleware/authOptional');
-const  guestMiddleware  = require('../middleware/guestId');
 const {
   register,
   login,
-  deleteAllUser,
   refreshedToken,
   getUserData,
+  logout,
 } = require("../controllers/UserController");
 const { updatedUserAttempt } = require('../controllers/TasksController')
 const { upload } = require("../middleware/upload");
-const authMiddleware = require("../middleware/auth");
+const authMiddlewareOptional = require("../middleware/authOptional");
 
-router.get("/user/:id/profile",authMiddleware,getUserData)
+router.get("/user/:id/profile",authMiddlewareOptional(false),getUserData)
 router.post(
   "/register",
   upload,
@@ -32,7 +30,9 @@ router.post("/login",
         body("password").notEmpty().withMessage("Password is required")
     ],
     login);
+router.post("/logout",logout)
+router.post("/refreshToken",authMiddlewareOptional(false),refreshedToken)
 
-router.put('/users/:id/attepmt',authMiddlewareOptional,guestMiddleware,updatedUserAttempt)
+router.put('/users/:id/attepmt',authMiddlewareOptional(false),updatedUserAttempt)
 
 module.exports = router;

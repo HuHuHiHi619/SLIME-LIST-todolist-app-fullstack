@@ -5,10 +5,10 @@ const guestMiddleware = require('../middleware/guestId');
 const authMiddlewareOptional = require('../middleware/authOptional');
 
 
-router.get('/categories',authMiddlewareOptional,guestMiddleware,getCategory);
-router.post('/categories',authMiddlewareOptional,guestMiddleware,createCategory);
+router.get('/categories',authMiddlewareOptional(true),guestMiddleware,getCategory);
+router.post('/categories',authMiddlewareOptional(true),guestMiddleware,createCategory);
 
-router.delete('/categories',authMiddlewareOptional,guestMiddleware,removedCategory);
+router.delete('/categories',authMiddlewareOptional(true),guestMiddleware,removedCategory);
 
 
 module.exports = router
