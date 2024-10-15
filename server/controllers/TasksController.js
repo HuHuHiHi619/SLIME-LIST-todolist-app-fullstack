@@ -288,12 +288,12 @@ exports.updatedTask = async (req, res) => {
       title: updateData.title || existingTask.title,
       startDate: updateData.startDate ? new Date(updateData.startDate) : existingTask.startDate,
       deadline: updateData.deadline ? new Date(updateData.deadline) : existingTask.deadline,
-      category: updateData.category || existingTask.category,
+      category: updateData.category._id || existingTask.category._id,
       tag: updateData.tag || existingTask.tag,
       progress: updateData.progress || existingTask.progress,
       status: updateData.status || existingTask.status,
     };
-    console.log('เช็ค',finalUpdateData)
+    console.log('เช็ค',finalUpdateData.category)
 
     // ตรวจสอบและจัดการข้อมูล category
     if (finalUpdateData.category) {

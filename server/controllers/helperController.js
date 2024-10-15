@@ -44,19 +44,22 @@ exports.processProgress = (progress) => {
   }
 };
 
-exports.processCategory = async (category,userId,guestId) => {
-    const categories = Array.isArray(category) ? category : [category];
-    const query = { categoryName: {$in: categories}, $or:[] };
+exports.processCategory = async (categoryId, userId, guestId) => {
+  const query = {
+      _id: categoryId, // ค้นหาจาก ID
+      $or: []
+  };
 
-    if(userId) query.$or.push({ user: userId });
-    if(guestId) query.$or.push({ guestId });
+  if (userId) query.$or.push({ user: userId });
+  if (guestId) query.$or.push({ guestId });
 
-    const existCategory = await Category.findOne(query);
-    if(!existCategory){
-        throw new Error('Cannot find category');
-    }
-    return existCategory._id;
+  const existCategory = await Category.findOne(query);
+  if (!existCategory) {
+      throw new Error('Cannot find category');
+  }
+  return existCategory._id;
 }
+
 
 exports.processTags = async (tags,userId,guestId) => {
     tags = Array.isArray(tags) ? tags : [tags];
