@@ -209,7 +209,7 @@ function CreateTask({ onAddTask }) {
               <option value="" disabled>
                 Tag
               </option>
-              {tags.map((tag) => (
+              {Array.isArray(tags) && tags.map((tag) => (
                 <option placeholder="Tag" key={tag._id} value={tag.tagName}>
                   {tag.tagName}
                 </option>

@@ -286,13 +286,14 @@ exports.updatedTask = async (req, res) => {
     // นำค่าที่มีอยู่มาใช้ถ้าไม่มีการส่งค่ามาใหม่
     const finalUpdateData = {
       title: updateData.title || existingTask.title,
-      startDate:new Date(updateData.startDate)  || existingTask.startDate,
-      deadline:new Date(updateData.deadline)  || existingTask.deadline,
+      startDate: updateData.startDate ? new Date(updateData.startDate) : existingTask.startDate,
+      deadline: updateData.deadline ? new Date(updateData.deadline) : existingTask.deadline,
       category: updateData.category || existingTask.category,
       tag: updateData.tag || existingTask.tag,
       progress: updateData.progress || existingTask.progress,
       status: updateData.status || existingTask.status,
     };
+    console.log('เช็ค',finalUpdateData)
 
     // ตรวจสอบและจัดการข้อมูล category
     if (finalUpdateData.category) {
@@ -305,11 +306,13 @@ exports.updatedTask = async (req, res) => {
     }
 
     // ตรวจสอบและจัดการข้อมูล tags
-    if (finalUpdateData.tag) {
+    if (finalUpdateData.tag  === null || finalUpdateData.tag.length === 0) {
+        finalUpdateData.tag = []
       if (Array.isArray(finalUpdateData.tag) && finalUpdateData.tag.every(tag => typeof tag === 'string' && isValidObjectId(tag))) {
         const tagPromise = await processTags(finalUpdateData.tag, formatUser, req.guestId);
         finalUpdateData.tag = tagPromise; // อัปเดตค่า tag
       } else {
+        console.log('updatetag',finalUpdateData.tag)
         return res.status(400).json({ error: "Invalid tag values" });
       }
     }
@@ -327,10 +330,7 @@ exports.updatedTask = async (req, res) => {
     ) {
       return res.status(400).json({ error: "Invalid status value" });
     }
-    console.log("Start Date:", new Date(finalUpdateData.startDate));
-    console.log("Deadline:", new Date(finalUpdateData.deadline));
-    
-
+   
     const updatedTask = await Tasks.findOneAndUpdate(
       { _id: formatId, ...userFilter },
       finalUpdateData,
