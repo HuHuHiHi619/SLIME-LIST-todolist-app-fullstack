@@ -2,7 +2,12 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-function ProgressField({ steps, handleRemoveStep, handleStepComplete }) {
+function ProgressField({
+  steps,
+  handleRemoveStep,
+  handleStepComplete,
+  showCompletion = true,
+}) {
   return (
     <div>
       {steps.length > 0 ? (
@@ -17,21 +22,25 @@ function ProgressField({ steps, handleRemoveStep, handleStepComplete }) {
                 }`}
               >
                 <div className="flex items-center gap-4 py-1">
-                <input
-                  type="checkbox"
-                  checked={step.completed}
-                  onChange={() => handleStepComplete(index)}
-                />
-                <span className={`text-white text-2xl ${step.completed ? "line-through" : "" }`}>
-                  {step.label}
-                </span>
+                  {showCompletion && (
+                    <input
+                      type="checkbox"
+                      checked={step.completed}
+                      onChange={() => handleStepComplete(index)}
+                    />
+                  )}
+
+                  <span
+                    className={`text-white text-2xl ${
+                      step.completed ? "line-through" : ""
+                    }`}
+                  >
+                    {step.label}
+                  </span>
                 </div>
-            
-                <button
-                  type="button"
-                  onClick={() => handleRemoveStep(index)}
-                >
-                  <FontAwesomeIcon icon={faTrash}  className="delete-step"/>
+
+                <button type="button" onClick={() => handleRemoveStep(index)}>
+                  <FontAwesomeIcon icon={faTrash} className="delete-step" />
                 </button>
               </li>
             ))}
