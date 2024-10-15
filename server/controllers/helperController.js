@@ -35,7 +35,7 @@ exports.processProgress = (progress) => {
     if(progress.steps.length === 0){
       progress.allStepsCompleted = false
     } else {
-      progress.allStepsCompleted =  progress.steps.every((step) => step.completed);
+      progress.allStepsCompleted =  process.totalSteps > 0 && progress.steps.every((step) => step.completed);
     }
 
     return progress; // ส่งกลับ progress ที่ถูกประมวลผล
@@ -66,8 +66,8 @@ exports.processTags = async (tags,userId,guestId) => {
     if(guestId) query.$or.push({ guestId });
 
     const existTags = await Tag.find(query);
-    if(existTags.length !== tags.length) {
-        throw new Error('You must have one or more tags for update.');
+    if(!existTags) {
+        throw new Error('Cannot find tag.');
     }
     return existTags.map(tg => tg._id);
 }

@@ -29,7 +29,8 @@ function TaskDetail({ task, onClose, onUpdateTask }) {
 
   useEffect(() => {
     setEditedTask(task);
-    setEditedProgress(task.progress || { steps: [], totalSteps: 0 });
+   
+    setEditedProgress(task.progress || { steps: [], totalSteps: 0 , allStepsCompleted: false});
   }, [task]);
 
   const debouncedUpdateTask = useMemo(
