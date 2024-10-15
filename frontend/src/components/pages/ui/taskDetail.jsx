@@ -199,13 +199,14 @@ function TaskDetail({ task, onClose, onUpdateTask }) {
               steps={editedProgress.steps}
               handleRemoveStep={removeProgressStep}
               handleStepComplete={completeProgressStep}
+              showCompletion={true}
             />
           </div>
         </div>
       </div>
 
       <div className="flex justify-end">
-        <button className="done-button my-2" onClick={onClose}>
+        <button className="done-button mt-6" onClick={onClose}>
           Done
         </button>
       </div>

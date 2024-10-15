@@ -15,6 +15,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import InputField from "../ui/inputField";
 import DeadlinePicker from "../ui/DeadlinePicker";
 import StartDatePicker from "../ui/StartDatePicker";
+import CategoryTagField from "../ui/CategoryTagField";
+import ProgressField from "../ui/ProgressField";
 
 function CreateTask({ onAddTask }) {
   const dispatch = useDispatch();
@@ -118,28 +120,15 @@ function CreateTask({ onAddTask }) {
         </div>
 
         <div className="flex space-x-4">
-          <div className="relative">
-            <select
-              name="category"
-              value={formTask.category || ""}
-              onChange={handleInputChange}
-              className="w-[150px] cursor-pointer appearance-none shadow border-[2px] border-categoryTheme bg-transparent rounded-lg p-4 pl-11 font-bold text-categoryTheme leading-tight focus:outline-none focus:shadow-outline block"
-            >
-              <option value="" disabled>
-                Category
-              </option>
-              <option value="">No category</option>
-              {categories.map((cate) => (
-                <option placeholder="Category" key={cate._id} value={cate._id}>
-                  {cate.categoryName}
-                </option>
-              ))}
-            </select>
-            <FontAwesomeIcon
-              className="text-categoryTheme pr-2 text-2xl left-3 bottom-4 absolute "
-              icon={faFolder}
-            />
-          </div>
+         <CategoryTagField 
+            name="category"
+            value={formTask.category || ""}
+            entities={categories}
+            placeholder="Category"
+            handleInputChange={handleInputChange}
+            icon={faFolder}
+            showTag={false}
+         />
           <StartDatePicker
             id="startDate"
             name="startDate"
@@ -168,73 +157,25 @@ function CreateTask({ onAddTask }) {
               onChange={handleInputChange}
               onKeyDown={handleAddProgress}
             />
-            {progress.steps.length > 0 ? (
-              <div>
-                <h3 className="text-white mb-2">Progress steps:</h3>
-                <ul className="flex flex-col max-h-[120px] gap-4 overflow-y-scroll scrollbar-custom pr-4">
-                  {progress.steps.map((step, index) => (
-                    <li
-                      key={index}
-                      className="flex justify-between items-center bg-purpleBorder  p-2 pl-4 rounded-lg "
-                    >
-                      <span className="text-white text-[20px]">
-                        {step.label}
-                      </span>
-                      <button
-                        type="button"
-                        className="delete-step"
-                        onClick={() => handleRemoveStep(index)}
-                      >
-                        x
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <div>
-                <h3 className="text-slate-400">No progress</h3>
-              </div>
-            )}
+            <ProgressField 
+                steps={progress.steps}
+                handleRemoveStep={handleRemoveStep}
+                showCompletion={false}
+            />
           </div>
         </div>
         <div className="flex justify-between">
-          <div className="relative">
-            <select
-              name="tag"
-              value={formTask.tag.length > 0 ? formTask.tag[0] : ""}
-              onChange={handleTagChange}
-              className="w-[150px] appearance-none  cursor-pointer shadow  bg-transparent rounded-lg p-4 pl-12 font-bold text-categoryTheme leading-tight focus:outline-none focus:shadow-outline block"
-            >
-              <option value="" disabled>
-                Tag
-              </option>
-              {tags.map((tag) => (
-                <option placeholder="Tag" key={tag._id} value={tag.tagName}>
-                  {tag.tagName}
-                </option>
-              ))}
-            </select>
-
-            <FontAwesomeIcon
-              className="text-categoryTheme pr-2 text-2xl left-4 bottom-4 absolute "
-              icon={faTag}
-            />
-            <div>
-              {/*display tag */}
-              {formTask.tag.map((t, index) => (
-                <div key={index} className=" bg-white ">
-                  <span className="text-xl p-4">{t}</span>
-                  <button
-                    className="text-[30px]"
-                    onClick={(e) => handleRemoveTag(e, t)}
-                  >
-                    x
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
+        <CategoryTagField 
+            name="tag"
+            value={formTask.tag.length > 0 ? formTask.tag[0]: ""}
+            selectedTags={formTask.tag}
+            entities={tags}
+            placeholder="Tag"
+            handleInputChange={handleTagChange}
+            handleRemoveTag={handleRemoveTag}
+            icon={faTag}
+            showTag={true}
+         />
 
           <button type="submit" className="done-button">
             Done
