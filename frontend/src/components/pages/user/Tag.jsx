@@ -1,9 +1,15 @@
-import React from 'react'
-
+import React from "react";
+import GroupTaskForm from "../fixbar/GroupTaskForm";
+import FadeUpContainer from "../animation/FadeUpContainer";
 function Tag() {
+ 
   return (
-    <div>Tag</div>
+    <div id='otherPage'>
+      <FadeUpContainer>
+        <GroupTaskForm filter={{ groupByTag : true  }} />
+      </FadeUpContainer>
+    </div>
   )
 }
 
-export default Tag
+export default Tag;

@@ -8,9 +8,10 @@ const {
   getUserData,
   logout,
 } = require("../controllers/UserController");
-const { updatedUserAttempt } = require('../controllers/TasksController')
+const { updatedTaskAttempt } = require('../controllers/TasksController')
 const { upload } = require("../middleware/upload");
 const authMiddlewareOptional = require("../middleware/authOptional");
+
 
 router.get("/user/:id/profile",authMiddlewareOptional(false),getUserData)
 router.post(
@@ -30,9 +31,9 @@ router.post("/login",
         body("password").notEmpty().withMessage("Password is required")
     ],
     login);
-router.post("/logout",logout)
+router.post("/logout",authMiddlewareOptional(false),logout)
 router.post("/refreshToken",authMiddlewareOptional(false),refreshedToken)
 
-router.put('/users/:id/attepmt',authMiddlewareOptional(false),updatedUserAttempt)
+router.put('/user/:id/attempt',authMiddlewareOptional(false),updatedTaskAttempt)
 
 module.exports = router;

@@ -1,24 +1,33 @@
-import {React , useState,useRef,useEffect} from "react";
-
+import { React, useEffect } from "react";
+import { useSelector } from "react-redux";
+import NotificationForm from "../ui/NotificationForm";
 import { Link } from "react-router-dom";
 
 function Navbar() {
- 
+  const { isAuthenticated } = useSelector((state) => state.user)
+  useEffect(()=> {
+    console.log("Authentication status:", isAuthenticated);
+  },[isAuthenticated])
   return (
     <>
       <div id="nav-bar">
         <div>
-          <h1 className="text-[50px] pl-16 pt-6 text-slate-400">Good morning</h1>
+         
         </div>
-        <Link to='/register'>
-          <button>Register</button>
-        </Link>
-        <Link to='/login'>
-          <button>login</button>
-        </Link>
-       
+        { !isAuthenticated && (
+          <div className="flex mx-10 gap-4">
+          <Link to="/register">
+            <button className="register">Sign up</button>
+          </Link>
+          <Link to="/login">
+            <button className="login">login</button>
+          </Link>
+        </div>
+        )}
+        { isAuthenticated && (
+          <NotificationForm />
+        )}
       </div>
-      
     </>
   );
 }

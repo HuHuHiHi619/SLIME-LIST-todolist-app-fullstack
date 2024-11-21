@@ -2,15 +2,11 @@ const tasks = require("../Models/Tasks");
 const {
   startOfDay,
   addDays,
-  isValid,
-  isYesterday,
-  isToday,
-  isBefore,
   format,
 } = require("date-fns");
 const { updateUserStreak } = require("../controllers/helperController");
-
 const { isValidObjectId, Types } = require("mongoose");
+
 
 const getBadgeImageUrL = (badgeLevel) => {
     return `/images/badges/${badgeLevel}.jpg`
@@ -64,6 +60,10 @@ exports.getNotifications = async (req, res) => {
           deadline: format(new Date(task.deadline), "yyyy-MM-dd"),
         });
       });
+    } else if(upcomingTasks.length === 0) {
+      notifications.push({
+        message: "You have no upcoming deadline!"
+      })
     }
 
     if (formatUser) {

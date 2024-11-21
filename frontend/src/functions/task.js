@@ -10,20 +10,18 @@ export const createTask = async (data) => {
       withCredentials: true, // ทำให้ cookie ถูกส่ง
     });
 
-      console.log("Task created successfully:", response.data);
-      return response.data;
-    
+    console.log("Task created successfully:", response.data);
+    return response.data;
   } catch (error) {
     if (error.response) {
-      console.error('Error response from server:', error.response.data);
+      console.error("Error response from server:", error.response.data);
     } else if (error.request) {
-      console.error('No response received from server:', error.request);
+      console.error("No response received from server:", error.request);
     } else {
-      console.error('Axios error:', error.message);
+      console.error("Axios error:", error.message);
     }
   }
 };
-
 
 export const getData = async (filter) => {
   try {
@@ -35,83 +33,128 @@ export const getData = async (filter) => {
       withCredentials: true, // ทำให้ cookie ถูกส่ง
     });
 
-      console.log("Task got successfully:", response.data);
-      return response.data;
-    
+    console.log("Task got successfully :", response.data);
+    return response.data;
   } catch (error) {
     if (error.response) {
-      console.error('Error response from server:', error.response.data);
+      console.error("Error response from server:", error.response.data);
     } else if (error.request) {
-      console.error('No response received from server:', error.request);
+      console.error("No response received from server:", error.request);
     } else {
-      console.error('Axios error:', error.message);
+      console.error("Axios error:", error.message);
     }
   }
 };
 
-export const completedTask = async (taskId) => {
+export const searchedTask = async (searchTerm) => {
   try {
-    const response = await axios.patch(`${API_URL}/task/${taskId}/completed`, {} , { 
-      headers: {
-        "Content-Type": 'application/json',
+    const response = await axios.get(`${API_URL}/task/searchTask?q=${searchTerm}`, {
+      headers:{
+        "Content-Type": "application/json"
       },
-      withCredentials: true, // ต้องให้แน่ใจว่าส่ง cookies
-    });
-    return response.data;
+      withCredentials:true
+    })
+    console.log("Task searched successfully :", response.data);
+    return response.data.tasks
   } catch (error) {
     if (error.response) {
-      console.error('Error response from server:', error.response.data);
+      console.error("Error response from server:", error.response.data);
     } else if (error.request) {
-      console.error('No response received from server:', error.request);
+      console.error("No response received from server:", error.request);
     } else {
-      console.error('Axios error:', error.message);
+      console.error("Axios error:", error.message);
+    }
+  }
+};
+
+export const completeTask = async (taskId) => {
+  console.log("taskID FOR COMPLETED", taskId);
+  try {
+    const response = await axios.patch(
+      `${API_URL}/task/${taskId}/completed`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    return { _id: taskId, ...response.data };
+  } catch (error) {
+    if (error.response) {
+      console.error("Error response from server:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received from server:", error.request);
+    } else {
+      console.error("Axios error:", error.message);
     }
   }
 };
 
 export const updateTask = async (id, data) => {
-  try{
-    const response = await axios.put(`${API_URL}/task/${id}`, data ,{
-      headers:{
-        "Content-Type": "application/json",
-      },
-      withCredentials:true
-    });
-    return response.data;
-  } catch(error){
-    if(error.response){
-      console.error('Error response from server:',error.response.data);
-    } else if(error.request){
-      console.error('No response recieved from server:',error.response.request);
-    } else {
-      console.error('Axios error:',error.message)
-    }
-  } 
-};
-
-export const removeTask = async (id) => {
+  console.log("DATA", id, data);
   try {
-    const response = await axios.delete(`${API_URL}/task/${id}/`, {
+    const response = await axios.put(`${API_URL}/task/${id}`, data, {
       headers: {
         "Content-Type": "application/json",
       },
       withCredentials: true,
     });
-    return response;
+    return response.data;
   } catch (error) {
     if (error.response) {
-      console.error('Error response from server:', error.response.data);
+      console.error("Error response from server:", error.response.data);
     } else if (error.request) {
-      console.error('No response received from server:', error.request);
+      console.error(
+        "No response recieved from server:",
+        error.response.request
+      );
     } else {
-      console.error('Axios error:', error.message);
+      console.error("Axios error:", error.message);
     }
   }
 };
 
- 
+export const removeTask = async (taskId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/task/${taskId}/`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+    return { _id: taskId, ...response.data };
+  } catch (error) {
+    if (error.response) {
+      console.error("Error response from server:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received from server:", error.request);
+    } else {
+      console.error("Axios error:", error.message);
+    }
+  }
+};
 
-
-
-
-export const getImageUrl = (path) => `${import.meta.env.VITE_URL}${path}`;
+export const updateTaskAttempt = async (taskId) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/user/${taskId}/attempt`,
+      {},
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
+    return { _id: taskId, ...response.data }; // ใช้ response.data
+  } catch (error) {
+    if (error.response) {
+      console.error("Error response from server:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received from server:", error.request);
+    } else {
+      console.error("Axios error:", error.message);
+    }
+    throw error; // โยน error เพื่อจัดการเพิ่มเติมใน thunk
+  }
+};

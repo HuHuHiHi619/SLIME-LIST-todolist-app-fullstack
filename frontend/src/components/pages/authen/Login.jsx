@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginUser  } from "../../../redux/userSlice";
+import { fetchUserData, loginUser } from "../../../redux/userSlice";
 
 function Login() {
   const dispatch = useDispatch();
@@ -30,9 +30,14 @@ function Login() {
     setError("");
 
     try {
-      const response = await dispatch(loginUser(user)).unwrap(); 
-     
-      navigate("/");
+      const response = await dispatch(loginUser(user)).unwrap();
+      console.log("login res", response);
+      if (response.tokens?.accessToken) {
+        await dispatch(fetchUserData(response.user.id)).unwrap()
+        navigate("/");
+      } else {
+        throw new Error("No access token found.");
+      }
     } catch (err) {
       console.error("Cannot log in", err);
       setError("Login failed. Please try again.");
@@ -40,26 +45,45 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      {error && <p className="error">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          value={user.username}
-          onChange={handleChange}
-          placeholder="Username"
-        />
-        <input
-          type="password"
-          name="password"
-          value={user.password}
-          onChange={handleChange}
-          placeholder="Password"
-        />
-        <button type="submit">Log in</button>
-      </form>
+    <div className="flex justify-center items-center h-screen bg-purpleActiveTask">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          Login
+        </h1>
+
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <input
+              type="text"
+              name="username"
+              value={user.username}
+              onChange={handleChange}
+              placeholder="Username"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <input
+              type="password"
+              name="password"
+              value={user.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            >
+              Log in
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

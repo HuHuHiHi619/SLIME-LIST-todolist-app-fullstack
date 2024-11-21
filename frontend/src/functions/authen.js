@@ -27,7 +27,6 @@ export const userLogin = async (data) => {
             },
             withCredentials: true
         });
-        console.log(response)
         return response.data; 
     } catch (error) {
         console.error('Error during login:', error.response?.data || error.message);
@@ -52,15 +51,29 @@ export const userLogout = async () => {
 
 export const getUserData = async (id) => {
     try{
-        const response = await axios.get(`${API_URL}/${id}/profile`,{
+        const response = await axios.get(`${API_URL}/user/${id}/profile`,{
             headers:{
                 "Content-type":"application/json"
             },
             withCredentials: true
         })
-        console.log(response);
+        
         return response.data
     } catch(error){
         console.error('Error fetching userData',error.response?.data || error.message);
+    }
+}
+
+export const getRefreshToken = async () => {
+    try{
+        const response = await axios.post(`${API_URL}/refreshToken`,{},{
+            headers:{
+                "Content-Type": "application/json"
+            },
+            withCredentials: true
+        })
+        return response.data.accessToken
+    } catch(error){
+        console.error('Error getting refresh token',error.response?.data || error.message);
     }
 }

@@ -8,7 +8,7 @@ const authMiddlewareOptional = require('../middleware/authOptional');
 router.get('/categories',authMiddlewareOptional(true),guestMiddleware,getCategory);
 router.post('/categories',authMiddlewareOptional(true),guestMiddleware,createCategory);
 
-router.delete('/categories',authMiddlewareOptional(true),guestMiddleware,removedCategory);
+router.delete('/categories/:id',authMiddlewareOptional(true),guestMiddleware,removedCategory);
 
 
 module.exports = router

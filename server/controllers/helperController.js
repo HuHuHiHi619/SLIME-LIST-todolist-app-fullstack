@@ -54,6 +54,7 @@ exports.processCategory = async (categoryId, userId, guestId) => {
   if (guestId) query.$or.push({ guestId });
 
   const existCategory = await Category.findOne(query);
+  console.log('exist cat:',existCategory)
   if (!existCategory) {
       throw new Error('Cannot find category');
   }
@@ -76,9 +77,9 @@ exports.processTags = async (tags,userId,guestId) => {
 }
 
 const calculateBadge = (streakDays) => {
-  if(streakDays >= 10) return 'gold';
-  if(streakDays >= 8) return 'silver';
-  if(streakDays >= 7) return 'bronze';
+  if(streakDays >= 15) return 'gold';
+  if(streakDays >= 10) return 'silver';
+  if(streakDays >= 5) return 'bronze';
   return 'iron';
 }
 
@@ -145,4 +146,21 @@ exports.tryAgainTask = async (userId,taskId,newdeadline) => {
 
     await task.save();
     return task
+}
+
+exports.calculateProgress = (task) => {
+  if(task.progress && task.progress.steps){
+    const totalSteps = task.progress.steps.length || 0
+    const completedSteps = task.progress.steps.filter(step => step.completed).length
+    const progressPercentage = totalSteps === 0 ? 0 : (completedSteps / totalSteps) * 100
+    return {
+      ...task,
+      progress:{
+        ...task.progress,
+        completedSteps,
+        progressPercentage
+      }
+    }
+  }
+  return task
 }

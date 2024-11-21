@@ -1,185 +1,173 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
-  faCalendar,
-  faList,
   faFolder,
+  faCalendar,
   faTag,
   faGear,
+  faList,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import CreateEntity from "../create/CreateEntity";
+import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCategories,
+  fetchTags,
+  setCategories,
+  setTags,
+  setActiveMenu,
+  toggleSidebarPinned,
+  togglePopup,
+} from "../../../redux/taskSlice";
 import SidebarLink from "../fixbar/SidebarLink";
+import CreateEntity from "../create/CreateEntity";
 import Logout from "../authen/Logout";
-import { getCategoryData } from "../../../functions/category";
-import { getTagData } from "../../../functions/tag";
-import { useSelector } from "react-redux";
+import usePopup from "../hooks/usePopup";
 
 function Sidebar() {
-  const [activeMenu, setActiveMenu] = useState("");
-  const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState([]);
-  const [isPopup, setIsPopup] = useState(false);
-  const [popupMode, setPopupMode] = useState("");
-  const navigate = useNavigate();
-  const popupRef = useRef(null);
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated)
- 
-  const handlePopup = (mode) => {
-    setPopupMode(mode);
-    setIsPopup(!isPopup);
-  };
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const {
+    activeMenu,
+    isHover,
+    isPopup,
+    isSidebarPinned,
+    popupMode,
+    categories,
+    tags,
+  } = useSelector((state) => state.tasks);
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+
+  const {
+    handleRemovedItem,
+    handleActiveMenu,
+    handlePopup,
+    handleHover,
+    popupEnRef,
+  } = usePopup();
 
   const handleAddItem = (newItem) => {
     if (popupMode === "category") {
-      setCategories((prevItems) => {
-        const updatedCategories = [...prevItems, newItem];
-        console.log("Updated categories:", updatedCategories);
-        return updatedCategories;
-      });
+      dispatch(setCategories([...categories, newItem]));
     } else if (popupMode === "tag") {
-      setTags((prevItems) => {
-        const updatedTags = [...prevItems, newItem];
-        console.log("Updated categories:", updatedTags);
-        return updatedTags;
-      });
+      if (Array.isArray(tags)) {
+        dispatch(setTags([...tags, newItem]));
+      }
     }
-    setIsPopup(false);
-  };
-
-  const handleActiveMenu = (menuName) => {
-    console.log("Active Menu Changed:", menuName);
-    setActiveMenu(menuName);
-    navigate(menuName);
+    dispatch(togglePopup(""))
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [catagoriesData,tagsData] = await Promise.all([
-          getCategoryData(),
-          getTagData()
-        ])
-
-        if (catagoriesData && Array.isArray(catagoriesData)) {
-          console.log("Fetched category:", catagoriesData);
-          setCategories(catagoriesData);
-        }
-
-        if(tagsData && Array.isArray(tagsData)) {
-          console.log('Fetch tag:',tagsData)
-          setTags(tagsData);
-        }
-
-
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-    fetchData();
-  }, []);
+    dispatch(fetchCategories());
+    dispatch(fetchTags());
+  }, [dispatch]);
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (popupRef.current && !popupRef.current.contains(e.target)) {
-        setIsPopup(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
+    dispatch(setActiveMenu(location.pathname));
+  }, [location.pathname, dispatch]);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const handlePinSidebar = () => {
+    dispatch(toggleSidebarPinned());
+  };
 
   return (
-    <div id="side-bar">
-      side
-      <div className="flex flex-col gap-4 ">
-        <SidebarLink
-          to=""
-          icon={faHome}
-          label="OVERVIEW"
-          activeMenu={activeMenu}
-          handleActiveMenu={handleActiveMenu}
-        />
-        <SidebarLink
-          to="/upcoming"
-          icon={faCalendar}
-          label="UPCOMING"
-          activeMenu={activeMenu}
-          handleActiveMenu={handleActiveMenu}
-        />
-        <SidebarLink
-          to="/all-tasks"
-          icon={faList}
-          label="ALL TASKS"
-          activeMenu={activeMenu}
-          handleActiveMenu={handleActiveMenu}
-        />
-        <div className="flex flex-col category-container">
-          <div>
-            <SidebarLink
-              to="/category"
-              icon={faFolder}
-              addIcon={faPlus}
-              label="CATEGORY"
-              activeMenu={activeMenu}
-              handleActiveMenu={handleActiveMenu}
-              handlePopup={() => handlePopup("category")}
-            />
-          </div>
-        
-          <ul className="dropdown">
-            {categories.length > 0
-              ? categories.map((cate) => (
-                  <li className="dropdown-item" key={cate._id}>
-                    <span>{cate.categoryName}</span>
-                  </li>
-                ))
-              : null}
-          </ul>
-        </div>
-        <div className="flex flex-col tag-container">
-          <div >
-            <SidebarLink
-              to="/tag"
-              icon={faTag}
-              addIcon={faPlus}
-              label="TAG"
-              activeMenu={activeMenu}
-              handleActiveMenu={handleActiveMenu}
-              handlePopup={() => handlePopup("tag")}
-            />
-          </div>
-          <ul className="dropdown">{tags.length > 0 ? tags.map((tag) => 
-            <li className="dropdown-item" key={tag._id}>
-              <span>{tag.tagName}</span>
-            </li>
-          ) : null}
-          </ul>
-        </div>
+    <div
+      id="side-bar"
+      className={`flex flex-col gap-4 ${
+        isSidebarPinned ? "" : " sidebar-collapsed"
+      } transition-width duration-300`}
+    >
+      <button
+        className="pin-button"
+        onClick={handlePinSidebar}
+        title={isSidebarPinned ? "Unpin Sidebar" : "Pin Sidebar"}
+      ></button>
 
-        <SidebarLink
-          to="/settings"
-          icon={faGear}
-          label="SETTINGS"
-          activeMenu={activeMenu}
-          handleActiveMenu={handleActiveMenu}
-        />
-        <div>
-          { isAuthenticated && <Logout />}
-        </div>
-      </div>
-      {/* Create entity popup*/}
-      <CreateEntity
-        isOpen={isPopup}
-        onAddItem={handleAddItem}
-        entityType={popupMode}
-        popupRef={popupRef}
+      {/* Sidebar Links */}
+      <SidebarLink
+        to="/"
+        icon={faHome}
+        label="OVERVIEW"
+        activeMenu={activeMenu}
+        handleActiveMenu={() => {
+          if (isSidebarPinned) handleActiveMenu();
+        }}
+        isSidebarPinned={isSidebarPinned}
       />
+      <SidebarLink
+        to="/upcoming"
+        icon={faCalendar}
+        label="UPCOMING"
+        activeMenu={activeMenu}
+        handleActiveMenu={() => {
+          if (isSidebarPinned) handleActiveMenu();
+        }}
+        isSidebarPinned={isSidebarPinned}
+      />
+      <SidebarLink
+        to="/all-tasks"
+        icon={faList}
+        label="ALL TASKS"
+        activeMenu={activeMenu}
+        handleActiveMenu={() => {
+          if (isSidebarPinned) handleActiveMenu();
+        }}
+        isSidebarPinned={isSidebarPinned}
+      />
+      <SidebarLink
+        to="/category"
+        icon={faFolder}
+        addIcon={faPlus}
+        label="CATEGORY"
+        categories={categories}
+        activeMenu={activeMenu}
+        handleActiveMenu={() => {
+          if (isSidebarPinned) handleActiveMenu();
+        }}
+        handlePopup={(e) => handlePopup(e, "category")}
+        isSidebarPinned={isSidebarPinned}
+        handleHover={handleHover}
+        isHover={isHover}
+        handleRemovedItem={(id) => handleRemovedItem(id, "category")}
+      />
+      <SidebarLink
+        to="/tag"
+        icon={faTag}
+        addIcon={faPlus}
+        label="TAG"
+        tags={tags}
+        activeMenu={activeMenu}
+        handleActiveMenu={() => {
+          if (isSidebarPinned) handleActiveMenu();
+        }}
+        handlePopup={(e) => handlePopup(e, "tag")}
+        isSidebarPinned={isSidebarPinned}
+        handleHover={handleHover}
+        isHover={isHover}
+        handleRemovedItem={(id) => handleRemovedItem(id, "tag")}
+      />
+      <SidebarLink
+        to="/settings"
+        icon={faGear}
+        label="SETTINGS"
+        activeMenu={activeMenu}
+        handleActiveMenu={() => {
+          if (isSidebarPinned) handleActiveMenu();
+        }}
+        isSidebarPinned={isSidebarPinned}
+      />
+      {isAuthenticated && isSidebarPinned  && 
+       
+          <Logout />
+      
+        }
+      {isPopup && (
+      <div className="popup-overlay">
+        <div className="popup-content" ref={popupEnRef}>
+          <CreateEntity onAddItem={handleAddItem} entityType={popupMode} />
+        </div>
+      </div>)}
     </div>
   );
 }

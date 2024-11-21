@@ -22,6 +22,26 @@ export const createCategory = async (data) => {
   }
 };
 
+export const removeCategory = async (categoryId) => {
+  try{
+    const response = await axios.delete(`${API_URL}/categories/${categoryId}`,{
+      headers:{
+        "Content-Type":"application/json"
+      },
+      withCredentials: true
+    })
+    return response.data
+  } catch(error){
+    if(error.response){
+      console.error("Error response from server:", error.response.data)
+    } else if(error.resquest){
+      console.error("No response received from server:",error.request)
+    } else {
+      console.error("Axios error:", error.message)
+    }
+  }
+}
+
 export const getCategoryData = async () => {
   try{
     const response = await axios.get(`${API_URL}/categories`,{

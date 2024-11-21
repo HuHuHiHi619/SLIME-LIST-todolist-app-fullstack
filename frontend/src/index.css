@@ -14,14 +14,14 @@ textarea {
 
 
 .scrollbar-custom::-webkit-scrollbar {
-  width: 15px ;
-  
+  width: 7px ;
+
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb {
   background-color: #6b46c1;
   border-radius: 100px;
-  border: 5px solid #0d1013 ;
+  border: 5px solid transparent ;
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb:hover {

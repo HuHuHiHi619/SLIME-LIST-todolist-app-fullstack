@@ -1,20 +1,20 @@
-import React from 'react'
-import Navbar from './pages/fixbar/Navbar'
-import Sidebar from './pages/fixbar/Sidebar'
-import Home from './pages/user/Home'
-import { Outlet } from 'react-router-dom'
-
+import React from "react";
+import Navbar from "./pages/fixbar/Navbar";
+import Sidebar from "./pages/fixbar/Sidebar";
+import { Outlet } from "react-router-dom";
 
 function MainLayout() {
   return (
-    <section id='mainLayout'>
-        <Navbar />
+    <section id="mainLayout">
+      <div className="flex">
         <Sidebar />
-        <div style={{ gridColumn: '2 / 3', gridRow: '2 / 3' }}>
+        <div className="flex-grow">
+          <Navbar />
           <Outlet />
         </div>
+      </div>
     </section>
-  )
+  );
 }
 
-export default MainLayout
+export default MainLayout;

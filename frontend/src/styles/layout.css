@@ -1,18 +1,31 @@
 #mainLayout {
     @apply h-screen grid;
-    grid-template-columns: 280px 1fr;
-    grid-template-rows: 80px 1fr;
     overflow: hidden
 }
 
 #nav-bar {
-    @apply bg-darkBackground flex justify-between items-center col-start-2 row-start-1 ;
+    @apply bg-darkBackground flex justify-between items-center pt-10 z-50;
 }
 
 #side-bar {
-    @apply bg-purpleMain py-5 flex flex-col col-start-1 row-span-2 border-purpleBorder border-r-[2px];
+    @apply bg-purpleMain py-5 flex flex-col  border-purpleNormal border-r-[2px] overflow-hidden ;
+    width: 17rem;
+    max-width: 17rem;
+    min-width: 17rem;
+}
+#side-bar.sidebar-collapsed {
+    width: 5rem; 
+    transition: width 0.3s ease;
+    min-width: 5rem;
 }
 
 #home {
-    @apply  bg-darkBackground min-h-screen pt-6 ;
+    @apply  bg-darkBackground pt-5 h-screen grid grid-cols-2 ;
 }
+
+#otherPage {
+    @apply  bg-darkBackground h-screen  ;
+}
+
+
+  

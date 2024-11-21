@@ -1,6 +1,22 @@
 .hoverMenu:hover {
     @apply bg-purpleNormal;
+}
+
+.list-shadow {
     box-shadow: -4px 24px 17px -12px rgba(0, 0, 0, 0.59);
-    -webkit-box-shadow: -4px 24px 17px -12px rgba(0, 0, 0, 0.59);
-    -moz-box-shadow: -4px 24px 17px -12px rgba(0, 0, 0, 0.59);
+    -webkit-box-shadow: -4px 15px 17px -12px rgba(0, 0, 0, 0.59);
+    -moz-box-shadow: -4px 24px 5px -12px rgba(0, 0, 0, 0.59);
+}
+.inset-shadow{
+    box-shadow: -1px 0px 39px -8px rgba(0,0,0,0.75) inset;
+-webkit-box-shadow: -1px 0px 39px -8px rgba(0,0,0,0.75) inset;
+-moz-box-shadow: -1px 0px 39px -8px rgba(0,0,0,0.75) inset;
+}
+
+.hoverEffect:hover{
+  @apply scale-105 transition ease-out duration-100
+}
+
+.easy-slide{
+    @apply transition-all duration-300 ease-in-out
 }

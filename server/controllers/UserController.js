@@ -127,6 +127,13 @@ exports.login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
     });
 
+    res.clearCookie('guestId',{
+      httpOnly: true,
+      secure:false,
+      samesite: 'lax',
+      path: '/'
+    })
+
     return res.status(200).json({
       message:'Login successful !',
       user: {
@@ -166,7 +173,8 @@ exports.logout = async (req,res) => {
 
 // Refresh token
 exports.refreshedToken = async (req, res) => {
-  const { refreshToken } = req.body;
+ 
+  const { refreshToken } = req.cookies
   if (!refreshToken) {
     return res.status(401).json({ error: "No refresh token provided" });
   }
@@ -189,11 +197,13 @@ exports.refreshedToken = async (req, res) => {
 };
 
 exports.getUserData = async (req,res) => {
-    const formatUser = req.user && isValidObjectId(req.user.id) ? new Types.ObjectId(req.user.id) : null;
-    if(!formatUser){
-      return res.status(400).json({error:'Unauthorized'});
-    }
+    
     try{
+      const formatUser = req.user && isValidObjectId(req.user.id) ? new Types.ObjectId(req.user.id) : null;
+    if(!formatUser){
+      return res.status(401).json({error:'Unauthorized'});
+    }
+    console.log('formatuser', formatUser)
       const userData = await User.findById(formatUser).select('-password');
       if(!userData){
         return res.status(404).json({ error: 'User not found'})

@@ -6,7 +6,7 @@ import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 
 function StartDatePicker({ id, name, selected, onChange, placeholder }) {
   return (
-    <div className="relative">
+    <div className="relative ">
       <DatePicker
         id={id}
         name={name}
@@ -16,11 +16,11 @@ function StartDatePicker({ id, name, selected, onChange, placeholder }) {
         minDate={new Date()}
         filterDate={date => date >= new Date()}
         placeholderText={placeholder}
-        className="w-[150px] cursor-pointer shadow placeholder:text-startDateTheme text-startDateTheme border-[2px] border-startDateTheme bg-transparent rounded-lg p-4 pl-11 font-bold leading-tight focus:outline-none focus:shadow-outline block"
+        className="w-full  cursor-pointer p-2 pl-14 shadow placeholder:text-startDateTheme text-startDateTheme text-xl border-[2px] border-startDateTheme bg-transparent rounded-lg   focus:outline-none  focus:shadow-outline "
       />
       <FontAwesomeIcon
         icon={faCalendarAlt}
-        className="absolute left-3 bottom-4 text-2xl text-startDateTheme"
+        className="absolute left-5 bottom-[14px] text-xl text-startDateTheme"
       />
     </div>
   );

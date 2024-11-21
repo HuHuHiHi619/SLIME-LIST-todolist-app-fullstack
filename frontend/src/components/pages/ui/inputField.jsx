@@ -10,7 +10,8 @@ function InputField({type,placeholder,id,name,value,onChange,onKeyDown,className
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
-        className={`text-white border-purpleBorder border-[2px] bg-transparent rounded-lg p-4 px-4 focus:outline-none focus:border-purple-400 ${className}`}
+        autoComplete='off'
+        className={`text-white border-purpleNormal border-[2px] bg-transparent rounded-full px-4 focus:outline-none focus:border-purple-400 ${className}`}
     />
   )
 }
