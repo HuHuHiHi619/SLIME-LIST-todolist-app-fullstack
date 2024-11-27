@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import useFetchTask from "../hooks/useFetchTask";
 import usePopup from "../hooks/usePopup";
 import FadeUpContainer from "../animation/FadeUpContainer";
-
+import ReactDOM from "react-dom"
 function TaskForm({ filter, filterKey }) {
   const { selectedTask, isCreate } = useSelector((state) => state.tasks);
   const { tasks: fetchedTasks } = useFetchTask(filter, filterKey);
@@ -25,7 +25,7 @@ function TaskForm({ filter, filterKey }) {
       <FadeUpContainer>
         {fetchedTasks.length > 0 ? (
           <TaskList
-            label="In progress"
+            label="TASKS"
             handleCompletedTask={handleCompletedTask}
             handleRemovedTask={handleRemovedTask}
             handleTaskClick={handleTaskClick}
@@ -44,21 +44,24 @@ function TaskForm({ filter, filterKey }) {
       </FadeUpContainer>
 
       {/*Popup Task detail*/}
-      {selectedTask && (
+      {selectedTask && 
+        ReactDOM.createPortal(
         <div className="popup-overlay ">
           <div className="popup-content">
             <TaskDetail onClose={handleCloseDetail} />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Popup CreateTask*/}
-      {isCreate && (
+      {isCreate && ReactDOM.createPortal(
         <div className="popup-overlay">
           <div className="popup-content" ref={popupRef}>
             <CreateTask onClose={handleIsCreate} />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

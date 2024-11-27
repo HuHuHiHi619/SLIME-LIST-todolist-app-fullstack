@@ -101,7 +101,9 @@ export const updateTask = async (id, data) => {
       },
       withCredentials: true,
     });
+    console.log('response',response.data)
     return response.data;
+
   } catch (error) {
     if (error.response) {
       console.error("Error response from server:", error.response.data);
@@ -135,6 +137,26 @@ export const removeTask = async (taskId) => {
     }
   }
 };
+
+export const removeAllCompletedTask = async () => {
+  try{
+    const response = await axios.delete(`${API_URL}/completedTask`,{
+      headers:{
+        "Content-type": "application/json"
+      },
+      withCredentials: true
+    })
+    return response.data
+  } catch(error){
+    if (error.response) {
+      console.error("Error response from server:", error.response.data);
+    } else if (error.request) {
+      console.error("No response received from server:", error.request);
+    } else {
+      console.error("Axios error:", error.message);
+    }
+  }
+}
 
 export const updateTaskAttempt = async (taskId) => {
   try {

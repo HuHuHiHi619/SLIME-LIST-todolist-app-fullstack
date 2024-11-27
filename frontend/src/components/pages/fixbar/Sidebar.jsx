@@ -158,8 +158,10 @@ function Sidebar() {
         isSidebarPinned={isSidebarPinned}
       />
       {isAuthenticated && isSidebarPinned  && 
+      
+
+         <Logout />
        
-          <Logout />
       
         }
       {isPopup && (

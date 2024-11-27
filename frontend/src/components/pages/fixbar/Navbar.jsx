@@ -4,10 +4,17 @@ import NotificationForm from "../ui/NotificationForm";
 import { Link } from "react-router-dom";
 
 function Navbar() {
-  const { isAuthenticated } = useSelector((state) => state.user)
+  const { isAuthenticated , loading} = useSelector((state) => state.user)
   useEffect(()=> {
     console.log("Authentication status:", isAuthenticated);
   },[isAuthenticated])
+
+  if(loading){
+    return (
+      <div className="done-button">MO SALAH</div>
+    )
+  }
+
   return (
     <>
       <div id="nav-bar">

@@ -60,14 +60,14 @@ function SidebarLink({
             <li
               onMouseEnter={() => handleHover(cate._id)}
               onMouseLeave={() => handleHover(null)}
-              className={` hoverMenu mb-2  text-gray-400  easy-slide`}
+              className={`hoverMenu  mb-2  text-gray-400  easy-slide`}
               key={cate._id}
             >
               <Link
                 to={`/category/${cate._id}`}
                 className="flex justify-center gap-4 items-center dropdown-item  "
               >
-                <span>{cate.categoryName}</span>
+                <h3 className="text-gray-400">{cate.categoryName}</h3>
                 {isHover === cate._id && (
                   <button onClick={(e) => {
                     e.preventDefault();
@@ -100,7 +100,7 @@ function SidebarLink({
                 to={`/tag/${tag._id}`}
                 className="flex justify-center gap-4 dropdown-item"
               >
-                <span>{tag.tagName}</span>
+                 <h3 className="text-gray-400">{tag.tagName}</h3>
                 {isHover === tag._id && (
                   <button
                   onClick={(e) => {

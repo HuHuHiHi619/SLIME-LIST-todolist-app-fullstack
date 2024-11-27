@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt } from "@fortawesome/free-solid-svg-icons";
 import { fetchUserData } from "../../../redux/userSlice";
 import FlameBox from "../animation/FlameBox";
+import { p } from "framer-motion/m";
 
 function StreakField() {
   const dispatch = useDispatch();
@@ -24,15 +25,15 @@ function StreakField() {
         <>
           <div className="relative flex items-center  bg-gradient-to-b from-fuchsia-500 to-indigo-500 border-4 border-fuchsia-400 rounded-3xl pl-4  mr-3 w-full">
             <div className="relative">
-              <p className=" text-white text-[70px] -bottom-14 absolute">
+              <p className=" text-white text-[60px] -bottom-12 -right-9 absolute tracking-tighter">
                 {userData.bestStreak}
               </p>
               {userData.bestStreak > 1 ? (
-                <p className=" text-white text-[28px] absolute -bottom-9 left-11 ">
+                <p className=" text-white text-2xl absolute -bottom-8 left-11 ">
                   DAYS
                 </p>
               ) : (
-                <p className=" text-white text-[28px] absolute -bottom-9 left-11 ">
+                <p className=" text-white text-[28px] absolute -bottom-8 left-11 ">
                   DAY
                 </p>
               )}
@@ -41,34 +42,46 @@ function StreakField() {
               <p className="text-white">
                 BEST
                 {!isSidebarPinned && (
-                  <span className="text-white text-xl pl-2">STREAK</span>
+                  <span className="text-white text-xl pl-2 ">STREAK</span>
                 )}
               </p>
             </div>
           </div>
-          <div className="relative flex items-center bg-purpleActiveTask border-4 border-purpleBorder rounded-3xl pl-4 py-2 mr-3 w-full">
+          <div className=" relative flex items-center bg-purpleActiveTask border-4 border-purpleBorder rounded-3xl pl-4 py-2 mr-3 w-full">
             <div className="relative">
-              <p className={` text-white ${isSidebarPinned ? "text-[70px] -left-4 tracking-tighter" : "text-[70px]"}  -bottom-14 absolute`}>
-               15
+              <p
+                className={` text-white ${
+                  isSidebarPinned
+                    ? "text-[60px] -left-0 -bottom-12 tracking-tighter "
+                    : "text-[60px]"
+                }  -bottom-12 absolute`}
+              >
+                {userData.currentStreak}
               </p>
               {userData.currentStreak > 1 ? (
-                <p className=" text-white text-[28px] absolute -bottom-9 left-11 ">
+                <p  className={` text-white transition-all duration-300 ease-in-out ${
+                  isSidebarPinned
+                    ? "text-xl -left-4 -bottom-10 tracking-tighter "
+                    : "text-xl"
+                }  -bottom-12 absolute`}>
                   DAYS
                 </p>
               ) : (
-                <p className=" text-white text-[28px] absolute -bottom-9 left-11 ">
+                <p className={` text-white ${
+                  isSidebarPinned
+                    ? "text-2xl left-11 -bottom-8  "
+                    : "text-2xl top-0 left-7 pl-1"
+                }  -bottom-12 absolute`}>
                   DAY
                 </p>
               )}
             </div>
-            <div className="absolute top-6 left-14 pl-1  text-xl leading-none ">
-             
-                <p className="text-white text-xl ">STREAK</p>
-      
-                {!isSidebarPinned && (
-                  <p>sdfdsf</p>
-                )}
-             
+            <div className={`absolute  pl-1  leading-none transition-all duration-300 ease-in-out
+              ${isSidebarPinned ? "top-6 left-14 text-xl" : "text-xl top-6 left-11"}`
+              }>
+              <p className="text-white  ">STREAK { !isSidebarPinned && (
+                <span className="text-white text-xl  ">NOW</span>
+              ) }</p>
             </div>
           </div>
           <div

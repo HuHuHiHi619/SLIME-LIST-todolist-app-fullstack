@@ -36,9 +36,9 @@ function Logout() {
   };
 
   return (
-    <button onClick={handleLogout} className="mt-72 flex border-2 border-red-600 mx-4 p-2 rounded-xl justify-center gap-4 items-center hover:bg-red-300 ">
-      <FontAwesomeIcon icon={faRightFromBracket} className="text-red-600 text-xl" />
-      <h3 className="text-red-600">Log out</h3>
+    <button onClick={handleLogout} className=" flex clear-task justify-center gap-4 items-center logout text-2xl  ">
+      <FontAwesomeIcon icon={faRightFromBracket} className=" text-xl" />
+     Log out
     </button>
   );
 }

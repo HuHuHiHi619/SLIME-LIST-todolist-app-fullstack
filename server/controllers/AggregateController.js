@@ -64,89 +64,114 @@ exports.getTasksCompletedRate = async (req, res) => {
   };
   
 
-exports.getTasksCompletedRateByCategory = async (req, res) => {
-  try {
-    const formatUser =
-      req.user && isValidObjectId(req.user.id)
-        ? new Types.ObjectId(req.user.id)
-        : null;
-    const userFilter = formatUser
-      ? { user: formatUser }
-      : req.guestId
-      ? { guestId: req.guestId }
-      : {};
-
-    const result = await Tasks.aggregate([
-      {
-        $match: userFilter,
-      },
-      {
-        $group: {
-          _id: { $ifNull: ["$category", "No Category"] }, // จัดกลุ่มตาม category และใช้ "No Category" ถ้า category เป็น null
-          totalTasks: { $sum: 1 },
-          completedTasks: {
-            $sum: {
+  exports.getTasksCompletedRateByCategory = async (req, res) => {
+    try {
+      const formatUser =
+        req.user && isValidObjectId(req.user.id)
+          ? new Types.ObjectId(req.user.id)
+          : null;
+      const userFilter = formatUser
+        ? { user: formatUser }
+        : req.guestId
+        ? { guestId: req.guestId }
+        : {};
+  
+      const result = await Tasks.aggregate([
+        {
+          $match: userFilter,
+        },
+        {
+          $lookup: {
+            from: "categories",
+            localField: "category",
+            foreignField: "_id",
+            as: "categoryInfo"
+          }
+        },
+        {
+          $group: {
+            _id: {
               $cond: {
-                if: { $eq: ["$status", "completed"] },
-                then: 1,
-                else: 0,
+                if: { $size: "$categoryInfo" },
+                then: "$category",
+                else: "No Category"
+              }
+            },
+            totalTasks: { $sum: 1 },
+            completedTasks: {
+              $sum: {
+                $cond: {
+                  if: { $eq: ["$status", "completed"] },
+                  then: 1,
+                  else: 0,
+                },
               },
             },
           },
         },
-      },
-      {
-        $project: {
-          category: "$_id",
-          totalTasks: 1,
-          completedTasks: 1,
-          completedRate: {
-            $multiply: [
-              {
-                $divide: [
-                  { $ifNull: ["$completedTasks", 0] },
-                  { $ifNull: ["$totalTasks", 1] },
-                ],
-              },
-              100
-            ],
+        {
+          $project: {
+            category: "$_id",
+            totalTasks: 1,
+            completedTasks: 1,
+            completedRate: {
+              $multiply: [
+                {
+                  $divide: [
+                    { $ifNull: ["$completedTasks", 0] },
+                    { $ifNull: ["$totalTasks", 1] },
+                  ],
+                },
+                100
+              ],
+            },
           },
         },
-      },
-      {
-        $lookup:{
-            from:"categories",
-            localField:"category",
-            foreignField:"_id",
-            as:"categoryInfo"
+        {
+          $lookup: {
+            from: "categories",
+            localField: "category",
+            foreignField: "_id",
+            as: "categoryInfo"
+          }
+        },
+        {
+          $unwind: {
+            path: "$categoryInfo",
+            preserveNullAndEmptyArrays: true
+          }
+        },
+        {
+          $project: {
+            category: {
+              $cond: {
+                if: { $eq: ["$category", "No Category"] },
+                then: "No Category",
+                else: "$categoryInfo.categoryName"
+              }
+            },
+            totalTasks: 1,
+            completedTasks: 1,
+            completedRate: 1
+          }
+        },
+        {
+          $sort: {
+            category: 1
+          }
         }
-      },
-      {
-        $unwind:{
-            path:"$categoryInfo",
-            preserveNullAndEmptyArrays:true
-        }
-      },
-      {
-        $project:{
-            category:"$categoryInfo.categoryName",
-            totalTasks:1,
-            completedTask:1,
-            completedRate:1
-        }
+      ]);
+  
+      if (result.length === 0) {
+        return res.status(200).json({ message: "No data found" });
       }
-    ]);
-
-    if (result.length === 0) {
-      return res.status(200).json({ message: "No data found" });
+  
+      return res.status(200).json(result);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: err.message });
     }
-
-    return res.status(200).json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-};
+  };
 
 exports.getProgressStepRate = async (req,res) => {
   

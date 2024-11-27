@@ -7,7 +7,7 @@ const {
   completedTask,
   searchTask,
 } = require("../controllers/TasksController");
-const {  removeTask } = require('../controllers/removeController')
+const {  removeTask, removeAllCompletedTask } = require('../controllers/removeController')
 const { upload } = require("../middleware/upload");
 const guestMiddleware = require("../middleware/guestId");
 const authMiddlewareOptional = require("../middleware/authOptional");
@@ -37,6 +37,7 @@ router.patch(
 );
 
 router.delete("/task/:id", authMiddlewareOptional(true), guestMiddleware, removeTask);
+router.delete("/completedTask",authMiddlewareOptional(true), guestMiddleware , removeAllCompletedTask)
 
 
 module.exports = router;

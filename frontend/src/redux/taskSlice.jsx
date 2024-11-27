@@ -5,6 +5,7 @@ import {
   completeTask,
   createTask,
   getData,
+  removeAllCompletedTask,
   removeTask,
   searchedTask,
   updateTaskAttempt,
@@ -143,6 +144,14 @@ export const removedTask = createAsyncThunk(
   "task/removedTask",
   async (taskId) => {
     const response = await removeTask(taskId);
+    return response;
+  }
+);
+
+export const removedAllTask = createAsyncThunk(
+  "task/removedAllTask",
+  async () => {
+    const response = await removeAllCompletedTask();
     return response;
   }
 );
@@ -365,6 +374,8 @@ const taskSlice = createSlice({
           state.selectedTask = {
             ...state.selectedTask,
             ...updatedTask,
+            category: updatedTask.category,
+            tag: updatedTask.tag
           };
         }
         state.lastStateUpdate = new Date().toISOString();
@@ -389,20 +400,23 @@ const taskSlice = createSlice({
             status: state.selectedTask.status === "failed" ? "pending" : state.selectedTask.status,
           };
         }
-      
+        
         state.lastStateUpdate = new Date().toISOString();
       })
       
       .addCase(completedTask.fulfilled, (state, action) => {
         const completedTaskId = action.payload._id;
-        state.tasks = state.tasks.map((task) =>
+        const updatedTask = action.payload;
+        state.tasks = state.tasks.map((task) => 
           task._id === completedTaskId
             ? {
                 ...task,
-                status: task.status === "pending" ? "completed" : "pending",
+               ...updatedTask,
                 lastUpdated: new Date().toISOString(),
+                
               }
             : task
+            
         );
       
         if (
@@ -411,9 +425,10 @@ const taskSlice = createSlice({
         ) {
           state.selectedTask = {
             ...state.selectedTask,
-            status: state.selectedTask.status === "pending" ? "completed" : "pending",
+            status: updatedTask.status,
           };
         }
+        
         state.isSummaryUpdated = true;
         state.lastStateUpdate = new Date().toISOString();
       })
@@ -425,6 +440,10 @@ const taskSlice = createSlice({
           return;
         }
         state.tasks = state.tasks.filter((task) => task._id !== removedTaskId);
+        state.isSummaryUpdated = true;
+      })
+      .addCase(removedAllTask.fulfilled, (state) => {
+        state.tasks = state.tasks.filter((task) => task.status !== "completed");
         state.isSummaryUpdated = true;
       })
       .addCase(removedCategory.fulfilled, (state) => {

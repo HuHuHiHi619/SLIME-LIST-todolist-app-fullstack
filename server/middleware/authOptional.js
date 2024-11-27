@@ -5,8 +5,6 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const jwtVerify = promisify(jwt.verify);
 
 const authMiddlewareOptional = (allowGuest = false) => async (req, res, next) => {
-    console.log("Cookies received:", req.cookies);  // ดูว่าคุกกี้ถูกส่งมาหรือไม่
-
     const token = req.cookies.accessToken;
 
     if (!token) {

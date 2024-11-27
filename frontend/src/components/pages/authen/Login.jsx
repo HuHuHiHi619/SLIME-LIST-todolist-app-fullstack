@@ -33,7 +33,10 @@ function Login() {
       const response = await dispatch(loginUser(user)).unwrap();
       console.log("login res", response);
       if (response.tokens?.accessToken) {
-        await dispatch(fetchUserData(response.user.id)).unwrap()
+        setTimeout( () => {
+          dispatch(fetchUserData(response.user.id)).unwrap()
+        },1000)
+       
         navigate("/");
       } else {
         throw new Error("No access token found.");

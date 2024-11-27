@@ -1,32 +1,50 @@
 
 import { getRefreshToken } from "../functions/authen";
-import { logoutUser, updateTokens } from "./userSlice";
+import { logoutUser, updateTokens, setAuthError } from "./userSlice";
 import Cookies from "js-cookie"
 
 const authMiddleware = (store) => (next) => async (action) => {
-    
-    const state = store.getState();
-    const { isAuthenticated , tokens} = state.user
-   
+    console.log("Action type:", action.type);
 
+    if (action.type.startsWith('user/loginUser')) {
+        return next(action); 
+    }
+
+    const result = next(action)
+    const state = store.getState();
+    const { isAuthenticated , tokens , isRefreshing } = state.user
+    
+    if (isRefreshing) {
+        return next(action); 
+    }
+   
     if(isAuthenticated && action.type.startsWith('user/fetchUserData')) {
         try{
             const { accessToken , refreshToken } = tokens
-            if(accessToken || !checkTokenvalidity(accessToken)){
-                const newAccessToken = await getRefreshToken(refreshToken);
-                Cookies.set('accessToken', newAccessToken);
-                Cookies.set('refreshToken', refreshToken);
-                store.dispatch(updateTokens({accessToken : newAccessToken , refreshToken}))
+            if(!accessToken || !checkTokenvalidity(accessToken)){
+                if(!isRefreshing){
+                    store.dispatch({type: 'auth/refreshStart'})
+                    const newAccessToken = await getRefreshToken(refreshToken);
+                    Cookies.set('accessToken', newAccessToken);
+                    Cookies.set('refreshToken', refreshToken);
+                    store.dispatch(updateTokens({accessToken : newAccessToken , refreshToken}))
+                    store.dispatch(action);
+                } else {
+                    throw new Error('Failed to get new access token')
+                }
             }
            
         }catch(error){
-            console.error('Refresh token failed:', error);
+            console.error('Auth middleware error:', error);
             Cookies.remove('accessToken');
             Cookies.remove('refreshToken');
+            store.dispatch(setAuthError(error.message));
             store.dispatch(logoutUser());
+        } finally {
+            store.dispatch({type : 'auth/refreshEnd'})
         }
     }
-    return next(action);
+    return result
 }
 const checkTokenvalidity = (token) => {
     try{

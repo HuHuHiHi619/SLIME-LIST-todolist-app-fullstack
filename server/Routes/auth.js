@@ -32,7 +32,7 @@ router.post("/login",
     ],
     login);
 router.post("/logout",authMiddlewareOptional(false),logout)
-router.post("/refreshToken",authMiddlewareOptional(false),refreshedToken)
+router.post("/refreshToken",refreshedToken)
 
 router.put('/user/:id/attempt',authMiddlewareOptional(false),updatedTaskAttempt)
 

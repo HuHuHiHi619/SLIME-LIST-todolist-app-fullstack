@@ -7,12 +7,15 @@ import { useSelector } from "react-redux";
 import useFetchTask from "../hooks/useFetchTask";
 import usePopup from "../hooks/usePopup";
 import CreateButton from "../ui/CreateButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 function GroupTaskForm({ filter }) {
   const { selectedTask, isCreate } = useSelector((state) => state.tasks);
   const { tasks: fetchedAllTasks } = useFetchTask(filter);
   const {
     handleIsCreate,
+    handleRemovedAllTask,
     handleCloseDetail,
     handleTaskClick,
     handleCompletedTask,
@@ -21,7 +24,7 @@ function GroupTaskForm({ filter }) {
   } = usePopup();
 
   return (
-    <div className="flex flex-1 gap-6  items-start ml-10   ">
+    <div className="flex flex-1 gap-6  items-start ml-10  relative ">
       {fetchedAllTasks &&
       Array.isArray(fetchedAllTasks) &&
       fetchedAllTasks.length > 0 ? (
@@ -39,16 +42,34 @@ function GroupTaskForm({ filter }) {
           const tasks = group.tasks || [];
           console.log("fetchtask", fetchedAllTasks);
           return (
-            <TaskList
-              key={keys}
-              allTasks={tasks}
-              label={label.toUpperCase()}
-              handleCompletedTask={handleCompletedTask}
-              handleRemovedTask={handleRemovedTask}
-              handleTaskClick={handleTaskClick}
-              handleIsCreate={handleIsCreate}
-              selectedTask={selectedTask}
-            />
+            <div key={keys}>
+              {label.toLowerCase() === "completed" &&
+                tasks.filter(task => task.status === "completed").length > 0 &&
+                ReactDOM.createPortal(
+                  <button
+                    className="clear-task clear-allTask"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleRemovedAllTask();
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrashCan} className="pr-2" />
+                    Clear completed
+                  </button>,
+                  document.body
+                )}
+              <TaskList
+                key={keys}
+                allTasks={tasks}
+                label={label.toUpperCase()}
+                handleCompletedTask={handleCompletedTask}
+                handleRemovedTask={handleRemovedTask}
+                handleTaskClick={handleTaskClick}
+                handleIsCreate={handleIsCreate}
+                selectedTask={selectedTask}
+              />
+            </div>
           );
         })
       ) : (

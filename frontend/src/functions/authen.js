@@ -72,6 +72,7 @@ export const getRefreshToken = async () => {
             },
             withCredentials: true
         })
+        console.log('get refresh', response.data)
         return response.data.accessToken
     } catch(error){
         console.error('Error getting refresh token',error.response?.data || error.message);

@@ -28,14 +28,14 @@ exports.getNotifications = async (req, res) => {
       ? { user: formatUser }
       : { guestId: req.guestId };
 
-    // ค้นหางานที่ใกล้ถึงกำหนด
+  
     const upcomingTasks = await tasks.find({
       ...userFilter,
       deadline: { $gte: currentDate, $lte: twoDaysFromNow },
       status: "pending",
     });
 
-    // ค้นหางานที่เสร็จสิ้น
+   
     let completedTasks = [];
     try {
       completedTasks = await tasks
@@ -112,8 +112,9 @@ exports.getNotifications = async (req, res) => {
             message: `Congrat! You've got a new ${updatedUser.currentBadge.toUpperCase()} badge!`,
             oldBadge: oldBadge,
             badgeImage: getBadgeImageUrL(updatedUser.currentBadge),
-          });v
+          });
         }
+        
       } catch (error) {
         console.error("Error updating user streak", error);
         notifications.push({

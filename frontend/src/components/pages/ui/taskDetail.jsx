@@ -11,10 +11,12 @@ import {
   fetchTags,
   updatedTaskAttempt
 } from "../../../redux/taskSlice";
+
 import { useDispatch, useSelector } from "react-redux";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateLeft } from "@fortawesome/free-solid-svg-icons";
+import { fetchNotification, fetchSummary, fetchSummaryByCategory } from "../../../redux/summarySlice";
 
 function TaskDetail({ onClose }) {
   const dispatch = useDispatch();
@@ -43,10 +45,15 @@ function TaskDetail({ onClose }) {
   }, [selectedTask]);
 
   const debouncedUpdateTask = useMemo(
-    () =>
-      debounce((updatedSelectTask) => {
-        const taskId = updatedSelectTask._id;
-        dispatch(updatedTask({ taskId, taskData: updatedSelectTask }));
+     () =>
+      debounce(async (updatedSelectTask) => {
+        const taskId = updatedSelectTask._id
+        await dispatch(updatedTask({ taskId, taskData: updatedSelectTask }))
+        await Promise.all([
+          dispatch(fetchSummaryByCategory()),
+          dispatch(fetchSummary()),
+          dispatch(fetchNotification())
+        ])
       }, 500),
     [dispatch, selectedTask._id]
   );
@@ -56,10 +63,15 @@ function TaskDetail({ onClose }) {
       const updatedSelectTask = { ...editedTask };
 
       if (name === "category") {
-        const selectedCat = categories.find(
-          (category) => category.categoryName === value
-        );
-        updatedSelectTask[name] = selectedCat ? selectedCat : "";
+        if(value === "no category") {
+          updatedSelectTask[name] = "";
+        } else {
+          const selectedCat = categories.find(
+            (category) => category.categoryName === value
+          );
+          updatedSelectTask[name] = selectedCat ? selectedCat : "";
+        }
+        
       } else if (name === "tag" && value) {
         const selectedTag = tags.find((tag) => tag.tagName === value); // Find the full tag object
         if (
@@ -250,7 +262,7 @@ function TaskDetail({ onClose }) {
           <div className="flex  gap-2 pb-4">
             <CategoryTagField
               name="category"
-              value={editedTask.category?.categoryName || ""}
+              value={editedTask.category?.categoryName}
               entities={categories}
               placeholder="CATEGORY"
               handleInputChange={handleInputChange}

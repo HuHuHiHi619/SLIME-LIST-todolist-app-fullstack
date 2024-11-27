@@ -6,10 +6,11 @@ function CategoryList() {
   const { categoryName } = useParams();
   console.log("locate", categoryName);
   return (
-    <div id="otherPage">
+    <div id="otherPage" className="flex">
       <FadeUpContainer>
         <TaskForm filter={{ category: categoryName }} />
       </FadeUpContainer>
+      
     </div>
   );
 }

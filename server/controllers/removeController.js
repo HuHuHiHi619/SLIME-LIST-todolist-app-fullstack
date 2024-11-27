@@ -29,6 +29,28 @@ exports.removeTask = async (req, res) => {
       handleError(res, error, "Failed to remove Task");
     }
   };
+exports.removeAllCompletedTask = async (req, res) => {
+    try {
+      const formatUser = req.user && isValidObjectId(req.user.id) ? new Types.ObjectId(req.user.id) : null;
+      const userFilter = formatUser ? {user: formatUser} : req.guestId ? {guestId: req.guestId} : null;
+  
+      const result = await Tasks.deleteMany({
+        ...userFilter,
+        status: "completed"
+      })
+      
+      if(result.deletedCount === 0){
+        return res.status(200).json({message : "There is no completed task."})
+      }
+
+  
+      return res
+        .status(200)
+        .json({ message: "Completed tasks removed successfully", deletedCount: result.deletedCount });
+    } catch (error) {
+      handleError(res, error, "Failed to remove Task");
+    }
+  };
   
  
   

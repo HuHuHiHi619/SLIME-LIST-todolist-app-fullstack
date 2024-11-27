@@ -48,6 +48,7 @@ exports.getTask = async (req, res) => {
       : req.guestId
       ? { guestId: req.guestId }
       : {};
+    const statusOrder = ["pending", "completed", "failed"];
 
     if (!userFilter) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -63,7 +64,7 @@ exports.getTask = async (req, res) => {
     // filter status
     if (status) {
       if (
-        (status && !["completed", "pending", "failed"].includes(status)) ||
+        (status && !["pending", "completed", "failed"].includes(status)) ||
         status === undefined
       ) {
         return res.status(400).json({ error: "Invalid status error" });
@@ -97,10 +98,23 @@ exports.getTask = async (req, res) => {
           return acc;
         }, {});
 
-        const resultByStatus = Object.values(groupedTasksByStatus).map(group => ({
-          ...group,
-          tasks: group.tasks.map(calculateProgress)
-        }));
+        let resultByStatus = Object.values(groupedTasksByStatus).map(
+          (group) => ({
+            ...group,
+            tasks: group.tasks
+              .map(calculateProgress)
+              .sort(
+                (a, b) =>
+                  statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
+              ),
+          })
+        );
+
+        resultByStatus = resultByStatus.sort(
+          (a, b) =>
+            statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
+        );
+
         return res
           .status(200)
           .json(resultByStatus.length > 0 ? resultByStatus : []);
@@ -159,10 +173,17 @@ exports.getTask = async (req, res) => {
           return acc;
         }, {});
 
-        const resultByCategory = Object.values(groupedTasksByCategory).map(group => ({
-          ...group,
-          tasks: group.tasks.map(calculateProgress)
-        }));
+        const resultByCategory = Object.values(groupedTasksByCategory).map(
+          (group) => ({
+            ...group,
+            tasks: group.tasks
+              .map(calculateProgress)
+              .sort(
+                (a, b) =>
+                  statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
+              ),
+          })
+        );
 
         if (resultByCategory.length === 0) {
           return res.status(200).json([]);
@@ -209,9 +230,9 @@ exports.getTask = async (req, res) => {
           return acc;
         }, {});
 
-        const resultByTag = Object.values(groupedTasksByTag).map(group => ({
+        const resultByTag = Object.values(groupedTasksByTag).map((group) => ({
           ...group,
-          tasks: group.tasks.map(calculateProgress)
+          tasks: group.tasks.map(calculateProgress),
         }));
         console.log("tasks found by tag:", resultByTag.length);
 
@@ -282,7 +303,7 @@ exports.getTask = async (req, res) => {
       if (resultByDeadline.length === 0) {
         return res.status(200).json([]);
       }
-      
+
       return res.status(200).json(resultByDeadline);
     }
 
@@ -293,15 +314,19 @@ exports.getTask = async (req, res) => {
         { path: "tag" },
         { path: "status" },
       ])
+
       .lean();
-   
 
     if (tasksList.length === 0) {
       return res.status(200).json([]);
     }
 
-    const tasksWithProgress = tasksList.map(calculateProgress)
-   
+    const tasksWithProgress = tasksList
+      .map(calculateProgress)
+      .sort(
+        (a, b) => statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
+      );
+
     return res.status(200).json(tasksWithProgress);
   } catch (error) {
     handleError(res, error, "Failed to retrieve product");
@@ -488,12 +513,16 @@ exports.updatedTask = async (req, res) => {
       deadline: updateData.deadline
         ? new Date(updateData.deadline)
         : existingTask.deadline,
-      category: updateData.category || existingTask.category,
+      category:
+        updateData.category === ""
+          ? null
+          : updateData.category || existingTask.category,
       tag: updateData.tag || existingTask.tag,
       progress: updateData.progress || existingTask.progress,
       status: updateData.status || existingTask.status,
     };
-    console.log("เช็ค cate", finalUpdateData.category);
+    console.log("เช็ค category", updateData);
+    console.log("เช็ค final cate", finalUpdateData.category);
 
     // ตรวจสอบและจัดการข้อมูล category
     if (finalUpdateData.category) {
@@ -507,6 +536,8 @@ exports.updatedTask = async (req, res) => {
       } else {
         return res.status(400).json({ error: "Invalid category value" });
       }
+    } else if (finalUpdateData.category === "") {
+      finalUpdateData.category = null;
     }
 
     // ตรวจสอบและจัดการข้อมูล tags
@@ -596,7 +627,7 @@ exports.completedTask = async (req, res) => {
       if (formatUser) {
         const userUpdate = await updateUserStreak(formatUser.toString(), true);
         const updatedTask = await task.save();
-        return res.status(200).json({ updatedTask, user: userUpdate.user })
+        return res.status(200).json({ updatedTask, user: userUpdate.user });
       }
     } else if (task.status === "completed") {
       task.status = "pending";
@@ -611,8 +642,8 @@ exports.completedTask = async (req, res) => {
         .status(404)
         .json({ error: "Task not found or could not be updated" });
     }
-   
-    return res.status(201).json({ message: "Task is complete", updatedTask});
+
+    return res.status(201).json({ message: "Task is complete", updatedTask });
   } catch (error) {
     handleError(res, error, "Failed to complete task");
   }

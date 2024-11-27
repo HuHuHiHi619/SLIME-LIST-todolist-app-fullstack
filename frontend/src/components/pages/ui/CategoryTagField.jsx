@@ -2,6 +2,7 @@ import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder, faTag } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
 function CategoryTagField({
   handleInputChange,
@@ -14,8 +15,8 @@ function CategoryTagField({
   handleRemoveTag,
 }) {
   const filterIcon = name === "category" ? faFolder : faTag;
-
-  // Flexbox-based class for the select input and container
+  
+ 
   const filterClass = showTag
     ? "flex-grow cursor-pointer appearance-none shadow bg-transparent text-gray-400 pl-11 pt-2 font-bold focus:outline-none focus:shadow-outline block"
     : "w-[230px] cursor-pointer leading-7 appearance-none text-[20px] shadow border-[2px] border-categoryTheme bg-transparent rounded-lg p-2 pl-11 text-categoryTheme leading-tight focus:outline-none focus:shadow-outline block";
@@ -39,13 +40,11 @@ function CategoryTagField({
           {name === "tag" ? (
             <option>Tag</option>
           ) : (
-            <option value="" disabled>
-              {placeholder}
-            </option>
+           null
           )}
 
           {name === "category" ? (
-            <option value="">{`No ${placeholder.toLowerCase()}`}</option>
+            <option value="No category" className="text-black">{`No ${placeholder.toLowerCase()}`}</option>
           ) : null}
 
           {Array.isArray(entities) && entities.length > 0 ? (
@@ -53,13 +52,13 @@ function CategoryTagField({
               <option
                 key={entity._id}
                 value={entity[`${name}Name`]}
-                className="py-2 px-4 text-gray-400 hover:bg-purple-50"
+                className="py-2 px-4 text-gray-800"
               >
                 {entity[`${name}Name`]}
               </option>
             ))
           ) : (
-            <option disabled>{placeholder}</option> // แสดงข้อความ placeholder ถ้าไม่มีค่าใน entities
+            <option disabled>{placeholder}</option> 
           )}
         </select>
       </div>

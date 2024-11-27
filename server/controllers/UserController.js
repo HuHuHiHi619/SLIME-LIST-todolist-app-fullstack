@@ -175,6 +175,7 @@ exports.logout = async (req,res) => {
 exports.refreshedToken = async (req, res) => {
  
   const { refreshToken } = req.cookies
+  console.log('req refresh', refreshToken)
   if (!refreshToken) {
     return res.status(401).json({ error: "No refresh token provided" });
   }
@@ -187,6 +188,7 @@ exports.refreshedToken = async (req, res) => {
     const newAccessToken = jwt.sign({ userId: user._id }, accessTokenSecret, {
       expiresIn: "10m",
     });
+    console.log('refresh back', newAccessToken)
     res.status(200).json({ accessToken: newAccessToken });
   } catch (error) {
     console.error("Refresh token Error", error.message);

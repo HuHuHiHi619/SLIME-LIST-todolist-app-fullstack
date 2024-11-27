@@ -9,7 +9,7 @@ const NotificationForm = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNotiOpen, setIsNotiOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const notiRef = useRef(null)
+  const notiRef = useRef(null);
   const searchRef = useRef(null);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
@@ -28,13 +28,12 @@ const NotificationForm = () => {
         setIsNotiOpen(false);
       }
     };
-  
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  
 
   return (
     <div className="p-4 mr-8 z-50  ">
@@ -73,18 +72,27 @@ const NotificationForm = () => {
                       <FontAwesomeIcon icon={faSearch} className="h-8 w-8" />
                     </button>
                   )}
-                   {isNotiOpen && (
-                    <div ref={notiRef} className="animation-fadeIn">
-                      <NotificationField />
-                    </div>
-                  ) }
+                  <div className="relative">
                     <button
                       onClick={() => setIsNotiOpen((prev) => !prev)}
                       className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
                     >
-                      <FontAwesomeIcon icon={faBell} className="h-8 w-8" />
+                      <FontAwesomeIcon
+                        icon={faBell}
+                        className={`h-8 w-8 ${
+                          isNotiOpen ? "text-purpleBorder" : ""
+                        }`}
+                      />
                     </button>
-                  
+                    {isNotiOpen && (
+                      <div
+                        ref={notiRef}
+                        className="absolute top-0 right-0   shadow-md p-4 transition-all duration-300"
+                      >
+                        <NotificationField />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </FadeUpContainer>
             </div>

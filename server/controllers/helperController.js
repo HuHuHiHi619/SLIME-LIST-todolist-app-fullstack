@@ -20,7 +20,9 @@ exports.processProgress = (progress) => {
     if (Array.isArray(progress.steps)) {
       progress.steps = progress.steps.map((step) => {
         if (typeof step.label !== "string" || step.label.length > 100) {
-          throw new Error("Invalid label: must be a string with max length 100");
+          throw new Error(
+            "Invalid label: must be a string with max length 100"
+          );
         }
         return {
           label: step.label.trim(),
@@ -30,12 +32,14 @@ exports.processProgress = (progress) => {
     } else {
       throw new Error("Invalid steps format");
     }
-    
+
     progress.totalSteps = progress.steps.length;
-    if(progress.steps.length === 0){
-      progress.allStepsCompleted = false
+    if (progress.steps.length === 0) {
+      progress.allStepsCompleted = false;
     } else {
-      progress.allStepsCompleted =  process.totalSteps > 0 && progress.steps.every((step) => step.completed);
+      progress.allStepsCompleted =
+        process.totalSteps > 0 &&
+        progress.steps.every((step) => step.completed);
     }
 
     return progress; // ส่งกลับ progress ที่ถูกประมวลผล
@@ -46,121 +50,132 @@ exports.processProgress = (progress) => {
 
 exports.processCategory = async (categoryId, userId, guestId) => {
   const query = {
-      _id: categoryId, // ค้นหาจาก ID
-      $or: []
+    _id: categoryId, // ค้นหาจาก ID
+    $or: [],
   };
 
   if (userId) query.$or.push({ user: userId });
   if (guestId) query.$or.push({ guestId });
 
   const existCategory = await Category.findOne(query);
-  console.log('exist cat:',existCategory)
+  console.log("exist cat:", existCategory);
   if (!existCategory) {
-      throw new Error('Cannot find category');
+    throw new Error("Cannot find category");
   }
   return existCategory._id;
-}
-
-
-exports.processTags = async (tags,userId,guestId) => {
-    tags = Array.isArray(tags) ? tags : [tags];
-    const query = { tagName: {$in: tags}, $or:[]};
-
-    if(userId) query.$or.push({user: userId});
-    if(guestId) query.$or.push({ guestId });
-
-    const existTags = await Tag.find(query);
-    if(!existTags) {
-        throw new Error('Cannot find tag.');
-    }
-    return existTags.map(tg => tg._id);
-}
-
-const calculateBadge = (streakDays) => {
-  if(streakDays >= 15) return 'gold';
-  if(streakDays >= 10) return 'silver';
-  if(streakDays >= 5) return 'bronze';
-  return 'iron';
-}
-
-exports.updateUserStreak = async (userId , completed) => {
-    const user = await User.findById(userId);
-    if(!user) throw new Error('User not found!');
-
-    let badgeChange = false;
-    let oldBadge = user.currentBadge;
-
-    const currentDate = startOfDay(new Date());
-    const yesterday = startOfDay(subDays(new Date(),1));
-
-    if(completed){
-      if(user.lastCompleted && user.lastCompleted.getTime() === currentDate.getTime()){
-        return {user,badgeChange }
-      }
-
-      if(user.lastCompleted && user.lastCompleted.getTime() === yesterday.getTime()){
-          user.currentStreak += 1;
-      } else if(!user.lastCompleted || user.lastCompleted.getTime() < yesterday.getTime()){
-          user.currentStreak = 1;
-      } 
-      user.lastCompleted = currentDate;
-    } else {
-      if(user.lastCompleted && user.lastCompleted.getTime() < yesterday.getTime()){
-          user.currentStreak = 0;
-      }
-    }
-
-    if(user.currentStreak > user.bestStreak){
-      user.bestStreak = user.currentStreak
-    }
-
-    // calulate badge
-    const newBadge = calculateBadge(user.currentStreak);
-    if (newBadge !== user.currentBadge) {
-      user.currentBadge = newBadge;
-      badgeChange = true;
-    } 
-    
-    await user.save();
-    return {user, badgeChange, oldBadge};
 };
 
-exports.tryAgainTask = async (userId,taskId,newdeadline) => {
-    const user = await User.findById(userId)
-    if(!user) throw new Error('User not found.');
+exports.processTags = async (tags, userId, guestId) => {
+  tags = Array.isArray(tags) ? tags : [tags];
+  const query = { tagName: { $in: tags }, $or: [] };
 
-    const task = await Tasks.findOne({
-      _id:taskId, user: userId 
-    });
-    if(!task) throw new Error('Task not found');
+  if (userId) query.$or.push({ user: userId });
+  if (guestId) query.$or.push({ guestId });
 
-    if(task.tryAgainCount >= 3) {
-      task.status = 'failed'
-      throw new Error('Reached max tryagain count!')
+  const existTags = await Tag.find(query);
+  if (!existTags) {
+    throw new Error("Cannot find tag.");
+  }
+  return existTags.map((tg) => tg._id);
+};
+
+const calculateBadge = (streakDays) => {
+  if (streakDays >= 15) return "gold";
+  if (streakDays >= 10) return "silver";
+  if (streakDays >= 5) return "bronze";
+  return "iron";
+};
+
+exports.updateUserStreak = async (userId, completed) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("User not found!");
+
+  let badgeChange = false;
+  let oldBadge = user.currentBadge;
+
+  const currentDate = startOfDay(new Date());
+  const yesterday = startOfDay(subDays(new Date(), 1));
+  console.log("streak com", completed);
+  if (completed) {
+    if (
+      user.lastCompleted &&
+      user.lastCompleted.getTime() === currentDate.getTime()
+    ) {
+      return { user, badgeChange };
     }
-    
-    task.deadline = newdeadline
-    task.tryAgainCount += 1;
-    task.status = 'pending';
-    task.progress.allStepsCompleted = false;
 
-    await task.save();
-    return task
-}
+    if (
+      user.lastCompleted &&
+      user.lastCompleted.getTime() === yesterday.getTime()
+    ) {
+      user.currentStreak += 1;
+    } else if (
+      !user.lastCompleted ||
+      user.lastCompleted.getTime() < yesterday.getTime()
+    ) {
+      user.currentStreak = 1;
+    }
+    user.lastCompleted = currentDate;
+  } else {
+    user.currentStreak = 0;
+  }
+
+  if (user.currentStreak > user.bestStreak) {
+    user.bestStreak = user.currentStreak;
+  }
+
+  // calulate badge
+  const newBadge = calculateBadge(user.currentStreak);
+  if (newBadge !== user.currentBadge) {
+    user.currentBadge = newBadge;
+    badgeChange = true;
+  }
+
+  await user.save();
+  console.log("user update streak", user);
+  return { user, badgeChange, oldBadge };
+};
+
+exports.tryAgainTask = async (userId, taskId, newdeadline) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("User not found.");
+
+  const task = await Tasks.findOne({
+    _id: taskId,
+    user: userId,
+  });
+  if (!task) throw new Error("Task not found");
+
+  if (task.tryAgainCount >= 3) {
+    task.status = "failed";
+    throw new Error("Reached max tryagain count!");
+  }
+
+  task.deadline = newdeadline;
+  task.tryAgainCount += 1;
+  task.status = "pending";
+  task.progress.allStepsCompleted = false;
+
+  await task.save();
+  return task;
+};
 
 exports.calculateProgress = (task) => {
-  if(task.progress && task.progress.steps){
-    const totalSteps = task.progress.steps.length || 0
-    const completedSteps = task.progress.steps.filter(step => step.completed).length
-    const progressPercentage = totalSteps === 0 ? 0 : (completedSteps / totalSteps) * 100
+  if (task.progress && task.progress.steps) {
+    const totalSteps = task.progress.steps.length || 0;
+    const completedSteps = task.progress.steps.filter(
+      (step) => step.completed
+    ).length;
+    const progressPercentage =
+      totalSteps === 0 ? 0 : (completedSteps / totalSteps) * 100;
     return {
       ...task,
-      progress:{
+      progress: {
         ...task.progress,
         completedSteps,
-        progressPercentage
-      }
-    }
+        progressPercentage,
+      },
+    };
   }
-  return task
-}
+  return task;
+};

@@ -30,7 +30,8 @@ const loadInitialState = () => {
         refreshToken,
       },
       loading: false,
-      error: null,
+      isRefreshing: false,
+      authError: null,
       isAuthenticated: persistedAuth && !!accessToken,
     };
   } catch (error) {
@@ -50,7 +51,8 @@ const loadInitialState = () => {
         lastCompleted: null,
       },
       loading: false,
-      error: null,
+      isRefreshing: false,
+      authError: null,
       isAuthenticated: false,
     };
   }
@@ -132,32 +134,38 @@ const userSlice = createSlice({
         accessToken: action.payload.accessToken,
         refreshToken: action.payload.refreshToken,
       };
+      state.isAuthenticated = true;
     },
-    
+    setAuthError: (state, action) => {
+      state.authError = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
-    .addCase(completedTask.fulfilled, (state, action) => {
-       const { user } = action.payload
-       state.userData.currentStreak = user.currentStreak
-       state.userData.bestStreak = user.bestStreak
-       state.userData.currentBadge = user.currentBadge
-     
+      .addCase(completedTask.fulfilled, (state, action) => {
+        const updatedTask = action.payload?.updatedTask;
+        if (updatedTask && updatedTask.status) {
+          console.log("Updated task status:", updatedTask.status);
+        } else {
+          console.warn("Unexpected payload structure:", action.payload);
+        }
       })
+
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.isAuthenticated = false;
+        state.authError = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.userData.id = action.payload.id;
         state.userData.username = action.payload.username;
         state.isAuthenticated = true;
-        state.error = null;
+        state.authError = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.authError = action.payload;
         state.isAuthenticated = false;
         // ลบข้อมูลเมื่อ login ไม่สำเร็จ
         Cookies.remove("isAuthenticated");
@@ -166,15 +174,18 @@ const userSlice = createSlice({
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
       })
+      .addCase(logoutUser.pending, (state) => {
+        state.isAuthenticated = false;
+        state.loading = true;
+        state.authError = null;
+      })
       .addCase(logoutUser.fulfilled, (state) => {
         state.userData = initialState.userData;
         state.isAuthenticated = false;
         state.loading = false;
-        state.error = null;
+        state.authError = null;
       })
-      .addCase(fetchUserData.pending, (state) => {
-        state.loading = true;
-      })
+     
       .addCase(fetchUserData.fulfilled, (state, action) => {
         state.userData = { ...state.userData, ...action.payload };
         state.isAuthenticated = true;
@@ -184,11 +195,17 @@ const userSlice = createSlice({
       })
       .addCase(fetchUserData.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.authError = action.payload;
         state.isAuthenticated = false;
+      })
+      .addCase("auth/refreshStart", (state) => {
+        state.isRefreshing = true;
+      })
+      .addCase("auth/refreshEnd", (state) => {
+        state.isRefreshing = false;
       });
   },
 });
 
-export const { restoreState, updateTokens } = userSlice.actions;
+export const { restoreState, updateTokens , setAuthError} = userSlice.actions;
 export default userSlice.reducer;

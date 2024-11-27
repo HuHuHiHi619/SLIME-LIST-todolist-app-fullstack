@@ -7,8 +7,9 @@ import Cookies from "js-cookie"
 const AuthProvider = ({ children }) => {  // เปลี่ยนเป็น arrow function
     const dispatch = useDispatch();
     const { isAuthenticated, userData } = useSelector((state) => state.user);
+    const [initialCheckDone, setInitialCheckDone] = React.useState(false);
 
-    React.useEffect(() => {  // เพิ่ม React. ข้างหน้า useEffect
+    React.useEffect(() => { 
         const checkAuth = async () => {
             const persistedAuth = Cookies.get('isAuthenticated');
             const persistedUserId = Cookies.get('userId');
@@ -20,6 +21,7 @@ const AuthProvider = ({ children }) => {  // เปลี่ยนเป็น a
                    Cookies.remove('userId');
                 }
             }
+            setInitialCheckDone(true);
         }
         checkAuth();
     },[dispatch])
@@ -34,15 +36,16 @@ const AuthProvider = ({ children }) => {  // เปลี่ยนเป็น a
                     console.error('Error fetching user data:', error);
                 }
             };
-            fetchData();
-            interval = setInterval(fetchData, 5 * 60 * 1000);
+           if(initialCheckDone){
+               interval = setInterval(fetchData, 5 * 60 * 1000);
+           }
         }
         return () => {
             if (interval) {
                 clearInterval(interval);
             }
         };
-    }, [isAuthenticated, userData?.id, dispatch]);
+    }, [isAuthenticated, userData?.id, initialCheckDone , dispatch]);
 
     React.useEffect(() => {
         const handleStorageChange = () => {
@@ -53,6 +56,10 @@ const AuthProvider = ({ children }) => {  // เปลี่ยนเป็น a
             window.removeEventListener('storage', handleStorageChange);
         }
     },[dispatch]);
+
+    if(!initialCheckDone){
+        return null
+    }
 
     return children;
 };

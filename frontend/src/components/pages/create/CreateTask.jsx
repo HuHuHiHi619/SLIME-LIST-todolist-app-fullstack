@@ -16,6 +16,7 @@ import StartDatePicker from "../ui/StartDatePicker";
 import CategoryTagField from "../ui/CategoryTagField";
 import ProgressField from "../ui/ProgressField";
 import FadeUpContainer from "../animation/FadeUpContainer";
+import { fetchSummary, fetchSummaryByCategory } from "../../../redux/summarySlice";
 
 function CreateTask({ onClose }) {
   const dispatch = useDispatch();
@@ -115,6 +116,8 @@ function CreateTask({ onClose }) {
 
     try {
       const response = await dispatch(createNewTask(taskData)).unwrap();
+      await dispatch(fetchSummary()).unwrap();
+      await dispatch(fetchSummaryByCategory()).unwrap();
       if (response) {
         console.log("Task created successfully!", response);
         resetFormTask();
@@ -130,6 +133,7 @@ function CreateTask({ onClose }) {
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchTags());
+    
   }, [dispatch]);
 
   return (
