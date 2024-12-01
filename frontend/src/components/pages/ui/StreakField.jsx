@@ -4,13 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt } from "@fortawesome/free-solid-svg-icons";
 import { fetchUserData } from "../../../redux/userSlice";
 import FlameBox from "../animation/FlameBox";
-import { p } from "framer-motion/m";
+import ReactDOM from "react-dom";
 
 function StreakField() {
   const dispatch = useDispatch();
   const { isSidebarPinned } = useSelector((state) => state.tasks);
   const { userData, isAuthenticated } = useSelector((state) => state.user);
-  console.log("isauthen streak", isAuthenticated);
+  const { streakStatus } = useSelector((state) => state.tasks);
+
   useEffect(() => {
     if (userData.id) {
       dispatch(fetchUserData(userData.id));
@@ -18,7 +19,7 @@ function StreakField() {
   }, [dispatch, userData.id]);
 
   const streak = userData.currentStreak;
-
+  console.log(streakStatus);
   return (
     <div className="flex">
       {isAuthenticated ? (
@@ -47,7 +48,13 @@ function StreakField() {
               </p>
             </div>
           </div>
-          <div className=" relative flex items-center bg-purpleActiveTask border-4 border-purpleBorder rounded-3xl pl-4 py-2 mr-3 w-full">
+          <div
+            className={`relative flex items-center ${
+              streakStatus.alreadyCompletedToday
+                ? "opacity-50 bg-purpleActiveTask "
+                : "bg-purpleActiveTask"
+            }   border-4 border-purpleBorder rounded-3xl pl-4 py-2 mr-3 w-full`}
+          >
             <div className="relative">
               <p
                 className={` text-white ${
@@ -59,33 +66,45 @@ function StreakField() {
                 {userData.currentStreak}
               </p>
               {userData.currentStreak > 1 ? (
-                <p  className={` text-white transition-all duration-300 ease-in-out ${
-                  isSidebarPinned
-                    ? "text-xl -left-4 -bottom-10 tracking-tighter "
-                    : "text-xl"
-                }  -bottom-12 absolute`}>
+                <p
+                  className={` text-white transition-all duration-300 ease-in-out ${
+                    isSidebarPinned
+                      ? "text-xl -left-4 -bottom-10 tracking-tighter "
+                      : "text-xl"
+                  }  -bottom-12 absolute`}
+                >
                   DAYS
                 </p>
               ) : (
-                <p className={` text-white ${
-                  isSidebarPinned
-                    ? "text-2xl left-11 -bottom-8  "
-                    : "text-2xl top-0 left-7 pl-1"
-                }  -bottom-12 absolute`}>
+                <p
+                  className={` text-white ${
+                    isSidebarPinned
+                      ? "text-2xl left-11 -bottom-8  "
+                      : "text-2xl top-0 left-7 pl-1"
+                  }  -bottom-12 absolute`}
+                >
                   DAY
                 </p>
               )}
             </div>
-            <div className={`absolute  pl-1  leading-none transition-all duration-300 ease-in-out
-              ${isSidebarPinned ? "top-6 left-14 text-xl" : "text-xl top-6 left-11"}`
-              }>
-              <p className="text-white  ">STREAK { !isSidebarPinned && (
-                <span className="text-white text-xl  ">NOW</span>
-              ) }</p>
+            <div
+              className={`absolute  pl-1  leading-none transition-all duration-300 ease-in-out
+              ${
+                isSidebarPinned
+                  ? "top-6 left-14 text-xl"
+                  : "text-xl top-6 left-11"
+              }`}
+            >
+              <p className="text-white  ">
+                STREAK{" "}
+                {!isSidebarPinned && (
+                  <span className="text-white text-xl  ">NOW</span>
+                )}
+              </p>
             </div>
           </div>
           <div
-            className={`bg-purpleMain border-4 rounded-3xl px-4 py-2 mr-10
+            className={`bg-purpleMain border-4 rounded-3xl px-4 py-2 mr-10 transition-all duration-300 ease-out
                    ${streak === 0 ? "border-purpleNormal" : ""} 
                    ${streak <= 5 && streak !== 0 ? "border-orange-400" : ""} 
                    ${streak >= 6 && streak <= 10 ? "border-sky-500" : ""} 
@@ -108,7 +127,15 @@ function StreakField() {
                 ))}
               </div>
             </div>
+            {streakStatus.alreadyCompletedToday &&
+            ReactDOM.createPortal(
+              <div className="popup-overlay">
+                <div className="done-button">sdfdsfs</div>
+              </div>,
+              document.body
+            )}
           </div>
+          
         </>
       ) : (
         <div className="bg-purpleMain border-4 border-purpleNormal rounded-3xl mt-4  mr-10 w-full">

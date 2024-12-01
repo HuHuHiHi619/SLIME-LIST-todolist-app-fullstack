@@ -86,54 +86,89 @@ const calculateBadge = (streakDays) => {
   return "iron";
 };
 
-exports.updateUserStreak = async (userId, completed) => {
-  const user = await User.findById(userId);
-  if (!user) throw new Error("User not found!");
+exports.updateUserStreak = async (
+  userId,
+  completed,
+  taskCompletionDetails = {}
+) => {
+  try {
+    const user = await User.findById(userId);
+    if (!user) throw new Error("User not found!");
 
-  let badgeChange = false;
-  let oldBadge = user.currentBadge;
+    let streakStatus = {
+      streakUpdated: false,
+      streakBroken: false,
+      streakIncreased: false,
+      currentStreak: user.currentStreak,
+      badgeChange: false,
+      alreadyCompletedToday: false,
+      oldBadge: user.currentBadge,
+      newBadge: user.currentBadge,
+      taskDetails: {}
+    };
 
-  const currentDate = startOfDay(new Date());
-  const yesterday = startOfDay(subDays(new Date(), 1));
-  console.log("streak com", completed);
-  if (completed) {
-    if (
-      user.lastCompleted &&
-      user.lastCompleted.getTime() === currentDate.getTime()
-    ) {
-      return { user, badgeChange };
+    const currentDate = startOfDay(new Date());
+    const yesterday = startOfDay(subDays(new Date(), 1));
+
+    if (completed) {
+      // Prevent multiple completions on the same day
+      if (
+        user.lastCompleted &&
+        startOfDay(user.lastCompleted).getTime() === currentDate.getTime()
+      ) {
+        streakStatus.alreadyCompletedToday = true;
+        return streakStatus;
+      }
+
+      if (!user.lastCompleted) {
+        user.currentStreak = 1;
+        user.lastCompleted = currentDate;
+        streakStatus.streakUpdated = true;
+      } else if (
+        startOfDay(user.lastCompleted).getTime() === yesterday.getTime()
+      ) {
+        // If last completion was yesterday, increase streak
+        user.currentStreak += 1;
+        streakStatus.streakIncreased = true;
+      }
+
+      // Update last completed date
+      user.lastCompleted = currentDate;
+      streakStatus.streakUpdated = true;
+      streakStatus.currentStreak = user.currentStreak;
+    } else {
+      // If no task completed, streak is broken
+      user.currentStreak = 0;
+      streakStatus.streakBroken = true;
+      streakStatus.currentStreak = 0;
     }
 
-    if (
-      user.lastCompleted &&
-      user.lastCompleted.getTime() === yesterday.getTime()
-    ) {
-      user.currentStreak += 1;
-    } else if (
-      !user.lastCompleted ||
-      user.lastCompleted.getTime() < yesterday.getTime()
-    ) {
-      user.currentStreak = 1;
+    // Update best streak
+    if (user.currentStreak > user.bestStreak) {
+      user.bestStreak = user.currentStreak;
     }
-    user.lastCompleted = currentDate;
-  } else {
-    user.currentStreak = 0;
-  }
 
-  if (user.currentStreak > user.bestStreak) {
-    user.bestStreak = user.currentStreak;
-  }
+    // Calculate and update badge
+    const newBadge = calculateBadge(user.currentStreak);
+    if (newBadge !== user.currentBadge) {
+      user.currentBadge = newBadge;
+      streakStatus.badgeChange = true;
+      streakStatus.oldBadge = user.currentBadge;
+      streakStatus.newBadge = newBadge;
+    }
 
-  // calulate badge
-  const newBadge = calculateBadge(user.currentStreak);
-  if (newBadge !== user.currentBadge) {
-    user.currentBadge = newBadge;
-    badgeChange = true;
-  }
+    // Save additional task completion details if provided
+    if (Object.keys(taskCompletionDetails).length > 0) {
+      streakStatus.taskDetails = taskCompletionDetails;
+    }
 
-  await user.save();
-  console.log("user update streak", user);
-  return { user, badgeChange, oldBadge };
+    await user.save();
+
+    return streakStatus;
+  } catch (error) {
+    console.error("Error updating user streak:", error);
+    throw error;
+  }
 };
 
 exports.tryAgainTask = async (userId, taskId, newdeadline) => {

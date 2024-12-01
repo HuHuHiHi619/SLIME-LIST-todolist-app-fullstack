@@ -4,7 +4,7 @@ import { logoutUser, updateTokens, setAuthError } from "./userSlice";
 import Cookies from "js-cookie"
 
 const authMiddleware = (store) => (next) => async (action) => {
-    console.log("Action type:", action.type);
+   
 
     if (action.type.startsWith('user/loginUser')) {
         return next(action); 

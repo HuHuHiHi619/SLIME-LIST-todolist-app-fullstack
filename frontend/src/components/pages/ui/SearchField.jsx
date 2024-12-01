@@ -42,8 +42,7 @@ function SearchField() {
       dispatch(clearSearchResults());
     };
   }, [dispatch]);
-  console.log("search term:", searchTerm);
-  console.log("search result:", searchResults);
+  
 
   return (
     <div className="w-[300px] relative">

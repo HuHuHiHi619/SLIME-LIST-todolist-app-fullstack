@@ -314,7 +314,6 @@ exports.getTask = async (req, res) => {
         { path: "tag" },
         { path: "status" },
       ])
-
       .lean();
 
     if (tasksList.length === 0) {
@@ -370,19 +369,16 @@ exports.createTask = async (req, res) => {
       }
     }
     // check tag value then convert tp objectId
-    let tagIds = [];
-    if (tag && tag.length > 0) {
-      const tags = Array.isArray(tag) ? tag : [tag];
-      const existingTags = await Tag.find({
-        _id: { $in: tags.map((tag) => tag._id) },
-        $or: [{ user: formatUser }, { guestId: req.guestId }],
-      }).lean();
-      if (existingTags) {
-        tagIds = [...existingTags.map((tg) => tg._id)];
-        console.log("Tag chosen!", ...tagIds);
-      } else {
-        console.log("Tag not found");
-      }
+    let tagValue = "low"; // ค่า default เป็น 'low'
+
+    if (tag && Array.isArray(tag)) {
+      tagValue = tag[0];
+    } else if (tag && ["low", "medium", "high"].includes(tag)) {
+      tagValue = tag; 
+    } else if (tag) {
+      return res
+        .status(400)
+        .json({ error: "Invalid tag value. Use 'low', 'medium', or 'high'." });
     }
 
     // adjust progress
@@ -457,7 +453,7 @@ exports.createTask = async (req, res) => {
       deadline: deadlineObj || null,
       category: categoryId,
       progress: formatProgress,
-      tag: tagIds,
+      tag: tagValue,
       user: formatUser || null,
       guestId,
     });
@@ -476,6 +472,8 @@ exports.updatedTask = async (req, res) => {
     const { id } = req.params;
     const updateData = { ...req.body };
     delete updateData._id;
+
+    console.log('UPDATE DATA :',updateData)
 
     const formatUser =
       req.user && isValidObjectId(req.user.id)
@@ -517,12 +515,12 @@ exports.updatedTask = async (req, res) => {
         updateData.category === ""
           ? null
           : updateData.category || existingTask.category,
-      tag: updateData.tag || existingTask.tag,
+          tag: Array.isArray(updateData.tag) ? updateData.tag : [updateData.tag],
       progress: updateData.progress || existingTask.progress,
       status: updateData.status || existingTask.status,
     };
-    console.log("เช็ค category", updateData);
-    console.log("เช็ค final cate", finalUpdateData.category);
+    console.log("เช็ค category", finalUpdateData);
+   
 
     // ตรวจสอบและจัดการข้อมูล category
     if (finalUpdateData.category) {
@@ -540,26 +538,19 @@ exports.updatedTask = async (req, res) => {
       finalUpdateData.category = null;
     }
 
-    // ตรวจสอบและจัดการข้อมูล tags
-    if (finalUpdateData.tag === null || finalUpdateData.tag.length === 0) {
-      finalUpdateData.tag = [];
-      if (
-        Array.isArray(finalUpdateData.tag) &&
-        finalUpdateData.tag.every(
-          (tag) => typeof tag === "string" && isValidObjectId(tag)
-        )
-      ) {
-        const tagPromise = await processTags(
-          finalUpdateData.tag,
-          formatUser,
-          req.guestId
-        );
-        finalUpdateData.tag = tagPromise; // อัปเดตค่า tag
-      } else {
-        console.log("updatetag", finalUpdateData.tag);
-        return res.status(400).json({ error: "Invalid tag values" });
+    if (Array.isArray(finalUpdateData.tag)) {
+      const validTags = ["low", "medium", "high"];
+      // Ensure each tag in the array is valid
+      for (let t of finalUpdateData.tag) {
+        if (!validTags.includes(t)) { // เปลี่ยนจาก t.name เป็น t เพราะ t เป็น string
+          return res.status(400).json({
+            error: `Invalid tag value. Allowed values: ${validTags.join(", ")}`,
+          });
+        }
       }
     }
+    
+    
 
     // ตรวจสอบและจัดการข้อมูล progress
     if (finalUpdateData.progress) {
@@ -627,7 +618,7 @@ exports.completedTask = async (req, res) => {
       if (formatUser) {
         const userUpdate = await updateUserStreak(formatUser.toString(), true);
         const updatedTask = await task.save();
-        return res.status(200).json({ updatedTask, user: userUpdate.user });
+        return res.status(200).json({ updatedTask, user: userUpdate });
       }
     } else if (task.status === "completed") {
       task.status = "pending";
@@ -698,6 +689,7 @@ exports.updatedTaskAttempt = async (req, res) => {
 exports.searchTask = async (req, res) => {
   try {
     const searchTerm = req.query.q || "";
+
     console.log(searchTerm);
     if (!searchTerm) {
       return res.json({ warning: "Please provide a search term.", tasks: [] });
@@ -710,7 +702,6 @@ exports.searchTask = async (req, res) => {
     const tasks = await Tasks.find({
       title: { $regex: regex },
     });
-    console.log("task:", tasks);
 
     return res.status(200).json({ message: "Search successful!", tasks });
   } catch (error) {

@@ -7,7 +7,7 @@ import { faBolt } from "@fortawesome/free-solid-svg-icons";
 function NotificationField() {
   const dispatch = useDispatch();
   const { notification } = useSelector((state) => state.summary);
-  console.log("noti", notification);
+ 
   useEffect(() => {
     dispatch(fetchNotification());
   }, [dispatch]);

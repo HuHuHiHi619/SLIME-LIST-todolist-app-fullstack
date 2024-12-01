@@ -28,12 +28,11 @@ const TasksSchema = new mongoose.Schema(
         timestamps:{type:Date, default: Date.now},
       }
     },
-    tag: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Tag",
-      },
-    ],
+    tag: {
+      type: [String], 
+      enum:["low" , "medium","high"],
+      default: "low"
+    },
     status: {
       type: String,
       enum: ["pending", "completed", "failed"],

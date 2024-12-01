@@ -14,7 +14,7 @@ const NotificationForm = () => {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  // Close menu when clicking outside
+ 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -35,8 +35,18 @@ const NotificationForm = () => {
     };
   }, []);
 
+  const handleSearchClick = () => {
+    setIsSearchOpen(true);
+    setIsNotiOpen(false); 
+  };
+
+  const handleNotificationClick = () => {
+    setIsNotiOpen((prev) => !prev);
+    setIsSearchOpen(false); 
+  };
+
   return (
-    <div className="p-4 mr-8 z-50  ">
+    <div className="p-4 mr-8 z-50">
       <div className="relative flex items-center" ref={menuRef}>
         {/* Main Menu Icon and Click Area */}
         <div className="relative flex items-center">
@@ -57,7 +67,7 @@ const NotificationForm = () => {
 
           {/* Sliding Icons Container */}
           {isMenuOpen && (
-            <div className="absolute right-12 top-1/2 -translate-y-1/2 flex items-center gap-2  w-auto">
+            <div className="absolute right-12 top-1/2 -translate-y-1/2 flex items-center gap-2 w-auto">
               <FadeUpContainer direction="left">
                 <div className="flex gap-2">
                   {isSearchOpen ? (
@@ -67,14 +77,14 @@ const NotificationForm = () => {
                   ) : (
                     <button
                       className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
-                      onClick={() => setIsSearchOpen(true)}
+                      onClick={handleSearchClick}
                     >
                       <FontAwesomeIcon icon={faSearch} className="h-8 w-8" />
                     </button>
                   )}
                   <div className="relative">
                     <button
-                      onClick={() => setIsNotiOpen((prev) => !prev)}
+                      onClick={handleNotificationClick}
                       className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
                     >
                       <FontAwesomeIcon
@@ -87,7 +97,7 @@ const NotificationForm = () => {
                     {isNotiOpen && (
                       <div
                         ref={notiRef}
-                        className="absolute top-0 right-0   shadow-md p-4 transition-all duration-300"
+                        className="absolute top-0 right-0 shadow-md p-4 transition-all duration-300"
                       >
                         <NotificationField />
                       </div>

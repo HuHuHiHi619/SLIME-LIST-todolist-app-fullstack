@@ -17,7 +17,7 @@ function SidebarLink({
   tags = [],
   isSidebarPinned,
   isHover,
-  handleRemovedItem
+  handleRemovedItem,
 }) {
   return (
     <div className="flex flex-col show-entity">
@@ -46,7 +46,10 @@ function SidebarLink({
             {isSidebarPinned && addIcon && (
               <FontAwesomeIcon
                 icon={addIcon}
-                className="bg-white text-2xl text-grey-500 mr-4 my-1 p-1 rounded-sm"
+                className="bg-purpleNormal border-2 border-purpleBorder text-xl
+                 text-white mr-4 my-1 p-2 rounded-md
+                 hover:bg-purpleBorder hover:scale-110 transition-all duration-100 ease-in-out
+                 "
               />
             )}
           </button>
@@ -69,11 +72,13 @@ function SidebarLink({
               >
                 <h3 className="text-gray-400">{cate.categoryName}</h3>
                 {isHover === cate._id && (
-                  <button onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleRemovedItem(cate._id,"category");
-                  }}>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleRemovedItem(cate._id, "category");
+                    }}
+                  >
                     <FontAwesomeIcon
                       icon={faXmark}
                       className="delete-step text-lg "
@@ -87,7 +92,7 @@ function SidebarLink({
       )}
 
       {/* Dropdown for Tags */}
-      {isSidebarPinned && tags.length > 0 && (
+      {isSidebarPinned &&  tags.length > 0 && (
         <ul className="dropdown">
           {tags.map((tag) => (
             <li
@@ -98,16 +103,18 @@ function SidebarLink({
             >
               <Link
                 to={`/tag/${tag._id}`}
-                className="flex justify-center gap-4 dropdown-item"
+                className="flex justify-center  gap-4 dropdown-item"
               >
-                 <h3 className="text-gray-400">{tag.tagName}</h3>
+                <h3 className="text-gray-400">{tag.tagName}</h3>
                 {isHover === tag._id && (
                   <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleRemovedItem(tag._id,"tag");
-                  }}>
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleRemovedItem(tag._id, "tag");
+                    }}
+                    className="flex items-center"
+                  >
                     <FontAwesomeIcon
                       icon={faXmark}
                       className="delete-step text-lg "

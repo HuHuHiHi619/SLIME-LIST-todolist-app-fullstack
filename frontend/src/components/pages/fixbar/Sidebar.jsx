@@ -47,16 +47,19 @@ function Sidebar() {
     popupEnRef,
   } = usePopup();
 
-  const handleAddItem = (newItem) => {
-    if (popupMode === "category") {
+  const handleAddItem = async (newItem) => {
+    if (popupMode === "tag") {
+      // Optionally update UI optimistically
+      dispatch(setTags([...tags, newItem]));
+      // Fetch the latest tags
+      await dispatch(fetchTags()).unwrap();
+    } else if (popupMode === "category") {
       dispatch(setCategories([...categories, newItem]));
-    } else if (popupMode === "tag") {
-      if (Array.isArray(tags)) {
-        dispatch(setTags([...tags, newItem]));
-      }
+      await dispatch(fetchCategories()).unwrap();
     }
-    dispatch(togglePopup(""))
+    dispatch(togglePopup(""));
   };
+  
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -131,7 +134,7 @@ function Sidebar() {
         isHover={isHover}
         handleRemovedItem={(id) => handleRemovedItem(id, "category")}
       />
-      <SidebarLink
+      {/*<SidebarLink
         to="/tag"
         icon={faTag}
         addIcon={faPlus}
@@ -146,7 +149,7 @@ function Sidebar() {
         handleHover={handleHover}
         isHover={isHover}
         handleRemovedItem={(id) => handleRemovedItem(id, "tag")}
-      />
+      />*/}
       <SidebarLink
         to="/settings"
         icon={faGear}
@@ -157,19 +160,14 @@ function Sidebar() {
         }}
         isSidebarPinned={isSidebarPinned}
       />
-      {isAuthenticated && isSidebarPinned  && 
-      
-
-         <Logout />
-       
-      
-        }
+      {isAuthenticated && isSidebarPinned && <Logout />}
       {isPopup && (
-      <div className="popup-overlay">
-        <div className="popup-content" ref={popupEnRef}>
-          <CreateEntity onAddItem={handleAddItem} entityType={popupMode} />
+        <div className="popup-overlay">
+          <div className="popup-content" ref={popupEnRef}>
+            <CreateEntity onAddItem={handleAddItem} entityType={popupMode} />
+          </div>
         </div>
-      </div>)}
+      )}
     </div>
   );
 }

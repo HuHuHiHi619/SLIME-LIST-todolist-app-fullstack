@@ -61,9 +61,9 @@ function TaskDetail({ onClose }) {
     (e) => {
       const { name, value } = e.target;
       const updatedSelectTask = { ...editedTask };
-
+  
       if (name === "category") {
-        if(value === "no category") {
+        if (value === "no category") {
           updatedSelectTask[name] = "";
         } else {
           const selectedCat = categories.find(
@@ -71,39 +71,16 @@ function TaskDetail({ onClose }) {
           );
           updatedSelectTask[name] = selectedCat ? selectedCat : "";
         }
-        
-      } else if (name === "tag" && value) {
-        const selectedTag = tags.find((tag) => tag.tagName === value); // Find the full tag object
-        if (
-          selectedTag &&
-          !updatedSelectTask.tag.some((tag) => tag._id === selectedTag._id)
-        ) {
-          updatedSelectTask.tag = [
-            ...(updatedSelectTask.tag || []),
-            selectedTag,
-          ]; // Add full tag object
-        }
       } else {
         updatedSelectTask[name] = value;
       }
-
+  
       setEditedTask(updatedSelectTask);
       debouncedUpdateTask(updatedSelectTask);
     },
-    [editedProgress, editedTask, debouncedUpdateTask, categories, tags] // Added tags as a dependency
+    [ editedTask, debouncedUpdateTask, categories, tags]
   );
-
-  const handleRemoveTag = (e, removingTag) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const updatedTags = editedTask.tag.filter(
-      (tag) => tag._id !== removingTag._id
-    );
-    console.log("updatedtag", updatedTags);
-    setEditedTask((prev) => ({ ...prev, tag: updatedTags })); // Update editedTask
-    debouncedUpdateTask({ ...editedTask, tag: updatedTags }); // Update task
-  };
-
+  
   const handleStepChange = useCallback((e) => {
     setCurrenStep(e.target.value);
   });
@@ -114,13 +91,36 @@ function TaskDetail({ onClose }) {
         // แปลง date เป็น string เพื่อเก็บใน redux
         const formattedDate = date instanceof Date ? date.toISOString() : date;
         const updatedSelectTask = { ...prevTask, [field]: formattedDate };
-        console.log("Updated date:", updatedSelectTask);
+        
         debouncedUpdateTask(updatedSelectTask);
         return updatedSelectTask;
       });
     },
     [editedProgress, editedTask, debouncedUpdateTask]
   );
+  
+  const handleToggleTag = useCallback(
+    (tag) => {
+      setEditedTask((prevTask) => {
+        // Make sure prevTask.tag is an array
+        const currentTags = Array.isArray(prevTask.tag) ? prevTask.tag : [];
+  
+        const isTagSelected = currentTags.some((t) => t._id === tag._id);
+  
+        // Toggle the tag presence in the array
+        const updatedTags = isTagSelected
+          ? currentTags.filter((t) => t._id !== tag._id) 
+          : [...currentTags, tag]; 
+  
+        const updatedSelectTask = { ...prevTask, tag: updatedTags };
+        debouncedUpdateTask(updatedSelectTask); 
+        return updatedSelectTask;
+      });
+    },
+    [debouncedUpdateTask]
+  );
+  
+  
 
   const handleStepKeyDown = useCallback(
     (e) => {
@@ -161,7 +161,7 @@ function TaskDetail({ onClose }) {
             updatedSteps.every((step) => step.completed),
         };
         const updatedSelectTask = { ...editedTask, progress: updatedProgress };
-        console.log("allstep", updatedProgress.allStepsCompleted);
+       
         debouncedUpdateTask(updatedSelectTask);
         return updatedProgress;
       });
@@ -313,17 +313,25 @@ function TaskDetail({ onClose }) {
             </div>
           </div>
         </div>
-
-        <CategoryTagField
-          name="tag"
-          value={editedTask.tag.length > 0 ? editedTask.tag[0] : ""}
-          selectedTags={editedTask.tag}
-          entities={tags}
-          placeholder="Tag"
-          handleInputChange={handleInputChange}
-          handleRemoveTag={handleRemoveTag}
-          showTag={true}
-        />
+        <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                {tags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => handleToggleTag(tag)}
+                    className={`px-4 py-2 rounded-full ${
+                      editedTask.tag.includes(tag)
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-300 text-black"
+                    }`}
+                  >
+                    {tag.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
+       
         <div className="flex justify-end">
           <button className="done-button mt-4" onClick={onClose}>
             Done

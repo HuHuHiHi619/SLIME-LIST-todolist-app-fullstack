@@ -1,9 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 
 const guestMiddleware = (req, res, next) => {
-  console.log('req.cookies:', req.cookies);  // ดูว่าคุกกี้มีค่าอะไรบ้าง
-  console.log('req.cookies.guestId:', req.cookies.guestId);  // ดูว่า guestId อยู่ในคุกกี้หรือไม่
-
+ 
   try {
     const user = req.user;
 

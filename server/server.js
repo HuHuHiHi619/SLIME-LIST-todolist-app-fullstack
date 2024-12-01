@@ -28,8 +28,8 @@ app.use('/images',express.static(imagesPath));
 require('dotenv').config();
 
 checkOverdueTasks();
-//updateOverdueTasks();
-updateStreak()
+
+
 readdirSync('./Routes').map((route) => 
   app.use('/api',require('./Routes/' + route)))
 

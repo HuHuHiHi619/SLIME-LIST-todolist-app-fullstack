@@ -19,18 +19,16 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
   });
-  console.log("Recieved data:", req.body);
-  console.log("Recieved file:", req.file);
+  
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      // ถ้า errors ไม่ empty
       console.log("Validation errors:", errors.array);
       return res.status(400).json({ error: errors.array() });
     }
     const { username, password,theme,notification,lastCompleted} = req.body;
     const lastCompletedDate = lastCompleted ? new Date(lastCompleted) : null
-    console.log("Recieved data:", req.body, req.file);
+  
 
     if (!password) {
       return res.status(400).json({ error: "Password is required" });
@@ -205,7 +203,7 @@ exports.getUserData = async (req,res) => {
     if(!formatUser){
       return res.status(401).json({error:'Unauthorized'});
     }
-    console.log('formatuser', formatUser)
+   
       const userData = await User.findById(formatUser).select('-password');
       if(!userData){
         return res.status(404).json({ error: 'User not found'})

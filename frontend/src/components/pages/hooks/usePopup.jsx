@@ -13,10 +13,11 @@ import {
   removedCategory,
   removeCategories,
   removeTags,
-  updatedTaskAttempt,
   removedAllTask,
+  setStreakStatus,
 } from "../../../redux/taskSlice";
 import { fetchSummary, fetchSummaryByCategory } from "../../../redux/summarySlice";
+import { fetchUserData } from "../../../redux/userSlice";
 
 function usePopup() {
   const dispatch = useDispatch();
@@ -57,13 +58,15 @@ function usePopup() {
   };
 
   const handleCompletedTask = async (task) => {
-    console.log("Task com:", task);
     dispatch(completedTask(task._id));
-    dispatch(fetchSummary());
+   
+    setTimeout(() => {
+      dispatch(fetchSummary());
+      dispatch(fetchUserData())
+    }, 1000)
   };
 
   const handleRemovedTask = async (task) => {
-    console.log("Task removed:", task);
     dispatch(removedTask(task._id));
     dispatch(fetchSummary());
   };
@@ -80,7 +83,7 @@ function usePopup() {
       dispatch(fetchSummaryByCategory());
     } else if (type === "tag"){
       dispatch(removeTags(id));
-      dispatch(removedTag(id)).unwrap()
+      await dispatch(removedTag(id)).unwrap()
     }
   };
 

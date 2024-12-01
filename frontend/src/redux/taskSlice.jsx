@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getCategoryData, removeCategory } from "../functions/category";
-import { getTagData, removeTag } from "../functions/tag";
+import { removeTag } from "../functions/tag";
 import {
   completeTask,
   createTask,
@@ -17,7 +17,7 @@ const initialState = {
   searchResults: [],
   isSummaryUpdated: false,
   categories: [],
-  tags: [],
+  tags: ["low","medium","high"],
   formTask: {
     title: "",
     note: "",
@@ -37,16 +37,17 @@ const initialState = {
       timestamps: new Date().toISOString(),
     },
   },
+  streakStatus: JSON.parse(localStorage.getItem("streakStatus")) || {},
   lastUpdated: null,
   lastStateUpdate: null,
   selectedTask: null,
   isCreate: false,
   isTaskDetail: false,
-  activeMenu: "", 
-  isPopup: false, 
-  isHover: null, 
+  activeMenu: "",
+  isPopup: false,
+  isHover: null,
   isSidebarPinned: true,
-  popupMode: "", 
+  popupMode: "",
   loading: false,
   error: null,
 };
@@ -66,14 +67,7 @@ export const fetchCategories = createAsyncThunk(
 );
 
 export const fetchTags = createAsyncThunk("task/fetchTags", async () => {
-  try {
-    const response = await getTagData();
-    //console.log("Tags fetched:",response);
-    return response || [];
-  } catch (error) {
-    console.error("Error fetching tags:", error);
-    throw error;
-  }
+ return ["low","medium","high"]
 });
 
 export const fetchTasks = createAsyncThunk(
@@ -81,7 +75,7 @@ export const fetchTasks = createAsyncThunk(
   async (filter) => {
     try {
       const response = await getData(filter);
-      console.log("payload", response);
+
       return response || [];
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -90,15 +84,18 @@ export const fetchTasks = createAsyncThunk(
   }
 );
 
-export const fetchSearchTasks = createAsyncThunk("task/fetchSearchTasks", async(searchTerm) => {
-  try{
-    const response = await searchedTask(searchTerm);
-    return response 
-  } catch(error){
-    console.error("Error fetching search tasks:", error)
-    throw error
+export const fetchSearchTasks = createAsyncThunk(
+  "task/fetchSearchTasks",
+  async (searchTerm) => {
+    try {
+      const response = await searchedTask(searchTerm);
+      return response;
+    } catch (error) {
+      console.error("Error fetching search tasks:", error);
+      throw error;
+    }
   }
-})
+);
 
 export const createNewTask = createAsyncThunk(
   "task/createNewTask",
@@ -116,26 +113,26 @@ export const updatedTask = createAsyncThunk(
       category: taskData.category?._id || taskData.category,
       tag: taskData.tag?._id || taskData.tag,
     };
-    console.log("verify", verifyTask);
+
     const response = await updateTask(taskId, verifyTask);
-    console.log("updated response:", response);
+
     return response;
   }
 );
 
 export const updatedTaskAttempt = createAsyncThunk(
   "task/updateTaskAttemp",
-  async( taskId ) => {
+  async (taskId) => {
     const response = await updateTaskAttempt(taskId);
-    return response
+    return response;
   }
-)
+);
 
 export const completedTask = createAsyncThunk(
   "task/completedTask",
   async (taskId) => {
     const response = await completeTask(taskId);
-    console.log('com res',response)
+    
     return response;
   }
 );
@@ -182,6 +179,7 @@ const taskSlice = createSlice({
       state.formTask = {
         ...state.formTask,
         ...rest,
+        tag: action.payload.tag || state.formTask.tag || ['low'],
         startDate:
           startDate !== undefined
             ? new Date(startDate).toISOString()
@@ -193,7 +191,10 @@ const taskSlice = createSlice({
       };
       console.log("Updated formTask:", state.formTask);
     },
-
+    setStreakStatus(state,action) {
+      state.streakStatus = action.payload;
+      localStorage.setItem("streakStatus", JSON.stringify(action.payload));
+    },
     setSelectedTask(state, action) {
       state.selectedTask = action.payload || null;
       state.isTaskDetail = !state.isTaskDetail;
@@ -206,24 +207,26 @@ const taskSlice = createSlice({
       state.tasks = [];
     },
     clearSearchResults(state) {
-      state.searchResults = []
+      state.searchResults = [];
     },
-    
+
     setCategories(state, action) {
       state.categories = action.payload;
     },
-    removeCategories(state,action){
-    
-      const categoryId = action.payload
-      state.categories = state.categories.filter(category => category._id !== categoryId);
+    removeCategories(state, action) {
+      const categoryId = action.payload;
+      state.categories = state.categories.filter(
+        (category) => category._id !== categoryId
+      );
     },
     setTags(state, action) {
       state.tags = action.payload;
     },
-    removeTags(state,action){
-      state.tags = state.tags.filter((tag, i) => i !== tag._id);
-      state.tags = action.payload;
+    removeTags(state, action) {
+      const tagId = action.payload;
+      state.tags = state.tags.filter((tag) => tag._id !== tagId);
     },
+
     toggleCreatePopup(state) {
       state.isCreate = !state.isCreate;
     },
@@ -292,14 +295,13 @@ const taskSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    
+
       .addCase(fetchTasks.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state.loading = false;
         state.tasks = action.payload;
-      
       })
       .addCase(fetchTasks.rejected, (state) => {
         state.loading = false;
@@ -323,24 +325,22 @@ const taskSlice = createSlice({
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.loading = false;
-        state.categories = action.payload; 
-        console.log('categories action', action.payload)
-       
+        state.categories = action.payload;
       })
       .addCase(fetchCategories.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message; 
+        state.error = action.error.message;
       })
       .addCase(fetchTags.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchTags.fulfilled, (state, action) => {
         state.loading = false;
-        state.tags = action.payload; 
+        state.tags = action.payload;
       })
       .addCase(fetchTags.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message; 
+        state.error = action.error.message;
       })
       .addCase(createNewTask.pending, (state) => {
         state.loading = true;
@@ -349,7 +349,6 @@ const taskSlice = createSlice({
         state.loading = false;
         state.formTask = initialState.formTask;
         state.progress = initialState.progress;
-        console.log("state.tasks before pushing:", action.payload);
         state.tasks.push(action.payload);
       })
       .addCase(createNewTask.rejected, (state, action) => {
@@ -375,7 +374,7 @@ const taskSlice = createSlice({
             ...state.selectedTask,
             ...updatedTask,
             category: updatedTask.category,
-            tag: updatedTask.tag
+            tag: updatedTask.tag,
           };
         }
         state.lastStateUpdate = new Date().toISOString();
@@ -392,43 +391,45 @@ const taskSlice = createSlice({
           }
           return task;
         });
-      
+
         if (state.selectedTask && state.selectedTask._id === updatedTask._id) {
           state.selectedTask = {
             ...state.selectedTask,
             ...updatedTask,
-            status: state.selectedTask.status === "failed" ? "pending" : state.selectedTask.status,
+            status:
+              state.selectedTask.status === "failed"
+                ? "pending"
+                : state.selectedTask.status,
           };
         }
-        
+
         state.lastStateUpdate = new Date().toISOString();
       })
-      
+
       .addCase(completedTask.fulfilled, (state, action) => {
         const completedTaskId = action.payload._id;
         const updatedTask = action.payload;
-        state.tasks = state.tasks.map((task) => 
+        state.tasks = state.tasks.map((task) =>
           task._id === completedTaskId
             ? {
                 ...task,
-               ...updatedTask,
+                ...updatedTask,
                 lastUpdated: new Date().toISOString(),
-                
               }
             : task
-            
         );
-      
-        if (
-          state.selectedTask &&
-          state.selectedTask._id === completedTaskId
-        ) {
+        if (action.payload.user) {
+          state.streakStatus = action.payload.user;
+          localStorage.setItem('streakStatus', JSON.stringify(action.payload.user))
+        }
+
+        if (state.selectedTask && state.selectedTask._id === completedTaskId) {
           state.selectedTask = {
             ...state.selectedTask,
             status: updatedTask.status,
           };
         }
-        
+
         state.isSummaryUpdated = true;
         state.lastStateUpdate = new Date().toISOString();
       })
@@ -457,6 +458,7 @@ export const {
   setCategories,
   setTags,
   setSelectedTask,
+  setStreakStatus,
   toggleCreatePopup,
   toggleTaskDetailPopup,
   clearTask,
@@ -469,6 +471,6 @@ export const {
   setActiveMenu,
   setHover,
   togglePopup,
-  toggleSidebarPinned
+  toggleSidebarPinned,
 } = taskSlice.actions;
 export default taskSlice.reducer;

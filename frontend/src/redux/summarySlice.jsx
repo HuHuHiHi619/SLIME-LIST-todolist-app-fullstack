@@ -5,9 +5,6 @@ import {
   summaryNotification,
 } from "../functions/summary";
 
-
-
-
 const initialState = {
   summary: [],
   summaryCategory: [],
@@ -15,8 +12,6 @@ const initialState = {
   error: null,
   notification: [],
 };
-
-
 
 export const fetchSummary = createAsyncThunk(
   "/summary/fetchSummary",
@@ -56,8 +51,6 @@ export const fetchNotification = createAsyncThunk(
     }
   }
 );
-
-
 
 const summarySlice = createSlice({
   name: "summary",
@@ -108,8 +101,7 @@ const summarySlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
         state.notification = [];
-      })
-
+      });
   },
 });
 export const { clearSummaryState } = summarySlice.actions;

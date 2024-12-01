@@ -40,7 +40,7 @@ function GroupTaskForm({ filter }) {
             group.status ||
             group.deadlineCase;
           const tasks = group.tasks || [];
-          console.log("fetchtask", fetchedAllTasks);
+          
           return (
             <div key={keys}>
               {label.toLowerCase() === "completed" &&

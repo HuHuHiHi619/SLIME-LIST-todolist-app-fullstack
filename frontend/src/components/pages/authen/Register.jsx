@@ -48,8 +48,8 @@ function Register() {
         return;
       }
       setError("");
-      console.log("User Data:", user); // Log user data before submitting
-      const response = await register(user); // Send the actual user state data
+      console.log("User Data:", user); 
+      const response = await register(user); 
       console.log("Response:", response);
       navigate("/login");
     } catch (err) {

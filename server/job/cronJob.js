@@ -42,10 +42,12 @@ const updateStreak = async () => {
       yesterday.setDate(currentDate.getDate() - 1); 
 
       const isStreakBroken =
-        !user.lastCompleted ||
-        startOfDay(user.lastCompleted).getTime() < startOfDay(yesterday).getTime();
+      !user.lastCompleted ||
+      startOfDay(user.lastCompleted).getTime() < startOfDay(yesterday).getTime() &&
+      startOfDay(user.lastCompleted).getTime() !== startOfDay(currentDate).getTime();
+    
       console.log('streak',isStreakBroken)
-      await updateUserStreak(user._id, isStreakBroken);
+      await updateUserStreak(user._id, !isStreakBroken);
     }
   } catch (error) {
     console.error("Error updating streak:", error);

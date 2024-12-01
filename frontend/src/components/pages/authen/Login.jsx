@@ -31,7 +31,7 @@ function Login() {
 
     try {
       const response = await dispatch(loginUser(user)).unwrap();
-      console.log("login res", response);
+      
       if (response.tokens?.accessToken) {
         setTimeout( () => {
           dispatch(fetchUserData(response.user.id)).unwrap()

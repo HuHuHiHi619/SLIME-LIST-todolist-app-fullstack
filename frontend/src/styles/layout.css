@@ -8,7 +8,7 @@
 }
 
 #side-bar {
-    @apply bg-purpleMain py-5 flex flex-col  border-purpleNormal border-r-[2px] overflow-hidden ;
+    @apply bg-purpleMain py-5  flex flex-col  border-purpleNormal border-r-[2px] overflow-hidden ;
     width: 17rem;
     max-width: 17rem;
     min-width: 17rem;

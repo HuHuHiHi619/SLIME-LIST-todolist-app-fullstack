@@ -19,7 +19,7 @@ function TaskForm({ filter, filterKey }) {
     handleRemovedTask,
     popupRef,
   } = usePopup();
-  console.log("fetched task", fetchedTasks);
+  
   return (
     <div className="mb-8 mx-8 overflow-hidden">
       <FadeUpContainer>

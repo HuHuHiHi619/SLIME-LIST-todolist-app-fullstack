@@ -14,20 +14,15 @@ function Logout() {
 
   const handleLogout = async () => {
     try {
-      // Dispatch logoutUser thunk action
-      const response = await dispatch(logoutUser());
-      console.log("Logout response:", response);
+      const response = await dispatch(logoutUser()).unwrap();
 
-      // Clear cookies using js-cookie library
       Cookies.remove("accessToken", { path: "/" });
       Cookies.remove("refreshToken", { path: "/" });
 
-      // Confirm cookie removal
-      console.log("Cookies after logout:", document.cookie);
       localStorage.clear();
-      // Dispatch action to clear tasks and navigate to login
+
       dispatch(clearTask());
-      dispatch(clearSummaryState())
+      dispatch(clearSummaryState());
       navigate("/");
     } catch (error) {
       console.error("Logout failed:", error);
@@ -36,9 +31,12 @@ function Logout() {
   };
 
   return (
-    <button onClick={handleLogout} className=" flex clear-task justify-center gap-4 items-center logout text-2xl  ">
+    <button
+      onClick={handleLogout}
+      className=" flex clear-task justify-center gap-4 items-center logout text-2xl  "
+    >
       <FontAwesomeIcon icon={faRightFromBracket} className=" text-xl" />
-     Log out
+      Log out
     </button>
   );
 }

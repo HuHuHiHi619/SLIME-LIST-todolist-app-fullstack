@@ -185,13 +185,11 @@ const userSlice = createSlice({
         state.loading = false;
         state.authError = null;
       })
-     
+
       .addCase(fetchUserData.fulfilled, (state, action) => {
         state.userData = { ...state.userData, ...action.payload };
         state.isAuthenticated = true;
         state.loading = false;
-        console.log("userData action", action.payload);
-        console.log("userData", state.userData);
       })
       .addCase(fetchUserData.rejected, (state, action) => {
         state.loading = false;
@@ -207,5 +205,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { restoreState, updateTokens , setAuthError} = userSlice.actions;
+export const { restoreState, updateTokens, setAuthError } = userSlice.actions;
 export default userSlice.reducer;

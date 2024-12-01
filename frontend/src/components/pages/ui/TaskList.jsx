@@ -19,7 +19,7 @@ function TaskList({
   return (
     <div className="pr-4 border-4 border-purpleNormal rounded-3xl p-5  ">
       <div className="flex justify-between mb-4 mr-3 ">
-        <h1 className="text-white text-4xl flex items-center pr-40">{label}</h1>
+        <h1 className="text-white text-4xl flex items-center pr-24">{label}</h1>
         <CreateButton onClick={handleIsCreate} />
       </div>
 
