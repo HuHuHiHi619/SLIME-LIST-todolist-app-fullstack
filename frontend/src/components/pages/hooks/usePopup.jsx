@@ -14,8 +14,8 @@ import {
   removeCategories,
   removeTags,
   removedAllTask,
-  setStreakStatus,
 } from "../../../redux/taskSlice";
+import { toggleInstructPopup } from "../../../redux/summarySlice";
 import { fetchSummary, fetchSummaryByCategory } from "../../../redux/summarySlice";
 import { fetchUserData } from "../../../redux/userSlice";
 
@@ -23,11 +23,16 @@ function usePopup() {
   const dispatch = useDispatch();
   const popupRef = useRef(null);
   const popupEnRef = useRef(null);
-  const { isPopup } = useSelector((state) => state.tasks)
+  const popupInstructRef = useRef(null);
+  const { isPopup , activeMenu } = useSelector((state) => state.tasks)
+  const { instruction } = useSelector((state) => state.summary)
 
   const handleIsCreate = () => {
     dispatch(toggleCreatePopup());
     dispatch(fetchSummary());
+  };
+  const handleIsInstruct = () => {
+    dispatch(toggleInstructPopup());
   };
 
   const handleTaskClick = (task) => {
@@ -53,8 +58,10 @@ function usePopup() {
   };
 
   const handleActiveMenu = (menuName) => {
-    dispatch(setActiveMenu(menuName));
-    navigate(menuName);
+    if(activeMenu === menuName){
+      dispatch(setActiveMenu(menuName));
+      navigate(menuName);
+    }
   };
 
   const handleCompletedTask = async (task) => {
@@ -63,7 +70,7 @@ function usePopup() {
     setTimeout(() => {
       dispatch(fetchSummary());
       dispatch(fetchUserData())
-    }, 1000)
+    }, 100)
   };
 
   const handleRemovedTask = async (task) => {
@@ -95,6 +102,8 @@ function usePopup() {
         return;
       } else if(isPopup && popupEnRef.current && !popupEnRef.current.contains(e.target)){
         dispatch(togglePopup(""));
+      } else if(instruction && popupInstructRef.current && !popupInstructRef.current.contains(e.target)){
+        dispatch(toggleInstructPopup());
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -102,7 +111,7 @@ function usePopup() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isPopup,dispatch]);
+  }, [isPopup,instruction,dispatch]);
 
   return {
     handleIsCreate,
@@ -116,8 +125,10 @@ function usePopup() {
     handleToggleSidebar,
     handleHover,
     handlePopup,
+    handleIsInstruct,
     popupRef,
     popupEnRef,
+    popupInstructRef
   };
 }
 

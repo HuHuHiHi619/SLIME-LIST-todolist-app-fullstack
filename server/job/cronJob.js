@@ -1,13 +1,13 @@
 const cron = require("node-cron");
 const Tasks = require("../Models/Tasks");
 const User = require("../Models/User");
-const { updateUserStreak } = require("../controllers/helperController");
-const { startOfDay } = require('date-fns')
+const { startOfDay , subDays } = require("date-fns");
 
 const checkOverdueTasks = () => {
   cron.schedule("0 0 * * *", async () => {
     await updateOverdueTasks();
-    await updateStreak();
+    await resetDailyStreakStatus();
+   
   });
 };
 
@@ -21,10 +21,10 @@ const updateOverdueTasks = async () => {
       status: { $ne: "completed" },
     });
 
-    overdueTasks.forEach(async (task) => {
+    for (const task of overdueTasks) {
       task.status = "failed";
       await task.save();
-    });
+    }
 
     console.log(`Updated ${overdueTasks.length} overdue tasks.`);
   } catch (error) {
@@ -32,26 +32,46 @@ const updateOverdueTasks = async () => {
   }
 };
 
-const updateStreak = async () => {
+const resetDailyStreakStatus = async () => {
   try {
     const users = await User.find({});
+    if (!users) {
+      throw new Error('No users found');
+    }
+
 
     for (let user of users) {
-      const currentDate = new Date();
-      const yesterday = new Date(currentDate);
-      yesterday.setDate(currentDate.getDate() - 1); 
+     
+      const yesterday = startOfDay(subDays(new Date(), 1));
 
       const isStreakBroken =
-      !user.lastCompleted ||
-      startOfDay(user.lastCompleted).getTime() < startOfDay(yesterday).getTime() &&
-      startOfDay(user.lastCompleted).getTime() !== startOfDay(currentDate).getTime();
-    
-      console.log('streak',isStreakBroken)
-      await updateUserStreak(user._id, !isStreakBroken);
+        !user.lastCompleted ||
+        startOfDay(user.lastCompleted).getTime() < yesterday.getTime();
+
+      console.log(isStreakBroken)
+          
+      if(isStreakBroken){
+        user.currentStreak = 0
+        user.currentBadge = "iron"
+        user.alreadyCompletedToday = false
+        await user.save()
+      }
     }
+
+    await User.updateMany(
+      { alreadyCompletedToday: true },
+      { alreadyCompletedToday: false }
+    );
+  
+    console.log("Reset alreadyCompletedToday for all users.");
   } catch (error) {
-    console.error("Error updating streak:", error);
+    console.error("Error resetting alreadyCompletedToday:", error);
+    throw new Error(`Error resetting alreadyCompletedToday: ${error.message}`);
   }
 };
 
-module.exports = { checkOverdueTasks, updateOverdueTasks,updateStreak };
+module.exports = {
+  checkOverdueTasks,
+  updateOverdueTasks,
+  resetDailyStreakStatus
+};

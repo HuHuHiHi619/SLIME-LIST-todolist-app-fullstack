@@ -350,6 +350,7 @@ const taskSlice = createSlice({
         state.formTask = initialState.formTask;
         state.progress = initialState.progress;
         state.tasks.push(action.payload);
+        state.lastStateUpdate = new Date().toISOString();
       })
       .addCase(createNewTask.rejected, (state, action) => {
         state.error = action.error.message;
@@ -442,10 +443,12 @@ const taskSlice = createSlice({
         }
         state.tasks = state.tasks.filter((task) => task._id !== removedTaskId);
         state.isSummaryUpdated = true;
+        state.lastStateUpdate = new Date().toISOString();
       })
       .addCase(removedAllTask.fulfilled, (state) => {
         state.tasks = state.tasks.filter((task) => task.status !== "completed");
         state.isSummaryUpdated = true;
+        state.lastStateUpdate = new Date().toISOString();
       })
       .addCase(removedCategory.fulfilled, (state) => {
         state.lastStateUpdate = new Date().toISOString();

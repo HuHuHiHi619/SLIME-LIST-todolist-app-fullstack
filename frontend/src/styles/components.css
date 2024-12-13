@@ -44,7 +44,7 @@ span{
 }
 
 .pin-button {
-  @apply bg-purpleActive flex justify-center cursor-pointer p-2 px-4 text-2xl  text-white;
+  @apply flex justify-end cursor-pointer p-2 pr-6  text-3xl   ;
 }
 
 .delete-step {
@@ -98,6 +98,13 @@ title{
   position: fixed;
   bottom: 2%;
   right: 1%;
+  z-index: 1000;
+  
+}
+.streak-popup {
+  position: fixed;
+  bottom: 5%;
+  right: 35%;
   z-index: 1000;
   
 }

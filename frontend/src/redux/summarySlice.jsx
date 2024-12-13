@@ -11,6 +11,7 @@ const initialState = {
   loading: false,
   error: null,
   notification: [],
+  instruction: false
 };
 
 export const fetchSummary = createAsyncThunk(
@@ -63,6 +64,9 @@ const summarySlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    toggleInstructPopup: (state) => {
+      state.instruction = !state.instruction
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -104,5 +108,5 @@ const summarySlice = createSlice({
       });
   },
 });
-export const { clearSummaryState } = summarySlice.actions;
+export const { clearSummaryState , toggleInstructPopup} = summarySlice.actions;
 export default summarySlice.reducer;

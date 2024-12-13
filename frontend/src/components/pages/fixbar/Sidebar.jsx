@@ -4,10 +4,11 @@ import {
   faHome,
   faFolder,
   faCalendar,
-  faTag,
   faGear,
   faList,
   faPlus,
+  faThumbTack,
+  faSquareCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +23,7 @@ import {
 } from "../../../redux/taskSlice";
 import SidebarLink from "../fixbar/SidebarLink";
 import CreateEntity from "../create/CreateEntity";
+import Tooltip from "../ui/Tooltip";
 import Logout from "../authen/Logout";
 import usePopup from "../hooks/usePopup";
 
@@ -59,7 +61,6 @@ function Sidebar() {
     }
     dispatch(togglePopup(""));
   };
-  
 
   useEffect(() => {
     dispatch(fetchCategories());
@@ -81,11 +82,14 @@ function Sidebar() {
         isSidebarPinned ? "" : " sidebar-collapsed"
       } transition-width duration-300`}
     >
-      <button
-        className="pin-button"
+      <div
+        className={`${isSidebarPinned ? "pin-button text-white" : "pin-button text-white opacity-50 hover:opacity-100"}`}
         onClick={handlePinSidebar}
-        title={isSidebarPinned ? "Unpin Sidebar" : "Pin Sidebar"}
-      ></button>
+      >
+        <FontAwesomeIcon icon={faSquareCaretRight}
+        className={` transform origin-center ${isSidebarPinned ? "rotate-180" : "" } `}
+        />
+      </div>
 
       {/* Sidebar Links */}
       <SidebarLink
@@ -134,22 +138,7 @@ function Sidebar() {
         isHover={isHover}
         handleRemovedItem={(id) => handleRemovedItem(id, "category")}
       />
-      {/*<SidebarLink
-        to="/tag"
-        icon={faTag}
-        addIcon={faPlus}
-        label="TAG"
-        tags={tags}
-        activeMenu={activeMenu}
-        handleActiveMenu={() => {
-          if (isSidebarPinned) handleActiveMenu();
-        }}
-        handlePopup={(e) => handlePopup(e, "tag")}
-        isSidebarPinned={isSidebarPinned}
-        handleHover={handleHover}
-        isHover={isHover}
-        handleRemovedItem={(id) => handleRemovedItem(id, "tag")}
-      />*/}
+
       <SidebarLink
         to="/settings"
         icon={faGear}

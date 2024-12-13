@@ -80,119 +80,80 @@ exports.processTags = async (tags, userId, guestId) => {
 };
 
 const calculateBadge = (streakDays) => {
-  if (streakDays >= 15) return "gold";
-  if (streakDays >= 10) return "silver";
-  if (streakDays >= 5) return "bronze";
+  if (streakDays > 15) return "gold";
+  if (streakDays > 10) return "silver";
+  if (streakDays > 5) return "bronze";
   return "iron";
 };
-
 exports.updateUserStreak = async (
   userId,
   completed,
   taskCompletionDetails = {}
 ) => {
+  console.log("is completed ?", completed);
   try {
     const user = await User.findById(userId);
-    if (!user) throw new Error("User not found!");
-
-    let streakStatus = {
-      streakUpdated: false,
-      streakBroken: false,
-      streakIncreased: false,
-      currentStreak: user.currentStreak,
-      badgeChange: false,
-      alreadyCompletedToday: false,
-      oldBadge: user.currentBadge,
-      newBadge: user.currentBadge,
-      taskDetails: {}
-    };
+    if (!user) {
+      console.error("User not found!");
+      throw new Error("User not found!");
+    }
 
     const currentDate = startOfDay(new Date());
     const yesterday = startOfDay(subDays(new Date(), 1));
+    const isYesterday =
+      user.lastCompleted &&
+      startOfDay(user.lastCompleted).getTime() === yesterday.getTime();
+    user.currentStreak = user.currentStreak || 0;
+    user.bestStreak = user.bestStreak || 0;
+    console.log("today com",user.alreadyCompletedToday)
 
-    if (completed) {
-      // Prevent multiple completions on the same day
-      if (
-        user.lastCompleted &&
-        startOfDay(user.lastCompleted).getTime() === currentDate.getTime()
-      ) {
-        streakStatus.alreadyCompletedToday = true;
-        return streakStatus;
-      }
+    if (user.alreadyCompletedToday) {
+      console.log("User already completed a task today.");
+      return user; 
+    }
 
-      if (!user.lastCompleted) {
+    if (completed === true) {
+      if (user.currentStreak === 0) {
+        console.log("No previous completion, starting new streak.");
         user.currentStreak = 1;
-        user.lastCompleted = currentDate;
-        streakStatus.streakUpdated = true;
-      } else if (
-        startOfDay(user.lastCompleted).getTime() === yesterday.getTime()
-      ) {
-        // If last completion was yesterday, increase streak
+        user.bestStreak = Math.max(user.currentStreak, user.bestStreak);
+        
+      } else if (isYesterday) {
+        console.log("Task completed yesterday, incrementing streak.");
         user.currentStreak += 1;
-        streakStatus.streakIncreased = true;
+        user.bestStreak = Math.max(user.currentStreak, user.bestStreak);
+       
       }
 
-      // Update last completed date
       user.lastCompleted = currentDate;
-      streakStatus.streakUpdated = true;
-      streakStatus.currentStreak = user.currentStreak;
+      user.alreadyCompletedToday = true;
     } else {
-      // If no task completed, streak is broken
-      user.currentStreak = 0;
-      streakStatus.streakBroken = true;
-      streakStatus.currentStreak = 0;
+      console.log("Did not enter completed block.");
     }
 
-    // Update best streak
-    if (user.currentStreak > user.bestStreak) {
-      user.bestStreak = user.currentStreak;
-    }
-
-    // Calculate and update badge
+    // คำนวณ badge ใหม่และอัปเดต
     const newBadge = calculateBadge(user.currentStreak);
     if (newBadge !== user.currentBadge) {
+      user.badgeChange = true;
+      user.oldBadge = user.currentBadge;
+      user.newBadge = newBadge;
       user.currentBadge = newBadge;
-      streakStatus.badgeChange = true;
-      streakStatus.oldBadge = user.currentBadge;
-      streakStatus.newBadge = newBadge;
+      console.log(`Badge updated from ${user.oldBadge} to ${user.newBadge}.`);
     }
 
-    // Save additional task completion details if provided
+    // เพิ่มรายละเอียด task หากมี
     if (Object.keys(taskCompletionDetails).length > 0) {
-      streakStatus.taskDetails = taskCompletionDetails;
+      user.taskDetails = taskCompletionDetails;
     }
 
+    // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
     await user.save();
-
-    return streakStatus;
+   
+    return user;
   } catch (error) {
     console.error("Error updating user streak:", error);
     throw error;
   }
-};
-
-exports.tryAgainTask = async (userId, taskId, newdeadline) => {
-  const user = await User.findById(userId);
-  if (!user) throw new Error("User not found.");
-
-  const task = await Tasks.findOne({
-    _id: taskId,
-    user: userId,
-  });
-  if (!task) throw new Error("Task not found");
-
-  if (task.tryAgainCount >= 3) {
-    task.status = "failed";
-    throw new Error("Reached max tryagain count!");
-  }
-
-  task.deadline = newdeadline;
-  task.tryAgainCount += 1;
-  task.status = "pending";
-  task.progress.allStepsCompleted = false;
-
-  await task.save();
-  return task;
 };
 
 exports.calculateProgress = (task) => {

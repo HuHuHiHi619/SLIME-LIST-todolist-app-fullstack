@@ -33,12 +33,12 @@ function TaskForm({ filter, filterKey }) {
             selectedTask={selectedTask}
           />
         ) : (
-          <div className="mt-40 ml-10 mr-6 rounded-3xl pl-6 pt-5 pb-6 ">
+          <div className="mt-48 ml-10 mr-6 rounded-3xl pl-6 pt-5 pb-6 ">
             <div className="flex justify-center">
               <CreateButton onClick={handleIsCreate} />
             </div>
-            <h3 className="text-4xl flex justify-center mt-4">You have no tasks</h3>
-            <h3 className="text-2xl flex justify-center text-gray-400">Click on the + button to add one</h3>
+            <h3 className="text-4xl flex justify-center mt-4">You have no task</h3>
+            <h3 className="text-2xl flex justify-center text-gray-400">Click on the + button to create a task</h3>
           </div>
         )}
       </FadeUpContainer>

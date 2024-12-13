@@ -19,7 +19,6 @@ const { isValidObjectId, Types } = require("mongoose");
 const {
   processProgress,
   processCategory,
-  processTags,
   tryAgainTask,
   updateUserStreak,
   handleError,
@@ -49,6 +48,7 @@ exports.getTask = async (req, res) => {
       ? { guestId: req.guestId }
       : {};
     const statusOrder = ["pending", "completed", "failed"];
+    const priorityOrder = ["High", "Medium", "Low"];
 
     if (!userFilter) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -320,11 +320,18 @@ exports.getTask = async (req, res) => {
       return res.status(200).json([]);
     }
 
-    const tasksWithProgress = tasksList
-      .map(calculateProgress)
-      .sort(
-        (a, b) => statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
-      );
+    const tasksWithProgress = tasksList.map(calculateProgress).sort((a, b) => {
+      const statusComparison =
+        statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+      if (statusComparison !== 0) {
+        return statusComparison;
+      }
+      const priorityComparison =
+        priorityOrder.indexOf(a.tag) -
+        priorityOrder.indexOf(b.tag);
+
+      return priorityComparison;
+    });
 
     return res.status(200).json(tasksWithProgress);
   } catch (error) {
@@ -343,10 +350,7 @@ exports.createTask = async (req, res) => {
       req.user && isValidObjectId(req.user.id)
         ? new Types.ObjectId(req.user.id)
         : null;
-    console.log("guestId:", req.guestId);
-    console.log("user:", formatUser);
-    console.log("category:", category);
-    console.log("tag:", tag);
+   
 
     if (!formatUser && !req.guestId) {
       console.error("unauthorized");
@@ -374,7 +378,7 @@ exports.createTask = async (req, res) => {
     if (tag && Array.isArray(tag)) {
       tagValue = tag[0];
     } else if (tag && ["low", "medium", "high"].includes(tag)) {
-      tagValue = tag; 
+      tagValue = tag;
     } else if (tag) {
       return res
         .status(400)
@@ -473,7 +477,7 @@ exports.updatedTask = async (req, res) => {
     const updateData = { ...req.body };
     delete updateData._id;
 
-    console.log('UPDATE DATA :',updateData)
+    console.log("UPDATE DATA :", updateData);
 
     const formatUser =
       req.user && isValidObjectId(req.user.id)
@@ -515,12 +519,11 @@ exports.updatedTask = async (req, res) => {
         updateData.category === ""
           ? null
           : updateData.category || existingTask.category,
-          tag: Array.isArray(updateData.tag) ? updateData.tag : [updateData.tag],
+      tag: Array.isArray(updateData.tag) ? updateData.tag : [updateData.tag],
       progress: updateData.progress || existingTask.progress,
       status: updateData.status || existingTask.status,
     };
     console.log("เช็ค category", finalUpdateData);
-   
 
     // ตรวจสอบและจัดการข้อมูล category
     if (finalUpdateData.category) {
@@ -542,15 +545,14 @@ exports.updatedTask = async (req, res) => {
       const validTags = ["low", "medium", "high"];
       // Ensure each tag in the array is valid
       for (let t of finalUpdateData.tag) {
-        if (!validTags.includes(t)) { // เปลี่ยนจาก t.name เป็น t เพราะ t เป็น string
+        if (!validTags.includes(t)) {
+          // เปลี่ยนจาก t.name เป็น t เพราะ t เป็น string
           return res.status(400).json({
             error: `Invalid tag value. Allowed values: ${validTags.join(", ")}`,
           });
         }
       }
     }
-    
-    
 
     // ตรวจสอบและจัดการข้อมูล progress
     if (finalUpdateData.progress) {
@@ -615,9 +617,12 @@ exports.completedTask = async (req, res) => {
       task.progress.allStepsCompleted = true;
       task.progress.totalSteps = task.progress.steps.length;
 
+      console.log("FormatUser:", formatUser);
       if (formatUser) {
+        console.log("Calling updateUserStreak...");
         const userUpdate = await updateUserStreak(formatUser.toString(), true);
         const updatedTask = await task.save();
+        console.log("user update", userUpdate);
         return res.status(200).json({ updatedTask, user: userUpdate });
       }
     } else if (task.status === "completed") {
@@ -688,6 +693,8 @@ exports.updatedTaskAttempt = async (req, res) => {
 
 exports.searchTask = async (req, res) => {
   try {
+    const formatUser = req.user && isValidObjectId(req.user.id) ? new Types.ObjectId(req.user.id) : null
+    const userFilter = formatUser ? { user : formatUser } : req.guestId ? { guestId : req.guestId } : null
     const searchTerm = req.query.q || "";
 
     console.log(searchTerm);
@@ -700,6 +707,7 @@ exports.searchTask = async (req, res) => {
 
     const regex = new RegExp(searchTerm, "i");
     const tasks = await Tasks.find({
+      ...userFilter,
       title: { $regex: regex },
     });
 

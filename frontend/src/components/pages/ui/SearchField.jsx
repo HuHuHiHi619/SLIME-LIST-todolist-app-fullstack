@@ -42,7 +42,6 @@ function SearchField() {
       dispatch(clearSearchResults());
     };
   }, [dispatch]);
-  
 
   return (
     <div className="w-[300px] relative">
@@ -57,15 +56,17 @@ function SearchField() {
       />
       <div>
         {Array.isArray(searchResults) && searchResults.length > 0 && (
-          <div className="absolute top-full mt-2 w-[300px] bg-purpleActiveTop shadow-lg rounded-2xl ">
-            <SearchTaskList
-              allTasks={searchResults}
-              handleCompletedTask={handleCompletedTask}
-              handleRemovedTask={handleRemovedTask}
-              handleTaskClick={handleTaskClick}
-              handleIsCreate={handleIsCreate}
-              selectedTask={selectedTask}
-            />
+          <div className="absolute top-full mt-2 w-[300px] p-0.5 bg-purpleGradient  shadow-lg rounded-2xl ">
+            <div className="bg-purpleMain rounded-2xl">
+              <SearchTaskList
+                allTasks={searchResults}
+                handleCompletedTask={handleCompletedTask}
+                handleRemovedTask={handleRemovedTask}
+                handleTaskClick={handleTaskClick}
+                handleIsCreate={handleIsCreate}
+                selectedTask={selectedTask}
+              />
+            </div>
           </div>
         )}
         {searchTerm && searchResults.length === 0 && (

@@ -28,17 +28,15 @@ function GroupTaskForm({ filter }) {
       {fetchedAllTasks &&
       Array.isArray(fetchedAllTasks) &&
       fetchedAllTasks.length > 0 ? (
-        fetchedAllTasks.map((group) => {
+        fetchedAllTasks.map((group,index) => {
           const label =
             group.categoryName ||
-            group.tagName ||
             group.status ||
             group.deadlineCase;
-          const keys =
-            group.categoryId ||
-            group.tagId ||
+          const keys =`
+            ${group.categoryId ||
             group.status ||
-            group.deadlineCase;
+            group.deadlineCase}-${index}`
           const tasks = group.tasks || [];
           
           return (

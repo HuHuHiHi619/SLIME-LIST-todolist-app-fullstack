@@ -21,14 +21,16 @@ export default {
       },
       backgroundImage: {
         purpleActiveTask: "linear-gradient(to right,#5D5DEA,#212140)",
-        purpleActiveTop: "linear-gradient(to top,#5D5DEA 1%,#212140 100%)",
+        purpleSidebar: "linear-gradient(to top,#12112D , #212140 )",
         purpleActive: "linear-gradient(to left,#5D5DEA,#212140)",
         completedTask:"linear-gradient(to right,rgba(48, 232, 155, 0.8) 10%,#363669)",
         failedTask:"linear-gradient(to right,#C51313,#5F0909)",
         mainGradient:"linear-gradient(to left,#1E1E39,#444473)",
         streak:"linear-gradient(to bottom, #FFDA93,#DEA331,#DE6F31,#783C1A)",
         hotterStreak:"linear-gradient(to bottom, #93E8FF,#31B3DE,#3176DE,#1A1F78)",
-        hottestStreak:"linear-gradient(to bottom, #D993FF,#9631DE,#7C31DE,#361A78)"
+        hottestStreak:"linear-gradient(to bottom, #D993FF,#9631DE,#7C31DE,#361A78)",
+        purpleGradient:"linear-gradient(to right, #6D6DFD, #CE88FA, #6D6DFD)",
+        progressGradient:"linear-gradient(to right, #3434B2,#6D6DFD,#CE88FA)"
       },
     },
   },

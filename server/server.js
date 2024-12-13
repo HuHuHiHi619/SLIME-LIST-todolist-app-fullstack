@@ -6,7 +6,7 @@ const { readdirSync } = require('fs')
 const connectDb = require('./Config/db')
 const app = express();
 const path = require('path')
-const { checkOverdueTasks, updateOverdueTasks, updateStreak } = require('./job/cronJob');
+const { checkOverdueTasks, updateOverdueTasks, resetDailyStreakStatus } = require('./job/cronJob');
 
 const imagesPath = path.join(__dirname, '../images/badges');
 
@@ -28,6 +28,7 @@ app.use('/images',express.static(imagesPath));
 require('dotenv').config();
 
 checkOverdueTasks();
+resetDailyStreakStatus()
 
 
 readdirSync('./Routes').map((route) => 

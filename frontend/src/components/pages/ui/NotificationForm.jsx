@@ -3,9 +3,20 @@ import SearchField from "../ui/SearchField";
 import NotificationField from "./NotificationField";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faSearch, faSquare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBell,
+  faQuestion,
+  faSearch,
+  faSquare,
+} from "@fortawesome/free-solid-svg-icons";
+import InstructionPopup from "./InstructionPopup";
+import usePopup from "../hooks/usePopup";
+import { useSelector } from "react-redux";
+import ReactDOM from "react-dom";
 
 const NotificationForm = () => {
+  const { instruction } = useSelector((state) => state.summary);
+  const { handleIsInstruct, popupInstructRef } = usePopup();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNotiOpen, setIsNotiOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,7 +25,6 @@ const NotificationForm = () => {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
- 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -37,12 +47,12 @@ const NotificationForm = () => {
 
   const handleSearchClick = () => {
     setIsSearchOpen(true);
-    setIsNotiOpen(false); 
+    setIsNotiOpen(false);
   };
 
   const handleNotificationClick = () => {
     setIsNotiOpen((prev) => !prev);
-    setIsSearchOpen(false); 
+    setIsSearchOpen(false);
   };
 
   return (
@@ -103,7 +113,23 @@ const NotificationForm = () => {
                       </div>
                     )}
                   </div>
+                  <button
+                    className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
+                    onClick={() => handleIsInstruct()}
+                  >
+                    <FontAwesomeIcon icon={faQuestion} className="h-8 w-8" />
+                  </button>
                 </div>
+
+                {instruction &&
+                  ReactDOM.createPortal(
+                    <div className="popup-overlay">
+                      <div className="popup-content" ref={popupInstructRef}>
+                        <InstructionPopup onClose={handleIsInstruct} />
+                      </div>
+                    </div>,
+                    document.body
+                  )}
               </FadeUpContainer>
             </div>
           )}

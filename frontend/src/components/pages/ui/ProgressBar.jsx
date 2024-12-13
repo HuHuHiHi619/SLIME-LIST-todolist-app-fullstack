@@ -10,11 +10,11 @@ const ProgressBar = ({ value, color }) => {
         <div
           style={{
             width: `${value}%`,
-            background: `linear-gradient(to right, ${color.start}, ${color.end})`,
             height: "100%",
             borderRadius: "20px",
             transition: "width 0.5s ease-in-out",
           }}
+          className="bg-progressGradient"
         />
       )}
     </div>

@@ -9,14 +9,18 @@ import {
   updatedTask,
   fetchCategories,
   fetchTags,
-  updatedTaskAttempt
+  updatedTaskAttempt,
 } from "../../../redux/taskSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotateLeft } from "@fortawesome/free-solid-svg-icons";
-import { fetchNotification, fetchSummary, fetchSummaryByCategory } from "../../../redux/summarySlice";
+import {
+  fetchNotification,
+  fetchSummary,
+  fetchSummaryByCategory,
+} from "../../../redux/summarySlice";
 
 function TaskDetail({ onClose }) {
   const dispatch = useDispatch();
@@ -45,15 +49,15 @@ function TaskDetail({ onClose }) {
   }, [selectedTask]);
 
   const debouncedUpdateTask = useMemo(
-     () =>
+    () =>
       debounce(async (updatedSelectTask) => {
-        const taskId = updatedSelectTask._id
-        await dispatch(updatedTask({ taskId, taskData: updatedSelectTask }))
+        const taskId = updatedSelectTask._id;
+        await dispatch(updatedTask({ taskId, taskData: updatedSelectTask }));
         await Promise.all([
           dispatch(fetchSummaryByCategory()),
           dispatch(fetchSummary()),
-          dispatch(fetchNotification())
-        ])
+          dispatch(fetchNotification()),
+        ]);
       }, 500),
     [dispatch, selectedTask._id]
   );
@@ -61,7 +65,7 @@ function TaskDetail({ onClose }) {
     (e) => {
       const { name, value } = e.target;
       const updatedSelectTask = { ...editedTask };
-  
+
       if (name === "category") {
         if (value === "no category") {
           updatedSelectTask[name] = "";
@@ -74,13 +78,13 @@ function TaskDetail({ onClose }) {
       } else {
         updatedSelectTask[name] = value;
       }
-  
+
       setEditedTask(updatedSelectTask);
       debouncedUpdateTask(updatedSelectTask);
     },
-    [ editedTask, debouncedUpdateTask, categories, tags]
+    [editedTask, debouncedUpdateTask, categories, tags]
   );
-  
+
   const handleStepChange = useCallback((e) => {
     setCurrenStep(e.target.value);
   });
@@ -91,36 +95,33 @@ function TaskDetail({ onClose }) {
         // แปลง date เป็น string เพื่อเก็บใน redux
         const formattedDate = date instanceof Date ? date.toISOString() : date;
         const updatedSelectTask = { ...prevTask, [field]: formattedDate };
-        
+
         debouncedUpdateTask(updatedSelectTask);
         return updatedSelectTask;
       });
     },
     [editedProgress, editedTask, debouncedUpdateTask]
   );
-  
+
   const handleToggleTag = useCallback(
     (tag) => {
       setEditedTask((prevTask) => {
-        // Make sure prevTask.tag is an array
-        const currentTags = Array.isArray(prevTask.tag) ? prevTask.tag : [];
-  
-        const isTagSelected = currentTags.some((t) => t._id === tag._id);
-  
-        // Toggle the tag presence in the array
-        const updatedTags = isTagSelected
-          ? currentTags.filter((t) => t._id !== tag._id) 
-          : [...currentTags, tag]; 
-  
+        const isTagSelected =
+          Array.isArray(prevTask.tag) &&
+          prevTask.tag.some((t) =>
+            typeof t === "string" ? t === tag : t._id === tag._id
+          );
+
+        // If the tag is already selected, deselect it (set to an empty array)
+        const updatedTags = isTagSelected ? [] : [tag];
+
         const updatedSelectTask = { ...prevTask, tag: updatedTags };
-        debouncedUpdateTask(updatedSelectTask); 
+        debouncedUpdateTask(updatedSelectTask);
         return updatedSelectTask;
       });
     },
     [debouncedUpdateTask]
   );
-  
-  
 
   const handleStepKeyDown = useCallback(
     (e) => {
@@ -161,7 +162,7 @@ function TaskDetail({ onClose }) {
             updatedSteps.every((step) => step.completed),
         };
         const updatedSelectTask = { ...editedTask, progress: updatedProgress };
-       
+
         debouncedUpdateTask(updatedSelectTask);
         return updatedProgress;
       });
@@ -194,7 +195,7 @@ function TaskDetail({ onClose }) {
   );
 
   const handleTryAgainTask = (taskId) => {
-    dispatch(updatedTaskAttempt(taskId)); 
+    dispatch(updatedTaskAttempt(taskId));
   };
 
   useEffect(() => {
@@ -313,26 +314,27 @@ function TaskDetail({ onClose }) {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
-              <div className="flex gap-2">
-                {tags.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => handleToggleTag(tag)}
-                    className={`px-4 py-2 rounded-full ${
-                      editedTask.tag.includes(tag)
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-300 text-black"
-                    }`}
-                  >
-                    {tag.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            </div>
        
-        <div className="flex justify-end">
+
+        <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            {tags.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => handleToggleTag(tag)}
+                className={`px-4 py-2 mt-2 rounded-xl ${
+                  editedTask.tag.includes(tag)
+                    ? "bg-purpleBorder text-white"
+                    : "bg-purpleMain text-gray-500"
+                }`}
+              >
+                {tag.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
           <button className="done-button mt-4" onClick={onClose}>
             Done
           </button>

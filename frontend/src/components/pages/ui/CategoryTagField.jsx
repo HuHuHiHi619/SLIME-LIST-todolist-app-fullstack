@@ -1,8 +1,7 @@
 import React from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFolder, faTag } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
+import { faFolder } from "@fortawesome/free-solid-svg-icons";
 
 function CategoryTagField({
   handleInputChange,
@@ -10,19 +9,14 @@ function CategoryTagField({
   value,
   entities = [],
   placeholder,
-  selectedTags = [],
-  showTag = true,
-  handleRemoveTag,
 }) {
-  const filterIcon = name === "category" ? faFolder : faTag;
-  
-  const filterClass = showTag
-    ? "flex-grow cursor-pointer appearance-none shadow bg-transparent text-gray-400 pl-11 pt-2 font-bold focus:outline-none focus:shadow-outline block"
-    : "w-[230px] cursor-pointer leading-7 appearance-none text-[20px] shadow border-[2px] border-categoryTheme bg-transparent rounded-lg p-2 pl-11 text-categoryTheme leading-tight focus:outline-none focus:shadow-outline block";
+  const filterIcon = faFolder;
 
-  const filterIconClass = showTag
-    ? "text-gray-400 pr-2 text-2xl left-3 top-1/3 transform absolute pointer-events-none"
-    : "text-categoryTheme pr-2 text-2xl left-3 bottom-3 absolute pointer-events-none";
+  const filterClass =
+    "w-[230px] cursor-pointer leading-7 appearance-none text-[20px] shadow border-[2px] border-categoryTheme bg-transparent rounded-lg p-2 pl-11 text-categoryTheme leading-tight focus:outline-none focus:shadow-outline block";
+
+  const filterIconClass =
+    "text-categoryTheme pr-2 text-2xl left-3 bottom-3 absolute pointer-events-none";
 
   return (
     <div className="">
@@ -36,15 +30,9 @@ function CategoryTagField({
           onChange={handleInputChange}
           className={filterClass}
         >
-          {name === "tag" ? (
-            <option>Tag</option>
-          ) : null}
-
-          {name === "category" ? (
-            <option value="No category" className="text-black">
-              {`No ${placeholder.toLowerCase()}`}
-            </option>
-          ) : null}
+          <option value="No category" className="text-black">
+            {`No ${placeholder.toLowerCase()}`}
+          </option>
 
           {Array.isArray(entities) && entities.length > 0 ? (
             entities.map((entity) => (
@@ -57,32 +45,12 @@ function CategoryTagField({
               </option>
             ))
           ) : (
-            <option disabled>{placeholder}</option>
+           null
           )}
         </select>
       </div>
-
-      {/* Display selected tags */}
-      {showTag && selectedTags.length > 0 && (
-        <div className="mt-2 ml-2 flex gap-2 flex-wrap">
-          {selectedTags.map((tag, index) => (
-            <div
-              key={index}
-              className="bg-purpleMain text-white text-xl p-2 rounded-lg flex items-center gap-2"
-            >
-              <span>{tag.tagName}</span>
-              <button
-                className="text-red-500 text-[20px] hover:text-red-700"
-                onClick={(e) => handleRemoveTag(e, tag)}
-              >
-                x
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
 
-export default CategoryTagField
+export default CategoryTagField;

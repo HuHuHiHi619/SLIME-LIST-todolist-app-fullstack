@@ -11,7 +11,7 @@ function Navbar() {
 
   if(loading){
     return (
-      <div className="done-button">MO SALAH</div>
+     null
     )
   }
 

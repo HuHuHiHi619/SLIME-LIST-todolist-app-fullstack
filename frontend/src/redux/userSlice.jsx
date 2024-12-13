@@ -16,6 +16,7 @@ const loadInitialState = () => {
         id: persistedUserId,
         username: persistedUsername,
         currentStreak: 0,
+        alreadyCompletedToday: null,
         bestStreak: 0,
         currentBadge: "iron",
         settings: {
@@ -42,6 +43,7 @@ const loadInitialState = () => {
         username: "",
         currentStreak: 0,
         bestStreak: 0,
+        alreadyCompletedToday: null,
         currentBadge: "iron",
         settings: {
           theme: "dark",
@@ -190,6 +192,7 @@ const userSlice = createSlice({
         state.userData = { ...state.userData, ...action.payload };
         state.isAuthenticated = true;
         state.loading = false;
+        console.log(state.userData)
       })
       .addCase(fetchUserData.rejected, (state, action) => {
         state.loading = false;

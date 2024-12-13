@@ -8,7 +8,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { motion } from "framer-motion";
 import ProgressBar from "./ProgressBar";
 import "react-circular-progressbar/dist/styles.css";
-import { div } from "framer-motion/client";
+
 
 // Custom Ring Component
 const Ring = ({ size }) => (
@@ -117,11 +117,11 @@ function Summary() {
             </div>
           ))}
 
-          <div className="flex flex-col gap-4 flex-1 justify-center">
+          <div className="flex flex-col gap-4 flex-1 justify-center ml-4">
             {summaryCategory.map((catItem, catIndex) => (
               <div
                 key={catIndex}
-                className="ml-2 px-4 py-2 cursor-pointer rounded-lg text-xl text-white bg-purpleNormal list-shadow hover:scale-105 transition ease-out duration-100"
+                className=" px-4 py-2 cursor-pointer rounded-lg text-xl text-white bg-purpleNormal list-shadow hover:scale-105 transition ease-out duration-100"
               >
                 <div className="flex justify-between mb-2">
                   <h3>{catItem.category || "No category"}</h3>
@@ -136,6 +136,7 @@ function Summary() {
           </div>
         </>
       )}
+      
     </div>
   );
 }
