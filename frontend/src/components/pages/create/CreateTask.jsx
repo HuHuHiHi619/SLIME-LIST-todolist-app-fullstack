@@ -6,7 +6,6 @@ import {
   addSteps,
   removeStep,
   fetchCategories,
-  fetchTags,
   createNewTask,
 } from "../../../redux/taskSlice";
 import "react-datepicker/dist/react-datepicker.css";
@@ -64,10 +63,10 @@ function CreateTask({ onClose }) {
     }
   };
 
-  const handleToggleTag = (tag) => {
-    const inputTag = formTask.tag.includes(tag)
-    ? formTask.tag.filter((t) => t !== tag)
-    : [...formTask.tag , tag]
+  const handleToggleTag = (tagId) => {
+    const inputTag = formTask.tag.includes(tagId)
+    ? formTask.tag.filter((t) => t !== tagId)
+    : [...formTask.tag , tagId]
     console.log('tag',inputTag)
     dispatch(setFormTask({tag : inputTag}))
   }
@@ -126,14 +125,14 @@ function CreateTask({ onClose }) {
 
   useEffect(() => {
     dispatch(fetchCategories());
-    dispatch(fetchTags());
   }, [dispatch]);
 
   return (
     <FadeUpContainer>
-      <div className="bg-darkBackground w-[800px] p-6 rounded-xl">
+      <div className=" md:w-[800px] p-1 rounded-2xl ">
+        <div className="bg-purpleSidebar p-6 rounded-xl">
         <form onSubmit={handleSubmit}>
-          <h1 className="text-white">CREATE TASK</h1>
+          <h1 className="text-white tracking-wide">CREATE A TASK</h1>
           <div className="flex flex-col gap-4 my-4">
             {error && <p className="text-red-500 text-xl ">{error}</p>}
             <InputField
@@ -143,7 +142,7 @@ function CreateTask({ onClose }) {
               name="title"
               value={formTask.title}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 border text-xl border-gray-300 rounded-xl "
             />
             <InputField
               type="text"
@@ -156,7 +155,7 @@ function CreateTask({ onClose }) {
             />
           </div>
 
-          <div className="flex gap-4  ">
+          <div className="flex flex-col gap-2 md:flex-row ">
             <CategoryTagField
               name="category"
               value={formTask.category || ""}
@@ -194,7 +193,7 @@ function CreateTask({ onClose }) {
                 value={currentStep}
                 onChange={handleInputChange}
                 onKeyDown={handleAddProgress}
-                className="px-4 py-2 rounded-xl text-xl"
+                className="px-4 py-2 rounded-xl md:text-xl"
               />
               <ProgressField
                 steps={progress.steps}
@@ -206,9 +205,11 @@ function CreateTask({ onClose }) {
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-2">
               <div className="flex gap-2">
-                {tags.map((tag) => (
+             {/*
+          -- Tag is on process --
+              {tags.map((tag) => (
                   <button
-                    key={tag}
+                    key={tag._id}
                     type="button"
                     onClick={() => handleToggleTag(tag)}
                     className={`px-4 py-2 rounded-full ${
@@ -217,16 +218,18 @@ function CreateTask({ onClose }) {
                         : "bg-gray-300 text-black"
                     }`}
                   >
-                    {tag.toUpperCase()}
+                    {tag.tagName.toUpperCase()}
                   </button>
                 ))}
+             */}  
               </div>
             </div>
-            <button type="submit" className="done-button">
-              Done
+            <button type="submit" className="done-button hover:scale-110 transition-all duration-100 ">
+              Create
             </button>
           </div>
         </form>
+        </div>
       </div>
     </FadeUpContainer>
   );

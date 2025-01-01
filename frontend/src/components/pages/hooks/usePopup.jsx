@@ -9,10 +9,9 @@ import {
   togglePopup,
   setHover,
   toggleSidebarPinned,
-  removedTag,
   removedCategory,
   removeCategories,
-  removeTags,
+ 
   removedAllTask,
 } from "../../../redux/taskSlice";
 import { toggleInstructPopup } from "../../../redux/summarySlice";
@@ -88,9 +87,6 @@ function usePopup() {
       dispatch(removeCategories(id)); // optimistic update
       await dispatch(removedCategory(id)).unwrap()
       dispatch(fetchSummaryByCategory());
-    } else if (type === "tag"){
-      dispatch(removeTags(id));
-      await dispatch(removedTag(id)).unwrap()
     }
   };
 

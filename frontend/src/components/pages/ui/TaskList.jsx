@@ -18,9 +18,9 @@ function TaskList({
   const { tasks } = useSelector((state) => state.tasks);
 
   return (
-    <div className="pr-4 border-4 border-purpleNormal rounded-3xl p-5  ">
+    <div className="pr-4 border-4 border-purpleNormal rounded-3xl p-6  md:mt-0">
       <div className="flex justify-between mb-4 mr-3 ">
-        <h1 className="text-white text-4xl flex items-center pr-24">{label}</h1>
+        <p className="text-white md:text-4xl flex items-center pr-24">{label}</p>
         <CreateButton onClick={handleIsCreate} />
       </div>
 
@@ -92,10 +92,9 @@ function TaskList({
                       <h3 className=" truncate max-w-[calc(100%-40px)] ">
                         {task.title}
                       </h3>
-                      {task.tag[index] > 0 ||
-                      (task.status === "pending" &&
-                        task.progress &&
-                        task.progress.totalSteps > 0) ? (
+                      {task.status === "pending" &&
+                      task.progress &&
+                      task.progress.totalSteps > 0 ? (
                         <div className="flex items-center">
                           <span className="pr-4">
                             Progress : {task.progress.completedSteps}/
@@ -112,7 +111,8 @@ function TaskList({
                           <span className="pl-1 pr-4">
                             {Math.round(task.progress.progressPercentage)}%
                           </span>
-                        
+                          {/*   
+      Tag is on process
                           {task.tag &&
                             task.tag.length > 0 &&
                             ["medium", "high"].includes(task.tag[0]) && (
@@ -126,24 +126,9 @@ function TaskList({
                                 {task.tag[0]}
                               </div>
                             )}
+*/}
                         </div>
-                      ) : (
-                        <div>
-                            {task.tag &&
-                            task.tag.length > 0 &&
-                            ["medium", "high"].includes(task.tag[0]) && (
-                              <div
-                                className={`w-10 h-2 mt-1  rounded-full text-center text-opacity-0 text-white ${
-                                  task.tag[0] === "medium"
-                                    ? "bg-yellow-500"
-                                    : "bg-deadlineTheme"
-                                }`}
-                              >
-                                {task.tag[0]}
-                              </div>
-                            )}
-                        </div>
-                      )}
+                      ) : null}
                     </div>
                   </div>
 

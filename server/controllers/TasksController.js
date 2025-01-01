@@ -34,7 +34,6 @@ exports.getTask = async (req, res) => {
       tag,
       groupByDeadline,
       groupByCategory,
-      groupByTag,
       groupByStatus,
     } = req.query;
     const formatUser =
@@ -137,7 +136,7 @@ exports.getTask = async (req, res) => {
     if (tag) {
       //filter tag
       const tags = Array.isArray(tag) ? tag : [tag];
-      userFilter.tag = { $in: tags.map((tag) => new Types.ObjectId(tag)) };
+      userFilter.tag = { $in: tags.map((tag) => (isValidObjectId(tag) ? new Types.ObjectId(tag) : tag)) };
     }
 
     if (groupByCategory) {
@@ -195,58 +194,7 @@ exports.getTask = async (req, res) => {
           .status(500)
           .json({ error: "Failed to retrieve tasks by category" });
       }
-    } else if (groupByTag) {
-      try {
-        const tasksWithTag = await Tasks.find({
-          ...userFilter,
-          tag: { $exists: true, $not: { $size: 0 } },
-        })
-          .populate("tag")
-          .lean()
-          .exec();
-
-        console.log("Fetched tasks with tag:", tasksWithTag.length);
-
-        const groupedTasksByTag = tasksWithTag.reduce((acc, task) => {
-          if (Array.isArray(task.tag) && task.tag.length > 0) {
-            task.tag.forEach((tag) => {
-              if (tag && tag._id && tag.tagName) {
-                const tagId = tag._id.toString();
-                if (!acc[tagId]) {
-                  acc[tagId] = {
-                    tagId: tagId,
-                    tagName: tag.tagName,
-                    tasks: [],
-                  };
-                }
-                acc[tagId].tasks.push(task);
-              } else {
-                console.error("Null or invalid tag in task:", task);
-              }
-            });
-          } else {
-            console.error("No valid tags in task:", task);
-          }
-          return acc;
-        }, {});
-
-        const resultByTag = Object.values(groupedTasksByTag).map((group) => ({
-          ...group,
-          tasks: group.tasks.map(calculateProgress),
-        }));
-        console.log("tasks found by tag:", resultByTag.length);
-
-        if (resultByTag.length === 0) {
-          return res.status(200).json([]);
-        }
-        return res.status(200).json(resultByTag);
-      } catch (error) {
-        console.error("Error fetching or grouping tasks by tag:", error);
-        return res
-          .status(500)
-          .json({ error: "Failed to retrieve tasks by tag" });
-      }
-    }
+    } 
 
     // filter by deadline ranges
     const currentDate = startOfDay(new Date());
@@ -320,7 +268,12 @@ exports.getTask = async (req, res) => {
       return res.status(200).json([]);
     }
 
-    const tasksWithProgress = tasksList.map(calculateProgress).sort((a, b) => {
+    const tasksWithProgress = tasksList
+    .map((task) => ({
+      ...calculateProgress(task),
+      tagName: task.tag?.tagName || "low"
+    }))
+    .sort((a, b) => {
       const statusComparison =
         statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
       if (statusComparison !== 0) {
@@ -372,18 +325,23 @@ exports.createTask = async (req, res) => {
         console.log("Category not found");
       }
     }
-    // check tag value then convert tp objectId
-    let tagValue = "low"; // ค่า default เป็น 'low'
-
+    
+    /*let tagValue = null
+    console.log("req tag :",tag)
     if (tag && Array.isArray(tag)) {
-      tagValue = tag[0];
-    } else if (tag && ["low", "medium", "high"].includes(tag)) {
-      tagValue = tag;
-    } else if (tag) {
-      return res
-        .status(400)
-        .json({ error: "Invalid tag value. Use 'low', 'medium', or 'high'." });
-    }
+      console.log("tag : ",tag)
+      const tagList = await Tag.findOne({tagName : {$in : tag}}).lean()
+      if(!tagList){
+        console.log("Tag not found, creating one...");
+        return res.status(400).json({error:"invalid tag value. Use a valid tag."})
+      }
+      tagValue = tagList._id
+    } else {
+      const defaultTag = await Tag.findOne({ tagName : "low"}).lean()
+      if(defaultTag) {
+        tagValue = defaultTag._id
+      }
+    }*/
 
     // adjust progress
     let formatProgress = {
@@ -457,7 +415,7 @@ exports.createTask = async (req, res) => {
       deadline: deadlineObj || null,
       category: categoryId,
       progress: formatProgress,
-      tag: tagValue,
+      //tag: tagValue,
       user: formatUser || null,
       guestId,
     });
@@ -519,11 +477,11 @@ exports.updatedTask = async (req, res) => {
         updateData.category === ""
           ? null
           : updateData.category || existingTask.category,
-      tag: Array.isArray(updateData.tag) ? updateData.tag : [updateData.tag],
+      tag: updateData.tag || existingTask.tag,
       progress: updateData.progress || existingTask.progress,
       status: updateData.status || existingTask.status,
     };
-    console.log("เช็ค category", finalUpdateData);
+    console.log("final updateData", finalUpdateData);
 
     // ตรวจสอบและจัดการข้อมูล category
     if (finalUpdateData.category) {
@@ -541,18 +499,21 @@ exports.updatedTask = async (req, res) => {
       finalUpdateData.category = null;
     }
 
-    if (Array.isArray(finalUpdateData.tag)) {
-      const validTags = ["low", "medium", "high"];
-      // Ensure each tag in the array is valid
-      for (let t of finalUpdateData.tag) {
-        if (!validTags.includes(t)) {
-          // เปลี่ยนจาก t.name เป็น t เพราะ t เป็น string
-          return res.status(400).json({
-            error: `Invalid tag value. Allowed values: ${validTags.join(", ")}`,
-          });
-        }
+    if (finalUpdateData.tag) {
+      const tag = await Tag.findOne({
+        $or: [
+          { tagName: updateData.tag },
+          { _id: updateData.tag },
+        ],
+      }).exec();
+    
+      if (!tag) {
+        return res.status(400).json({ error: "Invalid tag value or ID" });
       }
+    
+      finalUpdateData.tag = tag._id;
     }
+    
 
     // ตรวจสอบและจัดการข้อมูล progress
     if (finalUpdateData.progress) {

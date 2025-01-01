@@ -8,7 +8,6 @@ import CategoryTagField from "./CategoryTagField";
 import {
   updatedTask,
   fetchCategories,
-  fetchTags,
   updatedTaskAttempt,
 } from "../../../redux/taskSlice";
 
@@ -200,7 +199,6 @@ function TaskDetail({ onClose }) {
 
   useEffect(() => {
     dispatch(fetchCategories());
-    dispatch(fetchTags());
   }, [dispatch]);
 
   useEffect(
@@ -220,105 +218,107 @@ function TaskDetail({ onClose }) {
 
   return (
     <FadeUpContainer>
-      <div className="bg-darkBackground w-[800px] mt-6 p-6 rounded-xl ">
-        <div className="flex justify-between items-center">
-          <h1 className="text-white ">TASK DETAILS</h1>
-          <div className="flex items-center gap-6 ">
-            {editedTask.status === "failed" && (
-              <FontAwesomeIcon
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleTryAgainTask(selectedTask._id);
-                }}
-                icon={faRotateLeft}
-                className="text-white text-3xl cursor-pointer hover:rotate-[-360deg] transition-transform duration-300 ease-in"
-              />
-            )}
+      <div className=" w-[300px] md:w-[800px] p-1 rounded-2xl ">
+        <div className="bg-purpleSidebar p-6 rounded-xl">
+          <div className="flex justify-between items-center">
+            <p className="text-white text-xl">TASK DETAILS</p>
+            <div className="flex items-center gap-6 ">
+              {editedTask.status === "failed" && (
+                <FontAwesomeIcon
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleTryAgainTask(selectedTask._id);
+                  }}
+                  icon={faRotateLeft}
+                  className="text-white text-3xl cursor-pointer hover:rotate-[-360deg] transition-transform duration-300 ease-in"
+                />
+              )}
 
-            <h1
-              className={`text-white ${
-                editedTask.status === "pending"
-                  ? "pending"
-                  : editedTask.status === "failed"
-                  ? "failed"
-                  : "completed"
-              } uppercase`}
-            >
-              {editedTask.status}
-            </h1>
+              <p
+                className={`text-white text-xl ${
+                  editedTask.status === "pending"
+                    ? "pending"
+                    : editedTask.status === "failed"
+                    ? "failed"
+                    : "completed"
+                } uppercase`}
+              >
+                {editedTask.status}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col ">
-          <div className="py-4">
-            <InputField
-              type="text"
-              name="title"
-              placeholder="Title"
-              value={editedTask.title}
-              onChange={handleInputChange}
-              className="text-3xl w-full border-none py-0"
-            />
-          </div>
-          <div className="flex  gap-2 pb-4">
-            <CategoryTagField
-              name="category"
-              value={editedTask.category?.categoryName}
-              entities={categories}
-              placeholder="CATEGORY"
-              handleInputChange={handleInputChange}
-              showTag={false}
-            />
-            <StartDatePicker
-              id="startDate"
-              name="startDate"
-              selected={editedTask.startDate}
-              onChange={(date) => handleDateChange(date, "startDate")}
-              placeholder="START DATE"
-            />
-            <DeadlinePicker
-              id="deadline"
-              name="Deadline"
-              selected={editedTask.deadline}
-              onChange={(date) => handleDateChange(date, "deadline")}
-              placeholder="DEADLINE"
-            />
-          </div>
-          <textarea
-            type="text"
-            name="note"
-            placeholder="Note"
-            value={editedTask.note}
-            onChange={handleInputChange}
-            className=" scrollbar-custom w-full  text-xl text-white  bg-purpleMain rounded-lg p-2 px-4 focus:outline-none focus:border-purple-400"
-          />
-          <div className="flex flex-col gap-4 mt-4 mb-2">
-            <div>
+          <div className="flex flex-col  ">
+            <div className="py-4">
               <InputField
                 type="text"
-                name="progress"
-                placeholder="Enter a step "
-                value={currentStep}
-                onChange={handleStepChange}
-                onKeyDown={handleStepKeyDown}
-                className="text-xl w-full px-4 py-3 rounded-xl "
+                name="title"
+                placeholder="Title"
+                value={editedTask.title}
+                onChange={handleInputChange}
+                className="text-3xl w-full border-none py-0"
               />
             </div>
-            <div className="px-2">
-              <ProgressField
-                steps={editedProgress.steps}
-                handleRemoveStep={removeProgressStep}
-                handleStepComplete={completeProgressStep}
-                showCompletion={true}
+            <div className="flex flex-col md:flex-row gap-2 pb-4">
+              <CategoryTagField
+                name="category"
+                value={editedTask.category?.categoryName}
+                entities={categories}
+                placeholder="CATEGORY"
+                handleInputChange={handleInputChange}
+                showTag={false}
               />
+              <StartDatePicker
+                id="startDate"
+                name="startDate"
+                selected={editedTask.startDate}
+                onChange={(date) => handleDateChange(date, "startDate")}
+                placeholder="START DATE"
+              />
+              <DeadlinePicker
+                id="deadline"
+                name="Deadline"
+                selected={editedTask.deadline}
+                onChange={(date) => handleDateChange(date, "deadline")}
+                placeholder="DEADLINE"
+              />
+            </div>
+            <textarea
+              type="text"
+              name="note"
+              placeholder="Note"
+              value={editedTask.note}
+              onChange={handleInputChange}
+              className=" scrollbar-custom w-full  text-xl text-white  bg-darkBackground rounded-lg p-2 px-4 focus:outline-none focus:border-purple-400"
+            />
+            <div className="flex flex-col gap-4 mt-4 mb-2">
+              <div>
+                <InputField
+                  type="text"
+                  name="progress"
+                  placeholder="Enter a step "
+                  value={currentStep}
+                  onChange={handleStepChange}
+                  onKeyDown={handleStepKeyDown}
+                  className="text-xl w-full px-4 py-3 rounded-xl "
+                />
+              </div>
+              <div className="px-2">
+                <ProgressField
+                  steps={editedProgress.steps}
+                  handleRemoveStep={removeProgressStep}
+                  handleStepComplete={completeProgressStep}
+                  showCompletion={true}
+                />
+              </div>
             </div>
           </div>
-        </div>
-       
 
-        <div className="flex justify-between items-center">
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2">
+          <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                {/*
+         -- Tag is on process --
             {tags.map((tag) => (
               <button
                 key={tag}
@@ -332,12 +332,13 @@ function TaskDetail({ onClose }) {
               >
                 {tag.toUpperCase()}
               </button>
-            ))}
+            ))}*/}
+              </div>
+            </div>
+            <button className="done-button mt-4" onClick={onClose}>
+              Done
+            </button>
           </div>
-        </div>
-          <button className="done-button mt-4" onClick={onClose}>
-            Done
-          </button>
         </div>
       </div>
     </FadeUpContainer>

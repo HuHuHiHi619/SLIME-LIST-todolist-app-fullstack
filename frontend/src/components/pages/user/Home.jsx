@@ -11,7 +11,7 @@ function Home() {
     <div id="home">
       <TaskForm filter={{ status: "pending" }} />
 
-      <div className="flex flex-col gap-6">
+      <div className="hidden lg:flex lg:flex-col lg:gap-6">
         <FadeUpContainer direction="up" delay={0.2}>
           <StreakField />
         </FadeUpContainer>

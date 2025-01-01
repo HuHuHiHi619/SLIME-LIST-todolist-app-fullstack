@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+
+import { BrowserRouter, Route, Routes} from "react-router-dom";
 
 // component
 import Home from "./components/pages/user/Home";
@@ -10,14 +10,10 @@ import Settings from "./components/pages/user/Settings";
 import Register from "./components/pages/authen/Register";
 import Login from "./components/pages/authen/Login";
 import AuthProvider from "./components/pages/authen/AuthProvider";
-import ProtectedRoute from "./components/pages/authen/ProtectedRoute";
 
-// user
-import HomeUser from "./components/pages/user/HomeUser";
-// admin
 
 // routes
-import UserRoutes from "./routes/UserRoutes";
+import PublicRoute from "./components/pages/authen/PublicRoute"
 import "./App.css";
 import Upcoming from "./components/pages/user/Upcoming";
 import AllTask from "./components/pages/user/AllTask";
@@ -25,8 +21,10 @@ import Category from "./components/pages/user/Category";
 import CategoryList from "./components/pages/user/CategoryList";
 import Tag from "./components/pages/user/Tag";
 import TagList from "./components/pages/user/TagList";
+import { useSelector } from "react-redux";
 
 function App() {
+  const { isAuthenticated } = useSelector((state) => state.user)
   return (
     <>
       <AuthProvider>
@@ -46,18 +44,14 @@ function App() {
               <Route path="/tag/:tagName" element={<TagList />} />
               <Route path="/settings" element={<Settings />} />
 
-              {/* User */}
-              <Route
-                path="/user/index"
-                element={
-                  <UserRoutes>
-                    <HomeUser />
-                  </UserRoutes>
-                }
-              />
+            
             </Route>
             {/* Authentication */}
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={
+              <PublicRoute isAuthenticated={isAuthenticated}>
+                <Login />
+              </PublicRoute>
+              } />
             <Route path="/register" element={<Register />} />
           </Routes>
         </BrowserRouter>

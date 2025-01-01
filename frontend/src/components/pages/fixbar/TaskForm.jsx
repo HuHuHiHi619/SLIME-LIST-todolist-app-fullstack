@@ -21,7 +21,7 @@ function TaskForm({ filter, filterKey }) {
   } = usePopup();
   
   return (
-    <div className="mb-8 mx-8 overflow-hidden">
+    <div className="md:mb-8 md:mx-8 overflow-hidden">
       <FadeUpContainer>
         {fetchedTasks.length > 0 ? (
           <TaskList
@@ -33,12 +33,13 @@ function TaskForm({ filter, filterKey }) {
             selectedTask={selectedTask}
           />
         ) : (
-          <div className="mt-48 ml-10 mr-6 rounded-3xl pl-6 pt-5 pb-6 ">
+          <div className="sm:mt-56 mt-40 mx-4 rounded-3xl flex-1 ">
             <div className="flex justify-center">
               <CreateButton onClick={handleIsCreate} />
             </div>
-            <h3 className="text-4xl flex justify-center mt-4">You have no task</h3>
-            <h3 className="text-2xl flex justify-center text-gray-400">Click on the + button to create a task</h3>
+            <p className="text-xl md:text-4xl text-white flex justify-center mt-4">You have no task</p>
+            <p className="text-lg md:text-2xl text-gray-400 flex justify-center">Click on the + button to</p>
+            <p className="text-lg md:text-2xl text-gray-400 flex justify-center">create a task</p>
           </div>
         )}
       </FadeUpContainer>

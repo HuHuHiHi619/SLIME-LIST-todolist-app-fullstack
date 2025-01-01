@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getCategoryData, removeCategory } from "../functions/category";
-import { removeTag } from "../functions/tag";
+
 import {
   completeTask,
   createTask,
@@ -17,14 +17,14 @@ const initialState = {
   searchResults: [],
   isSummaryUpdated: false,
   categories: [],
-  tags: ["low","medium","high"],
+  //tags: [],
   formTask: {
     title: "",
     note: "",
     startDate: null,
     deadline: null,
     category: "",
-    tag: [],
+    //tag: [],
     status: "pending",
     tryAgainCount: 0,
   },
@@ -66,9 +66,16 @@ export const fetchCategories = createAsyncThunk(
   }
 );
 
+/* tag is on process
 export const fetchTags = createAsyncThunk("task/fetchTags", async () => {
- return ["low","medium","high"]
-});
+ try{
+  const response = await getTagData()
+  return response || []
+ } catch(error){
+  console.error("Error fetching tags :", error)
+  throw error
+ }
+});*/
 
 export const fetchTasks = createAsyncThunk(
   "task/fetchTasks",
@@ -111,7 +118,7 @@ export const updatedTask = createAsyncThunk(
     const verifyTask = {
       ...taskData,
       category: taskData.category?._id || taskData.category,
-      tag: taskData.tag?._id || taskData.tag,
+     // tag: taskData.tag?._id || taskData.tag,
     };
 
     const response = await updateTask(taskId, verifyTask);
@@ -161,13 +168,7 @@ export const removedCategory = createAsyncThunk(
   }
 );
 
-export const removedTag = createAsyncThunk(
-  "category/removedTag",
-  async (tagId) => {
-    const response = await removeTag(tagId);
-    return response;
-  }
-);
+
 
 // reducer
 const taskSlice = createSlice({
@@ -179,7 +180,7 @@ const taskSlice = createSlice({
       state.formTask = {
         ...state.formTask,
         ...rest,
-        tag: action.payload.tag || state.formTask.tag || ['low'],
+        tag: action.payload.tag || state.formTask.tag || [],
         startDate:
           startDate !== undefined
             ? new Date(startDate).toISOString()
@@ -219,9 +220,9 @@ const taskSlice = createSlice({
         (category) => category._id !== categoryId
       );
     },
-    setTags(state, action) {
+   /* setTags(state, action) {
       state.tags = action.payload;
-    },
+    },*/
     removeTags(state, action) {
       const tagId = action.payload;
       state.tags = state.tags.filter((tag) => tag._id !== tagId);
@@ -255,7 +256,7 @@ const taskSlice = createSlice({
         startDate: null,
         deadline: null,
         category: "",
-        tag: [],
+        //tag: [],
         status: "pending",
         tryAgainCount: 0,
       }),
@@ -331,7 +332,7 @@ const taskSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(fetchTags.pending, (state) => {
+     /* .addCase(fetchTags.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchTags.fulfilled, (state, action) => {
@@ -341,7 +342,7 @@ const taskSlice = createSlice({
       .addCase(fetchTags.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-      })
+      })*/
       .addCase(createNewTask.pending, (state) => {
         state.loading = true;
       })
@@ -363,7 +364,7 @@ const taskSlice = createSlice({
               ...task,
               ...updatedTask,
               category: updatedTask.category,
-              tag: updatedTask.tag,
+              //tag: updatedTask.tag,
               deadline: updatedTask.deadline,
               lastUpdated: new Date().toISOString(),
             };
@@ -375,7 +376,7 @@ const taskSlice = createSlice({
             ...state.selectedTask,
             ...updatedTask,
             category: updatedTask.category,
-            tag: updatedTask.tag,
+           // tag: updatedTask.tag,
           };
         }
         state.lastStateUpdate = new Date().toISOString();
@@ -459,7 +460,7 @@ const taskSlice = createSlice({
 export const {
   setFormTask,
   setCategories,
-  setTags,
+ // setTags,
   setSelectedTask,
   setStreakStatus,
   toggleCreatePopup,
@@ -470,7 +471,6 @@ export const {
   addSteps,
   removeStep,
   removeCategories,
-  removeTags,
   setActiveMenu,
   setHover,
   togglePopup,

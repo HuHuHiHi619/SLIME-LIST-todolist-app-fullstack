@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const TagSchema = new mongoose.Schema({
-    tagName: { type:String,required:true,trim: true },
+    tagName: { type:String, enum:[ "low" , "medium" , "high"] ,required:true,unique: true },
     user: {
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'

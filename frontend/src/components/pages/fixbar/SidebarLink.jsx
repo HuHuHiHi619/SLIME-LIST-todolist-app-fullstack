@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { ConstructionIcon } from "lucide-react";
+
 
 function SidebarLink({
   to,
@@ -78,41 +78,6 @@ function SidebarLink({
                       e.stopPropagation();
                       handleRemovedItem(cate._id, "category");
                     }}
-                  >
-                    <FontAwesomeIcon
-                      icon={faXmark}
-                      className="delete-step text-lg "
-                    />
-                  </button>
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {/* Dropdown for Tags */}
-      {isSidebarPinned &&  tags.length > 0 && (
-        <ul className="dropdown">
-          {tags.map((tag) => (
-            <li
-              onMouseEnter={() => handleHover(tag._id)}
-              onMouseLeave={() => handleHover(null)}
-              className={` hoverMenu mb-2 text-gray-400 easy-slide`}
-              key={tag._id}
-            >
-              <Link
-                to={`/tag/${tag._id}`}
-                className="flex justify-center  gap-4 dropdown-item"
-              >
-                <h3 className="text-gray-400">{tag.tagName}</h3>
-                {isHover === tag._id && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleRemovedItem(tag._id, "tag");
-                    }}
                     className="flex items-center"
                   >
                     <FontAwesomeIcon
@@ -126,6 +91,13 @@ function SidebarLink({
           ))}
         </ul>
       )}
+
+    
+              
+            
+        
+       
+    
     </div>
   );
 }

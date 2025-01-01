@@ -7,23 +7,20 @@ import {
   faGear,
   faList,
   faPlus,
-  faThumbTack,
-  faSquareCaretRight,
+  faCaretRight,
+  faUserSecret,
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCategories,
-  fetchTags,
   setCategories,
-  setTags,
   setActiveMenu,
   toggleSidebarPinned,
   togglePopup,
 } from "../../../redux/taskSlice";
 import SidebarLink from "../fixbar/SidebarLink";
 import CreateEntity from "../create/CreateEntity";
-import Tooltip from "../ui/Tooltip";
 import Logout from "../authen/Logout";
 import usePopup from "../hooks/usePopup";
 
@@ -37,7 +34,7 @@ function Sidebar() {
     isSidebarPinned,
     popupMode,
     categories,
-    tags,
+    
   } = useSelector((state) => state.tasks);
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
@@ -50,12 +47,7 @@ function Sidebar() {
   } = usePopup();
 
   const handleAddItem = async (newItem) => {
-    if (popupMode === "tag") {
-      // Optionally update UI optimistically
-      dispatch(setTags([...tags, newItem]));
-      // Fetch the latest tags
-      await dispatch(fetchTags()).unwrap();
-    } else if (popupMode === "category") {
+    if (popupMode === "category") {
       dispatch(setCategories([...categories, newItem]));
       await dispatch(fetchCategories()).unwrap();
     }
@@ -64,7 +56,6 @@ function Sidebar() {
 
   useEffect(() => {
     dispatch(fetchCategories());
-    dispatch(fetchTags());
   }, [dispatch]);
 
   useEffect(() => {
@@ -83,11 +74,23 @@ function Sidebar() {
       } transition-width duration-300`}
     >
       <div
-        className={`${isSidebarPinned ? "pin-button text-white" : "pin-button text-white opacity-50 hover:opacity-100"}`}
+        className={`items-center gap-4 ${
+          isSidebarPinned
+            ? "pin-button text-white"
+            : "pin-button text-white opacity-50 hover:opacity-100 "
+        }`}
         onClick={handlePinSidebar}
       >
-        <FontAwesomeIcon icon={faSquareCaretRight}
-        className={` transform origin-center ${isSidebarPinned ? "rotate-180" : "" } `}
+        <div
+          className={`h-2 w-full bg-purpleActive rounded-full ${
+            isSidebarPinned ? "opacity-100" : "opacity-0"
+          } transition-opacity duration-300`}
+        ></div>
+        <FontAwesomeIcon
+          icon={faCaretRight}
+          className={` transform origin-center ${
+            isSidebarPinned ? "rotate-180" : "pr-4"
+          } `}
         />
       </div>
 

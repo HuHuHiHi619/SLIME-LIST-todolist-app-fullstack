@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { register } from "../../../functions/authen";
 import { useNavigate } from "react-router-dom";
+import InputField from "../ui/inputField";
 
 function Register() {
   const navigate = useNavigate();
@@ -58,39 +59,39 @@ function Register() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-darkBackground">
-    <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Register
+    <div className="flex justify-center items-center h-screen bg-purpleSidebar">
+    <div className="border-4 border-purpleMain bg-purpleSidebar p-10 rounded-2xl shadow-lg w-full max-w-lg">
+      <h1 className="text-3xl  text-white mb-6 text-center">
+        SIGN UP
       </h1>
 
       {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <input
+          <InputField
             type="text"
             name="username"
             value={user.username}
             onChange={handleChange}
             placeholder="Username"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 rounded-md text-2xl"
           />
         </div>
         <div>
-          <input
+          <InputField
             type="password"
             name="password"
             value={user.password}
             onChange={handleChange}
             placeholder="Password"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2 rounded-md text-2xl"
           />
         </div>
         <div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            className="done-button w-full hover:bg-violet-500 transition-all duration-150"
           >
             Sign up
           </button>

@@ -1,3 +1,4 @@
+const compression = require('compression')
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -12,6 +13,9 @@ const imagesPath = path.join(__dirname, '../images/badges');
 
 connectDb();
 app.use(morgan('dev'));
+app.use(compression({
+  threshold: 0, 
+}));
 
 app.use(cors({
   origin:'http://localhost:5173',
@@ -22,13 +26,14 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 
-app.use('/uploads',express.static(path.join(__dirname,'uploads')));
-app.use('/images',express.static(imagesPath));
+app.use('/uploads', compression(), express.static(path.join(__dirname, 'uploads')));
+app.use('/images', compression(), express.static(imagesPath));
+
 
 require('dotenv').config();
 
 checkOverdueTasks();
-resetDailyStreakStatus()
+
 
 
 readdirSync('./Routes').map((route) => 

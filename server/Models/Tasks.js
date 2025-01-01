@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { type } = require("os");
 
 const TasksSchema = new mongoose.Schema(
   {
@@ -29,9 +30,9 @@ const TasksSchema = new mongoose.Schema(
       }
     },
     tag: {
-      type: [String], 
-      enum:["low" , "medium","high"],
-      default: "low"
+     type: mongoose.Schema.Types.ObjectId,
+     ref: "Tag",
+     require: true
     },
     status: {
       type: String,

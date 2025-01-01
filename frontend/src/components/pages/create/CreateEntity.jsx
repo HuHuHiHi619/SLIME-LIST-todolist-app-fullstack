@@ -2,7 +2,6 @@ import React, { useState  } from "react";
 import InputField from "../ui/inputField";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import { createCategory } from "../../../functions/category";
-import { createTag } from "../../../functions/tag";
 import { useSelector } from "react-redux";
 
 function CreateEntity({ onAddItem, entityType }) {
@@ -22,10 +21,6 @@ function CreateEntity({ onAddItem, entityType }) {
         return false;
       }
     
-    if (entityType === "tag" && tags.length >= 3) {
-        setError("Tag has maxed at 3 !!!");
-        return false;
-    }
     return true;
   };
 
@@ -44,10 +39,8 @@ function CreateEntity({ onAddItem, entityType }) {
         let response;
         if (entityType === "category") {
           response = await createCategory({ categoryName: formEntity.name });
-        } else if (entityType === "tag") {
-          response = await createTag({ tagName: formEntity.name });
-        }
-
+        } 
+        
         if (response) {
           console.log("Successfully created:", response);
           onAddItem(response);
@@ -64,8 +57,9 @@ function CreateEntity({ onAddItem, entityType }) {
   return (
     <>
     <FadeUpContainer>
-    <div className="bg-purpleMain px-6 py-4 rounded-xl w-[600px]">
-      <h3>Create {entityType.charAt(0).toUpperCase() + entityType.slice(1)}</h3>
+    <div className="bg-purpleGradient p-1 rounded-xl md:w-[450px]">
+      <div className="bg-purpleSidebar p-8 rounded-xl">
+      <p className="text-3xl text-white">Create a new {entityType}</p>
       {error && <p className="text-xl text-rose-500">{error}</p>}
       <InputField
         type="text"
@@ -73,8 +67,10 @@ function CreateEntity({ onAddItem, entityType }) {
         value={formEntity.name}
         onChange={handleChange}
         onKeyDown={handleSubmit}
-        className="w-full placeholder:text-xl px-4 py-3 rounded-xl mt-2"
+        className="w-full placeholder:text-xl px-4 py-3 rounded-xl mt-6"
       />
+      </div>
+     
     </div>
     </FadeUpContainer>
    

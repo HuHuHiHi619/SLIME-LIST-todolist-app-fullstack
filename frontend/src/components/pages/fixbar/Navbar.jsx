@@ -22,8 +22,8 @@ function Navbar() {
          
         </div>
         { !isAuthenticated && (
-          <div className="flex mx-10 gap-4">
-          <Link to="/register">
+          <div className="flex mx-8 gap-4">
+          <Link to="/register" className="hidden md:block">
             <button className="register">Sign up</button>
           </Link>
           <Link to="/login">

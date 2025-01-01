@@ -24,28 +24,25 @@ function GroupTaskForm({ filter }) {
   } = usePopup();
 
   return (
-    <div className="flex flex-1 gap-6  items-start ml-10  relative ">
+    <div className=" md:flex-row md:gap-6 flex flex-col gap-4  items-start md:ml-10  relative ">
       {fetchedAllTasks &&
       Array.isArray(fetchedAllTasks) &&
       fetchedAllTasks.length > 0 ? (
-        fetchedAllTasks.map((group,index) => {
+        fetchedAllTasks.map((group, index) => {
           const label =
-            group.categoryName ||
-            group.status ||
-            group.deadlineCase;
-          const keys =`
-            ${group.categoryId ||
-            group.status ||
-            group.deadlineCase}-${index}`
+            group.categoryName || group.status || group.deadlineCase;
+          const keys = `
+            ${group.categoryId || group.status || group.deadlineCase}-${index}`;
           const tasks = group.tasks || [];
-          
+
           return (
             <div key={keys}>
               {label.toLowerCase() === "completed" &&
-                tasks.filter(task => task.status === "completed").length > 0 &&
+                tasks.filter((task) => task.status === "completed").length >
+                  0 &&
                 ReactDOM.createPortal(
                   <button
-                    className="clear-task clear-allTask"
+                    className="red-button clear-allTask"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -71,15 +68,14 @@ function GroupTaskForm({ filter }) {
           );
         })
       ) : (
-        <div className="mt-56 ml-10 mr-6 rounded-3xl pl-6 pt-5 pb-6 flex-1">
-          <div className="flex justify-center ">
-            <CreateButton onClick={handleIsCreate} />
+        <div className="md:mt-56 md:pt-0 pt-40 mx-4 rounded-3xl flex-1 ">
+            <div className="flex justify-center">
+              <CreateButton onClick={handleIsCreate} />
+            </div>
+            <p className="text-xl md:text-4xl text-white flex justify-center mt-4">You have no task</p>
+            <p className="text-lg md:text-2xl text-gray-400 flex justify-center">Click on the + button to</p>
+            <p className="text-lg md:text-2xl text-gray-400 flex justify-center">create a task</p>
           </div>
-          <h3 className="text-4xl flex justify-center mt-4">No tasks yet</h3>
-          <h3 className="text-2xl flex justify-center text-gray-400">
-            Click on the + button to add one
-          </h3>
-        </div>
       )}
 
       {/* Popup Task Detail */}

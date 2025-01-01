@@ -12,12 +12,12 @@ function ProgressField({
     <div>
     {steps.length > 0 ? (
       <div>
-        <h3 className="text-white mb-2">Progress steps :</h3>
-        <ul className="flex flex-col max-h-[140px] gap-3 overflow-y-scroll scrollbar-custom overflow-x-hidden ">
+        <p className="text-2xl text-white mb-2">Progress steps </p>
+        <ul className="flex flex-col max-h-[100px] md:max-h-[140px] gap-2 overflow-y-scroll scrollbar-custom overflow-x-hidden ">
           {steps.map((step, index) => (
             <li
               key={index}
-              className={`p-2 pl-4 rounded-lg  hover:bg-purpleNormal
+              className={` pl-6 rounded-lg  hover:bg-purpleNormal
               }`}
             >
               <div className="flex items-center gap-3 py-1 ">
@@ -40,7 +40,7 @@ function ProgressField({
                 )}
   
                 <span
-                  className={` text-2xl truncate max-w-[calc(80%-60px)] ${
+                  className={` md:text-2xl truncate max-w-[calc(80%-60px)] ${
                     step.completed ? "line-through text-purpleBorder" : ""
                   }`}
                 >
@@ -48,7 +48,7 @@ function ProgressField({
                 </span>
                 <button
                   type="button"
-                  className="flex items-center"
+                  className="flex items-center text-white"
                   onClick={() => handleRemoveStep(index)}
                 >
                   <FontAwesomeIcon icon={faXmark} className="delete-step" />
