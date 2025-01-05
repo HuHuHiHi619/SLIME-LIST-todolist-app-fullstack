@@ -6,10 +6,11 @@ import { Outlet } from "react-router-dom";
 function MainLayout() {
   return (
     <section id="mainLayout">
-      <div className="flex">
-      <Sidebar />
-        <div className="flex-grow">
-          <Navbar />
+      <div className="grid grid-col">
+        <Navbar />
+
+        <Sidebar />
+        <div className="relative">
           <Outlet />
         </div>
       </div>

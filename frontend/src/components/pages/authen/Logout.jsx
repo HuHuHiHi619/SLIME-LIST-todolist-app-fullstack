@@ -37,7 +37,7 @@ function Logout() {
     <>
       <button
         onClick={() => setShowConfirm(true)}
-        className=" flex red-button justify-center gap-4 items-center logout text-2xl  "
+        className=" flex red-button mx-14 gap-4 items-center logout text-2xl   "
       >
         <FontAwesomeIcon icon={faRightFromBracket} className=" text-xl" />
         Log out

@@ -70,110 +70,39 @@ function StreakField() {
     <div className="flex" onClick={handleIsInstruct}>
       {isAuthenticated ? (
         <>
-          <div className="relative flex items-center  bg-gradient-to-b from-fuchsia-500 to-indigo-500 border-4 border-fuchsia-400 rounded-3xl pl-4  mr-3 w-full">
-            <div className="relative">
-              <p
-                className={` text-white ${
-                  isSidebarPinned
-                    ? "text-[60px] -right-10 -bottom-12 -tracking-widest"
-                    : "text-[60px] -right-16 -tracking-widest "
-                }  -bottom-12 absolute`}
-              >
-               {userData.bestStreak}
-              </p>
-              {userData.bestStreak > 1 ? (
-                <p
-                  className={` text-white transition-all duration-300 ease-in-out ${
-                    isSidebarPinned
-                      ? "text-xl left-14 -bottom-8 tracking-tighter "
-                      : "text-xl left-20 -bottom-8 "
-                  }  -bottom-12 absolute`}
-                >
-                  DAYS
-                </p>
-              ) : (
-                <p
-                  className={` text-white transition-all duration-300 ease-in-out ${
-                    isSidebarPinned
-                      ? "text-xl left-11 -bottom-8 tracking-tighter "
-                      : "text-xl left-9 -bottom-8 "
-                  }  -bottom-12 absolute`}
-                >
-                  DAY
-                </p>
-              )}
+          <div className="hidden relative xl:flex items-center justify-center bg-gradient-to-b from-fuchsia-500 to-indigo-500 border-4 border-fuchsia-400 rounded-3xl pl-4  mr-3 w-full">
+            <div className="flex items-center gap-4">
+              <p className={`text-white text-[55px]`}>{userData.bestStreak}</p>
+              <div>
+                <p className="text-white text-xl">BEST</p>
+                <p className="text-white text-xl">STREAK</p>
+              </div>
             </div>
-
-            <p
-              className={`absolute text-white leading-none transition-all duration-300 ease-in-out
-              ${
-                isSidebarPinned
-                  ? "top-7 left-16 text-xl pl-2"
-                  : "text-xl top-7 left-24 "
-              }`}
-            >
-              BEST
-            </p>
           </div>
           <div
-            className={`relative flex items-center ${
+            className={`hidden  xl:flex items-center justify-center ${
               userData.alreadyCompletedToday
                 ? "bg-purpleActiveTask"
                 : "opacity-50 bg-purpleActiveTask "
             }   border-4 border-purpleBorder rounded-3xl pl-4 py-2 mr-3 w-full`}
           >
-            <div className="relative">
-              <p
-                className={` text-white ${
-                  isSidebarPinned
-                    ? "text-[60px] -right-10 -bottom-12 -tracking-widest"
-                    : "text-[60px] -right-16 -tracking-widest "
-                }  -bottom-12 absolute`}
-              >
-               {userData.currentStreak}
-              </p>
-              {userData.currentStreak > 1 ? (
-                <p
-                  className={` text-white transition-all duration-300 ease-in-out ${
-                    isSidebarPinned
-                      ? "text-xl left-11 -bottom-8 tracking-tighter "
-                      : "text-xl left-9 -bottom-8 tracking-tighter"
-                  }  -bottom-12 absolute`}
-                >
-                  NOW
-                </p>
-              ) : (
-                <p
-                  className={` text-white ${
-                    isSidebarPinned
-                      ? "text-xl left-14 -bottom-8 tracking-tighter "
-                      : "text-xl top-1 left-20 tracking-tighter"
-                  }  -bottom-12 absolute`}
-                >
-                  NOW
-                </p>
-              )}
-            </div>
-            <div
-              className={`absolute leading-none transition-all duration-300 ease-in-out
-              ${
-                isSidebarPinned
-                  ? "top-7 left-16 text-xl pl-2"
-                  : "text-xl top-7 left-24 "
-              }`}
-            >
-              <p className="text-white -tracking-widest">STREAK</p>
+          <div className="flex items-center gap-4">
+              <p className={`text-white text-[55px]`}>{userData.currentStreak}</p>
+              <div>
+                <p className="text-white text-xl">STREAK</p>
+                <p className="text-white text-xl">NOW</p>
+              </div>
             </div>
           </div>
           <div
-            className={`bg-purpleMain border-4 rounded-3xl px-4 py-2 mr-10 transition-all duration-300 ease-out
+            className={`bg-purpleMain border-4 rounded-3xl px-4 py-2 mr-10 w-full  transition-all duration-300 ease-out
                    ${streak === 0 ? "border-purpleNormal" : ""} 
                    ${streak <= 5 && streak !== 0 ? "border-orange-400" : ""} 
                    ${streak >= 6 && streak <= 10 ? "border-sky-500" : ""} 
                    ${streak > 10 ? "border-purple-500" : ""}
             `}
           >
-            <div className="flex items-center gap-4 justify-between">
+            <div className="flex items-center gap-4 justify-between pl-6 xl:p-0">
               <FontAwesomeIcon
                 className={`text-[50px] 
                    ${streak === 0 ? "text-purpleNormal" : ""} 

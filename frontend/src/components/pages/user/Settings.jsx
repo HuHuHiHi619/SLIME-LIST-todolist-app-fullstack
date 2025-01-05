@@ -21,7 +21,7 @@ function Settings() {
   return (
     <div
       id="otherPage"
-      className={`${isAuthenticated ? "" : "flex justify-center pt-64"}`}
+      className={`${isAuthenticated ? "" : "flex justify-center pt-72"}`}
     >
       {isAuthenticated ? (
         <div className="ml-10 max-w-2xl w-full  bg-purpleGradient rounded-2xl shadow-lg p-1 space-y-6">

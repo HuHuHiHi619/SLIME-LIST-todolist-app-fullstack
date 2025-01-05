@@ -94,7 +94,7 @@ function Summary() {
       ) : (
         <>
           {summary.map((item, index) => (
-            <div key={index} className="flex gap-4 items-center">
+            <div key={index} className=" md:flex gap-4 items-center ">
               <div className="ml-4">
                 <GradientCircularProgressbar
                   percentage={item.completedRate || 0}
@@ -111,13 +111,16 @@ function Summary() {
                 <div className="text-2xl pb-1">
                   ALL TASKS : {item.completedTasks} / {item.totalTasks}
                 </div>
-                <div>KEEP GOING YOU</div>
-                <div>CAN DO IT!</div>
+                <div className="">
+                  <p>KEEP GOING YOU</p>
+                  <p>CAN DO IT!</p>
+                </div>
+                
               </motion.div>
             </div>
           ))}
 
-          <div className="flex flex-col gap-4 flex-1 justify-center ml-4">
+          <div className="hidden  xl:flex flex-col gap-4 flex-1 justify-center ml-4">
             {summaryCategory.map((catItem, catIndex) => (
               <div
                 key={catIndex}

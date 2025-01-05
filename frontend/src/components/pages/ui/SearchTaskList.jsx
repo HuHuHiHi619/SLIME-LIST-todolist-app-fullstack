@@ -8,8 +8,6 @@ function SearchTaskList({
   handleTaskClick,
   handleRemovedTask,
   selectedTask,
-  handleIsCreate,
-  label,
   allTasks,
 }) {
   const { tasks } = useSelector((state) => state.tasks);

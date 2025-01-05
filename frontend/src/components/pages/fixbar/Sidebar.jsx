@@ -8,7 +8,8 @@ import {
   faList,
   faPlus,
   faCaretRight,
-  faUserSecret,
+  faBars,
+  
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +26,7 @@ import Logout from "../authen/Logout";
 import usePopup from "../hooks/usePopup";
 
 function Sidebar() {
+  
   const location = useLocation();
   const dispatch = useDispatch();
   const {
@@ -69,8 +71,8 @@ function Sidebar() {
   return (
     <div
       id="side-bar"
-      className={`flex flex-col gap-4 ${
-        isSidebarPinned ? "" : " sidebar-collapsed"
+      className={` md:translate-x-0  md:flex flex-col gap-4 ${
+        isSidebarPinned ? "" : "-translate-x-20 sidebar-collapsed"
       } transition-width duration-300`}
     >
       <div
@@ -87,8 +89,8 @@ function Sidebar() {
           } transition-opacity duration-300`}
         ></div>
         <FontAwesomeIcon
-          icon={faCaretRight}
-          className={` transform origin-center ${
+          icon={faBars}
+          className={`  hidden md:block transform origin-center text-3xl ${
             isSidebarPinned ? "rotate-180" : "pr-4"
           } `}
         />

@@ -56,7 +56,7 @@ const NotificationForm = () => {
   };
 
   return (
-    <div className="p-4 mr-8 z-50">
+    <div className="p-2 mr-8 z-50">
       <div className="relative flex items-center" ref={menuRef}>
         {/* Main Menu Icon and Click Area */}
         <div className="relative flex items-center">

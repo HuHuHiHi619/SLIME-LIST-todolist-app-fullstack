@@ -22,6 +22,7 @@ export default {
       backgroundImage: {
         purpleActiveTask: "linear-gradient(to right,#5D5DEA,#212140)",
         purpleSidebar: "linear-gradient(to top,#12112D , #212140 )",
+        purpleNavbar: "linear-gradient(to left,#12112D , #212140 )",
         purpleActive: "linear-gradient(to left,#5D5DEA,#212140)",
         completedTask:"linear-gradient(to right,rgba(48, 232, 155, 0.8) 10%,#363669)",
         failedTask:"linear-gradient(to right,#C51313,#5F0909)",

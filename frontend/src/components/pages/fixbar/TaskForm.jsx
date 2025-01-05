@@ -21,7 +21,7 @@ function TaskForm({ filter, filterKey }) {
   } = usePopup();
   
   return (
-    <div className="md:mb-8 md:mx-8 overflow-hidden">
+    <div className="md:mb-8 md:ml-28 md:mt-6 overflow-hidden">
       <FadeUpContainer>
         {fetchedTasks.length > 0 ? (
           <TaskList

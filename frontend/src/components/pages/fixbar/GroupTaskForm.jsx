@@ -9,9 +9,12 @@ import usePopup from "../hooks/usePopup";
 import CreateButton from "../ui/CreateButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { div } from "framer-motion/client";
 
 function GroupTaskForm({ filter }) {
-  const { selectedTask, isCreate } = useSelector((state) => state.tasks);
+  const { selectedTask, isCreate, isSideBarPinned } = useSelector(
+    (state) => state.tasks
+  );
   const { tasks: fetchedAllTasks } = useFetchTask(filter);
   const {
     handleIsCreate,
@@ -24,7 +27,7 @@ function GroupTaskForm({ filter }) {
   } = usePopup();
 
   return (
-    <div className=" md:flex-row md:gap-6 flex flex-col gap-4  items-start md:ml-10  relative ">
+    <div className="md:flex-row md:gap-6 md:ml-28  flex flex-col gap-4  items-start min-h-screen">
       {fetchedAllTasks &&
       Array.isArray(fetchedAllTasks) &&
       fetchedAllTasks.length > 0 ? (
@@ -40,9 +43,9 @@ function GroupTaskForm({ filter }) {
               {label.toLowerCase() === "completed" &&
                 tasks.filter((task) => task.status === "completed").length >
                   0 &&
-                ReactDOM.createPortal(
+                !isSideBarPinned && (
                   <button
-                    className="red-button clear-allTask"
+                    className="red-button clear-allTask absolute"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -51,8 +54,7 @@ function GroupTaskForm({ filter }) {
                   >
                     <FontAwesomeIcon icon={faTrashCan} className="pr-2" />
                     Clear completed
-                  </button>,
-                  document.body
+                  </button>
                 )}
               <TaskList
                 key={keys}
@@ -68,14 +70,20 @@ function GroupTaskForm({ filter }) {
           );
         })
       ) : (
-        <div className="md:mt-56 md:pt-0 pt-40 mx-4 rounded-3xl flex-1 ">
-            <div className="flex justify-center">
-              <CreateButton onClick={handleIsCreate} />
-            </div>
-            <p className="text-xl md:text-4xl text-white flex justify-center mt-4">You have no task</p>
-            <p className="text-lg md:text-2xl text-gray-400 flex justify-center">Click on the + button to</p>
-            <p className="text-lg md:text-2xl text-gray-400 flex justify-center">create a task</p>
+        <div className="md:mt-64 md:pt-0 pt-40 mx-24 rounded-3xl flex-1 ">
+          <div className="flex justify-center">
+            <CreateButton onClick={handleIsCreate} />
           </div>
+          <p className="text-xl md:text-4xl text-white flex justify-center mt-4">
+            You have no task
+          </p>
+          <p className="text-lg md:text-2xl text-gray-400 flex justify-center">
+            Click on the + button to
+          </p>
+          <p className="text-lg md:text-2xl text-gray-400 flex justify-center">
+            create a task
+          </p>
+        </div>
       )}
 
       {/* Popup Task Detail */}

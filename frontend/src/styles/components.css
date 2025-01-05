@@ -25,7 +25,7 @@ span{
 .register{
   @apply  bg-purpleMain  border-2 border-purpleBorder 
   focus:outline-none  flex justify-center 
-  cursor-pointer p-2 px-4 text-2xl 
+  cursor-pointer p-2 px-4 text-xl 
   hover:bg-purpleBorder hover:bg-opacity-50 transition-all duration-75 ease-in
   rounded-lg text-white ;
 }
@@ -33,7 +33,7 @@ span{
 .login{
   @apply  bg-purpleBorder focus:outline-none flex justify-center 
   active:scale-95  transition-all duration-75 ease-in
-  cursor-pointer p-2 px-4 text-2xl rounded-lg text-white;
+  cursor-pointer p-2 px-4 text-xl rounded-lg text-white;
 
 }
 .red-button{

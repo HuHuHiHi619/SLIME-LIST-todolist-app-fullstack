@@ -4,14 +4,15 @@
 }
 
 #nav-bar {
-    @apply bg-darkBackground flex justify-between items-center pt-4 md:pt-10 z-50;
+    @apply bg-purpleNavbar border-b-2 border-b-purpleNormal  flex justify-between items-center py-2 md:py-2 z-50;
 }
 
 #side-bar {
-    @apply  bg-purpleSidebar py-5  border-purpleNormal border-r-[2px] overflow-hidden ;
+    @apply absolute top-12 z-10 bg-purpleSidebar bg-opacity-50 py-10 border-r-2 border-r-purpleNormal  overflow-hidden ;
     width: 17rem;
     max-width: 17rem;
     min-width: 17rem;
+    height: 50rem;
 }
 #side-bar.sidebar-collapsed {
     width: 5rem; 
