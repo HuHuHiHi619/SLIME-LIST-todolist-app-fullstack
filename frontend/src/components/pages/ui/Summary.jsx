@@ -81,18 +81,18 @@ function Summary() {
   
 
   return (
-    <div className="mr-10 bg-purpleMain border-4 border-purpleNormal rounded-3xl py-8 px-6 flex">
+    <div className="mr-10 bg-purpleSidebar border-4 border-purpleNormal rounded-3xl py-8 px-6 grid h-[330px] ">
       {!Array.isArray(summary) ||
       summary.length === 0 ||
       !Array.isArray(summaryCategory) ||
       summaryCategory.length === 0 ? (
-        <div className="flex-1">
-          <p className="text-gray-400 text-center text-2xl p-8">
-            You have no tasks data summary
+        <div className="grid justify-center  items-center">
+          <p className="text-gray-400 text-center text-3xl p-8">
+            You have no tasks summary
           </p>
         </div>
       ) : (
-        <>
+        <div className="flex">
           {summary.map((item, index) => (
             <div key={index} className=" md:flex gap-4 items-center ">
               <div className="ml-4">
@@ -137,7 +137,7 @@ function Summary() {
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
       
     </div>

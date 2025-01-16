@@ -59,7 +59,10 @@ function Login() {
     <div className="flex justify-center items-center h-screen bg-purpleSidebar">
       <div className="  bg-purpleGradient p-1 rounded-2xl shadow-lg w-full max-w-lg">
         <div className="bg-purpleSidebar p-8 rounded-xl">
-          <h1 className="text-3xl  text-white mb-6 text-center">LOGIN</h1>
+          <div className="grid justify-center ">
+          <img src="./images/Logo-slime.png" className="w-20  " alt="" />
+          </div>
+          <h1 className="text-3xl font-bold text-white my-4 text-center">SIGN IN</h1>
 
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
@@ -89,7 +92,7 @@ function Login() {
                 type="submit"
                 className="done-button w-full hover:bg-violet-500 transition-all duration-150"
               >
-                Log in
+                Sign in
               </button>
             </div>
           </form>

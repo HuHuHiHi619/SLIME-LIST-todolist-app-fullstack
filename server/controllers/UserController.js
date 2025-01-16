@@ -1,5 +1,5 @@
 const User = require("../Models/User");
-const LoginHistory = require("../Models/loginHistory");
+const LoginHistory = require("../Models/LoginHistory");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
@@ -113,21 +113,21 @@ exports.login = async (req, res) => {
 
     res.cookie('accessToken',accessToken,{
       httpOnly: true,
-      secure:false,
+      secure:true,
       samesite: 'lax',
       maxAge: 15 * 60 * 1000 // 15m
     });
 
     res.cookie('refreshToken',refreshToken,{
       httpOnly: true,
-      secure:false,
+      secure:true,
       samesite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
     });
 
     res.clearCookie('guestId',{
       httpOnly: true,
-      secure:false,
+      secure:true,
       samesite: 'lax',
       path: '/'
     })
@@ -153,13 +153,13 @@ exports.logout = async (req,res) => {
     res.clearCookie('accessToken', {
       httpOnly: true,
       sameSite: 'lax',
-      secure: false,
+      secure: true,
       path: '/'
   });
   res.clearCookie('refreshToken', {
       httpOnly: true,
       sameSite: 'lax',
-      secure: false,
+      secure: true,
       path: '/'
   });
   } catch(error) {

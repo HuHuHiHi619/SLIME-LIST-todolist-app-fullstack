@@ -8,11 +8,11 @@
 }
 
 #side-bar {
-    @apply absolute top-12 z-10 bg-purpleSidebar bg-opacity-50 py-10 border-r-2 border-r-purpleNormal  overflow-hidden ;
+    @apply absolute top-12 h-[40rem] md:h-[50rem] z-10 bg-purpleSidebar bg-opacity-50 py-10   overflow-hidden ;
     width: 17rem;
     max-width: 17rem;
     min-width: 17rem;
-    height: 50rem;
+    
 }
 #side-bar.sidebar-collapsed {
     width: 5rem; 
@@ -21,7 +21,7 @@
 }
 
 #home {
-    @apply  bg-darkBackground pt-5 h-screen md:grid grid-cols-2 ;
+    @apply  bg-darkBackground pt-5 h-screen lg:grid grid-cols-2 ;
 }
 
 #otherPage {

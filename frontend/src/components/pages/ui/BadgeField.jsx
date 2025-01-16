@@ -5,6 +5,14 @@ import { fetchUserData } from "../../../redux/userSlice";
 function BadgeField() {
   const dispatch = useDispatch();
   const { userData, isAuthenticated } = useSelector((state) => state.user);
+  const badgeImages = {
+    gold : "./images/Gold-badge.png",
+    silver : "./images/Silver-badge.png",
+    bronze : "./images/Bronze-badge.png",
+    iron : "./images/Iron-badge.png"
+  }
+
+ 
 
   useEffect(() => {
     if (userData.id) {
@@ -12,11 +20,19 @@ function BadgeField() {
     }
   }, [dispatch, userData.id]);
   return (
-    <div className="mr-10  flex justify-center items-center bg-purpleMain border-4 border-purpleNormal rounded-3xl p-10  ">
+    <div className="bg-purpleSidebar border-4 border-purpleNormal mr-10 justify-start items-center rounded-3xl  ">
       {isAuthenticated ? (
         
-          <div className="">
-            <div className="done-button w-28 h-28 ">{userData.currentBadge}</div>
+          <div className="bg-purpleGradient p-1 rounded-2xl ">
+            <div className="bg-purpleSidebar rounded-2xl p-4 px-10 w-full flex justify-center">
+              <div className=" w-32 h-32 ">
+                <img src={badgeImages[userData.currentBadge] || "./images/Iron-badge.png"} alt="" />
+              </div>
+              <div className="grid items-center ">
+                <p className="text-[50px]  px-10  text-white">{userData.currentBadge.toUpperCase()}</p>
+              </div>
+            </div>
+           
           </div>
         
       ) : (

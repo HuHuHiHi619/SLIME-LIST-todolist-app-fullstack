@@ -23,6 +23,7 @@ function usePopup() {
   const popupRef = useRef(null);
   const popupEnRef = useRef(null);
   const popupInstructRef = useRef(null);
+  const sidebarRef = useRef(null)
   const { isPopup , activeMenu } = useSelector((state) => state.tasks)
   const { instruction } = useSelector((state) => state.summary)
 
@@ -89,6 +90,16 @@ function usePopup() {
       dispatch(fetchSummaryByCategory());
     }
   };
+  
+  const handleClose = () => {
+    if(isPopup){
+      dispatch(togglePopup(""))
+    } else if(popupRef) {
+      dispatch(toggleCreatePopup())
+      dispatch(setSelectedTask(null));
+        return;
+    }
+  }
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -100,6 +111,8 @@ function usePopup() {
         dispatch(togglePopup(""));
       } else if(instruction && popupInstructRef.current && !popupInstructRef.current.contains(e.target)){
         dispatch(toggleInstructPopup());
+      } else if(sidebarRef.current && !sidebarRef.current.contain(e.tartget)){
+        dispatch(toggleSidebarPinned())
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -122,6 +135,7 @@ function usePopup() {
     handleHover,
     handlePopup,
     handleIsInstruct,
+    handleClose,
     popupRef,
     popupEnRef,
     popupInstructRef

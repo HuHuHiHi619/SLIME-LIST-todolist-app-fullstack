@@ -10,9 +10,9 @@ function MainLayout() {
         <Navbar />
 
         <Sidebar />
-        <div className="relative">
+        
           <Outlet />
-        </div>
+       
       </div>
     </section>
   );

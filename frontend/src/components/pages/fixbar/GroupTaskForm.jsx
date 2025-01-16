@@ -27,7 +27,7 @@ function GroupTaskForm({ filter }) {
   } = usePopup();
 
   return (
-    <div className="md:flex-row md:gap-6 md:ml-28  flex flex-col gap-4  items-start min-h-screen">
+    <div className="md:flex-row md:gap-6 md:ml-28  flex flex-col gap-4  items-start ">
       {fetchedAllTasks &&
       Array.isArray(fetchedAllTasks) &&
       fetchedAllTasks.length > 0 ? (

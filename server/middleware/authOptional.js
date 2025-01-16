@@ -34,7 +34,7 @@ const authMiddlewareOptional = (allowGuest = false) => async (req, res, next) =>
             const newToken = jwt.sign({ userId: decoded.userId }, accessTokenSecret, { expiresIn: '1h' });
             res.cookie('accessToken', newToken, {
                 httpOnly: true,
-                secure: false,
+                secure: true,
                 sameSite: 'lax',
                 maxAge: 360000, // 1 hour
             });

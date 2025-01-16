@@ -8,6 +8,7 @@ function InstructionPopup({ onClose }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
+    console.log("next")
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
   const handlePrevious = () => {
@@ -21,20 +22,20 @@ function InstructionPopup({ onClose }) {
         <div className="flex justify-center items-center relative">
           <div
             onClick={onClose}
-            className=" w-[200px] rounded-[20px] md:w-[500px] md:rounded-[50px] h-auto p-1  bg-gradient-to-r from-[#6D6DFD] via-[#CE88FA] to-[#6D6DFD]"
+            className=" w-[300px] rounded-[20px] md:w-[500px] md:rounded-[50px] h-auto p-1  bg-gradient-to-r from-[#6D6DFD] via-[#CE88FA] to-[#6D6DFD]"
           >
             <div className=" bg-transparent ">
               <img src={images[currentIndex]} alt="instructions" />
             </div>
             <button
               onClick={handleNext}
-              className="text-[50px] md:text-[100px] transition-all duration-200 ease-out  text-white absolute top-24 md:top-60 -right-10 md:-right-20 hover:scale-125 hover:text-purpleBorder"
+              className="z-50 text-[50px] md:text-[100px] transition-all duration-200 ease-out  text-white absolute top-40  -right-3 md:top-60 md:-right-20 hover:scale-125 hover:text-purpleBorder"
             >
               <FontAwesomeIcon icon={faCaretRight} />
             </button>
             <button
               onClick={handlePrevious}
-              className="text-[50px] md:text-[100px] transition-all duration-200 ease-out text-white absolute top-24 md:top-60 -left-10 md:-left-20 hover:scale-125 hover:text-purpleBorder"
+              className="z-50 text-[50px] md:text-[100px] transition-all duration-200 ease-out text-white absolute top-40 -left-3   md:top-60  md:-left-20 hover:scale-125 hover:text-purpleBorder"
             >
               <FontAwesomeIcon icon={faCaretLeft} />
             </button>

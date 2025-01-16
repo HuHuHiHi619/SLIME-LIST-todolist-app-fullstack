@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
+import ReactDOM from "react-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
@@ -7,7 +8,6 @@ import {
   faGear,
   faList,
   faPlus,
-  faCaretRight,
   faBars,
   
 } from "@fortawesome/free-solid-svg-icons";
@@ -45,7 +45,9 @@ function Sidebar() {
     handleActiveMenu,
     handlePopup,
     handleHover,
+    handleClose,
     popupEnRef,
+    sidebarRef
   } = usePopup();
 
   const handleAddItem = async (newItem) => {
@@ -81,6 +83,7 @@ function Sidebar() {
             ? "pin-button text-white"
             : "pin-button text-white opacity-50 hover:opacity-100 "
         }`}
+        ref={sidebarRef}
         onClick={handlePinSidebar}
       >
         <div
@@ -155,12 +158,12 @@ function Sidebar() {
         isSidebarPinned={isSidebarPinned}
       />
       {isAuthenticated && isSidebarPinned && <Logout />}
-      {isPopup && (
+      {isPopup && ReactDOM.createPortal(
         <div className="popup-overlay">
           <div className="popup-content" ref={popupEnRef}>
-            <CreateEntity onAddItem={handleAddItem} entityType={popupMode} />
+            <CreateEntity  onAddItem={handleAddItem} entityType={popupMode} onClose={handleClose} />
           </div>
-        </div>
+        </div>,document.body
       )}
     </div>
   );

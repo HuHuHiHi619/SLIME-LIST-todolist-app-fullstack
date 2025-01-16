@@ -22,7 +22,7 @@ import {
 
 function CreateTask({ onClose }) {
   const dispatch = useDispatch();
-  const { formTask, progress, categories, tags } = useSelector(
+  const { formTask, progress, categories } = useSelector(
     (state) => state.tasks
   );
   const [currentStep, setCurrentStep] = useState("");
@@ -129,7 +129,7 @@ function CreateTask({ onClose }) {
 
   return (
     <FadeUpContainer>
-      <div className=" md:w-[800px] p-1 rounded-2xl ">
+      <div className=" md:w-[800px] p-1 rounded-2xl relative">
         <div className="bg-purpleSidebar p-6 rounded-xl">
         <form onSubmit={handleSubmit}>
           <h1 className="text-white tracking-wide">CREATE A TASK</h1>
@@ -227,6 +227,7 @@ function CreateTask({ onClose }) {
             <button type="submit" className="done-button hover:scale-110 transition-all duration-100 ">
               Create
             </button>
+            <button onClick={onClose} className="cancel-button absolute -top-4 -right-4">X</button>
           </div>
         </form>
         </div>

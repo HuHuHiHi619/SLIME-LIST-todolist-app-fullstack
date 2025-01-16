@@ -14,6 +14,7 @@ function Settings() {
   const { userData, loading, error, isAuthenticated } = useSelector(
     (state) => state.user
   );
+  console.log(userData)
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -24,7 +25,7 @@ function Settings() {
       className={`${isAuthenticated ? "" : "flex justify-center pt-72"}`}
     >
       {isAuthenticated ? (
-        <div className="ml-10 max-w-2xl w-full  bg-purpleGradient rounded-2xl shadow-lg p-1 space-y-6">
+        <div className="lg:ml-32 mt-10 max-w-2xl w-full  bg-purpleGradient rounded-2xl shadow-lg p-1 space-y-6">
           <div className="bg-purpleSidebar rounded-xl p-8">
             <h2 className="text-[40px] text-white mb-2">PROFILE</h2>
 

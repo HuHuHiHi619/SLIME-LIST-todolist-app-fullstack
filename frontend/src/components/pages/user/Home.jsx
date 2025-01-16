@@ -11,15 +11,16 @@ function Home() {
     <div id="home">
       <TaskForm filter={{ status: "pending" }} />
 
-      <div className="hidden lg:pl-16 lg:mt-12 lg:flex lg:flex-col lg:gap-6">
+      <div className="hidden lg:pl-14 lg:mt-10 lg:flex lg:flex-col lg:gap-6">
+        
         <FadeUpContainer direction="up" delay={0.2}>
           <StreakField />
         </FadeUpContainer>
-        <FadeUpContainer direction="up" delay={0.3}>
-          <Summary />
-        </FadeUpContainer>
         <FadeUpContainer direction="up" delay={0.4}>
           <BadgeField />
+        </FadeUpContainer>
+        <FadeUpContainer direction="up" delay={0.3}>
+          <Summary />
         </FadeUpContainer>
       </div>
     </div>

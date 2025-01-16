@@ -89,11 +89,11 @@ describe("updateUserStreak", () => {
 
     const mockUser = {
       _id: "123",
-      currentStreak: 10,
+      currentStreak: 0,
       alreadyCompletedToday: false,
       lastCompleted: yesterday,
       bestStreak: 15,
-      currentBadge: "bronze",
+      currentBadge: "iron",
       save: jest.fn(),
     };
 
@@ -101,17 +101,17 @@ describe("updateUserStreak", () => {
     User.findById.mockResolvedValue(mockUser);
 
     // Mock calculateBadge ให้คืนค่า 'silver' เมื่อ streak = 11
-    calculateBadge.mockReturnValueOnce("silver");
+    calculateBadge.mockReturnValueOnce("bronze");
 
     // เรียกใช้งานฟังก์ชัน
     const result = await updateUserStreak("123", true);
 
     // การตรวจสอบ
-    expect(result.oldBadge).toBe("bronze");
-    expect(result.currentStreak).toBe(11);
-    expect(result.newBadge).toBe("silver");
+    expect(result.oldBadge).toBe("iron");
+    expect(result.currentStreak).toBe(1);
+    expect(result.newBadge).toBe("bronze");
     expect(result.badgeChange).toBe(true);
-    expect(mockUser.currentBadge).toBe("silver");
+    expect(mockUser.currentBadge).toBe("bronze");
     expect(mockUser.save).toHaveBeenCalled();
   });
 

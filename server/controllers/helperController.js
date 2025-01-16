@@ -82,7 +82,7 @@ exports.processTags = async (tags, userId, guestId) => {
 const calculateBadge = (streakDays) => {
   if (streakDays > 15) return "gold";
   if (streakDays > 10) return "silver";
-  if (streakDays > 5) return "bronze";
+  if (streakDays >= 1) return "bronze";
   return "iron";
 };
 exports.updateUserStreak = async (
@@ -133,6 +133,7 @@ exports.updateUserStreak = async (
 
     // คำนวณ badge ใหม่และอัปเดต
     const newBadge = calculateBadge(user.currentStreak);
+    
     if (newBadge !== user.currentBadge) {
       user.badgeChange = true;
       user.oldBadge = user.currentBadge;
@@ -140,6 +141,7 @@ exports.updateUserStreak = async (
       user.currentBadge = newBadge;
       console.log(`Badge updated from ${user.oldBadge} to ${user.newBadge}.`);
     }
+    console.log(newBadge , "new badge")
 
     // เพิ่มรายละเอียด task หากมี
     if (Object.keys(taskCompletionDetails).length > 0) {

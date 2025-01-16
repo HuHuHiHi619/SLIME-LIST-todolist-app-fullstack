@@ -45,7 +45,7 @@ const NotificationForm = () => {
     };
   }, []);
 
-  const handleSearchClick = () => {
+  const handleSearchToggle = () => {
     setIsSearchOpen(true);
     setIsNotiOpen(false);
   };
@@ -77,22 +77,22 @@ const NotificationForm = () => {
 
           {/* Sliding Icons Container */}
           {isMenuOpen && (
-            <div className="absolute right-12 top-1/2 -translate-y-1/2 flex items-center gap-2 w-auto">
+            <div className="absolute top-28 right-0 lg:right-12 lg:top-1/2 flex -translate-y-1/2  items-center gap-2 w-auto">
               <FadeUpContainer direction="left">
-                <div className="flex gap-2">
+                <div className=" flex gap-2 relative">
                   {isSearchOpen ? (
-                    <div ref={searchRef} className="animate-fadeIn">
+                    <div ref={searchRef} className="animate-fadeIn absolute top-16 -right-12 lg:top-0 lg:right-12">
                       <SearchField />
                     </div>
                   ) : (
                     <button
                       className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
-                      onClick={handleSearchClick}
+                      onClick={handleSearchToggle}
                     >
                       <FontAwesomeIcon icon={faSearch} className="h-8 w-8" />
                     </button>
                   )}
-                  <div className="relative">
+                 {/* <div className="relative">
                     <button
                       onClick={handleNotificationClick}
                       className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
@@ -104,15 +104,19 @@ const NotificationForm = () => {
                         }`}
                       />
                     </button>
-                    {isNotiOpen && (
+                    
+                 NOTIFICATION FIELD IS PROCESSING   
+
+                   {isNotiOpen && (
                       <div
                         ref={notiRef}
                         className="absolute top-0 right-0 shadow-md p-4 transition-all duration-300"
                       >
                         <NotificationField />
                       </div>
-                    )}
+                    )} 
                   </div>
+                     */}
                   <button
                     className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
                     onClick={() => handleIsInstruct()}

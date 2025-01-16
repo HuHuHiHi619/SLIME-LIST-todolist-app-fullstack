@@ -23,17 +23,17 @@ span{
 }
 /*button*/
 .register{
-  @apply  bg-purpleMain  border-2 border-purpleBorder 
+  @apply  bg-purpleNormal  
   focus:outline-none  flex justify-center 
-  cursor-pointer p-2 px-4 text-xl 
-  hover:bg-purpleBorder hover:bg-opacity-50 transition-all duration-75 ease-in
+  cursor-pointer p-2 px-4 text-lg 
+  hover:bg-violet-600 hover:bg-opacity-50 transition-all duration-75 ease-in
   rounded-lg text-white ;
 }
 
 .login{
   @apply  bg-purpleBorder focus:outline-none flex justify-center 
-  active:scale-95  transition-all duration-75 ease-in
-  cursor-pointer p-2 px-4 text-xl rounded-lg text-white;
+  active:scale-95  transition-all duration-75 ease-in 
+  cursor-pointer p-2 px-4 text-lg rounded-lg text-white;
 
 }
 .red-button{
@@ -41,6 +41,9 @@ span{
 }
 .done-button {
   @apply bg-purpleBorder flex justify-center cursor-pointer p-2 px-4 text-2xl rounded-lg text-white;
+}
+.cancel-button {
+  @apply bg-deadlineTheme flex justify-center cursor-pointer p-2 px-4 text-2xl rounded-full text-white;
 }
 
 .pin-button {
@@ -104,7 +107,6 @@ title{
 .streak-popup {
   position: fixed;
   bottom: 5%;
-  right: 35%;
   z-index: 1000;
   
 }

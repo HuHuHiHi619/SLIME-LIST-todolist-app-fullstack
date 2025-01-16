@@ -18,9 +18,9 @@ function TaskList({
   const { tasks } = useSelector((state) => state.tasks);
 
   return (
-    <div className="pr-4 border-4 border-purpleNormal rounded-3xl p-6  md:mt-6">
+    <div className="pr-4 border-4 border-purpleNormal rounded-3xl p-6 md:mt-6">
       <div className="flex justify-between mb-4 mr-3 ">
-        <p className="text-white md:text-4xl flex items-center pr-24">{label}</p>
+        <p className="text-white md:text-4xl flex items-center pr-24 w-[200px] md:w-auto">{label}</p>
         <CreateButton onClick={handleIsCreate} />
       </div>
 

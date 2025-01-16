@@ -16,12 +16,12 @@ const guestMiddleware = (req, res, next) => {
         const guestId = uuidv4();
         // ตั้งค่า guestId ลงในคุกกี้
         res.cookie("guestId", guestId, {
-          maxAge: 7 * 24 * 60 * 60 * 1000, // อายุคุกกี้ 7 วัน
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 วัน
           httpOnly: true,
-          secure: false, // เปลี่ยนเป็น true ถ้าใช้ HTTPS
+          secure: true, 
           sameSite: 'lax'
         });
-        req.guestId = guestId; // กำหนด guestId สำหรับ request นี้
+        req.guestId = guestId; 
         console.log("New Guest ID created:", guestId);
       }
     } else {

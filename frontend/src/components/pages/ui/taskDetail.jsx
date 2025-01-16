@@ -236,7 +236,7 @@ function TaskDetail({ onClose }) {
               )}
 
               <p
-                className={`text-white text-xl ${
+                className={`text-white md:text-xl ${
                   editedTask.status === "pending"
                     ? "pending"
                     : editedTask.status === "failed"
