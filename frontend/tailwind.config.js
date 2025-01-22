@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  mode: 'jit',
   content: ["./index.html",
      "./index.jsx",
      "./src/**/*.{js,ts,jsx,tsx}",

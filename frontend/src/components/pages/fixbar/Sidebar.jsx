@@ -87,7 +87,7 @@ function Sidebar() {
         onClick={handlePinSidebar}
       >
         <div
-          className={`h-2 w-full bg-purpleActive rounded-full ${
+          className={`h-2 w-full  md:bg-purpleActive rounded-full ${
             isSidebarPinned ? "opacity-100" : "opacity-0"
           } transition-opacity duration-300`}
         ></div>

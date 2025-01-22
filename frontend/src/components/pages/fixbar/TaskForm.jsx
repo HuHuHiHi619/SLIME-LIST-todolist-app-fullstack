@@ -1,6 +1,5 @@
-import React from "react";
+import React , { Suspense } from "react";
 import TaskList from "../ui/TaskList";
-import TaskDetail from "../ui/taskDetail";
 import CreateTask from "../create/CreateTask";
 import CreateButton from "../ui/CreateButton";
 import { useSelector } from "react-redux";
@@ -8,6 +7,9 @@ import useFetchTask from "../hooks/useFetchTask";
 import usePopup from "../hooks/usePopup";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import ReactDOM from "react-dom"
+
+const TaskDetail = React.lazy(() =>  import("../ui/taskDetail"))
+
 function TaskForm({ filter, filterKey }) {
   const { selectedTask, isCreate } = useSelector((state) => state.tasks);
   const { tasks: fetchedTasks } = useFetchTask(filter, filterKey);
@@ -49,7 +51,9 @@ function TaskForm({ filter, filterKey }) {
         ReactDOM.createPortal(
         <div className="popup-overlay ">
           <div className="popup-content">
-            <TaskDetail onClose={handleCloseDetail} />
+            <Suspense fallback={<></>}>
+              <TaskDetail onClose={handleCloseDetail} />
+            </Suspense>
           </div>
         </div>,
         document.body

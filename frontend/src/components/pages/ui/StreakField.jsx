@@ -121,10 +121,10 @@ function StreakField() {
 
             {streakPopup &&
               ReactDOM.createPortal(
-                <div className="streak-popup  sm:ml-24 md:ml-52">
+                <div className="streak-popup  ml-12 md:ml-72">
                   <FadeUpContainer direction="down" delay={0.6}>
                     <div
-                      className=" flex items-center border-4 p-6 rounded-xl"
+                      className=" flex items-center border-4 p-2 lg:p-6 rounded-xl"
                       ref={streakRef}
                     >
                       <FontAwesomeIcon

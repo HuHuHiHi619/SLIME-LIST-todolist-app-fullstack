@@ -1,7 +1,6 @@
-import React from "react";
+import React , { Suspense }from "react";
 import ReactDOM from "react-dom";
 import TaskList from "../ui/TaskList";
-import TaskDetail from "../ui/taskDetail";
 import CreateTask from "../create/CreateTask";
 import { useSelector } from "react-redux";
 import useFetchTask from "../hooks/useFetchTask";
@@ -9,7 +8,8 @@ import usePopup from "../hooks/usePopup";
 import CreateButton from "../ui/CreateButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
-import { div } from "framer-motion/client";
+
+ const TaskDetail = React.lazy(() =>  import("../ui/taskDetail"))
 
 function GroupTaskForm({ filter }) {
   const { selectedTask, isCreate, isSideBarPinned } = useSelector(
@@ -91,7 +91,9 @@ function GroupTaskForm({ filter }) {
         ReactDOM.createPortal(
           <div className="popup-overlay">
             <div className="popup-content">
-              <TaskDetail onClose={handleCloseDetail} />
+              <Suspense fallback={<></>}>
+                <TaskDetail onClose={handleCloseDetail} />
+              </Suspense>
             </div>
           </div>,
           document.body

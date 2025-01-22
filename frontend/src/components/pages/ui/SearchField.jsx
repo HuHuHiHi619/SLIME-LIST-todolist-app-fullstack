@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , Suspense} from "react";
 import { debounce } from "lodash";
 import InputField from "./inputField";
 import { useDispatch, useSelector } from "react-redux";
 import { clearSearchResults, fetchSearchTasks } from "../../../redux/taskSlice";
 import SearchTaskList from "./SearchTaskList";
-import TaskDetail from "./taskDetail";
 import usePopup from "../hooks/usePopup";
+
+ const TaskDetail = React.lazy(() =>  import("../ui/taskDetail"))
 
 function SearchField() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -77,7 +78,9 @@ function SearchField() {
         {selectedTask && (
           <div className="popup-overlay z-50">
             <div className="popup-content">
-              <TaskDetail onClose={handleCloseDetail} />
+              <Suspense fallback={<></>}>
+                <TaskDetail onClose={handleCloseDetail} />
+              </Suspense>
             </div>
           </div>
         )}
