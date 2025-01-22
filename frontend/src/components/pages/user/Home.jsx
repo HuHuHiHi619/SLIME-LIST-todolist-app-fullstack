@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import TaskForm from "../fixbar/TaskForm";
-import Summary from "../ui/summary";
+import Summary from "../ui/Summary.jsx";
 import StreakField from "../ui/StreakField";
 import BadgeField from "../ui/BadgeField";
 import FadeUpContainer from "../animation/FadeUpContainer";
