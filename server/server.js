@@ -1,3 +1,4 @@
+require('dotenv').config();
 const compression = require('compression')
 const express = require('express');
 const morgan = require('morgan');
@@ -40,4 +41,4 @@ readdirSync('./Routes').map((route) =>
   app.use('/api',require('./Routes/' + route)))
 
 const PORT = process.env.PORT || 5000
-app.listen(PORT,()=> console.log('Server in Running'))
+app.listen(PORT,()=> console.log(`Server is running on port ${PORT}`))
