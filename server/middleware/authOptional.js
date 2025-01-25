@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const { promisify } = require('util')
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+
 const jwtVerify = promisify(jwt.verify);
 
 const authMiddlewareOptional = (allowGuest = false) => async (req, res, next) => {
