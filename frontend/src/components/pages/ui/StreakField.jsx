@@ -65,7 +65,7 @@ function StreakField() {
   }, [dispatch, userData.id]);
 
   const streak = userData.currentStreak;
-  console.log(userData.alreadyCompletedToday);
+  console.log('already completed',userData.alreadyCompletedToday);
   return (
     <div className="flex" onClick={handleIsInstruct}>
       {isAuthenticated ? (
