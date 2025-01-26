@@ -34,7 +34,7 @@ function Navbar() {
             className="pr-4 text-white text-2xl cursor-pointer hover:scale-105 xl:hidden"
           />
           <img src="./images/Logo-slime.png" className="w-12" alt="" />
-          <p className="text-xl lg:text-2xl text-white ">SLIME LIST</p>
+          <p className="text-xl lg:text-2xl text-white ">SLIME LIST zazaza</p>
         </Link>
         {!isAuthenticated && (
           <div className="flex mx-4 gap-4 items-center">

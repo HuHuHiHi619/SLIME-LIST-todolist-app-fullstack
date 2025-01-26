@@ -19,10 +19,12 @@ app.use(compression({
 }));
 
 app.use(cors({
-  origin:['https://slimelist.netlify.app'],
-  methods: ['GET','POST','PUT','PATCH','DELETE'],
+  origin: [
+    'https://slimelist.netlify.app',
+    'https://slime-list-todolist-app-fullstack.onrender.com'
+  ],
   credentials: true,
- 
+  methods: ['GET','POST','PUT','PATCH','DELETE']
 }));
 app.use(cookieParser());
 app.use(express.json());

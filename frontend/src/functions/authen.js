@@ -10,7 +10,7 @@ export const register = async (data) => {
             }
         });
         if(response.data.token){
-            localStorage.setItem('token',response.date.token)
+            localStorage.setItem('token',response.data.token)
         }
         return response.data;
     } catch (error) {

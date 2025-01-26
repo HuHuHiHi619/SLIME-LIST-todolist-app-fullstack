@@ -116,7 +116,7 @@ exports.login = async (req, res) => {
       secure:true,
       sameSite: 'None',
       maxAge: 15 * 60 * 1000, // 15m
-      domain: '.slimelist.netlify.app'
+      domain: '.slimelist.netlify.app',
     });
 
     res.cookie('refreshToken',refreshToken,{
