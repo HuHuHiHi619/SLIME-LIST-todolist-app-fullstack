@@ -19,7 +19,7 @@ const guestMiddleware = (req, res, next) => {
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 วัน
           httpOnly: true,
           secure: true, 
-          sameSite: 'lax'
+          sameSite: 'None'
         });
         req.guestId = guestId; 
         console.log("New Guest ID created:", guestId);

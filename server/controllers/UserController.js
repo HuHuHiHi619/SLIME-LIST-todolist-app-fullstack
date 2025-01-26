@@ -114,21 +114,21 @@ exports.login = async (req, res) => {
     res.cookie('accessToken',accessToken,{
       httpOnly: true,
       secure:true,
-      samesite: 'lax',
+      samesite: 'None',
       maxAge: 15 * 60 * 1000 // 15m
     });
 
     res.cookie('refreshToken',refreshToken,{
       httpOnly: true,
       secure:true,
-      samesite: 'lax',
+      samesite: 'None',
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
     });
 
     res.clearCookie('guestId',{
       httpOnly: true,
       secure:true,
-      samesite: 'lax',
+      samesite: 'None',
       path: '/'
     })
 
@@ -152,13 +152,13 @@ exports.logout = async (req,res) => {
   try{
     res.clearCookie('accessToken', {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'None',
       secure: true,
       path: '/'
   });
   res.clearCookie('refreshToken', {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'None',
       secure: true,
       path: '/'
   });

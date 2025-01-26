@@ -36,7 +36,7 @@ const authMiddlewareOptional = (allowGuest = false) => async (req, res, next) =>
             res.cookie('accessToken', newToken, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'lax',
+                sameSite: 'None',
                 maxAge: 360000, // 1 hour
             });
         }
