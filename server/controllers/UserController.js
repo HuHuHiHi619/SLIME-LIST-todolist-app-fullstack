@@ -115,21 +115,24 @@ exports.login = async (req, res) => {
       httpOnly: true,
       secure:true,
       samesite: 'None',
-      maxAge: 15 * 60 * 1000 // 15m
+      maxAge: 15 * 60 * 1000, // 15m
+      domain: '.slimelist.netlify.app'
     });
 
     res.cookie('refreshToken',refreshToken,{
       httpOnly: true,
       secure:true,
       samesite: 'None',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7d
+      maxAge: 7 * 24 * 60 * 60 * 1000,  // 7d
+       domain: '.slimelist.netlify.app'
     });
 
     res.clearCookie('guestId',{
       httpOnly: true,
       secure:true,
       samesite: 'None',
-      path: '/'
+      path: '/',
+      domain: '.slimelist.netlify.app'
     })
 
     return res.status(200).json({
@@ -154,13 +157,15 @@ exports.logout = async (req,res) => {
       httpOnly: true,
       sameSite: 'None',
       secure: true,
-      path: '/'
+      path: '/',
+      domain: '.slimelist.netlify.app'
   });
   res.clearCookie('refreshToken', {
       httpOnly: true,
       sameSite: 'None',
       secure: true,
-      path: '/'
+      path: '/',
+       domain: '.slimelist.netlify.app'
   });
   } catch(error) {
     console.error('Logout error:',error)
