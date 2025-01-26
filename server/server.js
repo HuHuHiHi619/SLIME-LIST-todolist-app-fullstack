@@ -19,7 +19,7 @@ app.use(compression({
 }));
 
 app.use(cors({
-  origin:'https://slime-list-todolist-app-fullstack.onrender.com',
+  origin:['https://slimelist.netlify.app'],
   methods: ['GET','POST','PUT','PATCH','DELETE'],
   credentials: true,
  
