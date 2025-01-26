@@ -114,7 +114,7 @@ exports.login = async (req, res) => {
     res.cookie('accessToken',accessToken,{
       httpOnly: true,
       secure:true,
-      samesite: 'None',
+      sameSite: 'None',
       maxAge: 15 * 60 * 1000, // 15m
       domain: '.slimelist.netlify.app'
     });
@@ -122,7 +122,7 @@ exports.login = async (req, res) => {
     res.cookie('refreshToken',refreshToken,{
       httpOnly: true,
       secure:true,
-      samesite: 'None',
+      sameSite: 'None',
       maxAge: 7 * 24 * 60 * 60 * 1000,  // 7d
        domain: '.slimelist.netlify.app'
     });
@@ -130,7 +130,7 @@ exports.login = async (req, res) => {
     res.clearCookie('guestId',{
       httpOnly: true,
       secure:true,
-      samesite: 'None',
+      sameSite: 'None',
       path: '/',
       domain: '.slimelist.netlify.app'
     })
