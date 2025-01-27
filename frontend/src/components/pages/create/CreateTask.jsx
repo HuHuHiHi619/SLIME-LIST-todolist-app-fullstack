@@ -36,9 +36,9 @@ function CreateTask({ onClose }) {
     }
 
     if (!formTask.startDate) {
-      setError("Start date is required.");
-      return false;
+      dispatch(setFormTask({ startDate: new Date().toISOString() }));
     }
+    
     if (formTask.title > 50) {
       setError("Title cannot more than 50 characters.");
       return false;
