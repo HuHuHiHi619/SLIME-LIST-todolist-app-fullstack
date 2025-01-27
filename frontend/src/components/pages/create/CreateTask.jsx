@@ -63,14 +63,7 @@ function CreateTask({ onClose }) {
     }
   };
 
-  const handleToggleTag = (tagId) => {
-    const inputTag = formTask.tag.includes(tagId)
-    ? formTask.tag.filter((t) => t !== tagId)
-    : [...formTask.tag , tagId]
-    console.log('tag',inputTag)
-    dispatch(setFormTask({tag : inputTag}))
-  }
-
+  
   const handleAddProgress = (e) => {
     if (e.key === "Enter" && currentStep.trim() !== "") {
       e.preventDefault();
@@ -168,7 +161,7 @@ function CreateTask({ onClose }) {
               id="startDate"
               name="startDate"
               selected={
-                formTask.startDate ? new Date(formTask.startDate) : null
+                formTask.startDate ? new Date(formTask.startDate) : new Date()
               }
               onChange={(date) => handleDateChange(date, "startDate")}
               placeholder="START DATE"

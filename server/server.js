@@ -21,7 +21,8 @@ app.use(compression({
 app.use(cors({
   origin: [
     'https://slimelist.netlify.app',
-    'https://slime-list-todolist-app-fullstack.onrender.com'
+    'https://slime-list-todolist-app-fullstack.onrender.com',
+    'http://localhost:5173'
   ],
   credentials: true,
   methods: ['GET','POST','PUT','PATCH','DELETE']
