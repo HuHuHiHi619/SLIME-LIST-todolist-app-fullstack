@@ -63,7 +63,6 @@ function CreateTask({ onClose }) {
     }
   };
 
-  
   const handleAddProgress = (e) => {
     if (e.key === "Enter" && currentStep.trim() !== "") {
       e.preventDefault();
@@ -74,14 +73,10 @@ function CreateTask({ onClose }) {
   };
 
   const handleDateChange = (date, field) => {
-    if (date) {
-      dispatch(setFormTask({ [field]: date.toISOString() }));
-    } else {
-      dispatch(setFormTask({ [field]: null }));
-    }
-  };
+    const selectedDate = date ? date : new Date();
 
-  
+    dispatch(setFormTask({ [field]: selectedDate.toISOString() }));
+  };
 
   const handleRemoveStep = (index) => {
     dispatch(removeStep(index));
@@ -92,7 +87,6 @@ function CreateTask({ onClose }) {
     if (!validator()) {
       return;
     }
-   
 
     const taskData = {
       ...formTask,
@@ -124,81 +118,83 @@ function CreateTask({ onClose }) {
     <FadeUpContainer>
       <div className=" md:w-[800px] p-1 rounded-2xl relative">
         <div className="bg-purpleSidebar p-6 rounded-xl">
-        <form onSubmit={handleSubmit}>
-          <h1 className="text-white tracking-wide">CREATE A TASK</h1>
-          <div className="flex flex-col gap-4 my-4">
-            {error && <p className="text-red-500 text-xl ">{error}</p>}
-            <InputField
-              type="text"
-              placeholder="Title"
-              id="title"
-              name="title"
-              value={formTask.title}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border text-xl border-gray-300 rounded-xl "
-            />
-            <InputField
-              type="text"
-              placeholder="Note"
-              id="note"
-              name="note"
-              value={formTask.note || ""}
-              onChange={handleInputChange}
-              className="px-4 py-2 rounded-xl text-xl "
-            />
-          </div>
-
-          <div className="flex flex-col gap-2 md:flex-row ">
-            <CategoryTagField
-              name="category"
-              value={formTask.category || ""}
-              entities={categories}
-              placeholder="CATEGORY"
-              handleInputChange={handleInputChange}
-              showTag={false}
-            />
-            <StartDatePicker
-              id="startDate"
-              name="startDate"
-              selected={
-                formTask.startDate ? new Date(formTask.startDate) : new Date()
-              }
-              onChange={(date) => handleDateChange(date, "startDate")}
-              placeholder="START DATE"
-            />
-            <DeadlinePicker
-              id="deadline"
-              name="Deadline"
-              selected={formTask.deadline ? new Date(formTask.deadline) : null}
-              onChange={(date) => handleDateChange(date, "deadline")}
-              placeholder="DEADLINE"
-            />
-          </div>
-
-          <div className=" my-4 flex flex-col gap-2">
-            <h3 className="text-white text-2xl">Progress (optional)</h3>
-            <div className="flex flex-col gap-2">
+          <form onSubmit={handleSubmit}>
+            <h1 className="text-white tracking-wide">CREATE A TASK</h1>
+            <div className="flex flex-col gap-4 my-4">
+              {error && <p className="text-red-500 text-xl ">{error}</p>}
               <InputField
                 type="text"
-                placeholder="Type a step and press Enter"
-                name="progress"
-                id="progress"
-                value={currentStep}
+                placeholder="Title"
+                id="title"
+                name="title"
+                value={formTask.title}
                 onChange={handleInputChange}
-                onKeyDown={handleAddProgress}
-                className="px-4 py-2 rounded-xl md:text-xl"
+                className="w-full px-4 py-2 border text-xl border-gray-300 rounded-xl "
               />
-              <ProgressField
-                steps={progress.steps}
-                handleRemoveStep={handleRemoveStep}
-                showCompletion={false}
+              <InputField
+                type="text"
+                placeholder="Note"
+                id="note"
+                name="note"
+                value={formTask.note || ""}
+                onChange={handleInputChange}
+                className="px-4 py-2 rounded-xl text-xl "
               />
             </div>
-          </div>
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-2">
-             {/*
+
+            <div className="flex flex-col gap-2 md:flex-row ">
+              <CategoryTagField
+                name="category"
+                value={formTask.category || ""}
+                entities={categories}
+                placeholder="CATEGORY"
+                handleInputChange={handleInputChange}
+                showTag={false}
+              />
+              <StartDatePicker
+                id="startDate"
+                name="startDate"
+                selected={
+                  formTask.startDate ? new Date(formTask.startDate) : new Date()
+                }
+                onChange={(date) => handleDateChange(date, "startDate")}
+                placeholder="START DATE"
+              />
+              <DeadlinePicker
+                id="deadline"
+                name="Deadline"
+                selected={
+                  formTask.deadline ? new Date(formTask.deadline) : null
+                }
+                onChange={(date) => handleDateChange(date, "deadline")}
+                placeholder="DEADLINE"
+              />
+            </div>
+
+            <div className=" my-4 flex flex-col gap-2">
+              <h3 className="text-white text-2xl">Progress (optional)</h3>
+              <div className="flex flex-col gap-2">
+                <InputField
+                  type="text"
+                  placeholder="Type a step and press Enter"
+                  name="progress"
+                  id="progress"
+                  value={currentStep}
+                  onChange={handleInputChange}
+                  onKeyDown={handleAddProgress}
+                  className="px-4 py-2 rounded-xl md:text-xl"
+                />
+                <ProgressField
+                  steps={progress.steps}
+                  handleRemoveStep={handleRemoveStep}
+                  showCompletion={false}
+                />
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  {/*
           -- Tag is on process --
               {tags.map((tag) => (
                   <button
@@ -214,15 +210,23 @@ function CreateTask({ onClose }) {
                     {tag.tagName.toUpperCase()}
                   </button>
                 ))}
-             */}  
+             */}
+                </div>
               </div>
+              <button
+                type="submit"
+                className="done-button hover:scale-110 transition-all duration-100 "
+              >
+                Create
+              </button>
+              <button
+                onClick={onClose}
+                className="cancel-button absolute -top-4 -right-4"
+              >
+                X
+              </button>
             </div>
-            <button type="submit" className="done-button hover:scale-110 transition-all duration-100 ">
-              Create
-            </button>
-            <button onClick={onClose} className="cancel-button absolute -top-4 -right-4">X</button>
-          </div>
-        </form>
+          </form>
         </div>
       </div>
     </FadeUpContainer>
