@@ -92,7 +92,7 @@ function CreateTask({ onClose }) {
       ...formTask,
       tag: formTask.tag || "low",
       progress,
-      startdate: formTask.startDate || new Date().toISOString()
+      startDate: formTask.startDate || new Date().toISOString()
     };
 
     try {
