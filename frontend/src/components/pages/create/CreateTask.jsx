@@ -38,7 +38,7 @@ function CreateTask({ onClose }) {
     if (!formTask.startDate) {
       dispatch(setFormTask({ startDate: new Date().toISOString() }));
     }
-    
+
     if (formTask.title > 50) {
       setError("Title cannot more than 50 characters.");
       return false;
@@ -92,6 +92,7 @@ function CreateTask({ onClose }) {
       ...formTask,
       tag: formTask.tag || "low",
       progress,
+      startdate: formTask.startDate || new Date().toISOString()
     };
 
     try {
