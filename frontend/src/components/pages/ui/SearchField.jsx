@@ -53,7 +53,7 @@ function SearchField() {
         name="search"
         value={searchTerm}
         onChange={handleSearch}
-        className="w-full p-2 text-xl"
+        className="w-full rounded-xl  p-2 text-xl"
       />
       <div>
         {Array.isArray(searchResults) && searchResults.length > 0 && (

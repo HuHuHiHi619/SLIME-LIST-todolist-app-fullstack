@@ -27,12 +27,12 @@ function Navbar() {
   return (
     <>
       <div id="nav-bar">
-        <Link to="/" className="ml-4 flex items-center gap-3">
           <FontAwesomeIcon
             icon={faBars}
             onClick={handlePinSidebar}
-            className="pr-4 text-white text-2xl cursor-pointer hover:scale-105 xl:hidden"
+            className="px-4 text-white text-2xl cursor-pointer hover:scale-105 md:hidden"
           />
+        <Link to="/" className=" flex items-center gap-3 pl-4">
           <img src="./images/Logo-slime.png" className="w-12" alt="" />
           <p className="text-xl lg:text-2xl text-white ">SLIME LIST</p>
         </Link>

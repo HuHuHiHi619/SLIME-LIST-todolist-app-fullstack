@@ -125,7 +125,7 @@ const CreateButton = ({ children , onClick }) => {
         <motion.div className="relative z-10 flex items-center ">
           <motion.div variants={iconVariants} >
             <svg
-              className="w-8 h-8"
+              className="w-4 h-4 md:w-8 md:h-8"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

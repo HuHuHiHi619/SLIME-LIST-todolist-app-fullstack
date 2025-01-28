@@ -4,11 +4,11 @@
 }
 
 #nav-bar {
-    @apply bg-purpleNavbar border-b-2 border-b-purpleNormal  flex justify-between items-center py-2 md:py-2 z-50;
+    @apply bg-purpleNavbar border-b-2 border-b-purpleNormal  flex md:justify-between items-center py-2  md:py-2 z-50;
 }
 
 #side-bar {
-    @apply absolute top-12 h-[40rem] md:h-[50rem] z-10 bg-purpleSidebar bg-opacity-50 py-10   overflow-hidden ;
+    @apply absolute top-12 h-[40rem] md:h-[50rem] z-40 bg-purpleSidebar bg-opacity-50 py-10   overflow-hidden ;
     width: 17rem;
     max-width: 17rem;
     min-width: 17rem;
