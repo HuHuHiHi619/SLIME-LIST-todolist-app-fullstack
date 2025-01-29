@@ -57,8 +57,8 @@ function SearchField() {
       />
       <div>
         {Array.isArray(searchResults) && searchResults.length > 0 && (
-          <div className="absolute top-full mt-2 w-[300px] p-0.5 bg-purpleGradient  shadow-lg rounded-2xl ">
-            <div className="bg-purpleMain rounded-2xl">
+          <div className="absolute top-full mt-2 w-[300px] p-0.5 bg-purpleGradient  shadow-lg rounded-2xl z-50">
+            <div className="bg-darkBackground rounded-2xl">
               <SearchTaskList
                 allTasks={searchResults}
                 handleCompletedTask={handleCompletedTask}
