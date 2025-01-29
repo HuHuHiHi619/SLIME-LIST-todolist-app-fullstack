@@ -25,7 +25,7 @@ span{
 .register{
   @apply  bg-purpleNormal  
   focus:outline-none  flex justify-center 
-  cursor-pointer p-2 px-4 text-lg 
+  cursor-pointer p-2 px-4 text-sm md:text-lg 
   hover:bg-violet-600 hover:bg-opacity-50 transition-all duration-75 ease-in
   rounded-lg text-white ;
 }

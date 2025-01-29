@@ -45,7 +45,7 @@ function SearchField() {
   }, [dispatch]);
 
   return (
-    <div className="w-[300px] relative">
+    <div className="w-[340px] relative">
       <InputField
         type="text"
         placeholder="Search your task here"

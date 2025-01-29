@@ -94,7 +94,7 @@ function Sidebar() {
         <FontAwesomeIcon
           icon={faBars}
           className={`  hidden md:block transform origin-center text-3xl ${
-            isSidebarPinned ? "rotate-180" : "pr-4"
+            isSidebarPinned ? "rotate-180" : "pr-3"
           } `}
         />
       </div>
