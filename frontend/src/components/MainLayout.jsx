@@ -6,7 +6,7 @@ const Sidebar = React.lazy(() =>  import("./pages/fixbar/Sidebar"))
 function MainLayout() {
   return (
     <section id="mainLayout">
-      <div className="grid grid-col">
+      <div className="grid grid-col ">
         <Navbar />
         <Suspense fallback= {<div>Loading</div>}>
           <Sidebar />

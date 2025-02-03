@@ -18,7 +18,7 @@ const authMiddleware = (store) => (next) => async (action) => {
         return next(action); 
     }
    
-    if(isAuthenticated && action.type.startsWith('user/fetchUserData')) {
+    if(isAuthenticated && action.type ===  'user/fetchUserData') {
         try{
             const { accessToken , refreshToken } = tokens
             if(!accessToken || !checkTokenvalidity(accessToken)){

@@ -1,4 +1,3 @@
-// ปรับ AuthProvider ใหม่
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUserData, restoreState } from '../../../redux/userSlice';
@@ -13,7 +12,11 @@ const AuthProvider = ({ children }) => {  // เปลี่ยนเป็น a
         const checkAuth = async () => {
             const persistedAuth = Cookies.get('isAuthenticated');
             const persistedUserId = Cookies.get('userId');
-            if(persistedAuth === "true" && persistedUserId){
+            const accessToken = Cookies.get('accessToken')
+            console.log(persistedAuth)
+            console.log(persistedUserId)
+            console.log(accessToken)
+            if(persistedAuth === "true" && persistedUserId && accessToken){
                 try{
                     await dispatch(fetchUserData(persistedUserId)).unwrap();
                 } catch(error){

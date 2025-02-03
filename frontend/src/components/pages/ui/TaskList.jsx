@@ -33,7 +33,7 @@ function TaskList({
         </div>
       ) : (
         <div>
-          <ul className="flex flex-col gap-4 overflow-y-scroll scrollbar-custom max-h-[570px] pr-1 ">
+          <ul className="flex flex-col gap-4 overflow-y-scroll scrollbar-custom  max-h-[350px] lg:max-h-[570px] pr-1 ">
             {(allTasks || tasks).map((task, index) => (
               <StaggerContainer key={index} index={index}>
                 <li

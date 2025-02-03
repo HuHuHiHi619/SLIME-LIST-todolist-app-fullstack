@@ -27,7 +27,7 @@ function GroupTaskForm({ filter }) {
   } = usePopup();
 
   return (
-    <div className="md:flex-row md:gap-6 md:ml-28  flex flex-col gap-4  items-start ">
+    <div className="md:flex-row md:gap-6 md:ml-28 flex flex-col gap-4 mt-8 items-start ">
       {fetchedAllTasks &&
       Array.isArray(fetchedAllTasks) &&
       fetchedAllTasks.length > 0 ? (
@@ -39,7 +39,7 @@ function GroupTaskForm({ filter }) {
           const tasks = group.tasks || [];
 
           return (
-            <div key={keys}>
+            <div className="mx-auto" key={keys}>
               {label.toLowerCase() === "completed" &&
                 tasks.filter((task) => task.status === "completed").length >
                   0 &&

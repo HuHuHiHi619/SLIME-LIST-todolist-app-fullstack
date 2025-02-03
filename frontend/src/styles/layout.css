@@ -25,7 +25,7 @@
 }
 
 #otherPage {
-    @apply  bg-darkBackground h-screen  ;
+    @apply  bg-darkBackground md:h-screen h-full  ;
 }
 
 

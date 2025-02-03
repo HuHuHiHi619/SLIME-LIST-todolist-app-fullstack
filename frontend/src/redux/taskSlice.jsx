@@ -423,6 +423,7 @@ const taskSlice = createSlice({
         if (action.payload.user) {
           state.streakStatus = action.payload.user;
           localStorage.setItem('streakStatus', JSON.stringify(action.payload.user))
+          console.log("act pay user",action.payload.user)
         }
 
         if (state.selectedTask && state.selectedTask._id === completedTaskId) {
