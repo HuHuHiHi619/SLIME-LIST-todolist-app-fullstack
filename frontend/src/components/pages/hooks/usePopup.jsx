@@ -25,6 +25,7 @@ function usePopup() {
   const popupInstructRef = useRef(null);
   const sidebarRef = useRef(null)
   const { isPopup , activeMenu } = useSelector((state) => state.tasks)
+  const { tokens } = useSelector((state) => state.user)
   const { instruction } = useSelector((state) => state.summary)
 
   const handleIsCreate = () => {
@@ -69,7 +70,9 @@ function usePopup() {
    
     setTimeout(() => {
       dispatch(fetchSummary());
-      dispatch(fetchUserData())
+      if(tokens.accessToken){
+        dispatch(fetchUserData())
+      }
     }, 100)
   };
 

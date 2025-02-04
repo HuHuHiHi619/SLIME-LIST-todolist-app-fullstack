@@ -190,7 +190,10 @@ const userSlice = createSlice({
 
       .addCase(fetchUserData.fulfilled, (state, action) => {
         state.userData = { ...state.userData, ...action.payload };
-        state.isAuthenticated = true;
+        console.log("access",state.tokens.accessToken)
+        if(state.tokens.accessToken === true){
+          state.isAuthenticated = true;
+        }
         state.loading = false;
         console.log(state.userData)
       })

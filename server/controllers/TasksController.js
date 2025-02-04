@@ -265,6 +265,7 @@ exports.getTask = async (req, res) => {
       .lean();
 
     if (tasksList.length === 0) {
+      console.log('tasklist is 0')
       return res.status(200).json([]);
     }
 
