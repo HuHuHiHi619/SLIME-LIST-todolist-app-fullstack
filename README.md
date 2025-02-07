@@ -1,6 +1,6 @@
 # SlimeList - Todo List App (Fullstack)
 
-![SlimeList Logo]([https://via.placeholder.com/150](https://slimelist.netlify.app/images/Logo-slime.png)) <!-- แทรกรูปโลโก้หรือภาพหน้าจอ -->
+![SlimeList Logo]([https://slimelist.netlify.app/images/Logo-slime.png]) <!-- แทรกรูปโลโก้หรือภาพหน้าจอ -->
 
 SlimeList เป็นแอปพลิเคชัน Todo List แบบ Fullstack ที่ช่วยให้คุณจัดการงานได้อย่างมีประสิทธิภาพ พร้อมฟีเจอร์การตั้งค่าส่วนตัวและสถิติการทำงาน
 
