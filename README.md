@@ -20,7 +20,7 @@ SlimeList เป็นแอปพลิเคชัน Todo List แบบ Full
     <img src="https://go-skill-icons.vercel.app/api/icons?i=react" alt="react" width="24" style="vertical-align: middle; margin-right: 4px;" /> React
   </li>
     <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=typescript" alt="typescript" width="20" style="vertical-align: middle;margin-right: 4px;" /> Typescript
+    <img src="https://go-skill-icons.vercel.app/api/icons?i=express" alt="typescript" width="20" style="vertical-align: middle;margin-right: 4px;" /> Typescript
   </li>
     <li style="vertical-align: middle;">
     <img src="https://go-skill-icons.vercel.app/api/icons?i=vite" alt="vite" width="24" style="vertical-align: middle;margin-right: 4px;" /> Vite
