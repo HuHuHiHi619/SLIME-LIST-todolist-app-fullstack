@@ -4,7 +4,7 @@
 <!-- แทรกรูปโลโก้หรือภาพหน้าจอ -->
 
 ## [https://slimelist.app/](https://slimelist.netlify.app/)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/e3b07d34-f0da-4280-9076-fd40eea893c6/deploy-status)](https://app.netlify.com/sites/react-cool-todo-app/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/26492af4-2157-412d-9607-ee208dcb4a73/deploy-status)](https://app.netlify.com/sites/slimelist/deploys)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/maciekt07/TodoApp?color=%23b624ff)
 ![GitHub created at ](https://img.shields.io/github/created-at/maciekt07/TodoApp?color=%23b624ff)
 ![GitHub last commit](https://img.shields.io/github/last-commit/maciekt07/TodoApp?color=%23b624ff)
