@@ -20,19 +20,19 @@ SlimeList เป็นแอปพลิเคชัน Todo List แบบ Full
     <img src="https://go-skill-icons.vercel.app/api/icons?i=react" alt="react" width="24" style="vertical-align: middle; margin-right: 4px;" /> React
   </li>
     <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=express" alt="typescript" width="20" style="vertical-align: middle;margin-right: 4px;" /> Typescript
+    <img src="https://go-skill-icons.vercel.app/api/icons?i=express" alt="typescript" width="20" style="vertical-align: middle;margin-right: 4px;" /> Express
   </li>
     <li style="vertical-align: middle;">
     <img src="https://go-skill-icons.vercel.app/api/icons?i=vite" alt="vite" width="24" style="vertical-align: middle;margin-right: 4px;" /> Vite
   </li>
   <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=vitest" alt="vitest" width="24" style="vertical-align: middle;margin-right: 4px;" /> Vitest
+    <img src="https://go-skill-icons.vercel.app/api/icons?i=jest" alt="vitest" width="24" style="vertical-align: middle;margin-right: 4px;" /> Jest
   </li>
   <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=emotion" alt="emotion" width="24" style="vertical-align: middle;margin-right: 4px;" /> Emotion
+    <img src="https://go-skill-icons.vercel.app/api/icons?i=mongodb" alt="emotion" width="24" style="vertical-align: middle;margin-right: 4px;" /> MongoDB
   </li>
     <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=mui" alt="mui" width="24" style="vertical-align: middle;margin-right: 4px;" /> Material UI (MUI)
+    <img src="https://go-skill-icons.vercel.app/api/icons?i=tailwind" alt="mui" width="24" style="vertical-align: middle;margin-right: 4px;" /> Tailwind CSS
   </li>
 </ul>
 
