@@ -9,7 +9,7 @@ export const createTask = async (data) => {
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials: true, // ทำให้ cookie ถูกส่ง
+      withCredentials: true, 
     });
 
     console.log("Task created successfully:", response.data);
@@ -32,7 +32,7 @@ export const getData = async (filter) => {
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials: true, // ทำให้ cookie ถูกส่ง
+      withCredentials: true, 
     });
 
     console.log("Task got successfully :", response.data);

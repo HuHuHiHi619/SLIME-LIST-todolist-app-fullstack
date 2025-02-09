@@ -4,7 +4,7 @@
 }
 
 #nav-bar {
-    @apply bg-purpleNavbar border-b-2 border-b-purpleNormal  flex md:justify-between items-center py-2  md:py-2 z-50;
+    @apply bg-purpleNavbar border-b-2 border-b-purpleNormal  flex justify-between items-center py-2  md:py-2 z-50;
 }
 
 #side-bar {
@@ -25,7 +25,7 @@
 }
 
 #otherPage {
-    @apply  bg-darkBackground md:h-screen h-full  ;
+    @apply  bg-darkBackground md:h-screen h-screen  ;
 }
 
 

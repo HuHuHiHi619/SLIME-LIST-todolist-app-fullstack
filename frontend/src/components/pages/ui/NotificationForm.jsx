@@ -56,8 +56,14 @@ const NotificationForm = () => {
   };
 
   return (
-    <div className="hidden md:block p-2 mr-8 z-50">
-      <div className="relative flex items-center" ref={menuRef}>
+    <div className=" p-2 m-0 md:mr-8 z-50">
+      <button
+        className="md:hidden pl-12 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
+        onClick={() => handleIsInstruct()}
+      >
+        <FontAwesomeIcon icon={faQuestion} className="h-6 w-6" />
+      </button>
+      <div className=" hidden md:flex relative  items-center" ref={menuRef}>
         {/* Main Menu Icon and Click Area */}
         <div className="relative flex items-center">
           <button
@@ -77,11 +83,14 @@ const NotificationForm = () => {
 
           {/* Sliding Icons Container */}
           {isMenuOpen && (
-            <div className="absolute top-28 right-0 lg:right-12 lg:top-1/2 flex -translate-y-1/2  items-center gap-2 w-auto">
+            <div className="absolute right-12 top-5 flex -translate-y-1/2  items-center gap-2 w-auto">
               <FadeUpContainer direction="left">
                 <div className=" flex gap-2 relative">
                   {isSearchOpen ? (
-                    <div ref={searchRef} className="animate-fadeIn absolute top-16 -right-12 lg:top-0 lg:right-12">
+                    <div
+                      ref={searchRef}
+                      className="animate-fadeIn absolute  top-0 right-12"
+                    >
                       <SearchField />
                     </div>
                   ) : (
@@ -92,7 +101,7 @@ const NotificationForm = () => {
                       <FontAwesomeIcon icon={faSearch} className="h-8 w-8" />
                     </button>
                   )}
-                 {/* <div className="relative">
+                  {/* <div className="relative">
                     <button
                       onClick={handleNotificationClick}
                       className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"

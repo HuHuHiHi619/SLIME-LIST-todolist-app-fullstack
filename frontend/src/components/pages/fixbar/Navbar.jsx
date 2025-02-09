@@ -27,7 +27,8 @@ function Navbar() {
   return (
     <>
       <div id="nav-bar">
-          <FontAwesomeIcon
+        <div className="flex items-center ">
+        <FontAwesomeIcon
             icon={faBars}
             onClick={handlePinSidebar}
             className="px-4 text-white text-2xl cursor-pointer hover:scale-105 md:hidden"
@@ -36,6 +37,7 @@ function Navbar() {
           <img src="./images/Logo-slime.png" className="w-12" alt="" />
           <p className="text-xl lg:text-2xl text-white ">SLIME LIST</p>
         </Link>
+      
         {!isAuthenticated && (
           <div className="flex mx-4 gap-4 items-center">
             <Link to="/register" >
@@ -46,6 +48,8 @@ function Navbar() {
             </Link>
           </div>
         )}
+        </div>
+        
         {isAuthenticated && <NotificationForm />}
       </div>
     </>

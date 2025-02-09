@@ -8,7 +8,9 @@ function CategoryList() {
   return (
     <div id="otherPage" >
       <FadeUpContainer>
-        <TaskForm filter={{ category: categoryName }} />
+        <div className="w-[800px]">
+          <TaskForm filter={{ category: categoryName }} />
+        </div>
       </FadeUpContainer>
       
     </div>

@@ -39,7 +39,7 @@ function GroupTaskForm({ filter }) {
           const tasks = group.tasks || [];
 
           return (
-            <div className="mx-auto" key={keys}>
+            <div className="mx-auto md:mx-0" key={keys}>
               {label.toLowerCase() === "completed" &&
                 tasks.filter((task) => task.status === "completed").length >
                   0 &&

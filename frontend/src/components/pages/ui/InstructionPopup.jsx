@@ -3,7 +3,7 @@ import FadeUpContainer from "../animation/FadeUpContainer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretLeft, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 function InstructionPopup({ onClose }) {
-  const images = ["./images/instructions-1.png", "./images/instructions-2.png"];
+  const images = ["./images/instructions-1.png", "./images/instructions-2.png", "./images/instructions-3.png"];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
