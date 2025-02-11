@@ -31,7 +31,7 @@ SlimeList เป็นแอปพลิเคชัน Todo List แบบ Full
   </li>
 </ul>
 
-## Main feature
+## Features
 
 - **สร้างและจัดการ Task:** เพิ่ม, แก้ไข, ลบ, และทำเครื่องหมาย Task ที่เสร็จสิ้น
 - **ตั้งค่าส่วนตัว:** เปลี่ยนธีม (dark/light) และการแจ้งเตือน
@@ -40,10 +40,18 @@ SlimeList เป็นแอปพลิเคชัน Todo List แบบ Full
 
 ---
 
-## วิธีการติดตั้ง
+## Installation
 
-### 1. คลอนโปรเจค
+### 1. clone project
 
 ```bash
 git clone https://github.com/your-username/slime-list.git
 cd slime-list
+
+```
+---
+
+Screenshots
+
+
+
