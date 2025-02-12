@@ -35,7 +35,7 @@ function TaskForm({ filter, filterKey }) {
             selectedTask={selectedTask}
           />
         ) : (
-          <div className="sm:mt-56 mt-40 mx-4 rounded-3xl flex-1 ">
+          <div className="md:mt-56 mt-40 mx-4 rounded-3xl flex-1 ">
             <div className="flex justify-center">
               <CreateButton onClick={handleIsCreate} />
             </div>

@@ -98,7 +98,7 @@ const NotificationForm = () => {
                       className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
                       onClick={handleSearchToggle}
                     >
-                      <FontAwesomeIcon icon={faSearch} className="h-8 w-8" />
+                      <FontAwesomeIcon icon={faSearch} className="h-6 w-6" />
                     </button>
                   )}
                   {/* <div className="relative">
@@ -130,7 +130,7 @@ const NotificationForm = () => {
                     className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
                     onClick={() => handleIsInstruct()}
                   >
-                    <FontAwesomeIcon icon={faQuestion} className="h-8 w-8" />
+                    <FontAwesomeIcon icon={faQuestion} className="h-6 w-6" />
                   </button>
                 </div>
 

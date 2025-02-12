@@ -70,7 +70,7 @@ function GroupTaskForm({ filter }) {
           );
         })
       ) : (
-        <div className="md:mt-64 md:pt-0 pt-40 mx-24 rounded-3xl flex-1 ">
+        <div className="md:mt-64 md:pt-0 pt-40 mx-auto rounded-3xl flex-1 ">
           <div className="flex justify-center">
             <CreateButton onClick={handleIsCreate} />
           </div>

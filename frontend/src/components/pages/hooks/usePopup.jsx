@@ -79,6 +79,7 @@ function usePopup() {
   const handleRemovedTask = async (task) => {
     dispatch(removedTask(task._id));
     dispatch(fetchSummary());
+    console.log("removet task")
   };
 
   const handleRemovedAllTask = async () => {
