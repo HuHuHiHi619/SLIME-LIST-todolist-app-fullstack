@@ -51,7 +51,7 @@ function TaskDetail({ onClose }) {
     () =>
       debounce(async (updatedSelectTask) => {
         const taskId = updatedSelectTask._id;
-        await dispatch(updatedTask({ taskId, taskData: updatedSelectTask }));
+        dispatch(updatedTask({ taskId, taskData: updatedSelectTask }));
         await Promise.all([
           dispatch(fetchSummaryByCategory()),
           dispatch(fetchSummary()),
