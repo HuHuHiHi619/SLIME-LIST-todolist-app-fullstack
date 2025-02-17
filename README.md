@@ -1,59 +1,136 @@
-# SlimeList - Todo List App (Fullstack)
+# SlimeList - Gamified Todo List Application
+<div align="center">
+  <img src="https://slimelist.netlify.app/images/Logo-slime.png" width="200" alt="SlimeList Logo">
+  
+  [Live Demo](https://slimelist.netlify.app/) | [GitHub Repository](https://github.com/your-username/slimelist)
 
-<img src="https://slimelist.netlify.app/images/Logo-slime.png" width="200">
-<!-- แทรกรูปโลโก้หรือภาพหน้าจอ -->
+  *Transform your daily tasks into an engaging journey with SlimeList - where productivity meets fun!*
+</div>
 
-## [https://slimelist.app/](https://slimelist.netlify.app/)
+## ✨ Features
 
-SlimeList เป็นแอปพลิเคชัน Todo List แบบ Fullstack ที่ช่วยให้คุณจัดการงานได้อย่างมีประสิทธิภาพ พร้อมฟีเจอร์การตั้งค่าส่วนตัวและสถิติการทำงาน
+### 📝 Task Management
+- **CRUD Operations:** Create, read, update, and delete tasks effortlessly
+- **Rich Task Details:** 
+  - Add detailed notes
+  - Set start dates and deadlines
+  - Organize with categories
+  - Track progress with subtasks
+- **Smart Search:** Quickly find tasks with the search functionality
+- **Task Tracking:** Monitor tasks by:
+  - Deadline status
+  - Pending tasks
+  - Completed items
 
----
+### 🎮 Gamification
+- **Streak System:** Build and maintain daily completion streaks
+- **Level Progression:** Level up by completing tasks
+- **Badge Collection:** Earn badges for achievements
+- **Progress Tracking:** Visual representation of your journey
+
+### 📊 Dashboard & Analytics
+- **Interactive Graphics:** Visual representation of your productivity
+- **Task Statistics:** Track completion rates and patterns
+- **Category Analysis:** Monitor task distribution across categories
 
 ## 💻 Tech Stack
-<ul style="display: flex; flex-direction: column; gap:10px;">
-  <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=react" alt="react" width="24" style="vertical-align: middle; margin-right: 4px;" /> React
-  </li>
-    <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=express" alt="typescript" width="20" style="vertical-align: middle;margin-right: 4px;" /> Express
-  </li>
-    <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=vite" alt="vite" width="24" style="vertical-align: middle;margin-right: 4px;" /> Vite
-  </li>
-  <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=jest" alt="vitest" width="24" style="vertical-align: middle;margin-right: 4px;" /> Jest
-  </li>
-  <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=mongodb" alt="emotion" width="24" style="vertical-align: middle;margin-right: 4px;" /> MongoDB
-  </li>
-    <li style="vertical-align: middle;">
-    <img src="https://go-skill-icons.vercel.app/api/icons?i=tailwind" alt="mui" width="24" style="vertical-align: middle;margin-right: 4px;" /> Tailwind CSS
-  </li>
-</ul>
+<div align="center">
+  <img src="https://go-skill-icons.vercel.app/api/icons?i=react,express,vite,jest,mongodb,tailwind" alt="Tech Stack">
+</div>
 
-## Features
+- **Frontend:**
+  - React (UI Library)
+  - Vite (Build Tool)
+  - Tailwind CSS (Styling)
+  - React Query (Data Fetching)
+  - React Router (Navigation)
 
-- **สร้างและจัดการ Task:** เพิ่ม, แก้ไข, ลบ, และทำเครื่องหมาย Task ที่เสร็จสิ้น
-- **ตั้งค่าส่วนตัว:** เปลี่ยนธีม (dark/light) และการแจ้งเตือน
-- **สถิติการทำงาน:** ดูสถิติการทำงานในแต่ละวันและแต่ละหมวดหมู่
-- **รองรับหลายอุปกรณ์:** ใช้งานได้ทั้งบน desktop และ mobile
+- **Backend:**
+  - Express.js (Server Framework)
+  - MongoDB (Database)
+  - JWT (Authentication)
+  - Node-cron (Scheduled Tasks)
 
----
+- **Testing:**
+  - Jest (Testing Framework)
 
-## Installation
+## 🚀 Getting Started
 
-### 1. clone project
+### Prerequisites
+- Node.js (v14 or higher)
+- MongoDB
+- npm or yarn
 
+### Installation
+
+1. Clone the repository
 ```bash
-git clone https://github.com/your-username/slime-list.git
-cd slime-list
-
+git clone https://github.com/your-username/slimelist.git
+cd slimelist
 ```
+
+2. Install dependencies
+```bash
+# Install frontend dependencies
+cd client
+npm install
+
+# Install backend dependencies
+cd ../server
+npm install
+```
+
+3. Set up environment variables
+```bash
+# In server directory, create .env file
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+PORT=5000
+
+# In client directory, create .env file
+VITE_API_URL=http://localhost:5000
+```
+
+4. Start the application
+```bash
+# Start backend server
+cd server
+npm run dev
+
+# Start frontend in new terminal
+cd client
+npm run dev
+```
+
+## 📱 Screenshots
+
+<div align="center">
+  <img src="path_to_dashboard_screenshot.png" width="700" alt="Dashboard">
+  <p><em>Dashboard with Task Analytics</em></p>
+  
+  <img src="path_to_task_management_screenshot.png" width="700" alt="Task Management">
+  <p><em>Task Management Interface</em></p>
+</div>
+
+## 🌟 Roadmap
+- [ ] Mobile application
+- [ ] Team collaboration features
+- [ ] Advanced analytics
+- [ ] Integration with calendar apps
+- [ ] Custom theme builder
+
+## 🤝 Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+- [React Icons](https://react-icons.github.io/react-icons/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [MongoDB Atlas](https://www.mongodb.com/atlas/database)
+
 ---
-
-## Screenshots
-
-- 
-
-
-
+<div align="center">
+  Made with ❤️ by [Huhuhihi]
+</div>
