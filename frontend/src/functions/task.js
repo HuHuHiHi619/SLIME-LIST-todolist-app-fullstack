@@ -108,7 +108,7 @@ export const updateTask = async (id, data) => {
       },
       withCredentials: true,
     });
-    console.log('response',response.data)
+    console.log('response from api',response.data)
     return response.data;
 
   } catch (error) {

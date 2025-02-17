@@ -468,6 +468,7 @@ exports.updatedTask = async (req, res) => {
     // นำค่าที่มีอยู่มาใช้ถ้าไม่มีการส่งค่ามาใหม่
     const finalUpdateData = {
       title: updateData.title || existingTask.title,
+      note: updateData.note || existingTask.note,  
       startDate: updateData.startDate
         ? new Date(updateData.startDate)
         : existingTask.startDate,

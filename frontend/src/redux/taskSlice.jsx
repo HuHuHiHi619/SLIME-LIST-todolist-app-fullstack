@@ -120,9 +120,10 @@ export const updatedTask = createAsyncThunk(
       category: taskData.category?._id || taskData.category,
      // tag: taskData.tag?._id || taskData.tag,
     };
+    console.log("verify task", verifyTask)
 
     const response = await updateTask(taskId, verifyTask);
-
+    console.log("update response", response)
     return response;
   }
 );
@@ -358,6 +359,7 @@ const taskSlice = createSlice({
       })
       .addCase(updatedTask.fulfilled, (state, action) => {
         const updatedTask = action.payload;
+        console.log("redux updatetask payload", updatedTask)
         state.tasks = state.tasks.map((task) => {
           if (task._id === updatedTask._id) {
             return {

@@ -26,6 +26,7 @@ function TaskDetail({ onClose }) {
   const { selectedTask, tags } = useSelector((state) => state.tasks);
   const categories = useSelector((state) => state.tasks.categories);
 
+  const [isUpdating, setIsUpdating] = useState(false)
   const [editedTask, setEditedTask] = useState(selectedTask);
   const [editedProgress, setEditedProgress] = useState(
     selectedTask?.progress || {
@@ -37,31 +38,49 @@ function TaskDetail({ onClose }) {
   const [currentStep, setCurrenStep] = useState("");
 
   useEffect(() => {
-    setEditedTask(selectedTask);
-    setEditedProgress(
-      selectedTask.progress || {
-        steps: [],
-        totalSteps: 0,
-        allStepsCompleted: false,
-      }
-    );
-  }, [selectedTask]);
+    if (!isUpdating && selectedTask && JSON.stringify(selectedTask) !== JSON.stringify(editedTask)) {
+      setEditedTask(selectedTask);
+      setEditedProgress(
+        selectedTask.progress || {
+          steps: [],
+          totalSteps: 0,
+          allStepsCompleted: false,
+        }
+      );
+    }
+  }, [selectedTask, isUpdating]);
 
   const debouncedUpdateTask = useMemo(
     () =>
       debounce(async (updatedSelectTask) => {
-        const taskId = updatedSelectTask._id;
-        dispatch(updatedTask({ taskId, taskData: updatedSelectTask }));
-        await Promise.all([
-          dispatch(fetchSummaryByCategory()),
-          dispatch(fetchSummary()),
-          dispatch(fetchNotification()),
-        ]);
+        try {
+          setIsUpdating(true);
+          const taskId = updatedSelectTask._id;
+          const result = await dispatch(updatedTask({ taskId, taskData: updatedSelectTask })).unwrap();
+          
+          // Only update if the API call was successful
+          if (result) {
+            await Promise.all([
+              dispatch(fetchSummaryByCategory()),
+              dispatch(fetchSummary()),
+              dispatch(fetchNotification()),
+            ]);
+          }
+        } catch (error) {
+          console.error('Failed to update task:', error);
+          // Revert to previous state if update fails
+          setEditedTask(selectedTask);
+        } finally {
+          setIsUpdating(false);
+        }
       }, 500),
-    [dispatch, selectedTask._id]
+    [dispatch, selectedTask]
   );
+
   const handleInputChange = useCallback(
     (e) => {
+      if(isUpdating) return;
+
       const { name, value } = e.target;
       const updatedSelectTask = { ...editedTask };
 
@@ -81,7 +100,7 @@ function TaskDetail({ onClose }) {
       setEditedTask(updatedSelectTask);
       debouncedUpdateTask(updatedSelectTask);
     },
-    [editedTask, debouncedUpdateTask, categories, tags]
+    [editedTask, debouncedUpdateTask, categories, isUpdating]
   );
 
   const handleStepChange = useCallback((e) => {
