@@ -3,6 +3,14 @@ import { getUserData, userLogin, userLogout } from "../functions/authen";
 import { completedTask } from "./taskSlice";
 import Cookies from "js-cookie";
 
+const checkTokenvalidity = (token) => {
+  try{
+      const decoded = JSON.parse(atob(token.split('.')[1]))
+      return decoded.exp * 1000 > Date.now()
+  } catch {
+      return false
+  }
+}
 const loadInitialState = () => {
   try {
     const persistedAuth = Cookies.get("isAuthenticated") === "true";
@@ -10,6 +18,17 @@ const loadInitialState = () => {
     const persistedUsername = Cookies.get("username") || "";
     const accessToken = Cookies.get("accessToken") || "";
     const refreshToken = Cookies.get("refreshToken") || "";
+
+    const isTokenValid = accessToken && checkTokenvalidity(accessToken)
+
+    if (!isTokenValid) {
+      Cookies.remove("isAuthenticated");
+      Cookies.remove("userId");
+      Cookies.remove("username");
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
+      return 
+    }
 
     return {
       userData: {
@@ -190,8 +209,7 @@ const userSlice = createSlice({
 
       .addCase(fetchUserData.fulfilled, (state, action) => {
         state.userData = { ...state.userData, ...action.payload };
-        console.log("access",state.tokens.accessToken)
-        if(state.tokens.accessToken === true){
+        if(state.tokens.accessToken && typeof state.tokens.accessToken === "string"){
           state.isAuthenticated = true;
         }
         state.loading = false;

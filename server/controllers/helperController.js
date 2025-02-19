@@ -1,4 +1,4 @@
-const { startOfDay, subDays } = require("date-fns");
+const { startOfDay, differenceInDays} = require("date-fns");
 const Category = require("../Models/Category");
 const Tag = require("../Models/Tag");
 const User = require("../Models/User");
@@ -85,12 +85,8 @@ const calculateBadge = (streakDays) => {
   if (streakDays >= 1) return "bronze";
   return "iron";
 };
-exports.updateUserStreak = async (
-  userId,
-  completed,
-  taskCompletionDetails = {}
-) => {
-  console.log("is completed ?", completed);
+exports.updateUserStreak = async (userId, completed, taskCompletionDetails = {}) => {
+  console.log("Updating streak for user:", userId, "completed:", completed);
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -99,58 +95,70 @@ exports.updateUserStreak = async (
     }
 
     const currentDate = startOfDay(new Date());
-    const yesterday = startOfDay(subDays(new Date(), 1));
-    const isYesterday =
-      user.lastCompleted &&
-      startOfDay(user.lastCompleted).getTime() === yesterday.getTime();
-    user.currentStreak = user.currentStreak || 0;
-    user.bestStreak = user.bestStreak || 0;
-    console.log("today com",user.alreadyCompletedToday)
-
-    if (user.alreadyCompletedToday) {
-      console.log("User already completed a task today.");
-      return user; 
-    }
-
-    if (completed === true) {
-      if (user.currentStreak === 0) {
-        console.log("No previous completion, starting new streak.");
-        user.currentStreak = 1;
-        user.bestStreak = Math.max(user.currentStreak, user.bestStreak);
+    const lastCompletedDate = user.lastCompleted ? startOfDay(new Date(user.lastCompleted)) : null;
+    
+    // Debug logs
+    console.log("Current date:", currentDate);
+    console.log("Last completed:", lastCompletedDate);
+    console.log("Current streak:", user.currentStreak);
+    
+    if (completed) {
+      // ถ้ายังไม่เคยทำ task วันนี้
+      if (!user.alreadyCompletedToday) {
+        const dayDifference = lastCompletedDate ? 
+          differenceInDays(currentDate, lastCompletedDate) : null;
         
-      } else if (isYesterday) {
-        console.log("Task completed yesterday, incrementing streak.");
-        user.currentStreak += 1;
-        user.bestStreak = Math.max(user.currentStreak, user.bestStreak);
-       
+        console.log("Days difference:", dayDifference);
+
+        // กรณีแรกเริ่มใช้งาน หรือ streak ขาด (ไม่ได้ทำมาเกิน 1 วัน)
+        if (!lastCompletedDate || user.currentStreak === 0 || dayDifference > 1) {
+          console.log("Starting new streak");
+          user.currentStreak = 1;
+        }
+        // ทำต่อเนื่องจากเมื่อวาน
+        else if (dayDifference === 1) {
+          console.log("Continuing streak");
+          user.currentStreak += 1;
+        }
+        // ทำในวันเดียวกัน
+        else if (dayDifference === 0) {
+          console.log("Same day completion, streak remains:", user.currentStreak);
+          // ไม่ต้องเพิ่ม streak เพราะเป็นวันเดียวกัน
+        }
+
+        // อัพเดต last completed และ flag
+        user.lastCompleted = currentDate;
+        user.alreadyCompletedToday = true;
+        
+        // อัพเดต best streak
+        user.bestStreak = Math.max(user.currentStreak, user.bestStreak || 0);
+        
+        console.log("Updated streak:", user.currentStreak);
+        console.log("Updated best streak:", user.bestStreak);
+      } else {
+        console.log("Already completed today, no streak update needed");
       }
 
-      user.lastCompleted = currentDate;
-      user.alreadyCompletedToday = true;
-    } else {
-      console.log("Did not enter completed block.");
+      // คำนวณและอัพเดท badge
+      const newBadge = calculateBadge(user.currentStreak);
+      if (newBadge !== user.currentBadge) {
+        user.badgeChange = true;
+        user.oldBadge = user.currentBadge;
+        user.newBadge = newBadge;
+        user.currentBadge = newBadge;
+        console.log("Badge updated:", user.oldBadge, "->", user.newBadge);
+      }
+
+      // เพิ่มรายละเอียด task ถ้ามี
+      if (Object.keys(taskCompletionDetails).length > 0) {
+        user.taskDetails = taskCompletionDetails;
+      }
+
+      // บันทึกการเปลี่ยนแปลง
+      await user.save();
+      console.log("User data saved successfully");
     }
 
-    // คำนวณ badge ใหม่และอัปเดต
-    const newBadge = calculateBadge(user.currentStreak);
-    
-    if (newBadge !== user.currentBadge) {
-      user.badgeChange = true;
-      user.oldBadge = user.currentBadge;
-      user.newBadge = newBadge;
-      user.currentBadge = newBadge;
-      console.log(`Badge updated from ${user.oldBadge} to ${user.newBadge}.`);
-    }
-    console.log(newBadge , "new badge")
-
-    // เพิ่มรายละเอียด task หากมี
-    if (Object.keys(taskCompletionDetails).length > 0) {
-      user.taskDetails = taskCompletionDetails;
-    }
-
-    // บันทึกการเปลี่ยนแปลงในฐานข้อมูล
-    await user.save();
-   
     return user;
   } catch (error) {
     console.error("Error updating user streak:", error);

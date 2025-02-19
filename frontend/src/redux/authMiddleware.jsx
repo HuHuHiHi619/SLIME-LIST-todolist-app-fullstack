@@ -5,15 +5,22 @@ import Cookies from "js-cookie"
 
 const authMiddleware = (store) => (next) => async (action) => {
    
+    const result = next(action)
+    const state = store.getState();
+    const { isAuthenticated , tokens , isRefreshing } = state.user
+
+    if(isAuthenticated && tokens.accessToken){
+        const isValid = checkTokenvalidity(tokens.accessToken)
+        if(!isValid && action.type !== "auth/refreshStart" && action.type !== "auth/refreshEnd"){
+            store.dispatch(logoutUser());
+            return next(action)
+        }
+    }
 
     if (action.type.startsWith('user/loginUser')) {
         return next(action); 
     }
 
-    const result = next(action)
-    const state = store.getState();
-    const { isAuthenticated , tokens , isRefreshing } = state.user
-    
     if (isRefreshing) {
         return next(action); 
     }

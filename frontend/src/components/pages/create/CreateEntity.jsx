@@ -30,7 +30,7 @@ function CreateEntity({ onAddItem, entityType ,onClose}) {
   };
 
   const handleSubmit = async (e) => {
-    if (e.key === "Enter" && formEntity.name.trim() !== "") {
+    if ((e.key === "Enter" || e.type === "click") && formEntity.name.trim() !== "") {
       e.preventDefault();
       if (!validator()) {
         return;
@@ -69,7 +69,7 @@ function CreateEntity({ onAddItem, entityType ,onClose}) {
               onKeyDown={handleSubmit}
               className="w-full placeholder:text-xl px-4 py-3 rounded-xl my-6"
             />
-              <button onClick={handleSubmit} className="done-button mx-auto">Create</button>
+              <button onClick={handleSubmit} className="done-button mx-auto active:scale-105">Create</button>
               <button className="cancel-button absolute -top-5 -right-5" onClick={onClose}>X</button>
           </div>
         
