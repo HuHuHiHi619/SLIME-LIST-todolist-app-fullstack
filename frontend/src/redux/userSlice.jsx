@@ -11,6 +11,33 @@ const checkTokenvalidity = (token) => {
       return false
   }
 }
+
+// Default state definition - use this as fallback
+const defaultState = {
+  userData: {
+    id: "",
+    username: "",
+    currentStreak: 0,
+    bestStreak: 0,
+    alreadyCompletedToday: null,
+    currentBadge: "iron",
+    settings: {
+      theme: "dark",
+      notification: true,
+    },
+    imageProfile: "",
+    lastCompleted: null,
+  },
+  tokens: {
+    accessToken: "",
+    refreshToken: "",  
+  },
+  loading: false,
+  isRefreshing: false,
+  authError: null,
+  isAuthenticated: false,
+};
+
 const loadInitialState = () => {
   try {
     const persistedAuth = Cookies.get("isAuthenticated") === "true";
@@ -27,7 +54,7 @@ const loadInitialState = () => {
       Cookies.remove("username");
       Cookies.remove("accessToken");
       Cookies.remove("refreshToken");
-      return 
+      return { ...defaultState }; // Return default state instead of undefined
     }
 
     return {
@@ -56,26 +83,7 @@ const loadInitialState = () => {
     };
   } catch (error) {
     console.error("Error loading initial state:", error);
-    return {
-      userData: {
-        id: "",
-        username: "",
-        currentStreak: 0,
-        bestStreak: 0,
-        alreadyCompletedToday: null,
-        currentBadge: "iron",
-        settings: {
-          theme: "dark",
-          notification: true,
-        },
-        imageProfile: "",
-        lastCompleted: null,
-      },
-      loading: false,
-      isRefreshing: false,
-      authError: null,
-      isAuthenticated: false,
-    };
+    return { ...defaultState }; // Return default state on error
   }
 };
 
@@ -147,8 +155,7 @@ const userSlice = createSlice({
     // เพิ่ม reducer สำหรับ restore state จาก localStorage
     restoreState: (state) => {
       const newState = loadInitialState();
-      state.isAuthenticated = newState.isAuthenticated;
-      state.userData = newState.userData;
+      return { ...newState }; // Replace entire state with loaded state
     },
     updateTokens: (state, action) => {
       state.tokens = {
@@ -179,8 +186,9 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.userData.id = action.payload.id;
-        state.userData.username = action.payload.username;
+        state.userData.id = action.payload.user.id; // Fixed: access user property
+        state.userData.username = action.payload.user.username; // Fixed: access user property
+        state.tokens = action.payload.tokens;
         state.isAuthenticated = true;
         state.authError = null;
       })
@@ -201,10 +209,7 @@ const userSlice = createSlice({
         state.authError = null;
       })
       .addCase(logoutUser.fulfilled, (state) => {
-        state.userData = initialState.userData;
-        state.isAuthenticated = false;
-        state.loading = false;
-        state.authError = null;
+        return { ...defaultState }; // Reset to default state
       })
 
       .addCase(fetchUserData.fulfilled, (state, action) => {
@@ -213,7 +218,6 @@ const userSlice = createSlice({
           state.isAuthenticated = true;
         }
         state.loading = false;
-        console.log(state.userData)
       })
       .addCase(fetchUserData.rejected, (state, action) => {
         state.loading = false;

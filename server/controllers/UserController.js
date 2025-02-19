@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const { upload, UPLOADS_DIR } = require("../middleware/upload");
 const path = require("path");
-const { isValidObjectId , Types} = require("mongoose");
+const { isValidObjectId, Types } = require("mongoose");
 const { handleError } = require("./helperController");
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
@@ -19,16 +19,15 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: error.message });
     }
   });
-  
+
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log("Validation errors:", errors.array);
       return res.status(400).json({ error: errors.array() });
     }
-    const { username, password,theme,notification,lastCompleted} = req.body;
-    const lastCompletedDate = lastCompleted ? new Date(lastCompleted) : null
-  
+    const { username, password, theme, notification, lastCompleted } = req.body;
+    const lastCompletedDate = lastCompleted ? new Date(lastCompleted) : null;
 
     if (!password) {
       return res.status(400).json({ error: "Password is required" });
@@ -43,7 +42,7 @@ exports.register = async (req, res) => {
     if (req.file) {
       imageProfile = path.join(UPLOADS_DIR, req.file.filename);
     }
-    
+
     // create new user
     const newUser = new User({
       username,
@@ -53,7 +52,7 @@ exports.register = async (req, res) => {
         notification: notification !== undefined ? notification : true,
       },
       imageProfile: imageProfile || null,
-      lastCompleted: lastCompletedDate
+      lastCompleted: lastCompletedDate,
     });
     await newUser.save();
 
@@ -61,7 +60,7 @@ exports.register = async (req, res) => {
       message: "User registered succussfully",
       username: username,
       imageProfile: imageProfile || null,
-      lastCompleted:lastCompletedDate || null
+      lastCompleted: lastCompletedDate || null,
     });
   } catch (error) {
     console.error("Server error during registeration:", error);
@@ -84,14 +83,14 @@ exports.login = async (req, res) => {
     if (!user) {
       return res.status(400).json({ error: "Invalid credentials 1" });
     }
-    
+
     const isMatch = await bcrypt.compare(password, user.password);
-    
+
     if (!isMatch) {
       console.log("Password is not match");
       return res.status(400).json({ error: "Invalid credentials , password" });
     }
-    
+
     const payload = { userId: user._id };
     const accessToken = jwt.sign(payload, accessTokenSecret, {
       expiresIn: "15m",
@@ -100,7 +99,6 @@ exports.login = async (req, res) => {
     const refreshToken = jwt.sign(payload, refreshTokenSecret, {
       expiresIn: "7d",
     });
-   
 
     // check history
     const loginHistoryEntry = new LoginHistory({
@@ -111,74 +109,72 @@ exports.login = async (req, res) => {
     await loginHistoryEntry.save();
     console.log("Login history saved:");
 
-    res.cookie('accessToken',accessToken,{
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure:true,
-      sameSite: 'None',
+      secure: true,
+      sameSite: "None",
       maxAge: 15 * 60 * 1000, // 15m
-      
     });
 
-    res.cookie('refreshToken',refreshToken,{
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure:true,
-      sameSite: 'None',
-      maxAge: 7 * 24 * 60 * 60 * 1000,  // 7d
-      
+      secure: true,
+      sameSite: "None",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7d
     });
 
-    res.clearCookie('guestId',{
+    res.clearCookie("guestId", {
       httpOnly: true,
-      secure:true,
-      sameSite: 'None',
-      path: '/',
-    
-    })
+      secure: true,
+      sameSite: "None",
+      path: "/",
+    });
 
     return res.status(200).json({
-      message:'Login successful !',
+      message: "Login successful !",
       user: {
         id: user._id,
-        username: user.username
+        username: user.username,
       },
-      accessToken, 
-      refreshToken 
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
-    console.error('Login error:',error);
-    return res.status(500).json({error:'Server error',details: error.message});
+    console.error("Login error:", error);
+    return res
+      .status(500)
+      .json({ error: "Server error", details: error.message });
   }
 };
 
 // Logout
-exports.logout = async (req,res) => {
-  try{
-    res.clearCookie('accessToken', {
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("accessToken", {
       httpOnly: true,
-      sameSite: 'None',
+      sameSite: "None",
       secure: true,
-      path: '/',
-    
-  });
-  res.clearCookie('refreshToken', {
+      path: "/",
+    });
+    res.clearCookie("refreshToken", {
       httpOnly: true,
-      sameSite: 'None',
+      sameSite: "None",
       secure: true,
-      path: '/',
-   
-  });
-  } catch(error) {
-    console.error('Logout error:',error)
-    return res.status(500).json({error:'Server error',details: error.message});
+      path: "/",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res
+      .status(500)
+      .json({ error: "Server error", details: error.message });
   }
-  return res.status(200).json({message:'Log out successful!'})
-}
+  return res.status(200).json({ message: "Log out successful!" });
+};
 
 // Refresh token
 exports.refreshedToken = async (req, res) => {
- 
-  const { refreshToken } = req.cookies
-  console.log('req refresh', refreshToken)
+  const { refreshToken } = req.cookies;
+  console.log("req refresh", refreshToken);
   if (!refreshToken) {
     return res.status(401).json({ error: "No refresh token provided" });
   }
@@ -191,7 +187,7 @@ exports.refreshedToken = async (req, res) => {
     const newAccessToken = jwt.sign({ userId: user._id }, accessTokenSecret, {
       expiresIn: "10m",
     });
-    console.log('refresh back', newAccessToken)
+    console.log("refresh back", newAccessToken);
     res.status(200).json({ accessToken: newAccessToken });
   } catch (error) {
     console.error("Refresh token Error", error.message);
@@ -201,21 +197,47 @@ exports.refreshedToken = async (req, res) => {
   }
 };
 
-exports.getUserData = async (req,res) => {
-    
-    try{
-      const formatUser = req.user && isValidObjectId(req.user.id) ? new Types.ObjectId(req.user.id) : null;
-    if(!formatUser){
-      return res.status(401).json({error:'Unauthorized'});
-    }
-   
-      const userData = await User.findById(formatUser).select('-password');
-      if(!userData){
-        return res.status(404).json({ error: 'User not found'})
+exports.getUserData = async (req, res) => {
+  try {
+    // Log เพื่อดูสถานะ req.user
+    console.log('Original req.user:', req.user);
+    console.log('Authorization header:', req.headers.authorization);
+
+    // วิธีหา userId ที่ปลอดภัย
+    let userId = null;
+
+    // กรณีที่ 1: req.user มีข้อมูลปกติ
+    if (req.user && req.user.id) {
+      userId = req.user.id;
+    } 
+    // กรณีที่ 2: ดึง userId จาก token โดยตรง
+    else if (req.headers.authorization) {
+      const token = req.headers.authorization.split(' ')[1];
+      try {
+        // ถอดรหัส token เพื่อหา userId
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        userId = decoded.userId;
+      } catch (tokenError) {
+        console.error('Token verification error:', tokenError);
+        return res.status(401).json({ error: "Invalid token" });
       }
-      console.log('User found:',userData)
-      return res.status(200).json(userData)
-    } catch(error) {
-      handleError(res,error)
     }
-}
+
+    // ตรวจสอบ userId
+    if (!userId) {
+      return res.status(401).json({ error: "Unable to authenticate user" });
+    }
+
+    // ค้นหาข้อมูลผู้ใช้
+    const userData = await User.findById(userId).select("-password");
+    
+    if (!userData) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // ส่งข้อมูลกลับ
+    return res.status(200).json(userData);
+  } catch (error) {
+    handleError(res, error);
+  }
+};
