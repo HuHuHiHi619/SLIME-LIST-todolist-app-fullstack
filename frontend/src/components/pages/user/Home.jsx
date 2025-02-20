@@ -1,6 +1,6 @@
 import React from "react";
 import TaskForm from "../fixbar/TaskForm";
-import Summary from "../ui/summary.jsx";
+import Summary from "../ui/Summary.jsx";
 import StreakField from "../ui/StreakField";
 import BadgeField from "../ui/BadgeField";
 import FadeUpContainer from "../animation/FadeUpContainer";
