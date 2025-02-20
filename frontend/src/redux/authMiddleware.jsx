@@ -37,9 +37,9 @@ const authMiddleware = (store) => (next) => async (action) => {
                     }
                     Cookies.set('accessToken', newAccessToken);
                     Cookies.set('refreshToken', refreshToken);
-                    store.dispatch(updateTokens({accessToken : newAccessToken , refreshToken}))
-                    store.dispatch(fetchUserData())
-                    store.dispatch(action);
+                   await store.dispatch(updateTokens({accessToken : newAccessToken , refreshToken}))
+                   await store.dispatch(fetchUserData())
+                   
                 } else {
                     throw new Error('Failed to get new access token')
                 }
@@ -49,8 +49,8 @@ const authMiddleware = (store) => (next) => async (action) => {
             console.error('Auth middleware error:', error);
             Cookies.remove('accessToken');
             Cookies.remove('refreshToken');
-            store.dispatch(setAuthError(error.message));
-            store.dispatch(logoutUser());
+            await store.dispatch(logoutUser());
+            await store.dispatch(setAuthError(error.message));
         } finally {
             store.dispatch({type : 'auth/refreshEnd'})
         }

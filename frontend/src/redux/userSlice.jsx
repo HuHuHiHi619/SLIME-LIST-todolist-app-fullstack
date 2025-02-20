@@ -73,8 +73,8 @@ const loadInitialState = () => {
         lastCompleted: null,
       },
       tokens: {
-        accessToken,
-        refreshToken,
+        accessToken: null,
+        refreshToken: null,
       },
       loading: false,
       isRefreshing: false,
@@ -190,8 +190,8 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.userData.id = action.payload.user.id; // Fixed: access user property
-        state.userData.username = action.payload.user.username; // Fixed: access user property
+        state.userData.id = action.payload.user.id; 
+        state.userData.username = action.payload.user.username; 
         state.tokens = action.payload.tokens;
         state.isAuthenticated = true;
         state.authError = null;
