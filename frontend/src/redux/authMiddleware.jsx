@@ -1,6 +1,6 @@
 
 import { getRefreshToken } from "../functions/authen";
-import { logoutUser, updateTokens, setAuthError } from "./userSlice";
+import { logoutUser, updateTokens, setAuthError, fetchUserData } from "./userSlice";
 import Cookies from "js-cookie"
 
 const authMiddleware = (store) => (next) => async (action) => {
@@ -35,6 +35,7 @@ const authMiddleware = (store) => (next) => async (action) => {
                     Cookies.set('accessToken', newAccessToken);
                     Cookies.set('refreshToken', refreshToken);
                     store.dispatch(updateTokens({accessToken : newAccessToken , refreshToken}))
+                    store.dispatch(fetchUserData())
                     store.dispatch(action);
                 } else {
                     throw new Error('Failed to get new access token')
