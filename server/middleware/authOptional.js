@@ -6,7 +6,9 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const jwtVerify = promisify(jwt.verify);
 
 const authMiddlewareOptional = (allowGuest = false) => async (req, res, next) => {
-    const token = req.cookies.accessToken;
+    console.log('Full Cookies:', req.cookies);
+    console.log('Access Token from headers:', req.headers.authorization);
+    const token = req.cookies.accessToken ||  req.headers.authorization?.split(' ')[1];
 
     if (!token) {
         console.log('req.cookies.guestId',req.cookies.guestId)

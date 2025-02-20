@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -51,9 +52,11 @@ export const userLogout = async () => {
 
 export const getUserData = async (id) => {
     try{
+        const accessToken = Cookies.get('accessToken')
         const response = await axios.get(`${API_URL}/user/${id}/profile`,{
             headers:{
-                "Content-type":"application/json"
+                "Content-type":"application/json",
+                 "Authorization": `Bearer ${accessToken}`
             },
             withCredentials: true
         })
