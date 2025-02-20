@@ -9,16 +9,8 @@ const authMiddleware = (store) => (next) => async (action) => {
     const state = store.getState();
     const { isAuthenticated , tokens , isRefreshing } = state.user
 
-    if(isAuthenticated && tokens.accessToken){
-        const isValid = checkTokenvalidity(tokens.accessToken)
-        if(!isValid && action.type !== "auth/refreshStart" && action.type !== "auth/refreshEnd"){
-            store.dispatch(logoutUser());
-            return next(action)
-        }
-    }
-
-    if (action.type.startsWith('user/loginUser')) {
-        return next(action); 
+    if (isRefreshing || action.type.startsWith('user/loginUser')) {
+        return next(action);
     }
 
     if (isRefreshing) {
@@ -54,6 +46,7 @@ const authMiddleware = (store) => (next) => async (action) => {
         } finally {
             store.dispatch({type : 'auth/refreshEnd'})
         }
+
     }
     return result
 }
