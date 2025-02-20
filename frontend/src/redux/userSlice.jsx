@@ -133,8 +133,12 @@ export const logoutUser = createAsyncThunk(
 
 export const fetchUserData = createAsyncThunk(
   "user/fetchUserData",
-  async (userId, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
+      const userId = Cookies.get('userId')
+      if (!userId) {
+        throw new Error('No user ID found');
+      }
       const response = await getUserData(userId);
       return response;
     } catch (error) {
@@ -223,6 +227,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.authError = action.payload;
         state.isAuthenticated = false;
+        state.userData = initialState.userData;
       })
       .addCase("auth/refreshStart", (state) => {
         state.isRefreshing = true;

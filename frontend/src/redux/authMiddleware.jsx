@@ -32,6 +32,9 @@ const authMiddleware = (store) => (next) => async (action) => {
                 if(!isRefreshing){
                     store.dispatch({type: 'auth/refreshStart'})
                     const newAccessToken = await getRefreshToken(refreshToken);
+                    if (!newAccessToken) {
+                        throw new Error('Failed to get new access token');
+                    }
                     Cookies.set('accessToken', newAccessToken);
                     Cookies.set('refreshToken', refreshToken);
                     store.dispatch(updateTokens({accessToken : newAccessToken , refreshToken}))

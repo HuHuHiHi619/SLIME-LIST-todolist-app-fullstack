@@ -10,6 +10,7 @@ const authMiddlewareOptional = (allowGuest = false) => async (req, res, next) =>
 
     if (!token) {
         console.log('req.cookies.guestId',req.cookies.guestId)
+
         if(allowGuest && req.cookies.guestId){
             req.user = null;
             req.guestId = req.cookies.guestId;
@@ -26,7 +27,8 @@ const authMiddlewareOptional = (allowGuest = false) => async (req, res, next) =>
         const decoded = await jwtVerify(token, accessTokenSecret);
 
         if (Date.now() >= decoded.exp * 1000) {
-            throw new Error('Token expired');
+            req.user = null
+            next();
         }
 
         req.user = { id: decoded.userId };
@@ -44,7 +46,8 @@ const authMiddlewareOptional = (allowGuest = false) => async (req, res, next) =>
         next();
     } catch (error) {
         console.error('Token verification error:', error.message);
-        res.status(401).json({ error: 'Token is not valid' });
+        req.user = null
+        next();
     }
 };
 
