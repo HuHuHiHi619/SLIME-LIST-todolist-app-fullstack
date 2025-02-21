@@ -37,6 +37,7 @@ const authMiddlewareOptional =
 
     try {
       const decoded = await jwtVerify(accessToken, accessTokenSecret);
+      req.user = { id: decoded.userId };
 
       if (decoded.exp * 1000 - Date.now() < 5 * 60 * 1000) {
         if (!isRefreshing) {
@@ -81,6 +82,9 @@ const authMiddlewareOptional =
       next();
     } catch (error) {
       console.error("Token verification error:", error.message);
+
+      res.clearCookie("accessToken");
+      res.clearCookie("refreshToken");
       req.user = null;
       next();
     }
