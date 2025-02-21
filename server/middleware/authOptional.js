@@ -13,7 +13,8 @@ let refreshQueue = [];
 const authMiddlewareOptional =
   (allowGuest = false) =>
   async (req, res, next) => {
-    console.log("Full Cookies:", req.cookies);
+    console.log("accessToken Cookies:", req.cookies.accessToken);
+    console.log("refreshToken Cookies:", req.cookies.refreshToken);
     console.log("Access Token from headers:", req.headers.authorization);
     const accessToken =
       req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
