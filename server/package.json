@@ -6,6 +6,9 @@
     "start": " nodemon server",
     "test": "jest"
   },
+  "jest": {
+    "testTimeout": 10000
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -1,5 +1,6 @@
 
 import { getRefreshToken } from "../functions/authen";
+import { clearSummaryState } from "./summarySlice";
 import { logoutUser, updateTokens, setAuthError, fetchUserData } from "./userSlice";
 import Cookies from "js-cookie"
 
@@ -10,13 +11,9 @@ const authMiddleware = (store) => (next) => async (action) => {
     const { isAuthenticated , tokens , isRefreshing } = state.user
 
     if (isRefreshing || action.type.startsWith('user/loginUser')) {
-        return next(action);
+        return result;
     }
 
-    if (isRefreshing) {
-        return next(action); 
-    }
-   
     if(isAuthenticated && action.type ===  'user/fetchUserData') {
         try{
             const { accessToken , refreshToken } = tokens
@@ -42,6 +39,7 @@ const authMiddleware = (store) => (next) => async (action) => {
             Cookies.remove('accessToken');
             Cookies.remove('refreshToken');
             await store.dispatch(logoutUser());
+            await store.dispatch(clearSummaryState())
             await store.dispatch(setAuthError(error.message));
         } finally {
             store.dispatch({type : 'auth/refreshEnd'})

@@ -13,9 +13,7 @@ let refreshQueue = [];
 const authMiddlewareOptional =
   (allowGuest = false) =>
   async (req, res, next) => {
-    console.log("accessToken Cookies:", req.cookies.accessToken);
-    console.log("refreshToken Cookies:", req.cookies.refreshToken);
-    console.log("Access Token from headers:", req.headers.authorization);
+   
     const accessToken =
       req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
     const refreshToken = req.cookies.refreshToken;
@@ -39,7 +37,7 @@ const authMiddlewareOptional =
       const decoded = await jwtVerify(accessToken, accessTokenSecret);
       req.user = { id: decoded.userId };
 
-      if (decoded.exp * 1000 - Date.now() < 5 * 60 * 1000) {
+      if (decoded.exp * 1000 - Date.now() < 2 * 60 * 1000) {
         if (!isRefreshing) {
           isRefreshing = true;
           try {
@@ -47,6 +45,8 @@ const authMiddlewareOptional =
             const user = await User.findById(decoded.userId);
 
             if (!user) {
+                res.clearCookie('accessToken')
+                res.clearCookie('refreshToken')
               throw Error("User not found.");
             }
 
