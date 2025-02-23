@@ -446,6 +446,7 @@ const taskSlice = createSlice({
           return;
         }
         state.tasks = state.tasks.filter((task) => task._id !== removedTaskId);
+        state.searchResults = state.searchResults.filter((task) => task._id !== removedTaskId)
         state.isSummaryUpdated = true;
         state.lastStateUpdate = new Date().toISOString();
       })

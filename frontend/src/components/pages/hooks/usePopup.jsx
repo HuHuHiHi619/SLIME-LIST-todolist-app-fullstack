@@ -11,11 +11,13 @@ import {
   toggleSidebarPinned,
   removedCategory,
   removeCategories,
- 
   removedAllTask,
 } from "../../../redux/taskSlice";
 import { toggleInstructPopup } from "../../../redux/summarySlice";
-import { fetchSummary, fetchSummaryByCategory } from "../../../redux/summarySlice";
+import {
+  fetchSummary,
+  fetchSummaryByCategory,
+} from "../../../redux/summarySlice";
 import { fetchUserData } from "../../../redux/userSlice";
 
 function usePopup() {
@@ -23,14 +25,14 @@ function usePopup() {
   const popupRef = useRef(null);
   const popupEnRef = useRef(null);
   const popupInstructRef = useRef(null);
-  const sidebarRef = useRef(null)
-  const { isPopup , activeMenu } = useSelector((state) => state.tasks)
-  const { tokens } = useSelector((state) => state.user)
-  const { instruction } = useSelector((state) => state.summary)
+  const sidebarRef = useRef(null);
+  const { isPopup, activeMenu } = useSelector((state) => state.tasks);
+  const { tokens } = useSelector((state) => state.user);
+  const { instruction } = useSelector((state) => state.summary);
 
-  const handleIsCreate = () => {
+  const handleIsCreate = async () => {
     dispatch(toggleCreatePopup());
-    dispatch(fetchSummary());
+    await dispatch(fetchSummary()).unwrap();
   };
   const handleIsInstruct = () => {
     dispatch(toggleInstructPopup());
@@ -59,51 +61,67 @@ function usePopup() {
   };
 
   const handleActiveMenu = (menuName) => {
-    if(activeMenu === menuName){
+    if (activeMenu === menuName) {
       dispatch(setActiveMenu(menuName));
       navigate(menuName);
     }
   };
 
   const handleCompletedTask = async (task) => {
-    dispatch(completedTask(task._id));
-   
-    setTimeout(() => {
-      dispatch(fetchSummary());
-      if(tokens.accessToken){
-        dispatch(fetchUserData())
-      }
-    }, 100)
+    try {
+      await dispatch(completedTask(task._id)).unwrap();
+
+      setTimeout(async () => {
+        await dispatch(fetchSummary()).unwrap();
+        if (tokens.accessToken) {
+          await dispatch(fetchUserData()).unwrap();
+        }
+      }, 100);
+    } catch (error) {
+      console.error("Error completing task:", error);
+    }
   };
 
   const handleRemovedTask = async (task) => {
-    dispatch(removedTask(task._id));
-    dispatch(fetchSummary());
-    console.log("removet task")
+    try {
+      await dispatch(removedTask(task._id)).unwrap();
+      await dispatch(fetchSummary()).unwrap();
+      console.log("removed task");
+    } catch (error) {
+      console.error("Error removing task:", error);
+    }
   };
 
   const handleRemovedAllTask = async () => {
-    dispatch(removedAllTask());
-    dispatch(fetchSummary());
+    try {
+      await dispatch(removedAllTask()).unwrap();
+      await dispatch(fetchSummary()).unwrap();
+    } catch (error) {
+      console.error("Error removing all task:", error);
+    }
   };
 
-  const handleRemovedItem = async (id,type) => {
-    if(type === "category"){
-      dispatch(removeCategories(id)); // optimistic update
-      await dispatch(removedCategory(id)).unwrap()
-      dispatch(fetchSummaryByCategory());
+  const handleRemovedItem = async (id, type) => {
+    try {
+      if (type === "category") {
+        dispatch(removeCategories(id)); // optimistic update
+        await dispatch(removedCategory(id)).unwrap();
+        await dispatch(fetchSummaryByCategory()).unwrap();
+      }
+    } catch (error) {
+      console.error("Error removing item:", error);
     }
   };
-  
+
   const handleClose = () => {
-    if(isPopup){
-      dispatch(togglePopup(""))
-    } else if(popupRef) {
-      dispatch(toggleCreatePopup())
+    if (isPopup) {
+      dispatch(togglePopup(""));
+    } else if (popupRef) {
+      dispatch(toggleCreatePopup());
       dispatch(setSelectedTask(null));
-        return;
+      return;
     }
-  }
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -111,12 +129,20 @@ function usePopup() {
         dispatch(toggleCreatePopup());
         dispatch(setSelectedTask(null));
         return;
-      } else if(isPopup && popupEnRef.current && !popupEnRef.current.contains(e.target)){
+      } else if (
+        isPopup &&
+        popupEnRef.current &&
+        !popupEnRef.current.contains(e.target)
+      ) {
         dispatch(togglePopup(""));
-      } else if(instruction && popupInstructRef.current && !popupInstructRef.current.contains(e.target)){
+      } else if (
+        instruction &&
+        popupInstructRef.current &&
+        !popupInstructRef.current.contains(e.target)
+      ) {
         dispatch(toggleInstructPopup());
-      } else if(sidebarRef.current && !sidebarRef.current.contain(e.tartget)){
-        dispatch(toggleSidebarPinned())
+      } else if (sidebarRef.current && !sidebarRef.current.contain(e.tartget)) {
+        dispatch(toggleSidebarPinned());
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -124,7 +150,7 @@ function usePopup() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isPopup,instruction,dispatch]);
+  }, [isPopup, instruction, dispatch]);
 
   return {
     handleIsCreate,
@@ -142,7 +168,7 @@ function usePopup() {
     handleClose,
     popupRef,
     popupEnRef,
-    popupInstructRef
+    popupInstructRef,
   };
 }
 

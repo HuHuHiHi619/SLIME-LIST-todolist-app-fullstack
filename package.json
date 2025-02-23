@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "date-fns-tz": "^3.2.0",
     "framer-motion": "^11.11.9",
     "glob": "^11.0.0",
     "inflight": "^1.0.6",

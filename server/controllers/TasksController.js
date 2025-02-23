@@ -136,7 +136,11 @@ exports.getTask = async (req, res) => {
     if (tag) {
       //filter tag
       const tags = Array.isArray(tag) ? tag : [tag];
-      userFilter.tag = { $in: tags.map((tag) => (isValidObjectId(tag) ? new Types.ObjectId(tag) : tag)) };
+      userFilter.tag = {
+        $in: tags.map((tag) =>
+          isValidObjectId(tag) ? new Types.ObjectId(tag) : tag
+        ),
+      };
     }
 
     if (groupByCategory) {
@@ -194,65 +198,90 @@ exports.getTask = async (req, res) => {
           .status(500)
           .json({ error: "Failed to retrieve tasks by category" });
       }
-    } 
+    }
 
     // filter by deadline ranges
-    const currentDate = startOfDay(new Date());
-    const deadlineFilters = {
-      today: { $gte: startOfDay(currentDate), $lte: endOfDay(currentDate) },
-      tomorrow: {
-        $gte: startOfDay(addDays(currentDate, 1)),
-        $lte: endOfDay(addDays(currentDate, 1)),
-      },
-      thisWeek: {
-        $gte: startOfWeek(currentDate),
-        $lte: endOfWeek(currentDate),
-      },
-      nextWeek: {
-        $gte: startOfWeek(addWeeks(currentDate, 1)),
-        $lte: endOfWeek(addWeeks(currentDate, 1)),
-      },
-      thisMonth: {
-        $gte: startOfMonth(currentDate),
-        $lte: endOfMonth(currentDate),
-      },
-      nextMonth: {
-        $gte: startOfMonth(addMonths(currentDate, 1)),
-        $lte: endOfMonth(addMonths(currentDate, 1)),
-      },
+    const getTaskDeadlinRange = (deadline) => {
+      const taskDeadline = startOfDay(new Date(deadline));
+      const currentDate = startOfDay(new Date());
+
+      if (isSameDay(taskDeadline, currentDate)) {
+        return "today";
+      }
+
+      if (isSameDay(taskDeadline, addDays(currentDate, 1))) {
+        return "tomorrow";
+      }
+
+      const isThisWeek = isWithinInterval(taskDeadline, {
+        start: startOfWeek(currentDate),
+        end: endOfWeek(currentDate),
+      });
+
+      if (isThisWeek) {
+        return "thisWeek";
+      }
+
+      const isNextWeek = isWithinInterval(taskDeadline, {
+        start: startOfWeek(addWeeks(currentDate, 1)),
+        end: endOfWeek(addWeeks(currentDate, 1)),
+      });
+
+      if (isNextWeek) {
+        return "nextMonth";
+      }
+
+      const isThisMonth = isSameMonth(taskDate, addMonths(currentDate, 1));
+      if (isThisMonth) {
+        return "thisMonth";
+      }
+
+      const isNextMonth = isSameMonth(taskDate, addMonths(currentDate, 1));
+      if (isNextMonth) {
+        return "nextMonth";
+      }
     };
 
     if (groupByDeadline) {
-      const deadlineTasks = await Promise.all(
-        Object.entries(deadlineFilters).map(async ([caseName, dateRange]) => {
-          const tasks = await Tasks.find({
-            ...userFilter,
-            deadline: dateRange,
-            status: "pending",
-          })
-            .populate([{ path: "category" }, { path: "tag" }])
-            .lean()
-            .exec();
-          return { caseName, tasks };
+      try {
+        const allTasks = await Tasks.find({
+          ...userFilter,
+          status: "pending",
+          deadline: {
+            $gte: startOfDay(currentDate),
+            $lte: endOfMonth(addMonths(currentDate, 1)),
+          },
         })
-      );
+          .populate([{ path: "category" }, { path: "tag" }])
+          .lean()
+          .exec();
 
-      const resultByDeadline = Object.values(
-        deadlineTasks.reduce((acc, { caseName, tasks }) => {
-          if (tasks.length > 0) {
-            acc[caseName] = {
-              deadlineCase: caseName,
-              tasks: tasks.map(calculateProgress),
-            };
+        const groupedTasks = allTasks.reduce((acc, task) => {
+          const deadlineRange = getTaskDeadlinRange(task.deadline);
+          if (deadlineRange) {
+            if (!acc[deadlineRange]) {
+              acc[deadlineRange] = {
+                deadlineCase: deadlineRange,
+                tasks: [],
+              };
+            }
           }
-          return acc;
-        }, {})
-      );
-      if (resultByDeadline.length === 0) {
-        return res.status(200).json([]);
-      }
+          acc[deadlineRange].tasks.push(calculateProgress(task));
+        });
 
-      return res.status(200).json(resultByDeadline);
+        const resultByDeadline = Object.values(groupedTasks);
+
+        if (resultByDeadline.length === 0) {
+          return res.status(200).json([]);
+        }
+
+        return res.status(200).json(resultByDeadline);
+      } catch (error) {
+        console.error("Error grouping tasks by deadline:", error);
+        return res
+          .status(500)
+          .json({ error: "Failed to group tasks by deadline" });
+      }
     }
 
     const tasksList = await Tasks.find(userFilter)
@@ -265,27 +294,26 @@ exports.getTask = async (req, res) => {
       .lean();
 
     if (tasksList.length === 0) {
-      console.log('tasklist is 0')
+      console.log("tasklist is 0");
       return res.status(200).json([]);
     }
 
     const tasksWithProgress = tasksList
-    .map((task) => ({
-      ...calculateProgress(task),
-      tagName: task.tag?.tagName || "low"
-    }))
-    .sort((a, b) => {
-      const statusComparison =
-        statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
-      if (statusComparison !== 0) {
-        return statusComparison;
-      }
-      const priorityComparison =
-        priorityOrder.indexOf(a.tag) -
-        priorityOrder.indexOf(b.tag);
+      .map((task) => ({
+        ...calculateProgress(task),
+        tagName: task.tag?.tagName || "low",
+      }))
+      .sort((a, b) => {
+        const statusComparison =
+          statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+        if (statusComparison !== 0) {
+          return statusComparison;
+        }
+        const priorityComparison =
+          priorityOrder.indexOf(a.tag) - priorityOrder.indexOf(b.tag);
 
-      return priorityComparison;
-    });
+        return priorityComparison;
+      });
 
     return res.status(200).json(tasksWithProgress);
   } catch (error) {
@@ -304,7 +332,6 @@ exports.createTask = async (req, res) => {
       req.user && isValidObjectId(req.user.id)
         ? new Types.ObjectId(req.user.id)
         : null;
-   
 
     if (!formatUser && !req.guestId) {
       console.error("unauthorized");
@@ -326,7 +353,7 @@ exports.createTask = async (req, res) => {
         console.log("Category not found");
       }
     }
-    
+
     /*let tagValue = null
     console.log("req tag :",tag)
     if (tag && Array.isArray(tag)) {
@@ -468,7 +495,7 @@ exports.updatedTask = async (req, res) => {
     // นำค่าที่มีอยู่มาใช้ถ้าไม่มีการส่งค่ามาใหม่
     const finalUpdateData = {
       title: updateData.title || existingTask.title,
-      note: updateData.note || existingTask.note,  
+      note: updateData.note || existingTask.note,
       startDate: updateData.startDate
         ? new Date(updateData.startDate)
         : existingTask.startDate,
@@ -503,19 +530,15 @@ exports.updatedTask = async (req, res) => {
 
     if (finalUpdateData.tag) {
       const tag = await Tag.findOne({
-        $or: [
-          { tagName: updateData.tag },
-          { _id: updateData.tag },
-        ],
+        $or: [{ tagName: updateData.tag }, { _id: updateData.tag }],
       }).exec();
-    
+
       if (!tag) {
         return res.status(400).json({ error: "Invalid tag value or ID" });
       }
-    
+
       finalUpdateData.tag = tag._id;
     }
-    
 
     // ตรวจสอบและจัดการข้อมูล progress
     if (finalUpdateData.progress) {
@@ -656,8 +679,15 @@ exports.updatedTaskAttempt = async (req, res) => {
 
 exports.searchTask = async (req, res) => {
   try {
-    const formatUser = req.user && isValidObjectId(req.user.id) ? new Types.ObjectId(req.user.id) : null
-    const userFilter = formatUser ? { user : formatUser } : req.guestId ? { guestId : req.guestId } : null
+    const formatUser =
+      req.user && isValidObjectId(req.user.id)
+        ? new Types.ObjectId(req.user.id)
+        : null;
+    const userFilter = formatUser
+      ? { user: formatUser }
+      : req.guestId
+      ? { guestId: req.guestId }
+      : null;
     const searchTerm = req.query.q || "";
 
     console.log(searchTerm);
