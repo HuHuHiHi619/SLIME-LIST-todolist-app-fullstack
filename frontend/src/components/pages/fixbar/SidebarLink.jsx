@@ -18,7 +18,9 @@ function SidebarLink({
   isSidebarPinned,
   isHover,
   handleRemovedItem,
+  
 }) {
+  const safeCategories = Array.isArray(categories) ? categories : [];
   return (
     <div className="flex flex-col show-entity">
       <Link to={to} onClick={() => handleActiveMenu(to)}>
@@ -57,9 +59,9 @@ function SidebarLink({
       </Link>
 
       {/* Dropdown for Categories */}
-      {isSidebarPinned && categories.length > 0 && (
+      {isSidebarPinned && safeCategories.length > 0 && (
         <ul className="dropdown ">
-          {categories.map((cate) => (
+          {safeCategories.map((cate) => (
             <li
               onMouseEnter={() => handleHover(cate._id)}
               onMouseLeave={() => handleHover(null)}

@@ -36,7 +36,7 @@ export const getData = async (filter) => {
     });
 
     console.log("Task got successfully :", response.data);
-    return response.data;
+    return response.data || [];
   } catch (error) {
     if (error.response) {
       console.error("Error response from server:", error.response.data);

@@ -8,10 +8,11 @@ const {
   startOfWeek,
   addWeeks,
   endOfWeek,
-  startOfMonth,
+  isSameDay,
+  isSameMonth,
   addMonths,
   endOfMonth,
-  endOfDay,
+  isWithinInterval,
   parseISO,
   isValid,
 } = require("date-fns");
@@ -231,12 +232,12 @@ exports.getTask = async (req, res) => {
         return "nextMonth";
       }
 
-      const isThisMonth = isSameMonth(taskDate, addMonths(currentDate, 1));
+      const isThisMonth = isSameMonth(taskDeadline, addMonths(currentDate, 1));
       if (isThisMonth) {
         return "thisMonth";
       }
 
-      const isNextMonth = isSameMonth(taskDate, addMonths(currentDate, 1));
+      const isNextMonth = isSameMonth(taskDeadline, addMonths(currentDate, 1));
       if (isNextMonth) {
         return "nextMonth";
       }
@@ -244,6 +245,7 @@ exports.getTask = async (req, res) => {
 
     if (groupByDeadline) {
       try {
+        const currentDate = startOfDay(new Date())
         const allTasks = await Tasks.find({
           ...userFilter,
           status: "pending",
@@ -265,9 +267,10 @@ exports.getTask = async (req, res) => {
                 tasks: [],
               };
             }
+            acc[deadlineRange].tasks.push(calculateProgress(task));
           }
-          acc[deadlineRange].tasks.push(calculateProgress(task));
-        });
+          return acc
+        },{});
 
         const resultByDeadline = Object.values(groupedTasks);
 

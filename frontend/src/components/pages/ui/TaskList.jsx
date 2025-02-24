@@ -16,7 +16,8 @@ function TaskList({
   allTasks,
 }) {
   const { tasks } = useSelector((state) => state.tasks);
-
+  const tasksToRender = Array.isArray(allTasks || tasks) ? (allTasks || tasks) : [];
+  console.log("tasks",tasksToRender)
   return (
     <div className="pr-4  border-2 md:border-4  border-purpleNormal rounded-3xl p-6 md:mt- mx-4">
       <div className="flex justify-between mb-4 mr-3 ">
@@ -25,12 +26,8 @@ function TaskList({
       </div>
 
       {/* ตรวจสอบว่ามี tasks หรือไม่ */}
-      {(allTasks || tasks).length === 0 ? (
-        <div className="flex justify-center items-center ">
-          <button className="done-button" onClick={handleIsCreate}>
-            <FontAwesomeIcon icon={faPlus} />
-          </button>
-        </div>
+      {(tasksToRender).length === 0 ? (
+       null
       ) : (
         <div>
           <ul className="flex flex-col gap-4 overflow-y-scroll scrollbar-custom  max-h-[350px] lg:max-h-[570px] pr-1 ">

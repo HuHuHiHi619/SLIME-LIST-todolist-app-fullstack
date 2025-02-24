@@ -1,5 +1,5 @@
-const { startOfDay, differenceInDays} = require("date-fns");
-const { zonedTimetoutc } = require("date-fns-tz")
+const { startOfDay, differenceInDays,} = require("date-fns");
+const { formatInTimeZone } = require("date-fns-tz");  // Fixed typo here
 const Category = require("../Models/Category");
 const Tag = require("../Models/Tag");
 const User = require("../Models/User");
@@ -95,9 +95,10 @@ exports.updateUserStreak = async (userId, completed, taskCompletionDetails = {})
       throw new Error("User not found!");
     }
 
-    const currentDate = startOfDay(zonedTimetoutc(new Date(), 'Asia/Bangkok'));
-    const lastCompletedDate = user.lastCompleted ? startOfDay(zonedTimetoutc(new Date(user.lastCompleted), 'Asia/Bangkok')) : null;
-    
+    const currentDate = startOfDay(new Date(formatInTimeZone(new Date(), 'Asia/Bangkok', 'yyyy-MM-dd HH:mm:ss')));
+const lastCompletedDate = user.lastCompleted
+  ? startOfDay(new Date(formatInTimeZone(new Date(user.lastCompleted), 'Asia/Bangkok', 'yyyy-MM-dd HH:mm:ss')))
+  : null;
     // Debug logs
     console.log("Current date:", currentDate);
     console.log("Last completed:", lastCompletedDate);

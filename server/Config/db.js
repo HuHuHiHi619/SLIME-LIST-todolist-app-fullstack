@@ -4,6 +4,7 @@ require('dotenv').config();
 const connectDb = async () => {
     try{
         const uri = process.env.MONGO_URI
+        const localUri = process.env.LOCAL_URI
         
         if(!uri) {
             throw new Error (" undefined")

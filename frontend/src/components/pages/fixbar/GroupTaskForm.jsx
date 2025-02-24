@@ -37,6 +37,8 @@ function GroupTaskForm({ filter }) {
           const keys = `
             ${group.categoryId || group.status || group.deadlineCase}-${index}`;
           const tasks = group.tasks || [];
+          console.log("Fetched Tasks:",tasks);
+         
 
           return (
             <div className="mx-auto md:mx-0" key={keys}>
