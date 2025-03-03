@@ -34,7 +34,7 @@ function Navbar() {
             className="px-4 text-white text-2xl cursor-pointer hover:scale-105 md:hidden"
           />
           <Link to="/" className=" flex items-center gap-3 pl-4 pr-12">
-            <img src="./images/Logo-slime.png" className="w-12" alt="" />
+            <img src="./images/Logo-slime.png" className="w-8 md:w-12" alt="" />
             <p className="text-xl lg:text-2xl text-white ">SLIME LIST</p>
           </Link>
 

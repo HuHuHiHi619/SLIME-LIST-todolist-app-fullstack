@@ -78,10 +78,10 @@ function Summary() {
     { color: { start: "#E25F56", end: "#8AABFF" } },
   ];
 
-  
+  console.log()
 
   return (
-    <div className="mr-10 bg-purpleSidebar border-4 border-purpleNormal rounded-3xl py-8 px-6 grid h-[330px] ">
+    <div className="md:hidden lg:grid mr-10 bg-purpleSidebar border-4 border-purpleNormal rounded-3xl py-8 px-6 grid lg:h-[330px] md:h-auto ">
       {!Array.isArray(summary) ||
       summary.length === 0 ||
       !Array.isArray(summaryCategory) ||
@@ -101,7 +101,7 @@ function Summary() {
                   bar={item.bar}
                 />
               </div>
-
+              { console.log(item) }
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -120,7 +120,7 @@ function Summary() {
             </div>
           ))}
 
-          <div className="hidden  xl:flex flex-col gap-4 flex-1 justify-center ml-4">
+          <div className="hidden md:block xl:flex flex-col gap-4 flex-1 justify-center ml-4">
             {summaryCategory.map((catItem, catIndex) => (
               <div
                 key={catIndex}

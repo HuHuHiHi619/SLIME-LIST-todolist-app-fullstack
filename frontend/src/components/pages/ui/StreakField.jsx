@@ -154,7 +154,7 @@ function StreakField() {
         </>
       ) : (
         <div className="bg-purpleSidebar border-4 border-purpleNormal rounded-3xl   mr-10 w-full">
-          <p className="text-gray-400 text-center text-2xl p-16">
+          <p className="text-gray-400 text-center text-2xl p-16 ">
             Please log in to view your streak
           </p>
         </div>

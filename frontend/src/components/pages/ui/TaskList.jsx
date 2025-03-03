@@ -30,7 +30,7 @@ function TaskList({
        null
       ) : (
         <div>
-          <ul className="flex flex-col gap-4 overflow-y-scroll scrollbar-custom  max-h-[350px] lg:max-h-[570px] pr-1 ">
+          <ul className="flex flex-col gap-4 overflow-y-scroll scrollbar-custom  max-h-[350px] md:max-h-[250px]  lg:max-h-[570px] pr-1 ">
             {(allTasks || tasks).map((task, index) => (
               <StaggerContainer key={index} index={index}>
                 <li
@@ -97,7 +97,7 @@ function TaskList({
                             Progress : {task.progress.completedSteps}/
                             {task.progress.totalSteps}
                           </span>
-                          <div className="w-32 pr-2">
+                          <div className="w-28 pr-2">
                             <ProgressBar
                               color={{ start: "#642FE1", end: "#B53E6C" }}
                               value={Math.round(

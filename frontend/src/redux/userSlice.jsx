@@ -12,7 +12,6 @@ const checkTokenvalidity = (token) => {
   }
 }
 
-// Default state definition - use this as fallback
 const defaultState = {
   userData: {
     id: "",

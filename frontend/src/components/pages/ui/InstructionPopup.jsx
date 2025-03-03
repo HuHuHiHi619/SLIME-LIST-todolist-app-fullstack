@@ -8,13 +8,10 @@ function InstructionPopup({ onClose }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
-    console.log("next")
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    setCurrentIndex((currentIndex + 1) % images.length);
   };
   const handlePrevious = () => {
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + images.length) % images.length
-    );
+    setCurrentIndex( currentIndex > 0 ? currentIndex - 1 : images.length - 1);
   };
   return (
     <>
@@ -25,7 +22,7 @@ function InstructionPopup({ onClose }) {
             className=" w-[300px] rounded-[20px] md:w-[500px] md:rounded-[50px] h-auto p-1  bg-gradient-to-r from-[#6D6DFD] via-[#CE88FA] to-[#6D6DFD]"
           >
             <div className=" bg-transparent ">
-              <img src={images[currentIndex]} alt="instructions" />
+              <img src={images[currentIndex]} alt="instructions" loading="lazy" />
             </div>
             <button
               onClick={handleNext}

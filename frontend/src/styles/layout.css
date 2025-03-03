@@ -8,7 +8,7 @@
 }
 
 #side-bar {
-    @apply absolute top-12 h-[40rem] md:h-[50rem] z-40 bg-purpleSidebar bg-opacity-50 py-10   overflow-hidden ;
+    @apply absolute top-12 h-[40rem]  z-40 bg-purpleSidebar bg-opacity-50 py-10   overflow-hidden ;
     width: 17rem;
     max-width: 17rem;
     min-width: 17rem;

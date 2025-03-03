@@ -46,7 +46,7 @@ const initialState = {
   activeMenu: "",
   isPopup: false,
   isHover: null,
-  isSidebarPinned: true,
+  isSidebarPinned: false,
   popupMode: "",
   loading: false,
   error: null,

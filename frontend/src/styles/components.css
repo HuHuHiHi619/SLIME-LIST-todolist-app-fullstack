@@ -1,12 +1,12 @@
 h1 {
-  @apply text-2xl ;
+  @apply text-2xl;
 }
 
 h3 {
   @apply text-xl text-white;
 }
-span{
-  @apply text-base leading-none  text-gray-500
+span {
+  @apply text-base leading-none  text-gray-500;
 }
 
 /*Status */
@@ -22,22 +22,21 @@ span{
   @apply border-2 p-2 rounded-lg text-deadlineTheme border-deadlineTheme;
 }
 /*button*/
-.register{
-  @apply  bg-purpleNormal  
+.register {
+  @apply bg-purpleNormal  
   focus:outline-none  flex justify-center 
   cursor-pointer p-2 px-4 text-sm md:text-lg 
   hover:bg-violet-600 hover:bg-opacity-50 transition-all duration-75 ease-in
-  rounded-lg text-white ;
+  rounded-lg text-white;
 }
 
-.login{
-  @apply  bg-purpleBorder focus:outline-none flex justify-center 
+.login {
+  @apply bg-purpleBorder focus:outline-none flex justify-center 
   active:scale-95  transition-all duration-75 ease-in 
   cursor-pointer p-2 px-4 text-lg rounded-lg text-white;
-
 }
-.red-button{
-  @apply border-2 border-deadlineTheme text-deadlineTheme hover:bg-deadlineTheme hover:text-white hover:scale-105 transition-all duration-100 ease-in-out px-4 py-2 rounded-2xl
+.red-button {
+  @apply border-2 border-deadlineTheme text-deadlineTheme hover:bg-deadlineTheme hover:text-white hover:scale-105 transition-all duration-100 ease-in-out px-4 py-2 rounded-2xl;
 }
 .done-button {
   @apply bg-purpleBorder flex justify-center cursor-pointer p-2 px-4 text-2xl rounded-lg text-white;
@@ -47,7 +46,7 @@ span{
 }
 
 .pin-button {
-  @apply flex justify-between cursor-pointer p-2  pr-4  text-4xl   ;
+  @apply flex justify-between cursor-pointer p-2  pr-4  text-4xl;
 }
 
 .delete-step {
@@ -66,7 +65,7 @@ span{
   @apply text-black;
 }
 
-title{
+title {
   @apply bg-purpleBorder flex justify-center cursor-pointer p-2 px-4 text-2xl rounded-lg text-white;
 }
 
@@ -81,46 +80,42 @@ title{
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(2px); 
+  backdrop-filter: blur(2px);
 }
 /* Popup */
 .popup-overlay {
   position: fixed;
   top: 0%;
   left: 0%;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(2px); 
+  backdrop-filter: blur(2px);
 }
 .clear-allTask {
   position: fixed;
   bottom: 2%;
   right: 1%;
   z-index: 1;
-  
 }
 .streak-popup {
   position: fixed;
   bottom: 5%;
   z-index: 1000;
-  
 }
 .logout {
   position: fixed;
   bottom: 5%;
   left: 3.5%;
   z-index: 1000;
-  
 }
 .popup-content {
   z-index: 1001;
 }
-
 
 /* input */
 input[type="checkbox"] {
@@ -128,7 +123,7 @@ input[type="checkbox"] {
   height: 25px;
   background-color: #313144;
   border-width: 2px;
- 
+
   border-color: rgb(110, 110, 110);
   border-radius: 999px;
   transition: all 0.2s ease-in-out;
@@ -139,25 +134,24 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:hover {
-  border-color: #7a36df
+  border-color: #7a36df;
 }
 
 /* dropdown menu */
 .dropdown {
   @apply bg-purpleMain;
   z-index: 1;
-  transform: translateY(10px); 
-  max-height: 0; 
-  overflow: hidden; 
-  transition: transform 0.3s ease, max-height 0.3s ease; 
-  box-shadow: none; 
+  transform: translateY(10px);
+  max-height: 0;
+  overflow: hidden;
+  transition: transform 0.3s ease, max-height 0.3s ease;
+  box-shadow: none;
 }
 
 .show-entity:hover .dropdown,
 .show-entity:focus-within .dropdown {
-  transform: translateY(20); 
-  max-height: 230px; 
-  
+  transform: translateY(20);
+  max-height: 230px;
 }
 
 .dropdown-item {
@@ -168,7 +162,7 @@ input[type="checkbox"]:hover {
   transition: transform 0.3s ease, max-height 0.3s ease;
 }
 
-.dropdown-item:focus-within{
+.dropdown-item:focus-within {
   @apply bg-purpleActive text-white;
   transform: translateX(0);
 }
@@ -186,7 +180,7 @@ input[type="checkbox"]:hover {
 .react-calendar__tile {
   background-color: transparent;
   color: white;
-  font-size:medium;
+  font-size: medium;
 }
 
 .react-calendar__tile:enabled:hover,
@@ -203,7 +197,6 @@ input[type="checkbox"]:hover {
 .react-calendar__month-view__weekdays {
   color: white;
   font-size: large;
-  
 }
 
 .react-calendar__tile--now {
