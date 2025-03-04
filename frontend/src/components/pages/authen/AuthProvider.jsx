@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserData } from "../../../redux/userSlice";
+import { fetchUserData , logoutUser , clearSummaryState , setAuthError} from "../../../redux/userSlice";
 import Cookies from "js-cookie";
 
 const AuthProvider = ({ children }) => {

@@ -15,7 +15,7 @@ const Ring = ({ size }) => (
   <motion.div className={`rounded-full border-4 border-emerald-500 ${size}`} />
 );
 
-const GradientCircularProgressbar = ({ percentage, bar }) => {
+const GradientCircularProgressbar = ({ percentage }) => {
   return (
     <motion.div
       className="w-32 relative"
@@ -29,17 +29,7 @@ const GradientCircularProgressbar = ({ percentage, bar }) => {
           <Ring size="w-36 h-36" />
         </div>
 
-        {/* Gradient definition */}
-        <svg style={{ height: 0 }}>
-          <defs>
-            <linearGradient id={`gradient-${bar}`}>
-              <stop offset="0%" stopColor="#5EFF96" stopOpacity="1" />
-              <stop offset="50%" stopColor="#86FFB0" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#13C57A" stopOpacity="0.4" />
-            </linearGradient>
-          </defs>
-        </svg>
-
+       
         {/* Progress bar wrapper */}
         <div className="relative z-10 ">
           <CircularProgressbar
@@ -48,7 +38,7 @@ const GradientCircularProgressbar = ({ percentage, bar }) => {
             styles={buildStyles({
               textSize: "28px",
               textColor: "#ffffff",
-              pathColor: `url(#gradient-${bar})`,
+              pathColor: `#2febac`,
               trailColor: "none",
               pathTransition: "stroke-dashoffset 1.5s ease-out",
               strokeLinecap: "round",
@@ -98,10 +88,9 @@ function Summary() {
               <div className="ml-4">
                 <GradientCircularProgressbar
                   percentage={item.completedRate || 0}
-                  bar={item.bar}
                 />
               </div>
-              { console.log(item) }
+              
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
