@@ -24,7 +24,7 @@ function BadgeField() {
       {isAuthenticated ? (
         
           <div className="bg-purpleGradient p-1 rounded-2xl ">
-            <div className="bg-purpleSidebar rounded-2xl p-4 px-10 w-full flex justify-center">
+            <div className="bg-purpleSidebar rounded-xl p-4 px-10 w-full flex justify-center">
               <div className=" w-32 h-32 ">
                 <img src={badgeImages[userData.currentBadge] || "./images/Iron-badge.png"} alt="" />
               </div>

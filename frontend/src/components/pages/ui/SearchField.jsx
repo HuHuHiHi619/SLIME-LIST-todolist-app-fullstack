@@ -74,7 +74,7 @@ function SearchField() {
           </div>
         )}
         {searchTerm && searchResults.length === 0 && (
-          <div className="absolute top-full -right-5 mt-2 w-[300px] bg-purpleMain text-center text-xl py-4 text-white shadow-lg rounded-md z-50">
+          <div className="absolute top-full -right-5 mt-2 w-[300px] border-2 border-purpleNormal bg-purpleMain text-center text-xl py-4 text-white shadow-lg rounded-md z-50">
             No tasks found
           </div>
         )}

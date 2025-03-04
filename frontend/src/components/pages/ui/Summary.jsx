@@ -9,7 +9,6 @@ import { motion } from "framer-motion";
 import ProgressBar from "./ProgressBar";
 import "react-circular-progressbar/dist/styles.css";
 
-
 // Custom Ring Component
 const Ring = ({ size }) => (
   <motion.div className={`rounded-full border-4 border-emerald-500 ${size}`} />
@@ -29,7 +28,20 @@ const GradientCircularProgressbar = ({ percentage }) => {
           <Ring size="w-36 h-36" />
         </div>
 
-       
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          width="0px"
+          height="0px"
+        >
+          <defs>
+            <linearGradient id="GradientColor" gradientTransform="rotate(90)">
+              <stop offset="0%" stop-color="#38B789" />
+              <stop offset="100%" stop-color="#E0F882" />
+            </linearGradient>
+          </defs>
+        </svg>
+
         {/* Progress bar wrapper */}
         <div className="relative z-10 ">
           <CircularProgressbar
@@ -38,7 +50,7 @@ const GradientCircularProgressbar = ({ percentage }) => {
             styles={buildStyles({
               textSize: "28px",
               textColor: "#ffffff",
-              pathColor: `#2febac`,
+              pathColor: `url(#GradientColor)`,
               trailColor: "none",
               pathTransition: "stroke-dashoffset 1.5s ease-out",
               strokeLinecap: "round",
@@ -68,7 +80,7 @@ function Summary() {
     { color: { start: "#E25F56", end: "#8AABFF" } },
   ];
 
-  console.log()
+  console.log();
 
   return (
     <div className="md:hidden lg:grid mr-10 bg-purpleSidebar border-4 border-purpleNormal rounded-3xl py-8 px-6 grid lg:h-[330px] md:h-auto ">
@@ -90,7 +102,7 @@ function Summary() {
                   percentage={item.completedRate || 0}
                 />
               </div>
-              
+
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -104,7 +116,6 @@ function Summary() {
                   <p>KEEP GOING YOU</p>
                   <p>CAN DO IT!</p>
                 </div>
-                
               </motion.div>
             </div>
           ))}
@@ -128,7 +139,6 @@ function Summary() {
           </div>
         </div>
       )}
-      
     </div>
   );
 }

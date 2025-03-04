@@ -25,7 +25,7 @@ function Settings() {
       className={`${isAuthenticated ? "" : "flex justify-center pt-72"}`}
     >
       {isAuthenticated ? (
-        <div className="lg:ml-32 mt-10 max-w-2xl w-full  bg-purpleGradient rounded-2xl shadow-lg p-1 space-y-6">
+        <div className="mx-10 md:ml-32 mt-10 md:w-[500px] w-auto bg-purpleGradient rounded-2xl shadow-lg p-1 ">
           <div className="bg-purpleSidebar rounded-xl p-8">
             <h2 className="text-[40px] text-white mb-2">PROFILE</h2>
 
@@ -36,9 +36,10 @@ function Settings() {
                   className="text-gray-500 pr-2 text-2xl"
                 />
                 <span className="text-gray-500 text-xl">USERNAME</span>
-                <p className="text-white text-xl pl-8 pt-2">
+                <br />
+                <span className="text-white text-xl ml-8  px-4 py-1 rounded-md bg-purpleNormal ">
                   {userData.username}
-                </p>
+                </span>
               </div>
 
               <div>
@@ -46,10 +47,11 @@ function Settings() {
                   icon={faBolt}
                   className="text-gray-500 pr-2 text-2xl"
                 />
-                <span className="text-gray-500 text-xl">CURRENT STREAK</span>
-                <p className="text-white text-xl pl-8">
+                <span className="text-gray-500 text-xl ">CURRENT STREAK</span>
+                <br />
+                <span className="text-white text-xl  ml-8  px-4 py-1 rounded-md bg-purpleNormal ">
                   {userData.currentStreak}
-                </p>
+                </span>
               </div>
 
               <div>
@@ -58,7 +60,10 @@ function Settings() {
                   className="text-gray-500 pr-2 text-2xl"
                 />
                 <span className="text-gray-500 text-xl">BEST STREAK</span>
-                <p className="text-white text-xl pl-8">{userData.bestStreak}</p>
+                <br />
+                <span className="text-white text-xl  ml-8  px-4 py-1 rounded-md bg-purpleNormal ">
+                  {userData.bestStreak}
+                  </span>
               </div>
 
               <div>
@@ -67,9 +72,10 @@ function Settings() {
                   className="text-gray-500 pr-2 text-2xl"
                 />
                 <span className="text-gray-500 text-xl">CURRENT BADGE</span>
-                <p className="text-white text-xl pl-8">
-                  {userData.currentBadge}
-                </p>
+                <br />
+                <span className="text-white text-xl  ml-8  px-4 py-1 rounded-md bg-purpleNormal ">
+                  {userData.currentBadge.toUpperCase()}
+                </span>
               </div>
 
               <div>
@@ -78,11 +84,12 @@ function Settings() {
                   className="text-gray-500 pr-2 text-2xl"
                 />
                 <span className="text-gray-500 text-xl">LAST COMPLETED</span>
-                <p className="text-white text-xl pl-8">
+                <br />
+                <span className="text-white text-xl  ml-8  px-4 py-1 rounded-md bg-purpleNormal ">
                   {userData.lastCompleted
                     ? new Date(userData.lastCompleted).toLocaleDateString()
                     : "No data"}
-                </p>
+                </span>
               </div>
             </div>
           </div>

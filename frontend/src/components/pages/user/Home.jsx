@@ -14,11 +14,7 @@ function Home() {
       </div>
       <TaskForm filter={{ status: "pending" }} />
 
-      <div className="hidden md:block ml-32 lg:hidden">
-        <FadeUpContainer direction="up" delay={0.4}>
-          <Summary />
-        </FadeUpContainer>
-      </div>
+     
 
       <div className="hidden  lg:pl-14 lg:mt-6 lg:flex lg:flex-col lg:gap-6">
         
