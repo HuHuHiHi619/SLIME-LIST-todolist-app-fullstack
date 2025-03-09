@@ -334,7 +334,7 @@ exports.createTask = async (req, res) => {
       req.body;
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ? new  new Types.ObjectId(req.user.id)
+        ? new Types.ObjectId(req.user.id)
         : null;
 
     if (!formatUser && !req.guestId) {
