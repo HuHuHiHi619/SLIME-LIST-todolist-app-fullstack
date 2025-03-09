@@ -1,12 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchSummary,
   fetchSummaryByCategory,
 } from "../../../redux/summarySlice";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import { motion } from "framer-motion";
+import { motion, animate } from "framer-motion";
 import ProgressBar from "./ProgressBar";
+import Tooltip from "./Tooltip";
 import "react-circular-progressbar/dist/styles.css";
 
 // Custom Ring Component
@@ -15,6 +16,19 @@ const Ring = ({ size }) => (
 );
 
 const GradientCircularProgressbar = ({ percentage }) => {
+  const [animatePercent, setAnimatePercent] = useState(0);
+
+  useEffect(() => {
+    setAnimatePercent(0);
+    const controls = animate(0, percentage, {
+      duration: 0.2,
+      onUpdate: (value) => {
+        setAnimatePercent(value);
+      },
+      ease: "easeOut",
+    });
+    return () => controls.stop();
+  }, [percentage]);
   return (
     <motion.div
       className="w-32 relative"
@@ -36,8 +50,8 @@ const GradientCircularProgressbar = ({ percentage }) => {
         >
           <defs>
             <linearGradient id="GradientColor" gradientTransform="rotate(90)">
-              <stop offset="0%" stop-color="#38B789" />
-              <stop offset="100%" stop-color="#E0F882" />
+              <stop offset="0%" stopColor="#38B789" />
+              <stop offset="100%" stopColor="#E0F882" />
             </linearGradient>
           </defs>
         </svg>
@@ -45,8 +59,8 @@ const GradientCircularProgressbar = ({ percentage }) => {
         {/* Progress bar wrapper */}
         <div className="relative z-10 ">
           <CircularProgressbar
-            value={percentage}
-            text={`${Math.round(percentage)}%`}
+            value={animatePercent}
+            text={`${Math.round(animatePercent)}%`}
             styles={buildStyles({
               textSize: "28px",
               textColor: "#ffffff",
@@ -83,7 +97,7 @@ function Summary() {
   console.log();
 
   return (
-    <div className="md:hidden lg:grid mr-10 bg-purpleSidebar border-4 border-purpleNormal rounded-3xl py-8 px-6 grid lg:h-[330px] md:h-auto ">
+    <div className="md:hidden lg:grid mr-10 bg-purpleSidebar border-2 border-purpleNormal rounded-3xl py-8 px-6 grid lg:h-[330px] md:h-auto ">
       {!Array.isArray(summary) ||
       summary.length === 0 ||
       !Array.isArray(summaryCategory) ||
@@ -97,11 +111,13 @@ function Summary() {
         <div className="flex">
           {summary.map((item, index) => (
             <div key={index} className=" md:flex gap-4 items-center ">
-              <div className="ml-4">
-                <GradientCircularProgressbar
-                  percentage={item.completedRate || 0}
-                />
-              </div>
+              <Tooltip description={"Hello"} position="right">
+                <div className="ml-4">
+                  <GradientCircularProgressbar
+                    percentage={item.completedRate || 0}
+                  />
+                </div>
+              </Tooltip>
 
               <motion.div
                 initial={{ opacity: 0 }}

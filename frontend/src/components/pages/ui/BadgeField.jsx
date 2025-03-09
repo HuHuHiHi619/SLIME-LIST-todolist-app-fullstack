@@ -20,7 +20,7 @@ function BadgeField() {
     }
   }, [dispatch, userData.id]);
   return (
-    <div className="bg-purpleSidebar border-4 border-purpleNormal mr-10 justify-start items-center rounded-3xl  ">
+    <div className="bg-purpleSidebar border-2 border-purpleNormal mr-10 justify-start items-center rounded-3xl  ">
       {isAuthenticated ? (
         
           <div className="bg-purpleGradient p-1 rounded-2xl ">

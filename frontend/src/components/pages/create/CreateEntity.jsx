@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import InputField from "../ui/inputField";
 import FadeUpContainer from "../animation/FadeUpContainer";
+
 import { createCategory } from "../../../functions/category";
 import { useSelector } from "react-redux";
+import Tooltip from "../ui/Tooltip";
 
 function CreateEntity({ onAddItem, entityType ,onClose}) {
   const [formEntity, setFormEntity] = useState({
@@ -59,7 +61,7 @@ function CreateEntity({ onAddItem, entityType ,onClose}) {
       <FadeUpContainer>
         <div className="bg-purpleGradient p-1 rounded-xl md:w-[450px] relative">
           <div className="bg-purpleSidebar p-8 rounded-xl">
-            <p className="text-2xl md:text-3xl text-white">Create a new {entityType}</p>
+            <p className="text-2xl md:text-3xl text-white">Create new {entityType}</p>
             {error && <p className="text-xl text-rose-500">{error}</p>}
             <InputField
               type="text"
@@ -70,7 +72,11 @@ function CreateEntity({ onAddItem, entityType ,onClose}) {
               className="w-full placeholder:text-xl px-4 py-3 rounded-xl my-6"
             />
               <button onClick={handleSubmit} className="done-button mx-auto active:scale-105">Create</button>
-              <button className="cancel-button absolute -top-5 -right-5" onClick={onClose}>X</button>
+                <button className="text-gray-500 text-xl  hover:text-red-500 absolute top-3 right-5" onClick={onClose}>
+              <Tooltip description={"close"} position="top">
+                  <span>X</span>
+              </Tooltip>
+                  </button>
           </div>
         
         </div>

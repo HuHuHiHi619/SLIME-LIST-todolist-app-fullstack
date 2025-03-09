@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import ReactDOM from "react-dom"
+import ReactDOM from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
@@ -9,7 +9,6 @@ import {
   faList,
   faPlus,
   faBars,
-  
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,9 +23,9 @@ import SidebarLink from "../fixbar/SidebarLink";
 import CreateEntity from "../create/CreateEntity";
 import Logout from "../authen/Logout";
 import usePopup from "../hooks/usePopup";
+import Tooltip from "../ui/Tooltip";
 
 function Sidebar() {
-  
   const location = useLocation();
   const dispatch = useDispatch();
   const {
@@ -36,7 +35,6 @@ function Sidebar() {
     isSidebarPinned,
     popupMode,
     categories,
-    
   } = useSelector((state) => state.tasks);
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
 
@@ -47,7 +45,7 @@ function Sidebar() {
     handleHover,
     handleClose,
     popupEnRef,
-    sidebarRef
+    sidebarRef,
   } = usePopup();
 
   const handleAddItem = async (newItem) => {
@@ -91,80 +89,97 @@ function Sidebar() {
             isSidebarPinned ? "opacity-100" : "opacity-0"
           } transition-opacity duration-300`}
         ></div>
+          <Tooltip description={"Side bar"} position="right">
         <FontAwesomeIcon
           icon={faBars}
-          className={`  hidden md:block transform origin-center text-3xl ${
+          className={`  hidden md:block transform origin-center text-2xl ${
             isSidebarPinned ? "rotate-180" : "pr-3"
           } `}
         />
+        </Tooltip>
       </div>
 
       {/* Sidebar Links */}
-      <SidebarLink
-        to="/"
-        icon={faHome}
-        label="OVERVIEW"
-        activeMenu={activeMenu}
-        handleActiveMenu={() => {
-          if (isSidebarPinned) handleActiveMenu();
-        }}
-        isSidebarPinned={isSidebarPinned}
-      />
-      <SidebarLink
-        to="/upcoming"
-        icon={faCalendar}
-        label="UPCOMING"
-        activeMenu={activeMenu}
-        handleActiveMenu={() => {
-          if (isSidebarPinned) handleActiveMenu();
-        }}
-        isSidebarPinned={isSidebarPinned}
-      />
-      <SidebarLink
-        to="/all-tasks"
-        icon={faList}
-        label="ALL TASKS"
-        activeMenu={activeMenu}
-        handleActiveMenu={() => {
-          if (isSidebarPinned) handleActiveMenu();
-        }}
-        isSidebarPinned={isSidebarPinned}
-      />
-      <SidebarLink
-        to="/category"
-        icon={faFolder}
-        addIcon={faPlus}
-        label="CATEGORY"
-        categories={categories}
-        activeMenu={activeMenu}
-        handleActiveMenu={() => {
-          if (isSidebarPinned) handleActiveMenu();
-        }}
-        handlePopup={(e) => handlePopup(e, "category")}
-        isSidebarPinned={isSidebarPinned}
-        handleHover={handleHover}
-        isHover={isHover}
-        handleRemovedItem={(id) => handleRemovedItem(id, "category")}
-      />
-
-      <SidebarLink
-        to="/settings"
-        icon={faGear}
-        label="SETTINGS"
-        activeMenu={activeMenu}
-        handleActiveMenu={() => {
-          if (isSidebarPinned) handleActiveMenu();
-        }}
-        isSidebarPinned={isSidebarPinned}
-      />
+      <Tooltip description={"Overview"} position="right">
+        <SidebarLink
+          to="/"
+          icon={faHome}
+          label="OVERVIEW"
+          activeMenu={activeMenu}
+          handleActiveMenu={() => {
+            if (isSidebarPinned) handleActiveMenu();
+          }}
+          isSidebarPinned={isSidebarPinned}
+        />
+      </Tooltip>
+      <Tooltip description={"Upcoming"} position="right">
+        <SidebarLink
+          to="/upcoming"
+          icon={faCalendar}
+          label="UPCOMING"
+          activeMenu={activeMenu}
+          handleActiveMenu={() => {
+            if (isSidebarPinned) handleActiveMenu();
+          }}
+          isSidebarPinned={isSidebarPinned}
+        />
+      </Tooltip>
+      <Tooltip description={"All Tasks"} position="right">
+        <SidebarLink
+          to="/all-tasks"
+          icon={faList}
+          label="ALL TASKS"
+          activeMenu={activeMenu}
+          handleActiveMenu={() => {
+            if (isSidebarPinned) handleActiveMenu();
+          }}
+          isSidebarPinned={isSidebarPinned}
+        />
+      </Tooltip>
+      <Tooltip description={"Category"} position="right">
+        <SidebarLink
+          to="/category"
+          icon={faFolder}
+          addIcon={faPlus}
+          label="CATEGORY"
+          categories={categories}
+          activeMenu={activeMenu}
+          handleActiveMenu={() => {
+            if (isSidebarPinned) handleActiveMenu();
+          }}
+          handlePopup={(e) => handlePopup(e, "category")}
+          isSidebarPinned={isSidebarPinned}
+          handleHover={handleHover}
+          isHover={isHover}
+          handleRemovedItem={(id) => handleRemovedItem(id, "category")}
+        />
+      </Tooltip>
+      <Tooltip description={"Settings"} position="right">
+        <SidebarLink
+          to="/settings"
+          icon={faGear}
+          label="SETTINGS"
+          activeMenu={activeMenu}
+          handleActiveMenu={() => {
+            if (isSidebarPinned) handleActiveMenu();
+          }}
+          isSidebarPinned={isSidebarPinned}
+        />
+      </Tooltip>
       {isAuthenticated && isSidebarPinned && <Logout />}
-      {isPopup && ReactDOM.createPortal(
-        <div className="popup-overlay">
-          <div className="popup-content" ref={popupEnRef}>
-            <CreateEntity  onAddItem={handleAddItem} entityType={popupMode} onClose={handleClose} />
-          </div>
-        </div>,document.body
-      )}
+      {isPopup &&
+        ReactDOM.createPortal(
+          <div className="popup-overlay">
+            <div className="popup-content" ref={popupEnRef}>
+              <CreateEntity
+                onAddItem={handleAddItem}
+                entityType={popupMode}
+                onClose={handleClose}
+              />
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

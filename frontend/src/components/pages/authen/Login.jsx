@@ -57,7 +57,7 @@ function Login() {
 
   return (
     <div className="flex justify-center items-center h-screen bg-purpleSidebar">
-      <div className="  bg-purpleGradient p-1 rounded-2xl shadow-lg w-full max-w-lg">
+      <div className="  bg-purpleGradient p-0.5 rounded-2xl shadow-lg w-full max-w-lg">
         <div className="bg-purpleSidebar p-8 rounded-xl">
           <div className="grid justify-center ">
           <img src="./images/Logo-slime.png" className="w-20  " alt="" />

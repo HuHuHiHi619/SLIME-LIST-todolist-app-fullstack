@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 const { upload, UPLOADS_DIR } = require("../middleware/upload");
 const path = require("path");
-const { isValidObjectId, Types } = require("mongoose");
 const { handleError } = require("./helperController");
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;

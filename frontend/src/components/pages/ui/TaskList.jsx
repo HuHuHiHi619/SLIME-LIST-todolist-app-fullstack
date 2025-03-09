@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import StaggerContainer from "../animation/StaggerContainer";
 import CreateButton from "./CreateButton";
@@ -16,19 +16,22 @@ function TaskList({
   allTasks,
 }) {
   const { tasks } = useSelector((state) => state.tasks);
-  const tasksToRender = Array.isArray(allTasks || tasks) ? (allTasks || tasks) : [];
-  console.log("tasks",tasksToRender)
+  const tasksToRender = Array.isArray(allTasks || tasks)
+    ? allTasks || tasks
+    : [];
+  const [isHover, setIsHover] = useState({});
+
   return (
-    <div className="pr-4  border-2 md:border-4  border-purpleNormal rounded-3xl p-6 md:mt- mx-4">
+    <div className="pr-4  border-2 md:border-2 bg-[#1a1930] border-purpleNormal rounded-3xl p-6 md:mt- mx-4">
       <div className="flex justify-between mb-4 mr-3 ">
-        <p className="text-white md:text-4xl flex items-center pr-24 w-[200px] md:w-auto">{label}</p>
+        <p className="text-white md:text-4xl flex items-center pr-24 w-[200px] md:w-auto">
+          {label}
+        </p>
         <CreateButton onClick={handleIsCreate} />
       </div>
 
       {/* ตรวจสอบว่ามี tasks หรือไม่ */}
-      {(tasksToRender).length === 0 ? (
-       null
-      ) : (
+      {tasksToRender.length === 0 ? null : (
         <div>
           <ul className="flex flex-col gap-4 overflow-y-scroll scrollbar-custom  max-h-[350px] md:max-h-[250px]  lg:max-h-[570px] pr-1 ">
             {(allTasks || tasks).map((task, index) => (
@@ -44,7 +47,13 @@ function TaskList({
                     e.preventDefault();
                     handleTaskClick(task);
                   }}
-                  className={`bg-purpleMain hover:bg-purpleNormal trasition ease-out duration-100 flex items-center justify-between text-2xl p-3 rounded-2xl cursor-pointer text-white ${
+                  onMouseEnter={() =>
+                    setIsHover((prev) => ({ ...prev, [task._id]: true }))
+                  }
+                  onMouseLeave={() =>
+                    setIsHover((prev) => ({ ...prev, [task._id]: false }))
+                  }
+                  className={`bg-purpleMain border border-purpleNormal hover:bg-purpleNormal trasition ease-out duration-100 flex items-center justify-between text-2xl p-3 rounded-2xl cursor-pointer text-white ${
                     selectedTask && selectedTask._id === task._id
                       ? "bg-purpleActiveTask  "
                       : ""
@@ -129,14 +138,21 @@ function TaskList({
                     </div>
                   </div>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRemovedTask(task);
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faXmark} className="delete-step" />
-                  </button>
+                  {isHover[task._id] && task.status === "pending" ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemovedTask(task);
+                      }}
+                      className="transition-opacity duration-200 ease-out opacity-100"
+                    >
+                      <FontAwesomeIcon icon={faXmark} className="delete-step" />
+                    </button>
+                  ) : (
+                    <button>
+                      <FontAwesomeIcon icon={faXmark} className="opacity-0" />
+                    </button>
+                  )}
                 </li>
               </StaggerContainer>
             ))}

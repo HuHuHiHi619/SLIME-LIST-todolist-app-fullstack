@@ -54,7 +54,7 @@ span {
 }
 
 .delete-step:hover {
-  @apply text-white bg-deadlineTheme rounded-full opacity-100;
+  @apply text-red-500 scale-110 rounded-full opacity-100;
 }
 
 /* ลิงก์ */

@@ -14,6 +14,7 @@ import DeadlinePicker from "../ui/DeadlinePicker";
 import StartDatePicker from "../ui/StartDatePicker";
 import CategoryTagField from "../ui/CategoryTagField";
 import ProgressField from "../ui/ProgressField";
+import Tooltip from "../ui/Tooltip";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import {
   fetchSummary,
@@ -92,7 +93,7 @@ function CreateTask({ onClose }) {
       ...formTask,
       tag: formTask.tag || "low",
       progress,
-      startDate: formTask.startDate || new Date().toISOString()
+      startDate: formTask.startDate || new Date().toISOString(),
     };
 
     try {
@@ -120,7 +121,18 @@ function CreateTask({ onClose }) {
       <div className=" md:w-[800px] p-1 rounded-2xl relative">
         <div className="bg-purpleSidebar p-6 rounded-xl">
           <form onSubmit={handleSubmit}>
+            <div className="flex justify-between items-center">
             <h1 className="text-white tracking-wide">CREATE A TASK</h1>
+            <Tooltip description={"Close"} position="top">
+                <button
+                  onClick={onClose}
+                  className="text-xl text-gray-500 p-2 hover:text-red-600 transition-all rounded-full duration-100 ease-in "
+                >
+                  X
+                </button>
+              </Tooltip>
+            </div>
+           
             <div className="flex flex-col gap-4 my-4">
               {error && <p className="text-red-500 text-xl ">{error}</p>}
               <InputField
@@ -220,12 +232,7 @@ function CreateTask({ onClose }) {
               >
                 Create
               </button>
-              <button
-                onClick={onClose}
-                className="cancel-button absolute -top-4 -right-4"
-              >
-                X
-              </button>
+              
             </div>
           </form>
         </div>

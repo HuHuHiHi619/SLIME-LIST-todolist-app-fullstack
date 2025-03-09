@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import InputField from "./inputField";
-import { debounce } from "lodash";
 import StartDatePicker from "./StartDatePicker";
 import DeadlinePicker from "./DeadlinePicker";
 import ProgressField from "./ProgressField";
@@ -23,10 +22,10 @@ import {
 
 function TaskDetail({ onClose }) {
   const dispatch = useDispatch();
-  const { selectedTask, tags } = useSelector((state) => state.tasks);
+  const { selectedTask } = useSelector((state) => state.tasks);
   const categories = useSelector((state) => state.tasks.categories);
 
-  const [isUpdating, setIsUpdating] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false);
   const [editedTask, setEditedTask] = useState(selectedTask);
   const [editedProgress, setEditedProgress] = useState(
     selectedTask?.progress || {
@@ -35,10 +34,13 @@ function TaskDetail({ onClose }) {
       allStepsComplete: false,
     }
   );
-  const [currentStep, setCurrenStep] = useState("");
+  const [currentStep, setCurrentStep] = useState("");
+  // ref for debounce
+  const pendendingUpdateRef = useRef(null);
+  const updatedTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (!isUpdating && selectedTask && JSON.stringify(selectedTask) !== JSON.stringify(editedTask)) {
+    if (!isUpdating && selectedTask) {
       setEditedTask(selectedTask);
       setEditedProgress(
         selectedTask.progress || {
@@ -50,78 +52,98 @@ function TaskDetail({ onClose }) {
     }
   }, [selectedTask, isUpdating]);
 
-  const debouncedUpdateTask = useMemo(
-    () =>
-      debounce(async (updatedSelectTask) => {
-        try {
-          setIsUpdating(true);
-          const taskId = updatedSelectTask._id;
-          const result = await dispatch(updatedTask({ taskId, taskData: updatedSelectTask })).unwrap();
-          
-          // Only update if the API call was successful
-          if (result) {
-            await Promise.all([
-              dispatch(fetchSummaryByCategory()),
-              dispatch(fetchSummary()),
-              dispatch(fetchNotification()),
-            ]);
-          }
-        } catch (error) {
-          console.error('Failed to update task:', error);
-          // Revert to previous state if update fails
-          setEditedTask(selectedTask);
-        } finally {
-          setIsUpdating(false);
+  // seperate function for update task on server
+  const updateTaskOnServer = useCallback(
+    async (taskData) => {
+      try {
+        setIsUpdating(true);
+        const taskId = taskData._id;
+        const result = await dispatch(
+          updatedTask({ taskId, taskData })
+        ).unwrap();
+
+        if (result) {
+          await Promise.all([
+            dispatch(fetchSummaryByCategory()),
+            dispatch(fetchSummary()),
+            dispatch(fetchNotification()),
+          ]);
         }
-      }, 500),
-    [dispatch, selectedTask]
+      } catch (error) {
+        console.error("Failed to update task:", error);
+        return null;
+      } finally {
+        setIsUpdating(false);
+      }
+    },
+    [dispatch]
+  );
+
+  const debouncedUpdateTask = useCallback(
+    (updatedTask) => {
+      // save latest data to ref
+      pendendingUpdateRef.current = updatedTask;
+      // cancel previous timeout if exists
+      if (updatedTimeoutRef.current) {
+        clearTimeout(updatedTimeoutRef.current);
+      }
+      // set new timeout
+      updatedTimeoutRef.current = setTimeout(async () => {
+        // check data is ready or not , updating
+        if (pendendingUpdateRef.current && !isUpdating) {
+          await updateTaskOnServer(pendendingUpdateRef.current);
+          pendendingUpdateRef.current = null;
+        }
+      }, 500);
+    },
+    [updateTaskOnServer, isUpdating]
   );
 
   const handleInputChange = useCallback(
     (e) => {
-      if(isUpdating) return;
-
       const { name, value } = e.target;
-      const updatedSelectTask = { ...editedTask };
 
-      if (name === "category") {
-        if (value === "no category") {
-          updatedSelectTask[name] = "";
+      setEditedTask((prevTask) => {
+        const updatedTask = { ...prevTask };
+        if (name === "category") {
+          if (value === "no category") {
+            updatedTask[name] = "";
+          } else {
+            const selectedCat = categories.find(
+              (category) => category.categoryName === value
+            );
+            updatedTask[name] = selectedCat ? selectedCat : "";
+          }
         } else {
-          const selectedCat = categories.find(
-            (category) => category.categoryName === value
-          );
-          updatedSelectTask[name] = selectedCat ? selectedCat : "";
+          updatedTask[name] = value;
         }
-      } else {
-        updatedSelectTask[name] = value;
-      }
-
-      setEditedTask(updatedSelectTask);
-      debouncedUpdateTask(updatedSelectTask);
+        // sent to debounce
+        debouncedUpdateTask(updatedTask);
+        return updatedTask;
+      });
     },
-    [editedTask, debouncedUpdateTask, categories, isUpdating]
+    [debouncedUpdateTask, categories]
   );
 
   const handleStepChange = useCallback((e) => {
-    setCurrenStep(e.target.value);
-  });
+    setCurrentStep(e.target.value);
+  }, []);
 
   const handleDateChange = useCallback(
     (date, field) => {
       setEditedTask((prevTask) => {
         // แปลง date เป็น string เพื่อเก็บใน redux
         const formattedDate = date instanceof Date ? date.toISOString() : date;
-        const updatedSelectTask = { ...prevTask, [field]: formattedDate };
+        const updatedTask = { ...prevTask, [field]: formattedDate };
 
-        debouncedUpdateTask(updatedSelectTask);
-        return updatedSelectTask;
+        debouncedUpdateTask(updatedTask);
+        return updatedTask;
       });
     },
-    [editedProgress, editedTask, debouncedUpdateTask]
+    [debouncedUpdateTask]
   );
 
-  const handleToggleTag = useCallback(
+  /* const handleToggleTag = useCallback(
     (tag) => {
       setEditedTask((prevTask) => {
         const isTagSelected =
@@ -139,32 +161,40 @@ function TaskDetail({ onClose }) {
       });
     },
     [debouncedUpdateTask]
-  );
+  );*/
 
   const handleStepKeyDown = useCallback(
     (e) => {
       if (e.key === "Enter" && currentStep.trim() !== "") {
         setEditedProgress((prevProgress) => {
           const newStep = { label: currentStep, completed: false };
-
           const updatedSteps = [...(prevProgress.steps || []), newStep];
+
           const updatedProgress = {
             ...prevProgress,
             steps: updatedSteps,
             totalSteps: updatedSteps.length,
             allStepsComplete: updatedSteps.every((step) => step.completed),
           };
-          const updatedSelectTask = {
-            ...editedTask,
-            progress: updatedProgress,
-          };
-          debouncedUpdateTask(updatedSelectTask);
-          setCurrenStep("");
+
+          setEditedTask((prevTask) => {
+            const updatedTask = {
+              ...prevTask,
+              progress: updatedProgress,
+            };
+
+            // ส่งข้อมูลไปเข้าคิว debounce
+            debouncedUpdateTask(updatedTask);
+
+            return updatedTask;
+          });
+
+          setCurrentStep("");
           return updatedProgress;
         });
       }
     },
-    [currentStep, debouncedUpdateTask, editedTask]
+    [currentStep, debouncedUpdateTask]
   );
 
   const removeProgressStep = useCallback(
@@ -179,13 +209,19 @@ function TaskDetail({ onClose }) {
             updatedSteps.length > 0 &&
             updatedSteps.every((step) => step.completed),
         };
-        const updatedSelectTask = { ...editedTask, progress: updatedProgress };
+        setEditedTask((prevTask) => {
+          const updatedTask = {
+            ...prevTask,
+            progress: updatedProgress,
+          };
+          debouncedUpdateTask(updatedTask);
+          return updatedTask;
+        });
 
-        debouncedUpdateTask(updatedSelectTask);
         return updatedProgress;
       });
     },
-    [editedProgress, editedTask, debouncedUpdateTask]
+    [debouncedUpdateTask]
   );
 
   const completeProgressStep = useCallback(
@@ -198,18 +234,25 @@ function TaskDetail({ onClose }) {
         const allStepsCompleted =
           updatedSteps.length > 0 &&
           updatedSteps.every((step) => step.completed);
+
         const updatedProgress = {
           ...prevProgress,
           steps: updatedSteps,
           allStepsCompleted: allStepsCompleted,
         };
-        const updatedSelectTask = { ...editedTask, progress: updatedProgress };
-        console.log("Updated Progress for Step Completion:", updatedProgress);
-        debouncedUpdateTask(updatedSelectTask);
+        setEditedTask((prevTask) => {
+          const updatedTask = {
+            ...prevTask,
+            progress: updatedProgress,
+          };
+          debouncedUpdateTask(updatedTask);
+          return updatedTask;
+        });
+
         return updatedProgress;
       });
     },
-    [editedProgress, editedTask, debouncedUpdateTask]
+    [debouncedUpdateTask]
   );
 
   const handleTryAgainTask = (taskId) => {
@@ -220,20 +263,13 @@ function TaskDetail({ onClose }) {
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  useEffect(
-    () => {
-      console.log("Categories:", categories);
-      console.log("Tags:", tags);
-    },
-    [categories],
-    [tags]
-  );
-
   useEffect(() => {
     return () => {
-      debouncedUpdateTask.cancel();
+      if (updatedTimeoutRef.current) {
+        clearTimeout(updatedTimeoutRef.current);
+      }
     };
-  }, [debouncedUpdateTask]);
+  }, []);
 
   return (
     <FadeUpContainer>
@@ -255,13 +291,13 @@ function TaskDetail({ onClose }) {
               )}
 
               <p
-                className={`text-white md:text-xl ${
+                className={`text-white text-sm md:text-2xl ${
                   editedTask.status === "pending"
                     ? "pending"
                     : editedTask.status === "failed"
                     ? "failed"
                     : "completed"
-                } uppercase`}
+                } uppercase   `}
               >
                 {editedTask.status}
               </p>
@@ -273,7 +309,7 @@ function TaskDetail({ onClose }) {
                 type="text"
                 name="title"
                 placeholder="Title"
-                value={editedTask.title}
+                value={editedTask.title || ""}
                 onChange={handleInputChange}
                 className="text-3xl w-full border-none py-0"
               />
@@ -306,7 +342,7 @@ function TaskDetail({ onClose }) {
               type="text"
               name="note"
               placeholder="Note"
-              value={editedTask.note}
+              value={editedTask.note || ""}
               onChange={handleInputChange}
               className=" scrollbar-custom w-full  text-xl text-white  bg-darkBackground rounded-lg p-2 px-4 focus:outline-none focus:border-purple-400"
             />
@@ -316,7 +352,7 @@ function TaskDetail({ onClose }) {
                   type="text"
                   name="progress"
                   placeholder="Enter a step "
-                  value={currentStep}
+                  value={currentStep || ""}
                   onChange={handleStepChange}
                   onKeyDown={handleStepKeyDown}
                   className="text-xl w-full px-4 py-3 rounded-xl "
@@ -364,4 +400,4 @@ function TaskDetail({ onClose }) {
   );
 }
 
-export default React.memo(TaskDetail);
+export default TaskDetail;

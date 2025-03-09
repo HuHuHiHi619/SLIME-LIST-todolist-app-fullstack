@@ -12,7 +12,7 @@ function ProgressField({
     <div>
     {steps.length > 0 ? (
       <div>
-        <p className="text-2xl text-white mb-2">Progress steps </p>
+        <p className="text-2xl text-white mb-2">Progress steps</p>
         <ul className="flex flex-col max-h-[100px] md:max-h-[140px] gap-2 overflow-y-scroll scrollbar-custom overflow-x-hidden ">
           {steps.map((step, index) => (
             <li
@@ -20,7 +20,7 @@ function ProgressField({
               className={` pl-6 rounded-lg  hover:bg-purpleNormal
               }`}
             >
-              <div className="flex items-center gap-3 py-1 ">
+              <div className="flex items-center gap-3 py-2 ">
                 {showCompletion && (
                   step.completed ? (
                     <FontAwesomeIcon 
@@ -40,7 +40,7 @@ function ProgressField({
                 )}
   
                 <span
-                  className={` md:text-2xl truncate max-w-[calc(80%-60px)] ${
+                  className={`  truncate max-w-[calc(80%-60px)] ${
                     step.completed ? "line-through text-purpleBorder" : ""
                   }`}
                 >

@@ -1,105 +1,97 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-
+import { motion } from "framer-motion";
+import CreateButton from "../ui/CreateButton";
 
 function SidebarLink({
   to,
   icon,
+  addIcon,
   label,
   activeMenu,
   handleActiveMenu,
   handlePopup,
-  handleHover,
-  addIcon,
-  categories = [],
-  tags = [],
   isSidebarPinned,
+  categories,
+  handleHover,
   isHover,
   handleRemovedItem,
-  
 }) {
-  const safeCategories = Array.isArray(categories) ? categories : [];
+  const isActive = activeMenu === to;
+
   return (
-    <div className="flex flex-col show-entity">
-      <Link to={to} onClick={() => handleActiveMenu(to)}>
-        <div
-          className={`flex justify-between py-2 pl-6 gap-4 easy-slide ${
-            activeMenu === to
-              ? "bg-purpleActive border-r-4 border-purple-200"
-              : "bg-transparent hoverMenu"
-          }`}
-        >
-          <div
-            className={`flex items-center gap-4 text-2xl ${
-              activeMenu === to ? "text-white" : "text-slate-400"
-            }`}
-          >
-            {icon && <FontAwesomeIcon icon={icon} />}
-            {isSidebarPinned && <h1>{label}</h1>}
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePopup(e);
-            }}
-          >
-            {isSidebarPinned && addIcon && (
-              <FontAwesomeIcon
-                icon={addIcon}
-                className="bg-purpleNormal border-2 border-purpleBorder text-xl
-                 text-white mr-4 my-1 p-2 rounded-md
-                 hover:bg-purpleBorder hover:scale-110 transition-all duration-100 ease-in-out
-                 "
-              />
-            )}
-          </button>
-        </div>
-      </Link>
-
-      {/* Dropdown for Categories */}
-      {isSidebarPinned && safeCategories.length > 0 && (
-        <ul className="dropdown ">
-          {safeCategories.map((cate) => (
-            <li
-              onMouseEnter={() => handleHover(cate._id)}
-              onMouseLeave={() => handleHover(null)}
-              className={`hoverMenu  mb-2  text-gray-400  easy-slide`}
-              key={cate._id}
-            >
-              <Link
-                to={`/category/${cate._id}`}
-                className="flex justify-center gap-4 items-center dropdown-item  "
-              >
-                <h3 className="text-gray-400">{cate.categoryName}</h3>
-                {isHover === cate._id && (
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleRemovedItem(cate._id, "category");
-                    }}
-                    className="flex items-center"
-                  >
-                    <FontAwesomeIcon
-                      icon={faXmark}
-                      className="delete-step text-lg "
-                    />
-                  </button>
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <div className="relative">
+      {isActive && (
+        <motion.div
+          className="absolute left-0 w-full h-12 bg-purpleActive rounded-md"
+          layoutId="activeMenuBackground"
+          initial={false}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+        />
       )}
-
-    
-              
-            
-        
-       
-    
+      <Link
+        to={to}
+        className={`relative z-10 flex items-center gap-4 p-3 text-white ${
+          isActive
+            ? "text-white font-semibold"
+            : "text-white opacity-50 hover:opacity-100"
+        }`}
+        onClick={handleActiveMenu}
+      >
+        <FontAwesomeIcon icon={icon} className="text-xl pl-4" />
+        {isSidebarPinned && (
+          <div className="flex flex-col w-full">
+            <div className="flex justify-between items-center">
+              <span
+                className={`text-xl ${
+                  isActive ? "text-white font-normal" : ""
+                }`}
+              >
+                {label}
+              </span>
+              {addIcon && (
+                <FontAwesomeIcon
+                  icon="plus"
+                  className="w-5 h-5 cursor-pointer hover:scale-125 transition-all duration-200  pr-4"
+                  onClick={handlePopup}
+                />
+              )}
+            </div>
+            {categories && categories.length > 0 && label === "CATEGORY" && (
+              <ul
+                className={`mt-2 space-y-1 ${isHover ? "block" : "hidden"}`}
+                onMouseEnter={() => handleHover(true)}
+                onMouseLeave={() => handleHover(false)}
+              >
+                {categories.map((category) => (
+                  <li
+                    key={category.id}
+                    className="flex justify-between items-center pl-2 text-xs hover:bg-gray-700 rounded py-1"
+                  >
+                    <Link
+                      to={`/category/${category.id}`}
+                      className={`${
+                        activeMenu === `/category/${category.id}`
+                          ? "text-white font-semibold"
+                          : "text-white opacity-75"
+                      }`}
+                    >
+                      {category.name}
+                    </Link>
+                    <button
+                      className="hover:bg-red-500 hover:text-white rounded-full p-1 opacity-0 group-hover:opacity-100"
+                      onClick={() => handleRemovedItem(category.id)}
+                    >
+                      <FontAwesomeIcon icon="trash" className="text-xs" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </Link>
     </div>
   );
 }

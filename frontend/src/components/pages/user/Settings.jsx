@@ -25,6 +25,7 @@ function Settings() {
       className={`${isAuthenticated ? "" : "flex justify-center pt-72"}`}
     >
       {isAuthenticated ? (
+         <FadeUpContainer direction="up" delay={0.2}>
         <div className="mx-10 md:ml-32 mt-10 md:w-[500px] w-auto bg-purpleGradient rounded-2xl shadow-lg p-1 ">
           <div className="bg-purpleSidebar rounded-xl p-8">
             <h2 className="text-[40px] text-white mb-2">PROFILE</h2>
@@ -94,6 +95,7 @@ function Settings() {
             </div>
           </div>
         </div>
+        </FadeUpContainer>
       ) : (
         <div>
           <FadeUpContainer direction="up" delay={0.2}>
