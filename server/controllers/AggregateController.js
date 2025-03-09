@@ -6,7 +6,7 @@ exports.getTasksCompletedRate = async (req, res) => {
     try {
       const formatUser =
         req.user && isValidObjectId(req.user.id)
-          ?  new mongoose.Schema.Types.ObjectId(req.user.id)
+          ?  new mongoose.Types.ObjectId(req.user.id)
           : null;
       const userFilter = formatUser
         ? { user: formatUser }
@@ -69,7 +69,7 @@ exports.getTasksCompletedRate = async (req, res) => {
     try {
       const formatUser =
         req.user && isValidObjectId(req.user.id)
-          ?  new mongoose.Schema.Types.ObjectId(req.user.id)
+          ?  new mongoose.Types.ObjectId(req.user.id)
           : null;
       const userFilter = formatUser
         ? { user: formatUser }
@@ -178,8 +178,8 @@ exports.getProgressStepRate = async (req,res) => {
   
   try{
     const { id } = req.query
-    const formatUser = req.user && isValidObjectId(req.user.id) ?  new mongoose.Schema.Types.ObjectId(req.user.id) : null
-    const formatId = isValidObjectId(id) ?  new mongoose.Schema.Types.ObjectId(id) : null
+    const formatUser = req.user && isValidObjectId(req.user.id) ?  new mongoose.Types.ObjectId(req.user.id) : null
+    const formatId = isValidObjectId(id) ?  new mongoose.Types.ObjectId(id) : null
     const userFilter = formatUser ? { user: formatUser } : req.guestId ? { guestId: req.guestId } : {}
    
     if (!userFilter) {

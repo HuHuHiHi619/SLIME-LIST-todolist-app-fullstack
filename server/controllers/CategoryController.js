@@ -10,9 +10,9 @@ exports.getCategory = async (req, res) => {
     const { id } = req.params;
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ? new mongoose.Schema.Types.ObjectId(req.user.id)
+        ? new mongoose.Types.ObjectId(req.user.id)
         : null;
-    const formatId = isValidObjectId(id) ? new mongoose.Schema.Types.ObjectId(id) : null;
+    const formatId = isValidObjectId(id) ? new mongoose.Types.ObjectId(id) : null;
     const userFilter = formatUser
       ? { user: formatUser }
       : req.guestId
@@ -51,7 +51,7 @@ exports.createCategory = async (req, res) => {
     }
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ? new mongoose.Schema.Types.ObjectId(req.user.id)
+        ? new mongoose.Types.ObjectId(req.user.id)
         : null;
    
     const newCategory = new Category({
@@ -72,9 +72,9 @@ exports.removedCategory = async (req, res) => {
   try {
     const { id } = req.params;
     const formatUser = isValidObjectId(req.user)
-      ? new mongoose.Schema.Types.ObjectId(req.user.id)
+      ? new mongoose.Types.ObjectId(req.user.id)
       : null;
-    const formatId = isValidObjectId(id) ? new mongoose.Schema.Types.ObjectId(id) : null;
+    const formatId = isValidObjectId(id) ? new mongoose.Types.ObjectId(id) : null;
     const filterUser = formatUser
       ? { user: formatUser }
       : req.guestId

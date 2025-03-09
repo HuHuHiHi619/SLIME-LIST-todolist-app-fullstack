@@ -7,8 +7,8 @@ const handleError = require('../controllers/helperController');
 exports.removeTask = async (req, res) => {
     try {
       const { id } = req.params;
-      const formatUser = req.user && isValidObjectId(req.user.id) ? new mongoose.Schema.Types.ObjectId(req.user.id) : null;
-      const formatId = isValidObjectId(id) ? new mongoose.Schema.Types.ObjectId(id): null;
+      const formatUser = req.user && isValidObjectId(req.user.id) ? new mongoose.Types.ObjectId(req.user.id) : null;
+      const formatId = isValidObjectId(id) ? new mongoose.Types.ObjectId(id): null;
       const userFilter = formatUser ? {user: formatUser} : req.guestId ? {guestId: req.guestId} : null;
   
       if (!formatId) {
@@ -32,7 +32,7 @@ exports.removeTask = async (req, res) => {
   };
 exports.removeAllCompletedTask = async (req, res) => {
     try {
-      const formatUser = req.user && isValidObjectId(req.user.id) ? new mongoose.Schema.Types.ObjectId(req.user.id) : null;
+      const formatUser = req.user && isValidObjectId(req.user.id) ? new mongoose.Types.ObjectId(req.user.id) : null;
       const userFilter = formatUser ? {user: formatUser} : req.guestId ? {guestId: req.guestId} : null;
   
       const result = await Tasks.deleteMany({

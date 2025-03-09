@@ -40,9 +40,9 @@ exports.getTask = async (req, res) => {
     } = req.query;
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ?  new mongoose.Schema.Types.ObjectId(req.user.id)
+        ?  new mongoose.Types.ObjectId(req.user.id)
         : null;
-    const formatId = isValidObjectId(id) ? new mongoose.Schema.Types.ObjectId(id) : null;
+    const formatId = isValidObjectId(id) ? new mongoose.Types.ObjectId(id) : null;
     const userFilter = formatUser
       ? { user: formatUser }
       : req.guestId
@@ -131,7 +131,7 @@ exports.getTask = async (req, res) => {
     if (category) {
       const categories = Array.isArray(category) ? category : [category];
       userFilter.category = {
-        $in: categories.map((cat) => new mongoose.Schema.Types.ObjectId(cat)),
+        $in: categories.map((cat) => new mongoose.Types.ObjectId(cat)),
       };
     }
 
@@ -140,7 +140,7 @@ exports.getTask = async (req, res) => {
       const tags = Array.isArray(tag) ? tag : [tag];
       userFilter.tag = {
         $in: tags.map((tag) =>
-          isValidObjectId(tag) ? new  new mongoose.Schema.Types.ObjectId(tag) : tag
+          isValidObjectId(tag) ? new  new mongoose.Types.ObjectId(tag) : tag
         ),
       };
     }
@@ -334,7 +334,7 @@ exports.createTask = async (req, res) => {
       req.body;
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ? new  new mongoose.Schema.Types.ObjectId(req.user.id)
+        ? new  new mongoose.Types.ObjectId(req.user.id)
         : null;
 
     if (!formatUser && !req.guestId) {
@@ -471,9 +471,9 @@ exports.updatedTask = async (req, res) => {
 
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ? new mongoose.Schema.Types.ObjectId(req.user.id)
+        ? new mongoose.Types.ObjectId(req.user.id)
         : null;
-    const formatId = isValidObjectId(id) ?  new mongoose.Schema.Types.ObjectId(id) : null;
+    const formatId = isValidObjectId(id) ?  new mongoose.Types.ObjectId(id) : null;
     const userFilter = formatUser
       ? { user: formatUser }
       : req.guestId
@@ -580,9 +580,9 @@ exports.completedTask = async (req, res) => {
     const { id } = req.params;
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ? new mongoose.Schema.Types.ObjectId(req.user.id)
+        ? new mongoose.Types.ObjectId(req.user.id)
         : null;
-    const formatId = isValidObjectId(id) ?  new mongoose.Schema.Types.ObjectId(id) : null;
+    const formatId = isValidObjectId(id) ?  new mongoose.Types.ObjectId(id) : null;
     const userFilter = formatUser
       ? { user: formatUser }
       : req.guestId
@@ -641,9 +641,9 @@ exports.updatedTaskAttempt = async (req, res) => {
 
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ?  new mongoose.Schema.Types.ObjectId(req.user.id)
+        ?  new mongoose.Types.ObjectId(req.user.id)
         : null;
-    const formatId = isValidObjectId(id) ?  new mongoose.Schema.Types.ObjectId(id) : null;
+    const formatId = isValidObjectId(id) ?  new mongoose.Types.ObjectId(id) : null;
 
     const formatDeadline = addDays(new Date(), 1);
 
@@ -685,7 +685,7 @@ exports.searchTask = async (req, res) => {
   try {
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ?  new mongoose.Schema.Types.ObjectId(req.user.id)
+        ?  new mongoose.Types.ObjectId(req.user.id)
         : null;
     const userFilter = formatUser
       ? { user: formatUser }
