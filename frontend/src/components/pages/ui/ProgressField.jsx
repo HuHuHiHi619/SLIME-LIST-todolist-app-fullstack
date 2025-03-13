@@ -59,7 +59,7 @@ function ProgressField({
         </ul>
       </div>
     ) : (
-      <h3 className="text-slate-400 pl-4">No progress</h3>
+     null
     )}
   </div>
   )}

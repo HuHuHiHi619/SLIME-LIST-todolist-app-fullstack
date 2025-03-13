@@ -38,11 +38,11 @@ function AuthTabs() {
 
   return (
     <Tabs.Root value={activeTab} onValueChange={handleTabChange}>
-      <div className="fixed top-28 left-1/2 transform -translate-x-1/2">
-        <Tabs.List className="w-[510px] flex border border-purpleNormal rounded-xl relative">
+      <div className="w-full max-w-[300px] fixed top-[9vh] left-1/2 transform -translate-x-1/2 ">
+        <Tabs.List className="grid grid-cols-2  ring ring-purpleNormal rounded-xl relative">
           {/* This is the animated background that moves */}
           <motion.div
-            className="absolute w-1/2 h-full bg-purpleActive rounded-xl "
+            className="absolute w-1/2 h-full bg-purpleBorder  rounded-xl "
             initial={false}
             animate={{
               x: activeTab === "register" ? 0 : "100%",

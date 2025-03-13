@@ -31,7 +31,7 @@ function Navbar() {
           <FontAwesomeIcon
             icon={faBars}
             onClick={handlePinSidebar}
-            className="pl-4 text-white text-xl cursor-pointer hover:scale-105 "
+            className="pl-4 text-white text-xl cursor-pointer hover:scale-105 md:hidden"
           />
           <Link to="/" className=" flex items-center gap-3 pl-4 ">
             <img src="./images/Logo-slime.png" className="w-8 md:w-12" alt="" />

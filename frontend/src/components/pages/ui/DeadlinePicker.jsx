@@ -16,7 +16,7 @@ function DeadlinePicker({ id, name, selected, onChange, placeholder }) {
         minDate={new Date()}
         filterDate={date => date >= new Date()}
         placeholderText={placeholder}
-        className="w-full  cursor-pointer p-2 pl-14 shadow text-xl placeholder:text-deadlineTheme text-deadlineTheme border-[2px] border-deadlineTheme bg-transparent rounded-lg focus:outline-none focus:shadow-outline"
+        className="w-full cursor-pointer p-2 pl-14 shadow text-xl placeholder:text-deadlineTheme text-deadlineTheme border-[2px] border-deadlineTheme bg-transparent rounded-lg focus:outline-none focus:shadow-outline"
       />
       <FontAwesomeIcon
         icon={faCalendarAlt}

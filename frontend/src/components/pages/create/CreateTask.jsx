@@ -118,7 +118,7 @@ function CreateTask({ onClose }) {
 
   return (
     <FadeUpContainer>
-      <div className=" md:w-[800px] p-1 rounded-2xl relative">
+      <div className=" max-h-[600px] overflow-y-auto md:w-[800px] p-1 rounded-2xl relative">
         <div className="bg-purpleSidebar p-6 rounded-xl">
           <form onSubmit={handleSubmit}>
             <div className="flex justify-between items-center">

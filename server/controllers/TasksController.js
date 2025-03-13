@@ -140,7 +140,7 @@ exports.getTask = async (req, res) => {
       const tags = Array.isArray(tag) ? tag : [tag];
       userFilter.tag = {
         $in: tags.map((tag) =>
-          isValidObjectId(tag) ? new new Types.ObjectId(tag)() : tag
+          isValidObjectId(tag) ? new Types.ObjectId(tag)() : tag
         ),
       };
     }

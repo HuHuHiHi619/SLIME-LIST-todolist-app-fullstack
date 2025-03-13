@@ -56,8 +56,8 @@ function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-purpleSidebar">
-      <div className="border border-purpleNormal bg-purpleSidebar p-10 rounded-2xl shadow-lg w-full max-w-lg">
+    <div className="flex justify-center items-center  bg-purpleSidebar h-screen">
+      <div className="border border-purpleNormal  p-10 rounded-2xl shadow-lg  w-full max-w-lg mx-4">
         <div className="grid justify-center">
           <img src="./images/Logo-slime.png" className="w-20  " alt="" />
         </div>
