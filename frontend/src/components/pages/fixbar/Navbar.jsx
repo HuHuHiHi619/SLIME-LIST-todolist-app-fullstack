@@ -35,16 +35,13 @@ function Navbar() {
           />
           <Link to="/" className=" flex items-center gap-3 pl-4 pr-12">
             <img src="./images/Logo-slime.png" className="w-8 md:w-12" alt="" />
-            <p className="text-xl lg:text-2xl text-white ">SLIME LIST</p>
+            <p className="text-sm lg:text-2xl text-white ">SLIME LIST</p>
           </Link>
         </div>
         {!isAuthenticated && (
           <div className="flex mx-4 gap-4 items-center">
             <Link to="/register">
               <button className="register">Sign up</button>
-            </Link>
-            <Link to="/login" className="hidden md:block">
-              <button className="login">Sign in</button>
             </Link>
           </div>
         )}

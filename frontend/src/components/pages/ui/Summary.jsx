@@ -7,7 +7,6 @@ import {
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { motion, animate } from "framer-motion";
 import ProgressBar from "./ProgressBar";
-import Tooltip from "./Tooltip";
 import "react-circular-progressbar/dist/styles.css";
 
 // Custom Ring Component
@@ -111,13 +110,13 @@ function Summary() {
         <div className="flex">
           {summary.map((item, index) => (
             <div key={index} className=" md:flex gap-4 items-center ">
-              <Tooltip description={"Hello"} position="right">
+              
                 <div className="ml-4">
                   <GradientCircularProgressbar
                     percentage={item.completedRate || 0}
                   />
                 </div>
-              </Tooltip>
+             
 
               <motion.div
                 initial={{ opacity: 0 }}

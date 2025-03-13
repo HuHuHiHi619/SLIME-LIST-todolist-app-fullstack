@@ -1,5 +1,4 @@
-
-import { BrowserRouter, Route, Routes} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 // component
 import Home from "./components/pages/user/Home";
@@ -7,13 +6,12 @@ import MainLayout from "./components/MainLayout";
 import Settings from "./components/pages/user/Settings";
 
 // authen
-import Register from "./components/pages/authen/Register";
-import Login from "./components/pages/authen/Login";
+import AuthTabs from "./components/pages/ui/AuthTabs";
+
 import AuthProvider from "./components/pages/authen/AuthProvider";
 
-
 // routes
-import PublicRoute from "./components/pages/authen/PublicRoute"
+import PublicRoute from "./components/pages/authen/PublicRoute";
 import "./App.css";
 import Upcoming from "./components/pages/user/Upcoming";
 import AllTask from "./components/pages/user/AllTask";
@@ -24,7 +22,7 @@ import TagList from "./components/pages/user/TagList";
 import { useSelector } from "react-redux";
 
 function App() {
-  const { isAuthenticated } = useSelector((state) => state.user)
+  const { isAuthenticated } = useSelector((state) => state.user);
   return (
     <>
       <AuthProvider>
@@ -43,16 +41,24 @@ function App() {
               <Route path="/tag" element={<Tag />} />
               <Route path="/tag/:tagName" element={<TagList />} />
               <Route path="/settings" element={<Settings />} />
-
-            
             </Route>
             {/* Authentication */}
-            <Route path="/login" element={
-              <PublicRoute isAuthenticated={isAuthenticated}>
-                <Login />
-              </PublicRoute>
-              } />
-            <Route path="/register" element={<Register />} />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute isAuthenticated={isAuthenticated}>
+                  <AuthTabs />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <PublicRoute isAuthenticated={isAuthenticated}>
+                  <AuthTabs />
+                </PublicRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

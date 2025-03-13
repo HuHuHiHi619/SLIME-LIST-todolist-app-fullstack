@@ -14,7 +14,7 @@ const ProgressBar = ({ value, color }) => {
             borderRadius: "20px",
             transition: "width 0.5s ease-in-out",
           }}
-          className="bg-progressGradient"
+          className="bg-[#38B789]"
         />
       )}
     </div>

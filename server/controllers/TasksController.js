@@ -17,7 +17,7 @@ const {
   isValid,
 } = require("date-fns");
 
-const { isValidObjectId , Types  } = require('mongoose')
+const { isValidObjectId, Types } = require("mongoose");
 const {
   processProgress,
   processCategory,
@@ -40,7 +40,7 @@ exports.getTask = async (req, res) => {
     } = req.query;
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ?  new Types.ObjectId(req.user.id)
+        ? new Types.ObjectId(req.user.id)
         : null;
     const formatId = isValidObjectId(id) ? new Types.ObjectId(id) : null;
     const userFilter = formatUser
@@ -140,7 +140,7 @@ exports.getTask = async (req, res) => {
       const tags = Array.isArray(tag) ? tag : [tag];
       userFilter.tag = {
         $in: tags.map((tag) =>
-          isValidObjectId(tag) ? new  new Types.ObjectId(tag) : tag
+          isValidObjectId(tag) ? new new Types.ObjectId(tag)() : tag
         ),
       };
     }
@@ -246,7 +246,7 @@ exports.getTask = async (req, res) => {
 
     if (groupByDeadline) {
       try {
-        const currentDate = startOfDay(new Date())
+        const currentDate = startOfDay(new Date());
         const allTasks = await Tasks.find({
           ...userFilter,
           status: "pending",
@@ -270,8 +270,8 @@ exports.getTask = async (req, res) => {
             }
             acc[deadlineRange].tasks.push(calculateProgress(task));
           }
-          return acc
-        },{});
+          return acc;
+        }, {});
 
         const resultByDeadline = Object.values(groupedTasks);
 
@@ -473,7 +473,7 @@ exports.updatedTask = async (req, res) => {
       req.user && isValidObjectId(req.user.id)
         ? new Types.ObjectId(req.user.id)
         : null;
-    const formatId = isValidObjectId(id) ?  new Types.ObjectId(id) : null;
+    const formatId = isValidObjectId(id) ? new Types.ObjectId(id) : null;
     const userFilter = formatUser
       ? { user: formatUser }
       : req.guestId
@@ -582,7 +582,7 @@ exports.completedTask = async (req, res) => {
       req.user && isValidObjectId(req.user.id)
         ? new Types.ObjectId(req.user.id)
         : null;
-    const formatId = isValidObjectId(id) ?  new Types.ObjectId(id) : null;
+    const formatId = isValidObjectId(id) ? new Types.ObjectId(id) : null;
     const userFilter = formatUser
       ? { user: formatUser }
       : req.guestId
@@ -641,9 +641,9 @@ exports.updatedTaskAttempt = async (req, res) => {
 
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ?  new Types.ObjectId(req.user.id)
+        ? new Types.ObjectId(req.user.id)
         : null;
-    const formatId = isValidObjectId(id) ?  new Types.ObjectId(id) : null;
+    const formatId = isValidObjectId(id) ? new Types.ObjectId(id) : null;
 
     const formatDeadline = addDays(new Date(), 1);
 
@@ -685,7 +685,7 @@ exports.searchTask = async (req, res) => {
   try {
     const formatUser =
       req.user && isValidObjectId(req.user.id)
-        ?  new Types.ObjectId(req.user.id)
+        ? new Types.ObjectId(req.user.id)
         : null;
     const userFilter = formatUser
       ? { user: formatUser }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
@@ -19,10 +19,46 @@ function TaskList({
   const tasksToRender = Array.isArray(allTasks || tasks)
     ? allTasks || tasks
     : [];
+  const filteredTasks = tasksToRender.filter((task) => {
+    if (label === "Pending") return task.status === "pending";
+    if (label === "Completed") return task.status === "completed";
+    return true; // สำหรับ label อื่นๆ แสดงทั้งหมด
+  });
   const [isHover, setIsHover] = useState({});
+  const [isAnimate, setIsAnimate] = useState({});
+  const animateRef = useRef(null);
+
+  const completedWithAnimate = (task) => {
+    if (animateRef.current) {
+      clearTimeout(animateRef.current);
+    }
+    const animationType = task.status === "completed" ? "pending" : "complete";
+    setIsAnimate((prev) => ({
+      ...prev,
+      [task._id]: { type: animationType, animating: true },
+    }));
+    animateRef.current = setTimeout(() => {
+      handleCompletedTask(task);
+      animateRef.current = null;
+    }, 200);
+  };
+
+  const removedWithAnimate = (task) => {
+    if (animateRef.current) {
+      clearTimeout(animateRef.current);
+    }
+    setIsAnimate((prev) => ({
+      ...prev,
+      [task._id]: { type: "remove", animating: true },
+    }));
+    animateRef.current = setTimeout(() => {
+      handleCompletedTask(task);
+      animateRef.current = null;
+    }, 200);
+  };
 
   return (
-    <div className="pr-4  border-2 md:border-2 bg-[#1a1930] border-purpleNormal rounded-3xl p-6 md:mt- mx-4">
+    <div className=" pr-4 border-2 md:border-2 bg-[#1a1930] border-purpleNormal rounded-3xl p-6 md:mt- mx-4">
       <div className="flex justify-between mb-4 mr-3 ">
         <p className="text-white md:text-4xl flex items-center pr-24 w-[200px] md:w-auto">
           {label}
@@ -31,10 +67,10 @@ function TaskList({
       </div>
 
       {/* ตรวจสอบว่ามี tasks หรือไม่ */}
-      {tasksToRender.length === 0 ? null : (
+      {filteredTasks.length === 0 ? null : (
         <div>
-          <ul className="flex flex-col gap-4 overflow-y-scroll scrollbar-custom  max-h-[350px] md:max-h-[250px]  lg:max-h-[570px] pr-1 ">
-            {(allTasks || tasks).map((task, index) => (
+          <ul className="flex flex-col gap-4 overflow-y-scroll overflow-x-hidden scrollbar-custom  max-h-[350px] md:max-h-[250px]  lg:max-h-[570px] pr-1 ">
+            {filteredTasks.map((task, index) => (
               <StaggerContainer key={index} index={index}>
                 <li
                   onClick={(e) => {
@@ -53,7 +89,7 @@ function TaskList({
                   onMouseLeave={() =>
                     setIsHover((prev) => ({ ...prev, [task._id]: false }))
                   }
-                  className={`bg-purpleMain border border-purpleNormal hover:bg-purpleNormal trasition ease-out duration-100 flex items-center justify-between text-2xl p-3 rounded-2xl cursor-pointer text-white ${
+                  className={`bg-purpleMain borde border-purpleNormal hover:bg-purpleNormal trasition ease-out duration-100 flex items-center justify-between text-2xl p-3 rounded-2xl cursor-pointer text-white ${
                     selectedTask && selectedTask._id === task._id
                       ? "bg-purpleActiveTask  "
                       : ""
@@ -65,6 +101,21 @@ function TaskList({
                       ? "bg-failedTask"
                       : ""
                   }  
+                  ${
+                    isAnimate[task._id]?.type === "pending"
+                      ? "animate-fade-from-green"
+                      : ""
+                  }
+                  ${
+                    isAnimate[task._id]?.type === "complete"
+                      ? "animate-fade-to-green"
+                      : ""
+                  }
+                  ${
+                    isAnimate[task._id]?.type === "remove"
+                      ? "animate-fade-out"
+                      : ""
+                  }
                   `}
                 >
                   <div className="flex items-center gap-4 flex-grow overflow-hidden ">
@@ -74,7 +125,7 @@ function TaskList({
                         className="border-2 rounded-full text-sm p-1 hover:bg-purpleBorder"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleCompletedTask(task);
+                          completedWithAnimate(task);
                         }}
                       />
                     ) : task.status === "failed" ? (
@@ -88,7 +139,7 @@ function TaskList({
                         checked={task?.status === "completed"}
                         onChange={(e) => {
                           e.stopPropagation();
-                          handleCompletedTask(task);
+                          completedWithAnimate(task);
                         }}
                         disabled={task?.status === "completed"}
                       />
@@ -142,7 +193,7 @@ function TaskList({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleRemovedTask(task);
+                        removedWithAnimate(task);
                       }}
                       className="transition-opacity duration-200 ease-out opacity-100"
                     >
@@ -150,7 +201,10 @@ function TaskList({
                     </button>
                   ) : (
                     <button>
-                      <FontAwesomeIcon icon={faXmark} className="opacity-0" />
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        className="opacity-0 px-2 py-1 "
+                      />
                     </button>
                   )}
                 </li>

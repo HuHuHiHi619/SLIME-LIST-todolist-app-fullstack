@@ -57,46 +57,46 @@ function Login() {
 
   return (
     <div className="flex justify-center items-center h-screen bg-purpleSidebar">
-      <div className="  bg-purpleGradient p-0.5 rounded-2xl shadow-lg w-full max-w-lg">
-        <div className="bg-purpleSidebar p-8 rounded-xl">
-          <div className="grid justify-center ">
+      <div className="border border-purpleNormal bg-purpleSidebar p-10 rounded-2xl shadow-lg w-full max-w-lg">
+        <div className="grid justify-center">
           <img src="./images/Logo-slime.png" className="w-20  " alt="" />
-          </div>
-          <h1 className="text-3xl font-bold text-white my-4 text-center">SIGN IN</h1>
-
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <InputField
-                type="text"
-                name="username"
-                value={user.username}
-                onChange={handleChange}
-                placeholder="Username"
-                className="w-full px-4 py-2 rounded-md text-2xl"
-              />
-            </div>
-            <div>
-              <InputField
-                type="password"
-                name="password"
-                value={user.password}
-                onChange={handleChange}
-                placeholder="Password"
-                className=" w-full px-4 py-2 rounded-md text-2xl"
-              />
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="done-button w-full hover:bg-violet-500 transition-all duration-150"
-              >
-                Sign in
-              </button>
-            </div>
-          </form>
         </div>
+        <h1 className="text-3xl  text-white my-4 text-center font-bold">
+          SIGN IN
+        </h1>
+
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <InputField
+              type="text"
+              name="username"
+              value={user.username}
+              onChange={handleChange}
+              placeholder="Username"
+              className="w-full px-4 py-2 rounded-md text-2xl"
+            />
+          </div>
+          <div>
+            <InputField
+              type="password"
+              name="password"
+              value={user.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full px-4 py-2 rounded-md text-2xl"
+            />
+          </div>
+          <div>
+            <button
+              type="submit"
+              className="done-button w-full hover:bg-violet-500 transition-all duration-150"
+            >
+              Sign in
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

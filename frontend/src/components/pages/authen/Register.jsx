@@ -50,8 +50,8 @@ function Register() {
         return;
       }
       setError("");
-      console.log("User Data:", user); 
-      const response = await register(user); 
+      console.log("User Data:", user);
+      const response = await register(user);
       console.log("Response:", response);
       navigate("/login");
     } catch (err) {
@@ -61,55 +61,49 @@ function Register() {
 
   return (
     <div className="flex justify-center items-center h-screen bg-purpleSidebar">
-    <div className="border-4 border-purpleMain bg-purpleSidebar p-10 rounded-2xl shadow-lg w-full max-w-lg">
-    <div className="grid justify-center">
-      <img src="./images/Logo-slime.png" className="w-20  " alt="" />
-    </div>
-      <h1 className="text-3xl  text-white my-4 text-center font-bold">
-        SIGN UP
-      </h1>
-
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <InputField
-            type="text"
-            name="username"
-            value={user.username}
-            onChange={handleChange}
-            placeholder="Username"
-            className="w-full px-4 py-2 rounded-md text-2xl"
-          />
-        </div>
-        <div>
-          <InputField
-            type="password"
-            name="password"
-            value={user.password}
-            onChange={handleChange}
-            placeholder="Password"
-            className="w-full px-4 py-2 rounded-md text-2xl"
-          />
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="done-button w-full hover:bg-violet-500 transition-all duration-150"
-          >
-            Sign up
-          </button>
-        </div>
+      <div className="border border-purpleNormal bg-purpleSidebar p-10 rounded-2xl shadow-lg w-full max-w-lg">
         <div className="grid justify-center">
-          <span className="text-xl">Already have an account ?</span>
-          <Link to="/login" className="grid justify-center">
-            <span className="text-xl underline text-violet-500">Sign in here</span>
-          </Link>
+          <img src="./images/Logo-slime.png" className="w-20  " alt="" />
         </div>
-       
-      </form>
+        <h1 className="text-3xl  text-white my-4 text-center font-bold">
+          SIGN UP
+        </h1>
+
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <InputField
+              type="text"
+              name="username"
+              value={user.username}
+              onChange={handleChange}
+              placeholder="Username"
+              className="w-full px-4 py-2 rounded-md text-2xl"
+            />
+          </div>
+          <div>
+            <InputField
+              type="password"
+              name="password"
+              value={user.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full px-4 py-2 rounded-md text-2xl"
+            />
+          </div>
+          <div>
+            <button
+              type="submit"
+              className="done-button w-full hover:bg-violet-500 transition-all duration-150"
+            >
+              Sign up
+            </button>
+          </div>
+         
+        </form>
+      </div>
     </div>
-  </div>
   );
 }
 

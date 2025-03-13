@@ -71,7 +71,7 @@ function Sidebar() {
   return (
     <div
       id="side-bar"
-      className={` md:translate-x-0  md:flex flex-col gap-4 ${
+      className={` md:translate-x-0 mt-8 lg:mt-0 flex m flex-col gap-4 ${
         isSidebarPinned ? "" : "-translate-x-20 sidebar-collapsed"
       } transition-width duration-300`}
     >

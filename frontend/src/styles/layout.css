@@ -21,7 +21,7 @@
 }
 
 #home {
-    @apply  bg-darkBackground pt-5 h-screen lg:grid grid-cols-2 ;
+    @apply  bg-darkBackground pt-2 h-screen lg:grid grid-cols-2 ;
 }
 
 #otherPage {
