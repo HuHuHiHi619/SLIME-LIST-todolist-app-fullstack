@@ -31,11 +31,11 @@ function Navbar() {
           <FontAwesomeIcon
             icon={faBars}
             onClick={handlePinSidebar}
-            className="px-4 text-white text-2xl cursor-pointer hover:scale-105 md:hidden"
+            className="pl-4 text-white text-xl cursor-pointer hover:scale-105 "
           />
-          <Link to="/" className=" flex items-center gap-3 pl-4 pr-12">
+          <Link to="/" className=" flex items-center gap-3 pl-4 ">
             <img src="./images/Logo-slime.png" className="w-8 md:w-12" alt="" />
-            <p className="text-sm lg:text-2xl text-white ">SLIME LIST</p>
+            <p className="text-sm md:text-2xl text-white ">SLIME LIST</p>
           </Link>
         </div>
         {!isAuthenticated && (
