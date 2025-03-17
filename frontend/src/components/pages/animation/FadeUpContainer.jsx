@@ -20,6 +20,7 @@ const FadeUpContainer = ({ children, delay = 0, direction = "up" ,  }) => {
         delay,
         ease: "easeOut"
       }}
+      exit={animateDirection}
     >
       {children}
     </motion.div>

@@ -3,7 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { fetchUserData, loginUser } from "../../../redux/userSlice";
 import InputField from "../ui/inputField";
+import usePopup from "../hooks/usePopup";
 
+ 
 function Login() {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.user);
@@ -11,7 +13,7 @@ function Login() {
     username: "",
     password: "",
   });
-
+  const { handleToggleRegister } = usePopup();
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -56,16 +58,23 @@ function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center  bg-purpleSidebar h-screen">
-      <div className="border border-purpleNormal  p-10 rounded-2xl shadow-lg  w-full max-w-lg mx-4">
+    
+      <div className="relative border border-purpleNormal  p-10 rounded-2xl shadow-lg  w-full max-w-lg mx-4">
         <div className="grid justify-center">
           <img src="./images/Logo-slime.png" className="w-20  " alt="" />
         </div>
-        <h1 className="text-3xl  text-white my-4 text-center font-bold">
+        <h1 className="text-3xl  text-white my-4 text-center ">
           SIGN IN
         </h1>
-
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+     
+        <button
+          onClick={() => handleToggleRegister()}
+          className="absolute top-2 right-2 text-xl text-gray-500 p-2 hover:text-red-600 transition-all rounded-full duration-100 ease-in "
+        >
+          X
+        </button>
+   
+        {error && <p className="text-red-500 mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -91,14 +100,14 @@ function Login() {
           <div>
             <button
               type="submit"
-              className="done-button w-full hover:bg-violet-500 transition-all duration-150"
+              className="done-button w-full tracking-widest hover:bg-violet-500 transition-all duration-300"
             >
-              Sign in
+              LOGIN
             </button>
           </div>
         </form>
       </div>
-    </div>
+   
   );
 }
 

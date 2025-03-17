@@ -21,7 +21,6 @@ import {
 } from "../../../redux/taskSlice";
 import SidebarLink from "../fixbar/SidebarLink";
 import CreateEntity from "../create/CreateEntity";
-import Logout from "../authen/Logout";
 import usePopup from "../hooks/usePopup";
 import Tooltip from "../ui/Tooltip";
 
@@ -36,7 +35,7 @@ function Sidebar() {
     popupMode,
     categories,
   } = useSelector((state) => state.tasks);
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+ 
 
   const {
     handleRemovedItem,
@@ -71,7 +70,7 @@ function Sidebar() {
   return (
     <div
       id="side-bar"
-      className={` md:translate-x-0 md:mt-12 lg:mt-0 flex m flex-col gap-4 ${
+      className={` md:translate-x-0 md:mt-10 lg:mt-0 flex  flex-col gap-4  ${
         isSidebarPinned ? "" : "-translate-x-20 sidebar-collapsed"
       } transition-width duration-300`}
     >
@@ -166,7 +165,7 @@ function Sidebar() {
           isSidebarPinned={isSidebarPinned}
         />
       </Tooltip>
-      {isAuthenticated && isSidebarPinned && <Logout />}
+     
       {isPopup &&
         ReactDOM.createPortal(
           <div className="popup-overlay">

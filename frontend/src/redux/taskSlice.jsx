@@ -47,6 +47,7 @@ const initialState = {
   isPopup: false,
   isHover: null,
   isSidebarPinned: false,
+  isRegisterPopup : false,
   popupMode: "",
   loading: false,
   error: null,
@@ -248,6 +249,9 @@ const taskSlice = createSlice({
 
     toggleSidebarPinned(state) {
       state.isSidebarPinned = !state.isSidebarPinned;
+    },
+    toggleRegisterPopup(state) {
+      state.isRegisterPopup = !state.isRegisterPopup;
     },
 
     resetFormTask(state) {
@@ -479,5 +483,6 @@ export const {
   setHover,
   togglePopup,
   toggleSidebarPinned,
+  toggleRegisterPopup,
 } = taskSlice.actions;
 export default taskSlice.reducer;

@@ -40,7 +40,7 @@ function ProgressField({
                 )}
   
                 <span
-                  className={`  truncate max-w-[calc(80%-60px)] ${
+                  className={`text-lg text-white truncate max-w-[calc(80%-60px)] ${
                     step.completed ? "line-through text-purpleBorder" : ""
                   }`}
                 >

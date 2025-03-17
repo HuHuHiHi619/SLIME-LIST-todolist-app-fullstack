@@ -1,6 +1,6 @@
 import React from "react";
 
-const ProgressBar = ({ value, color }) => {
+const ProgressBar = ({ value }) => {
   return (
     <div
       className="bg-darkBackground rounded-full"
@@ -14,7 +14,7 @@ const ProgressBar = ({ value, color }) => {
             borderRadius: "20px",
             transition: "width 0.5s ease-in-out",
           }}
-          className="bg-[#38B789]"
+          className="bg-[#1ef996]"
         />
       )}
     </div>

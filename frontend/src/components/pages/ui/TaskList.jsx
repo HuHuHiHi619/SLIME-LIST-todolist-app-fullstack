@@ -52,15 +52,15 @@ function TaskList({
       [task._id]: { type: "remove", animating: true },
     }));
     animateRef.current = setTimeout(() => {
-      handleCompletedTask(task);
+      handleRemovedTask(task);
       animateRef.current = null;
     }, 200);
   };
 
   return (
-    <div className=" pr-4 border-2 md:border-2 bg-[#1a1930] border-purpleNormal rounded-3xl p-6 md:mt- mx-4">
+    <div className=" pr-4 border-2 md:border-2 bg-purpleSidebar  border-purpleNormal rounded-3xl p-6 md:mt- mx-4">
       <div className="flex justify-between mb-4 mr-3 ">
-        <p className="text-white md:text-4xl flex items-center pr-24 w-[200px] md:w-auto">
+        <p className="text-white md:text-2xl flex items-center pr-24 w-[200px] md:w-auto">
           {label}
         </p>
         <CreateButton onClick={handleIsCreate} />
@@ -89,11 +89,14 @@ function TaskList({
                   onMouseLeave={() =>
                     setIsHover((prev) => ({ ...prev, [task._id]: false }))
                   }
-                  className={`bg-purpleMain borde border-purpleNormal hover:bg-purpleNormal trasition ease-out duration-100 flex items-center justify-between text-2xl p-3 rounded-2xl cursor-pointer text-white ${
-                    selectedTask && selectedTask._id === task._id
-                      ? "bg-purpleActiveTask  "
-                      : ""
-                  }
+                  className={`group flex items-center justify-between text-2xl p-3 rounded-2xl cursor-pointer text-white
+              border border-purpleNormal hover:bg-purpleBorder
+              transition-all duration-300 ease-in-out
+                     ${
+                       selectedTask && selectedTask._id === task._id
+                         ? "bg-purpleActiveTask  "
+                         : ""
+                     }
                   ${
                     task.status === "completed"
                       ? "bg-completedTask hover:bg-completedTheme"
@@ -153,7 +156,7 @@ function TaskList({
                       task.progress &&
                       task.progress.totalSteps > 0 ? (
                         <div className="flex items-center">
-                          <span className="pr-4">
+                          <span className="pr-4 ">
                             Progress : {task.progress.completedSteps}/
                             {task.progress.totalSteps}
                           </span>

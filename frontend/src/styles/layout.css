@@ -1,5 +1,5 @@
 #mainLayout {
-    @apply h-screen grid md:overflow-hidden;
+    @apply h-screen grid overflow-y-hidden;
    
 }
 
@@ -8,12 +8,12 @@
 }
 
 #side-bar {
-    @apply absolute lg:top-12 h-[40rem]  z-40 bg-purpleSidebar bg-opacity-50 py-10   overflow-hidden ;
+    @apply absolute inset-y-0 lg:top-14 z-40 bg-purpleSidebar bg-opacity-50 py-10;
     width: 17rem;
     max-width: 17rem;
     min-width: 17rem;
-    
 }
+
 #side-bar.sidebar-collapsed {
     width: 5rem; 
     transition: width 0.3s ease;

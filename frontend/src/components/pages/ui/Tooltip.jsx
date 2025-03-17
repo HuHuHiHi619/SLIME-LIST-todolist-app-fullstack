@@ -97,11 +97,11 @@ function Tooltip({ children, description, position = "left", disableTip }) {
       
       {ReactDOM.createPortal(
         <div 
-          className={`fixed transition-all duration-300 transform  ${getPositionClasses()} ${getAnimationClasses()}`}
+          className={`fixed transition-all ease-out duration-300 transform  ${getPositionClasses()} ${getAnimationClasses()}`}
           style={{ top: `${tooltipPos.top}px`, left: `${tooltipPos.left}px`, zIndex:9999 }}
         >
-          <div className="bg-purpleNormal  text-gray-400 text-lg  rounded-xl shadow-2xl">
-            <div className=" p-2 rounded-xl">{description}</div>
+          <div className="bg-purpleNormal  text-white text-lg  rounded-lg shadow-2xl">
+            <div className=" px-2 py-0.5 ">{description}</div>
           </div>
         </div>,
         document.body

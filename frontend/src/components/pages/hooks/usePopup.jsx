@@ -9,6 +9,7 @@ import {
   togglePopup,
   setHover,
   toggleSidebarPinned,
+  toggleRegisterPopup,
   removedCategory,
   removeCategories,
   removedAllTask,
@@ -26,7 +27,10 @@ function usePopup() {
   const popupEnRef = useRef(null);
   const popupInstructRef = useRef(null);
   const sidebarRef = useRef(null);
-  const { isPopup, activeMenu } = useSelector((state) => state.tasks);
+  const popupRegisterRef = useRef(null);
+  const { isPopup, isRegisterPopup, activeMenu } = useSelector(
+    (state) => state.tasks
+  );
   const { tokens } = useSelector((state) => state.user);
   const { instruction } = useSelector((state) => state.summary);
 
@@ -48,6 +52,9 @@ function usePopup() {
   };
   const handleToggleSidebar = () => {
     dispatch(toggleSidebarPinned());
+  };
+  const handleToggleRegister = () => {
+    dispatch(toggleRegisterPopup());
   };
 
   const handleHover = (id) => {
@@ -141,9 +148,7 @@ function usePopup() {
         !popupInstructRef.current.contains(e.target)
       ) {
         dispatch(toggleInstructPopup());
-      } else if (sidebarRef.current && !sidebarRef.current.contain(e.tartget)) {
-        dispatch(toggleSidebarPinned());
-      }
+      } 
     };
     document.addEventListener("mousedown", handleClickOutside);
 
@@ -162,6 +167,7 @@ function usePopup() {
     handleRemovedItem,
     handleActiveMenu,
     handleToggleSidebar,
+    handleToggleRegister,
     handleHover,
     handlePopup,
     handleIsInstruct,
@@ -169,6 +175,8 @@ function usePopup() {
     popupRef,
     popupEnRef,
     popupInstructRef,
+    popupRegisterRef,
+    sidebarRef,
   };
 }
 

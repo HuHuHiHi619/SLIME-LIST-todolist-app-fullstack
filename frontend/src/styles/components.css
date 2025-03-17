@@ -26,7 +26,7 @@ span {
   @apply bg-purpleNormal  
   focus:outline-none  flex justify-center 
   cursor-pointer p-2 px-4 text-sm md:text-lg 
-  hover:bg-violet-600 hover:bg-opacity-50 transition-all duration-75 ease-in
+  hover:bg-purpleBorder transition-all duration-75 ease-in
   rounded-lg text-white;
 }
 
@@ -96,6 +96,14 @@ title {
   z-index: 1000;
   backdrop-filter: blur(2px);
 }
+.popup-content {
+  z-index: 1001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
 .clear-allTask {
   position: fixed;
   bottom: 2%;
@@ -112,9 +120,6 @@ title {
   bottom: 5%;
   left: 3.5%;
   z-index: 1000;
-}
-.popup-content {
-  z-index: 1001;
 }
 
 /* input */
@@ -167,51 +172,77 @@ input[type="checkbox"]:hover {
   transform: translateX(0);
 }
 
-/* Calendar */
-.custom-calendar-container {
-  padding: 7px;
+/* DatePicker Styling with Fixed Positioning */
+.elegant-datepicker {
+  border: 1px solid theme("colors.purpleNormal");
+  border-radius: 12px;
+  background-color: theme("colors.purpleMain");
+  
 }
 
-.react-calendar {
-  background: none;
+/* แก้ไขปัญหาที่ datepicker แสดงผลที่ top ของหน้าจอ */
+.react-datepicker-popper {
+  z-index: 1000 !important;
+  transform-origin: top center !important;
+  margin-left: 10px;
+}
+
+.elegant-datepicker .react-datepicker__header {
+  background-color: theme("colors.purpleMain");
+  padding: 10px;
   border: none;
 }
 
-.react-calendar__tile {
-  background-color: transparent;
+.elegant-datepicker .react-datepicker__current-month {
   color: white;
-  font-size: medium;
 }
 
-.react-calendar__tile:enabled:hover,
-.react-calendar__tile:enabled:focus {
-  background-color: rgba(255, 255, 255, 0.2); /* สีพื้นหลังเมื่อ hover */
+.elegant-datepicker .react-datepicker__day-name {
+  color: #6c757d;
+  font-weight: 600;
+  padding-top: 5px;
 }
 
-.react-calendar__navigation button {
-  color: white;
-  background: none;
-  border: none;
+.elegant-datepicker .react-datepicker__day  {
+  border-radius: 50%;
+  text-align: center;
+  color: #ffffff;
+  transition: all 0.2s ease;
 }
 
-.react-calendar__month-view__weekdays {
-  color: white;
-  font-size: large;
+.elegant-datepicker .react-datepicker__day :hover {
+  background-color: theme('colors.purpleBorder');
+  border-radius: 50%;
+  text-align: center;
+  color: #fafafa;
+  transition: all 0.2s ease;
 }
 
-.react-calendar__tile--now {
-  background: #7a36df; /* สีของวันที่ปัจจุบัน */
-  color: white;
-  border-radius: 8px;
+.elegant-datepicker .react-datepicker__day--selected {
+  background-color: var(--start-date-theme, #5d48e5) !important;
+  color: rgb(255, 248, 248) !important;
+  font-weight: bold;
 }
 
-.react-calendar__tile--active {
-  background: #ff4d4d; /* สีของวันที่ถูกเลือก */
-  color: white;
-  border-radius: 8px;
+.elegant-datepicker .react-datepicker__day--disabled {
+  color: #999999 !important;
+  pointer-events: none;
 }
 
-.react-calendar__tile--range {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+.elegant-datepicker .react-datepicker__navigation {
+  top: 10px;
+}
+
+/* แก้ไขปัญหา popup ที่อาจซ่อนบางส่วนของ datepicker */
+.popup-content {
+  position: relative;
+}
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+  display: block;
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
 }

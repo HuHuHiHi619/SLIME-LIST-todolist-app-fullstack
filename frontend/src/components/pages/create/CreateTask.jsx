@@ -21,6 +21,7 @@ import {
   fetchSummaryByCategory,
 } from "../../../redux/summarySlice";
 
+
 function CreateTask({ onClose }) {
   const dispatch = useDispatch();
   const { formTask, progress, categories } = useSelector(
@@ -118,7 +119,7 @@ function CreateTask({ onClose }) {
 
   return (
     <FadeUpContainer>
-      <div className=" max-h-[600px] overflow-y-auto md:w-[800px] p-1 rounded-2xl relative">
+      <div className=" h-full max-h-[600px]  md:w-[800px] p-1 rounded-2xl relative">
         <div className="bg-purpleSidebar p-6 rounded-xl">
           <form onSubmit={handleSubmit}>
             <div className="flex justify-between items-center">

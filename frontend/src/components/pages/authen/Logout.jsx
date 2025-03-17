@@ -6,7 +6,7 @@ import { clearTask } from "../../../redux/taskSlice";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clearSummaryState } from "../../../redux/summarySlice";
-import FadeUpContainer from "../animation/FadeUpContainer"
+import FadeUpContainer from "../animation/FadeUpContainer";
 import Cookies from "js-cookie";
 import ReactDOM from "react-dom";
 
@@ -37,17 +37,15 @@ function Logout() {
     <>
       <button
         onClick={() => setShowConfirm(true)}
-        className=" flex red-button mx-14 gap-4 items-center logout text-2xl   "
       >
-        <FontAwesomeIcon icon={faRightFromBracket} className=" text-xl" />
-        Log out
+        <FontAwesomeIcon icon={faRightFromBracket} className=" text-2xl text-gray-400 hover:text-deadlineTheme p-2" />
+       
       </button>
 
       {showConfirm &&
         ReactDOM.createPortal(
-        
-            <div className="popup-overlay">
-                <FadeUpContainer>
+          <div className="popup-overlay">
+            <FadeUpContainer>
               <div className="popup-content border-4 p-8 rounded-xl border-purpleNormal bg-purpleSidebar">
                 <p className="text-2xl text-white">
                   Are you sure you want to logout ?
@@ -67,8 +65,8 @@ function Logout() {
                   </button>
                 </div>
               </div>
-                </FadeUpContainer>
-            </div>,
+            </FadeUpContainer>
+          </div>,
           document.body
         )}
     </>

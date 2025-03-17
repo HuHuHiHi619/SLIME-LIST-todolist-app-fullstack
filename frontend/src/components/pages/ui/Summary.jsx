@@ -11,7 +11,7 @@ import "react-circular-progressbar/dist/styles.css";
 
 // Custom Ring Component
 const Ring = ({ size }) => (
-  <motion.div className={`rounded-full border-4 border-emerald-500 ${size}`} />
+  <motion.div className={`rounded-full border-4 border-emerald-500 drop-shadow-[0_0_10px_rgba(39,245,124,1)] ${size}`} />
 );
 
 const GradientCircularProgressbar = ({ percentage }) => {
@@ -87,16 +87,8 @@ function Summary() {
     dispatch(fetchSummaryByCategory());
   }, [dispatch, isSummaryUpdated]);
 
-  const bars = [
-    { color: { start: "#2FA5E1", end: "#1B8E34" } },
-    { color: { start: "#9CE12F", end: "#FF8D1A" } },
-    { color: { start: "#E25F56", end: "#8AABFF" } },
-  ];
-
-  console.log();
-
   return (
-    <div className="md:hidden lg:grid mr-10 bg-purpleSidebar border-2 border-purpleNormal rounded-3xl py-8 px-6 grid lg:h-[330px] md:h-auto ">
+    <div className="md:hidden lg:grid mr-10 bg-purpleSidebar border-2 border-purpleNormal rounded-3xl  px-6 grid lg:h-[330px] md:h-auto ">
       {!Array.isArray(summary) ||
       summary.length === 0 ||
       !Array.isArray(summaryCategory) ||
@@ -127,7 +119,7 @@ function Summary() {
                 <div className="text-2xl pb-1">
                   ALL TASKS : {item.completedTasks} / {item.totalTasks}
                 </div>
-                <div className="">
+                <div className="bg-purpleGradient bg-clip-text text-transparent ">
                   <p>KEEP GOING YOU</p>
                   <p>CAN DO IT!</p>
                 </div>
@@ -139,14 +131,13 @@ function Summary() {
             {summaryCategory.map((catItem, catIndex) => (
               <div
                 key={catIndex}
-                className=" px-4 py-2 cursor-pointer rounded-lg text-xl text-white bg-purpleNormal list-shadow hover:scale-105 transition ease-out duration-100"
+                className=" px-4 py-2 cursor-pointer rounded-lg text-xl text-white bg-purpleNormal list-shadow "
               >
                 <div className="flex justify-between mb-2">
                   <h3>{catItem.category || "No category"}</h3>
                   <h3>{Math.round(catItem.completedRate)}%</h3>
                 </div>
                 <ProgressBar
-                  color={bars[catIndex % bars.length].color}
                   value={catItem.completedRate}
                 />
               </div>

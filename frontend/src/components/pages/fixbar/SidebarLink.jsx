@@ -35,7 +35,7 @@ function SidebarLink({
         className={`relative z-10 flex items-center gap-4 p-3 text-white ${
           isActive
             ? "text-white font-semibold"
-            : "text-white opacity-50 hover:opacity-100"
+            : "text-white opacity-50 hover:opacity-100 hover:bg-purpleNormal transition-all duration-300 rounded-md"
         }`}
         onClick={handleActiveMenu}
       >

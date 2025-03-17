@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import SearchField from "../ui/SearchField";
-import NotificationField from "./NotificationField";
 import FadeUpContainer from "../animation/FadeUpContainer";
+import Logout from "../authen/Logout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBell,
   faQuestion,
   faSearch,
   faSquare,
@@ -14,6 +13,7 @@ import usePopup from "../hooks/usePopup";
 import { useSelector } from "react-redux";
 import ReactDOM from "react-dom";
 import Tooltip from "../ui/Tooltip";
+import { AnimatePresence } from "framer-motion";
 
 const NotificationForm = () => {
   const { instruction } = useSelector((state) => state.summary);
@@ -70,7 +70,7 @@ const NotificationForm = () => {
           <Tooltip description={"Menu"} position="bottom">
             <button
               ref={buttonRef}
-              className={`text-gray-400 hover:text-purpleBorder transition-transform duration-300 ease-out transform ${
+              className={`text-gray-400 hover:text-purpleBorder transition-transform duration-500 ease-in-out transform ${
                 isMenuOpen
                   ? "-rotate-[135deg] -translate-y-1 text-purpleBorder "
                   : ""
@@ -84,6 +84,7 @@ const NotificationForm = () => {
             </button>
           </Tooltip>
           {/* Sliding Icons Container */}
+          <AnimatePresence>
           {isMenuOpen && (
             <div className="absolute right-12 top-5 flex -translate-y-1/2  items-center gap-2 w-auto">
               <FadeUpContainer direction="left">
@@ -138,6 +139,9 @@ const NotificationForm = () => {
                       <FontAwesomeIcon icon={faQuestion} className="h-6 w-6" />
                     </button>
                   </Tooltip>
+                  <Tooltip description={"Logout"} position="bottom">
+                    <Logout />
+                  </Tooltip>
                 </div>
 
                 {instruction &&
@@ -152,6 +156,7 @@ const NotificationForm = () => {
               </FadeUpContainer>
             </div>
           )}
+          </AnimatePresence>
         </div>
       </div>
     </div>

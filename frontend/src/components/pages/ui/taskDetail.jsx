@@ -273,7 +273,7 @@ function TaskDetail({ onClose }) {
 
   return (
     <FadeUpContainer>
-      <div className=" w-[300px] max-h-[600px] overflow-y-auto md:w-[800px] p-1 rounded-2xl ">
+      
         <div className="bg-purpleSidebar p-6 rounded-xl">
           <div className="flex justify-between items-center">
             <p className="text-white text-xl">TASK DETAILS</p>
@@ -291,7 +291,7 @@ function TaskDetail({ onClose }) {
               )}
 
               <p
-                className={`text-white text-sm md:text-2xl ${
+                className={`  ${
                   editedTask.status === "pending"
                     ? "pending"
                     : editedTask.status === "failed"
@@ -395,7 +395,7 @@ function TaskDetail({ onClose }) {
             </button>
           </div>
         </div>
-      </div>
+    
     </FadeUpContainer>
   );
 }

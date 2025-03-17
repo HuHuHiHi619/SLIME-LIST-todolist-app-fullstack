@@ -13,6 +13,9 @@ import usePopup from "../hooks/usePopup";
 function SearchField() {
   const [searchTerm, setSearchTerm] = useState("");
   const { searchResults, selectedTask } = useSelector((state) => state.tasks);
+  const { isAuthenticated } = useSelector((state) => state.user);
+ 
+ 
   const {
     handleIsCreate,
     handleCloseDetail,
@@ -47,7 +50,9 @@ function SearchField() {
   }, [dispatch]);
 
   return (
-    <div className=" relative">
+    <>
+    { isAuthenticated ? (
+      <div className=" relative">
       <InputField
         type="text"
         placeholder="Search your task here"
@@ -60,8 +65,8 @@ function SearchField() {
       <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
       <div>
         {Array.isArray(searchResults) && searchResults.length > 0 && (
-          <div className="absolute top-full -right-5 mt-2 w-[300px] p-0.5 bg-purpleGradient  shadow-lg rounded-2xl z-50">
-            <div className="bg-darkBackground rounded-2xl">
+          <div className="absolute top-full -right-5 mt-2 w-[300px] p-0.5 bg-purpleNormal  shadow-lg rounded-xl z-50">
+            <div className="bg-darkBackground rounded-xl pl-2">
               <SearchTaskList
                 allTasks={searchResults}
                 handleCompletedTask={handleCompletedTask}
@@ -89,6 +94,9 @@ function SearchField() {
         )}
       </div>
     </div>
+    ) : null }
+    
+    </>
   );
 }
 

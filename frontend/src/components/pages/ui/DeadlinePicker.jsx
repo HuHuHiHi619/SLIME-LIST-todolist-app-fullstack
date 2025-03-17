@@ -5,19 +5,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 
 function DeadlinePicker({ id, name, selected, onChange, placeholder }) {
+  const selectedDate = selected ? new Date(selected) : new Date();
   return (
-    <div className="relative ">
+    <div className="relative w-full">
       <DatePicker
         id={id}
         name={name}
-        selected={selected}
+        selected={selectedDate}
         onChange={onChange}
         dateFormat="dd/MM/yyyy"
         minDate={new Date()}
         filterDate={date => date >= new Date()}
         placeholderText={placeholder}
-        className="w-full cursor-pointer p-2 pl-14 shadow text-xl placeholder:text-deadlineTheme text-deadlineTheme border-[2px] border-deadlineTheme bg-transparent rounded-lg focus:outline-none focus:shadow-outline"
-      />
+        popperPlacement="bottom-start"
+        className="w-full cursor-pointer p-2 pl-14 shadow placeholder:text-deadlineTheme text-deadlineTheme text-xl border-[2px] border-deadlineTheme bg-transparent rounded-lg focus:outline-none focus:shadow-outline"
+        calendarClassName="elegant-datepicker"
+        showPopperArrow={false}
+     />
       <FontAwesomeIcon
         icon={faCalendarAlt}
         className="absolute left-5 bottom-[14px] text-xl text-red-500" // ฟิกสีแดง
