@@ -19,9 +19,8 @@ const NotificationForm = () => {
   const { instruction } = useSelector((state) => state.summary);
   const { handleIsInstruct, popupInstructRef } = usePopup();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isNotiOpen, setIsNotiOpen] = useState(false);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const notiRef = useRef(null);
   const searchRef = useRef(null);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
@@ -29,14 +28,10 @@ const NotificationForm = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        !(menuRef.current && menuRef.current.contains(event.target)) &&
-        !(buttonRef.current && buttonRef.current.contains(event.target)) &&
-        !(searchRef.current && searchRef.current.contains(event.target)) &&
-        !(notiRef.current && notiRef.current.contains(event.target))
+        (!menuRef.current && menuRef.current.contains(event.target)) 
       ) {
         setIsMenuOpen(false);
         setIsSearchOpen(false);
-        setIsNotiOpen(false);
       }
     };
 
@@ -47,23 +42,13 @@ const NotificationForm = () => {
   }, []);
 
   const handleSearchToggle = () => {
-    setIsSearchOpen(true);
-    setIsNotiOpen(false);
+    setIsSearchOpen((prev) => !prev);
+
   };
 
-  const handleNotificationClick = () => {
-    setIsNotiOpen((prev) => !prev);
-    setIsSearchOpen(false);
-  };
-
+ 
   return (
     <div className=" p-2 m-0 md:mr-8 z-50">
-      <button
-        className="md:hidden pl-12 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
-        onClick={() => handleIsInstruct()}
-      >
-        <FontAwesomeIcon icon={faQuestion} className="h-6 w-6" />
-      </button>
       <div className=" hidden md:flex relative  items-center" ref={menuRef}>
         {/* Main Menu Icon and Click Area */}
         <div className="relative flex items-center">
@@ -75,7 +60,12 @@ const NotificationForm = () => {
                   ? "-rotate-[135deg] -translate-y-1 text-purpleBorder "
                   : ""
               }`}
-              onClick={() => setIsMenuOpen((prev) => !prev)}
+              onClick={() => {
+                if(isMenuOpen){
+                  setIsSearchOpen(false);
+                }
+                setIsMenuOpen((prev) => !prev)}
+              }
             >
               <FontAwesomeIcon
                 icon={faSquare}
@@ -92,9 +82,9 @@ const NotificationForm = () => {
                   {isSearchOpen ? (
                     <div
                       ref={searchRef}
-                      className="animate-fadeIn absolute  top-0 right-12"
+                      className="animate-fadeIn absolute  top-0 right-24"
                     >
-                      <SearchField />
+                      <SearchField handleSearchToggle={handleSearchToggle}/>
                     </div>
                   ) : (
                     <Tooltip description={"Search"} position="bottom">
@@ -106,31 +96,7 @@ const NotificationForm = () => {
                       </button>
                     </Tooltip>
                   )}
-                  {/* <div className="relative">
-                    <button
-                      onClick={handleNotificationClick}
-                      className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
-                    >
-                      <FontAwesomeIcon
-                        icon={faBell}
-                        className={`h-8 w-8 ${
-                          isNotiOpen ? "text-purpleBorder" : ""
-                        }`}
-                      />
-                    </button>
-                    
-                 NOTIFICATION FIELD IS PROCESSING   
-
-                   {isNotiOpen && (
-                      <div
-                        ref={notiRef}
-                        className="absolute top-0 right-0 shadow-md p-4 transition-all duration-300"
-                      >
-                        <NotificationField />
-                      </div>
-                    )} 
-                  </div>
-                     */}
+                  
                   <Tooltip description={"Instructions"} position="bottom">
                     <button
                       className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
@@ -147,7 +113,7 @@ const NotificationForm = () => {
                 {instruction &&
                   ReactDOM.createPortal(
                     <div className="popup-overlay">
-                      <div className="popup-content" ref={popupInstructRef}>
+                      <div className="popup-content" ref={popupInstructRef} onClick={e => e.stopPropagation()}>
                         <InstructionPopup onClose={handleIsInstruct} />
                       </div>
                     </div>,

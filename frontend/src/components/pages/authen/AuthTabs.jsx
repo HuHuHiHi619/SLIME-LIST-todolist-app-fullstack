@@ -1,12 +1,12 @@
-import React, { useState , forwardRef } from "react";
+import React, { useState , forwardRef} from "react";
 import * as Tabs from "@radix-ui/react-tabs";
-import Register from "../authen/Register";
-import Login from "../authen/Login";
+import AuthForm from "./AuthForm";
 import { motion } from "framer-motion";
+
 
 const AuthTabs = forwardRef((props,ref) => {
   const [activeTab, setActiveTab] = useState("login");  // default is "login"
-
+  
   // Handle tab change without affecting URL
   const handleTabChange = (value) => {
     setActiveTab(value);  // Just update activeTab state
@@ -15,11 +15,11 @@ const AuthTabs = forwardRef((props,ref) => {
   return (
     
     <Tabs.Root value={activeTab} onValueChange={handleTabChange} ref={ref}>
-      <div className="w-full max-w-[350px] mb-4  ml-9 ring ring-purpleNormal ring-offset-transparent ring-offset p-1 rounded-full">
+      <div className="w-full max-w-[250px] mx-auto mb-4 ring ring-purpleNormal ring-offset-transparent ring-offset p-1 rounded-full">
         <Tabs.List className="grid grid-cols-2 border border-purpleNormal rounded-3xl relative">
           {/* This is the animated background that moves */}
           <motion.div
-            className={`absolute w-1/2 h-full rounded-3xl ${activeTab === "register" ? "bg-purpleNormal" : "bg-purpleBorder"}`}
+            className={` absolute w-1/2 h-full rounded-3xl ${activeTab === "register" ? "bg-purpleNormal" : "bg-purpleBorder"}`}
             initial={false}
             animate={{
               x: activeTab === "register" ? 0 : "100%",
@@ -49,13 +49,13 @@ const AuthTabs = forwardRef((props,ref) => {
         </Tabs.List>
       </div>
 
-      <div>
+      <div className="max-w-[450px] w-full">
         <Tabs.Content value="register">
-          <Register onClose={() => handle}/>
+        <AuthForm isRegister={true} setActiveTab={setActiveTab} />
         </Tabs.Content>
 
         <Tabs.Content value="login">
-          <Login />
+        <AuthForm isRegister={false} setActiveTab={setActiveTab} />
         </Tabs.Content>
       </div>
     </Tabs.Root>

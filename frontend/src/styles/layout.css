@@ -1,5 +1,5 @@
 #mainLayout {
-    @apply h-screen grid overflow-y-hidden;
+    @apply h-screen grid sm:overflow-y-hidden;
    
 }
 
@@ -25,7 +25,7 @@
 }
 
 #otherPage {
-    @apply  bg-darkBackground md:h-screen h-screen  ;
+    @apply  bg-darkBackground h-screen  ;
 }
 
 

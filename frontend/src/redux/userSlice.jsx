@@ -170,6 +170,7 @@ const userSlice = createSlice({
     setAuthError: (state, action) => {
       state.authError = action.payload;
     },
+   
   },
   extraReducers: (builder) => {
     builder
@@ -237,5 +238,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { restoreState, updateTokens, setAuthError } = userSlice.actions;
+export const { restoreState, updateTokens, setAuthError,  } = userSlice.actions;
 export default userSlice.reducer;

@@ -142,12 +142,6 @@ function usePopup() {
         !popupEnRef.current.contains(e.target)
       ) {
         dispatch(togglePopup(""));
-      } else if (
-        instruction &&
-        popupInstructRef.current &&
-        !popupInstructRef.current.contains(e.target)
-      ) {
-        dispatch(toggleInstructPopup());
       } 
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -155,7 +149,7 @@ function usePopup() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isPopup, instruction, dispatch]);
+  }, [isPopup,  dispatch]);
 
   return {
     handleIsCreate,

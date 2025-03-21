@@ -6,7 +6,7 @@ import MainLayout from "./components/MainLayout";
 import Settings from "./components/pages/user/Settings";
 
 // authen
-import AuthTabs from "./components/pages/ui/AuthTabs";
+import AuthTabs from "./components/pages/authen/AuthTabs";
 
 import AuthProvider from "./components/pages/authen/AuthProvider";
 

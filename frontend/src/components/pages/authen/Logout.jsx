@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { logoutUser } from "../../../redux/userSlice";
-import { clearTask } from "../../../redux/taskSlice";
+import {  logoutUser } from "../../../redux/userSlice";
+import { clearTask, toggleRegisterPopup } from "../../../redux/taskSlice";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clearSummaryState } from "../../../redux/summarySlice";
@@ -12,7 +11,6 @@ import ReactDOM from "react-dom";
 
 function Logout() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleLogout = async () => {
@@ -24,9 +22,13 @@ function Logout() {
 
       localStorage.clear();
 
-      dispatch(clearTask());
-      dispatch(clearSummaryState());
-      navigate("/");
+    await Promise.all([
+       dispatch(clearTask()),
+       dispatch(clearSummaryState()),
+       dispatch(toggleRegisterPopup())
+     ]) 
+    
+
     } catch (error) {
       console.error("Logout failed:", error);
       alert("Logout failed. Please try again.");
@@ -47,7 +49,8 @@ function Logout() {
           <div className="popup-overlay">
             <FadeUpContainer>
               <div className="popup-content border-4 p-8 rounded-xl border-purpleNormal bg-purpleSidebar">
-                <p className="text-2xl text-white">
+                <div>
+                <p className="text-2xl text-white ">
                   Are you sure you want to logout ?
                 </p>
                 <div className="flex justify-center gap-4 mt-6">
@@ -64,6 +67,8 @@ function Logout() {
                     Cancel
                   </button>
                 </div>
+                </div>
+               
               </div>
             </FadeUpContainer>
           </div>,

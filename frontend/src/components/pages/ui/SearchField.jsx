@@ -1,4 +1,4 @@
-import React, { useState, useEffect , Suspense} from "react";
+import React, { useState, useEffect } from "react";
 import { debounce } from "lodash";
 import InputField from "./inputField";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,9 +8,9 @@ import { faSearch} from "@fortawesome/free-solid-svg-icons";
 import SearchTaskList from "./SearchTaskList";
 import usePopup from "../hooks/usePopup";
 
- const TaskDetail = React.lazy(() =>  import("../ui/taskDetail"))
 
-function SearchField() {
+
+function SearchField({handleSearchToggle}) {
   const [searchTerm, setSearchTerm] = useState("");
   const { searchResults, selectedTask } = useSelector((state) => state.tasks);
   const { isAuthenticated } = useSelector((state) => state.user);
@@ -18,7 +18,6 @@ function SearchField() {
  
   const {
     handleIsCreate,
-    handleCloseDetail,
     handleTaskClick,
     handleCompletedTask,
     handleRemovedTask,
@@ -42,6 +41,13 @@ function SearchField() {
     debounceSearch(value);
   };
 
+  const handleSearchTaskClick = (task) => {
+    handleSearchToggle();
+    setTimeout(() => {
+      handleTaskClick(task);
+    },100)
+  }
+
   useEffect(() => {
     return () => {
       debounceSearch.cancel();
@@ -63,6 +69,9 @@ function SearchField() {
         className="w-auto rounded-xl  p-2 pl-10 text-xl"
       />
       <FontAwesomeIcon icon={faSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg" />
+      <button className="absolute top-5 transform -translate-y-1/2 right-3 ">
+       <span onClick={handleSearchToggle} className="text-gray-400 text-2xl">x</span>
+      </button>
       <div>
         {Array.isArray(searchResults) && searchResults.length > 0 && (
           <div className="absolute top-full -right-5 mt-2 w-[300px] p-0.5 bg-purpleNormal  shadow-lg rounded-xl z-50">
@@ -72,6 +81,7 @@ function SearchField() {
                 handleCompletedTask={handleCompletedTask}
                 handleRemovedTask={handleRemovedTask}
                 handleTaskClick={handleTaskClick}
+                handleSearchTaskClick={handleSearchTaskClick}
                 handleIsCreate={handleIsCreate}
                 selectedTask={selectedTask}
               />
@@ -83,15 +93,7 @@ function SearchField() {
             No tasks found
           </div>
         )}
-        {selectedTask && (
-          <div className="popup-overlay z-50">
-            <div className="popup-content">
-              <Suspense fallback={<></>}>
-                <TaskDetail onClose={handleCloseDetail} />
-              </Suspense>
-            </div>
-          </div>
-        )}
+       
       </div>
     </div>
     ) : null }

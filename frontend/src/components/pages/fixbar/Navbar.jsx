@@ -6,7 +6,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import ReactDOM from "react-dom";
 import NotificationForm from "../ui/NotificationForm";
 import usePopup from "../hooks/usePopup";
-import AuthTabs from "../ui/AuthTabs";
+import AuthTabs from "../authen/AuthTabs";
 import FadeUpContainer from "../animation/FadeUpContainer";
 function Navbar() {
 

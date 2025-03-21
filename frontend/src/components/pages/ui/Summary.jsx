@@ -81,11 +81,12 @@ function Summary() {
   const dispatch = useDispatch();
   const { summary, summaryCategory } = useSelector((state) => state.summary);
   const { isSummaryUpdated } = useSelector((state) => state.tasks);
+  const { userData } = useSelector((state) => state.user)
 
   useEffect(() => {
     dispatch(fetchSummary());
     dispatch(fetchSummaryByCategory());
-  }, [dispatch, isSummaryUpdated]);
+  }, [dispatch, isSummaryUpdated, userData]);
 
   return (
     <div className="md:hidden lg:grid mr-10 bg-purpleSidebar border-2 border-purpleNormal rounded-3xl  px-6 grid lg:h-[330px] md:h-auto ">

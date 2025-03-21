@@ -12,10 +12,7 @@ import usePopup from "../hooks/usePopup";
 
 function StreakField() {
   const dispatch = useDispatch();
-  const { isSidebarPinned } = useSelector((state) => state.tasks);
   const { userData, isAuthenticated } = useSelector((state) => state.user);
-  const { instruction } = useSelector((state) => state.summary);
-  const { handleIsInstruct, popupInstructRef } = usePopup();
   const [streakPopup, setStreakPopup] = useState(false);
   const [lastPopupDate, setLastPopupDate] = useState(
     localStorage.getItem("lastPopupDate")
@@ -67,7 +64,7 @@ function StreakField() {
   const streak = userData.currentStreak;
   console.log('already completed',userData.alreadyCompletedToday);
   return (
-    <div className="flex" onClick={handleIsInstruct}>
+    <div className="flex">
       {isAuthenticated ? (
         <>
           <div className="hidden relative xl:flex items-center justify-center bg-gradient-to-b from-fuchsia-500 to-indigo-500 border-4 border-fuchsia-400 rounded-3xl pl-4  mr-3 w-full">
@@ -141,15 +138,6 @@ function StreakField() {
                 document.body
               )}
 
-            {instruction &&
-              ReactDOM.createPortal(
-                <div className="popup-overlay">
-                  <div className="popup-content" ref={popupInstructRef}>
-                    <InstructionPopup onClose={handleIsInstruct} />
-                  </div>
-                </div>,
-                document.body
-              )}
           </div>
         </>
       ) : (
