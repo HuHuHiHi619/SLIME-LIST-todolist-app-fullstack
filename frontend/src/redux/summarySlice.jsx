@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   getSummaryTaskByCategory,
   getSummaryTask,
-  summaryNotification,
 } from "../functions/summary";
 
 const initialState = {
@@ -40,18 +39,7 @@ export const fetchSummaryByCategory = createAsyncThunk(
   }
 );
 
-export const fetchNotification = createAsyncThunk(
-  "/summary/fetchNotification",
-  async () => {
-    try {
-      const response = await summaryNotification();
-      return response || [];
-    } catch (error) {
-      console.error("Error fetching notification:", error);
-      throw error;
-    }
-  }
-);
+
 
 const summarySlice = createSlice({
   name: "summary",
@@ -94,18 +82,7 @@ const summarySlice = createSlice({
         state.error = action.error.message;
         state.summaryCategory = [];
       })
-      .addCase(fetchNotification.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchNotification.fulfilled, (state, action) => {
-        state.notification = action.payload;
-        state.loading = false;
-      })
-      .addCase(fetchNotification.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-        state.notification = [];
-      });
+     
   },
 });
 export const { clearSummaryState , toggleInstructPopup} = summarySlice.actions;

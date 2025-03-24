@@ -82,7 +82,7 @@ exports.getTask = async (req, res) => {
           .populate("status")
           .lean()
           .exec();
-        console.log("group by status", tasksWithStatus);
+       
         const groupedTasksByStatus = tasksWithStatus.reduce((acc, task) => {
           if (task.status) {
             const taskStatus = task.status;
@@ -499,7 +499,7 @@ exports.updatedTask = async (req, res) => {
     // นำค่าที่มีอยู่มาใช้ถ้าไม่มีการส่งค่ามาใหม่
     const finalUpdateData = {
       title: updateData.title || existingTask.title,
-      note: updateData.note || existingTask.note,
+      note:  updateData.note,
       startDate: updateData.startDate
         ? new Date(updateData.startDate)
         : existingTask.startDate,
@@ -514,7 +514,7 @@ exports.updatedTask = async (req, res) => {
       progress: updateData.progress || existingTask.progress,
       status: updateData.status || existingTask.status,
     };
-    console.log("final updateData", finalUpdateData);
+    console.log("final updateData.note", finalUpdateData.note);
 
     // ตรวจสอบและจัดการข้อมูล category
     if (finalUpdateData.category) {

@@ -12,7 +12,7 @@ function ProgressField({
     <div>
     {steps.length > 0 ? (
       <div>
-        <p className="text-2xl text-white mb-2">Progress steps</p>
+        <p className="text-2xl text-white mb-2 inline-block">Progress steps </p>
         <ul className="flex flex-col max-h-[100px] md:max-h-[140px] gap-2 overflow-y-scroll scrollbar-custom overflow-x-hidden ">
           {steps.map((step, index) => (
             <li

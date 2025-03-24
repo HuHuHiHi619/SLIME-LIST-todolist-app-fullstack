@@ -20,6 +20,8 @@ import {
   fetchSummary,
   fetchSummaryByCategory,
 } from "../../../redux/summarySlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 
 function CreateTask({ onClose }) {
@@ -125,12 +127,7 @@ function CreateTask({ onClose }) {
             <div className="flex justify-between items-center">
             <h1 className="text-white tracking-wide">CREATE A TASK</h1>
             <Tooltip description={"Close"} position="top">
-                <button
-                  onClick={onClose}
-                  className="text-xl text-gray-500 p-2 hover:text-red-600 transition-all rounded-full duration-100 ease-in "
-                >
-                  X
-                </button>
+                <FontAwesomeIcon icon={faXmark} onClick={onClose} className="delete-step text-xl text-gray-400" />
               </Tooltip>
             </div>
            

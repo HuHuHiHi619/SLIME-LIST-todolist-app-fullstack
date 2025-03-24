@@ -4,6 +4,9 @@ import { useDispatch } from "react-redux";
 import { fetchUserData, loginUser } from "../../../redux/userSlice";
 import InputField from "../ui/inputField";
 import usePopup from "../hooks/usePopup";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function AuthForm({ isRegister, setActiveTab }) {
   const [user, setUser] = useState({ username: "", password: "" });
@@ -26,11 +29,11 @@ function AuthForm({ isRegister, setActiveTab }) {
     try {
       if (isRegister) {
         await register(user);
-        setActiveTab("login"); 
+        setActiveTab("login");
       } else {
         const response = await dispatch(loginUser(user)).unwrap();
         if (response.tokens?.accessToken) {
-        await  dispatch(fetchUserData(response.user.id)).unwrap();
+          await dispatch(fetchUserData(response.user.id)).unwrap();
         } else {
           throw new Error("No access token found.");
         }
@@ -42,19 +45,18 @@ function AuthForm({ isRegister, setActiveTab }) {
     }
   };
 
- console.log('isregister',isRegister)
+  console.log("isregister", isRegister);
 
   return (
     <div className="relative border border-purpleNormal bg-purpleSidebar p-10 rounded-2xl shadow-lg w-full max-w-lg ">
       <h1 className="text-xl md:text-3xl text-white my-4 text-center">
         {isRegister ? "SIGN UP" : "SIGN IN"}
       </h1>
-      <button
+      <FontAwesomeIcon
+        icon={faXmark}
         onClick={handleToggleRegister}
-        className="absolute top-3 right-5 text-gray-400 hover:text-deadlineTheme text-xl transition-all duration-300"
-      >
-        X
-      </button>
+        className="absolute delete-step text-xl text-gray-400 top-3 right-3"
+      />
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-4 grid">
         <InputField

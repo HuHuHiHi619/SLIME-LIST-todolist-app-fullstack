@@ -4,7 +4,7 @@ const { type } = require("os");
 const TasksSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true, maxLength: 100 },
-    note: { type: String, trim: true, maxLength: 1000 },
+    note: { type: String, trim: true, maxLength: 1000 ,default: "" },
     startDate: { type: Date, default: Date.now,required:true },
     deadline: {type: Date},
     category: 
