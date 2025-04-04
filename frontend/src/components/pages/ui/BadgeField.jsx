@@ -20,13 +20,13 @@ function BadgeField() {
     }
   }, [dispatch, userData.id]);
   return (
-    <div className="bg-purpleSidebar border-2 border-purpleNormal mr-10 justify-start items-center rounded-3xl  ">
+    <div className="bg-purpleSidebar border-2 border-purpleNormal  justify-start items-center rounded-3xl  ">
       {isAuthenticated ? (
         
           <div className="bg-purpleGradient p-1 rounded-2xl ">
             <div className="bg-purpleSidebar rounded-xl p-4 px-10 w-full flex justify-center">
-              <div className=" w-32 h-32 ">
-                <img src={badgeImages[userData.currentBadge] || "./images/Iron-badge.png"} alt="" />
+              <div className="max-w-[128px] w-full aspect-square ">
+                <img  className="w-full h-full object-contain" src={badgeImages[userData.currentBadge] || "./images/Iron-badge.png"} alt="" />
               </div>
               <div className="grid items-center ">
                 <p className="text-[50px]  px-10  text-white">{userData.currentBadge.toUpperCase()}</p>

@@ -12,7 +12,7 @@ function SearchTaskList({
 }) {
   const { tasks } = useSelector((state) => state.tasks);
   return (
-    <div className="   border-purpleNormal rounded-3xl pl-4 pt-4 pb-4 pr-2  ">
+    <div className="   border-purpleNormal rounded-3xl pl-4 pt-4 pb-4 pr-2   ">
       <div>
         <ul className="flex flex-col gap-2 overflow-y-scroll scrollbar-custom max-h-[600px]  pr-2">
           <h1 className="text-2xl text-white">Result </h1>

@@ -1,31 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { register } from "../../../functions/authen";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchUserData, loginUser } from "../../../redux/userSlice";
 import InputField from "../ui/inputField";
 import usePopup from "../hooks/usePopup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import SlimePortal from "../animation/SlimePortal";
+
+
 
 function AuthForm({ isRegister, setActiveTab }) {
   const [user, setUser] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const { handleToggleRegister } = usePopup();
+  const { loading } = useSelector((state) => state.user);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
+    console.log("submit")
     e.preventDefault();
+    if (loading || isSubmitting) return;
+    setError("");
     if (!user.username || !user.password) {
       setError("Username and password are required.");
+      console.error("Username and password are required")
       return;
     }
     setError("");
-
+    setIsSubmitting(true);
     try {
       if (isRegister) {
         await register(user);
@@ -34,7 +42,9 @@ function AuthForm({ isRegister, setActiveTab }) {
         const response = await dispatch(loginUser(user)).unwrap();
         if (response.tokens?.accessToken) {
           await dispatch(fetchUserData(response.user.id)).unwrap();
+          console.log("login completed")
         } else {
+          console.error("Username and password are required")
           throw new Error("No access token found.");
         }
       }
@@ -42,13 +52,20 @@ function AuthForm({ isRegister, setActiveTab }) {
       setError(
         isRegister ? "Registration failed." : "Login failed. Please try again."
       );
+      console.error(err)
+    } finally {
+      setIsSubmitting(false)
     }
   };
 
-  console.log("isregister", isRegister);
-
   return (
     <div className="relative border border-purpleNormal bg-purpleSidebar p-10 rounded-2xl shadow-lg w-full max-w-lg ">
+      {loading && (
+        <div className="popup-overlay">
+          <SlimePortal  />
+        </div>
+      )}
+
       <h1 className="text-xl md:text-3xl text-white my-4 text-center">
         {isRegister ? "SIGN UP" : "SIGN IN"}
       </h1>

@@ -1,28 +1,28 @@
-import { React,  useEffect } from "react";
-import {  useSelector } from "react-redux";
+import { React, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import ReactDOM from "react-dom";
 import NotificationForm from "../ui/NotificationForm";
 import usePopup from "../hooks/usePopup";
 import AuthTabs from "../authen/AuthTabs";
 import FadeUpContainer from "../animation/FadeUpContainer";
-function Navbar() {
 
-  const { isAuthenticated, loading  } = useSelector(
+function Navbar() {
+  const { isAuthenticated, loading, isRegisterPopup } = useSelector(
     (state) => state.user
   );
-  const {  isRegisterPopup } = useSelector((state) => state.tasks);
-  const { handleToggleRegister, handleToggleSidebar , popupRegisterRef } = usePopup();
+  const { handleToggleRegister, handleToggleSidebar, popupRegisterRef } = usePopup();
 
   useEffect(() => {
     console.log("Authentication status:", isAuthenticated);
-  }, [isAuthenticated]);
+    console.log("Loading status:", loading);
+    console.log("Register popup status:", isRegisterPopup);
+  }, [isAuthenticated, loading, isRegisterPopup]);
 
-  if (loading) {
-    return null;
-  }
+  // ไม่ return null เมื่อกำลัง loading เพื่อให้ยังแสดง UI
+  // แต่เราจะแสดง loading spinner ถ้าจำเป็น
 
   return (
     <>
@@ -44,20 +44,26 @@ function Navbar() {
           <div className="flex mx-4 gap-4 items-center">
             <button
               className="register"
-              onClick={() =>handleToggleRegister()}
+              onClick={() => !loading && handleToggleRegister()}
+              disabled={loading}
             >
-              Sign up
+              {loading ? (
+                <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
+              ) : (
+                "Sign up"
+              )}
             </button>
           </div>
         )}
 
+        {/* แสดงป๊อปอัพเสมอถ้า isRegisterPopup เป็น true โดยไม่สนใจ loading */}
         {!isAuthenticated && 
           isRegisterPopup &&
           ReactDOM.createPortal(
             <div className="popup-overlay ">
               <div className="popup-content" >
                 <FadeUpContainer direction="top">
-                  <AuthTabs ref={ popupRegisterRef} />
+                  <AuthTabs ref={popupRegisterRef} />
                 </FadeUpContainer>
               </div>
             </div>,

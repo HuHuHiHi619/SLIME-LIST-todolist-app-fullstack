@@ -10,23 +10,27 @@ export default {
     extend: {
       keyframes: { 
         "fade-out": {
-          "0%": { opacity: "1" },
+          "0%": { opacity: "1", transform: "translateX(0)" },
+          "50%": { opacity: "0.5", transform: "translateX(15px)" },
           "100%": { opacity: "0", transform: "translateX(30px)" },
         },
         "fade-to-green": {
-          "0%": { opacity: "1" },
-          "100%": { opacity: "0", transform: "translateX(30px)" },
+          "0%": { opacity: "0", transform: "translateX(-30px)" },
+          "50%": { opacity: "0.5", transform: "translateX(-15px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
         },
         "fade-from-green": {
-          "0%": { opacity: "1" },
-          "100%": { opacity: "0", transform: "translateX(30px)" },
+          "0%": { opacity: "0", transform: "translateX(-30px)" },
+          "50%": { opacity: "0.5", transform: "translateX(-15px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
         },
       },
       animation: {
-        "fade-out": "fade-out 0.2s ease-out forwards",
-        "fade-to-green": "fade-to-green 0.2s ease-out forwards",
-        "fade-from-green": "fade-from-green 0.2s ease-out forwards",
+        "fade-out": "fade-out 0.3s ease-in-out forwards",
+        "fade-to-green": "fade-to-green 0.3s ease-in-out forwards",
+        "fade-from-green": "fade-from-green 0.3s ease-in-out forwards",
       },
+      
       
       colors: {
         categoryTheme: "#FFD595",

@@ -35,6 +35,7 @@ const defaultState = {
   isRefreshing: false,
   authError: null,
   isAuthenticated: false,
+  isRegisterPopup: false
 };
 
 const loadInitialState = () => {
@@ -79,6 +80,7 @@ const loadInitialState = () => {
       isRefreshing: false,
       authError: null,
       isAuthenticated: persistedAuth && !!accessToken,
+      isRegisterPopup: false
     };
   } catch (error) {
     console.error("Error loading initial state:", error);
@@ -88,12 +90,28 @@ const loadInitialState = () => {
 
 const initialState = loadInitialState();
 
+//delay
+const delay = (ms) => new Promise(resolve => setTimeout(resolve,ms))
+const minimumLoading = async (promise, minTimeMs = 2500) => {
+  const startTime = Date.now();
+  try {
+    const result = await promise;
+    const remainingTime = minTimeMs - (Date.now() - startTime);
+    if (remainingTime > 0) {
+      await delay(remainingTime);
+    }
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Thunks
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userInput, { rejectWithValue }) => {
     try {
-      const response = await userLogin(userInput);
+      const response = await minimumLoading(userLogin(userInput));
       Cookies.set("isAuthenticated", "true");
       Cookies.set("userId", response.user.id);
       Cookies.set("username", response.user.username);
@@ -170,7 +188,9 @@ const userSlice = createSlice({
     setAuthError: (state, action) => {
       state.authError = action.payload;
     },
-   
+    toggleRegisterPopup(state) {
+      state.isRegisterPopup = !state.isRegisterPopup;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -195,6 +215,7 @@ const userSlice = createSlice({
         state.tokens = action.payload.tokens;
         state.isAuthenticated = true;
         state.authError = null;
+        state.isRegisterPopup = false;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -238,5 +259,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { restoreState, updateTokens, setAuthError,  } = userSlice.actions;
+export const { restoreState, updateTokens, setAuthError, toggleRegisterPopup } = userSlice.actions;
 export default userSlice.reducer;

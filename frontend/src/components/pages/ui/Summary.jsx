@@ -11,7 +11,9 @@ import "react-circular-progressbar/dist/styles.css";
 
 // Custom Ring Component
 const Ring = ({ size }) => (
-  <motion.div className={`rounded-full border-4 border-emerald-500 drop-shadow-[0_0_10px_rgba(39,245,124,1)] ${size}`} />
+  <motion.div
+    className={`rounded-full border-4 border-emerald-500 drop-shadow-[0_0_10px_rgba(39,245,124,1)] ${size}`}
+  />
 );
 
 const GradientCircularProgressbar = ({ percentage }) => {
@@ -81,7 +83,7 @@ function Summary() {
   const dispatch = useDispatch();
   const { summary, summaryCategory } = useSelector((state) => state.summary);
   const { isSummaryUpdated } = useSelector((state) => state.tasks);
-  const { userData } = useSelector((state) => state.user)
+  const { userData } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchSummary());
@@ -89,7 +91,7 @@ function Summary() {
   }, [dispatch, isSummaryUpdated, userData]);
 
   return (
-    <div className="md:hidden lg:grid mr-10 bg-purpleSidebar border-2 border-purpleNormal rounded-3xl  px-6 grid lg:h-[330px] md:h-auto ">
+    <div className="md:hidden lg:grid bg-purpleSidebar border-2 border-purpleNormal rounded-3xl  px-6 grid lg:h-[330px] md:h-auto ">
       {!Array.isArray(summary) ||
       summary.length === 0 ||
       !Array.isArray(summaryCategory) ||
@@ -100,35 +102,35 @@ function Summary() {
           </p>
         </div>
       ) : (
-        <div className="flex">
-          {summary.map((item, index) => (
-            <div key={index} className=" md:flex gap-4 items-center ">
-              
+        <div className="flex flex-1 items-center">
+          <div>
+            {summary.map((item, index) => (
+              <div key={index} className="flex gap-4 items-center">
                 <div className="ml-4">
                   <GradientCircularProgressbar
                     percentage={item.completedRate || 0}
                   />
                 </div>
-             
 
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-white p-2 text-xl leading-normal"
-              >
-                <div className="text-2xl pb-1">
-                  ALL TASKS : {item.completedTasks} / {item.totalTasks}
-                </div>
-                <div className="bg-purpleGradient bg-clip-text text-transparent ">
-                  <p>KEEP GOING YOU</p>
-                  <p>CAN DO IT!</p>
-                </div>
-              </motion.div>
-            </div>
-          ))}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-white p-2 text-xl leading-normal"
+                >
+                  <div className="text-2xl pb-1">
+                    ALL TASKS : {item.completedTasks} / {item.totalTasks}
+                  </div>
+                  <div className="bg-purpleGradient bg-clip-text text-transparent ">
+                    <p>KEEP GOING YOU</p>
+                    <p>CAN DO IT!</p>
+                  </div>
+                </motion.div>
+              </div>
+            ))}
+          </div>
 
-          <div className="hidden md:block xl:flex flex-col gap-4 flex-1 justify-center ml-4">
+          <div className=" hidden min-[1400px]:flex flex-col gap-4 flex-1 justify-center ml-4">
             {summaryCategory.map((catItem, catIndex) => (
               <div
                 key={catIndex}
@@ -138,9 +140,7 @@ function Summary() {
                   <h3>{catItem.category || "No category"}</h3>
                   <h3>{Math.round(catItem.completedRate)}%</h3>
                 </div>
-                <ProgressBar
-                  value={catItem.completedRate}
-                />
+                <ProgressBar value={catItem.completedRate} />
               </div>
             ))}
           </div>

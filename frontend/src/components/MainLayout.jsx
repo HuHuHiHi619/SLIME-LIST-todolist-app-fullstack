@@ -8,7 +8,7 @@ function MainLayout() {
     <section id="mainLayout">
       <div className="grid grid-col ">
         <Navbar />
-        <Suspense fallback= {<div>Loading</div>}>
+        <Suspense fallback= {null}>
           <Sidebar />
         </Suspense>
 

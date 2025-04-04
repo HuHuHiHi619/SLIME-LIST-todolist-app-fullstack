@@ -27,9 +27,7 @@ const NotificationForm = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        (!menuRef.current && menuRef.current.contains(event.target)) 
-      ) {
+      if (!menuRef.current && menuRef.current.contains(event.target)) {
         setIsMenuOpen(false);
         setIsSearchOpen(false);
       }
@@ -43,13 +41,11 @@ const NotificationForm = () => {
 
   const handleSearchToggle = () => {
     setIsSearchOpen((prev) => !prev);
-
   };
 
- 
   return (
     <div className=" p-2 m-0 md:mr-8 z-50">
-      <div className=" hidden md:flex relative  items-center" ref={menuRef}>
+      <div className=" flex relative  items-center" ref={menuRef}>
         {/* Main Menu Icon and Click Area */}
         <div className="relative flex items-center">
           <Tooltip description={"Menu"} position="bottom">
@@ -61,11 +57,11 @@ const NotificationForm = () => {
                   : ""
               }`}
               onClick={() => {
-                if(isMenuOpen){
+                if (isMenuOpen) {
                   setIsSearchOpen(false);
                 }
-                setIsMenuOpen((prev) => !prev)}
-              }
+                setIsMenuOpen((prev) => !prev);
+              }}
             >
               <FontAwesomeIcon
                 icon={faSquare}
@@ -75,53 +71,51 @@ const NotificationForm = () => {
           </Tooltip>
           {/* Sliding Icons Container */}
           <AnimatePresence>
-          {isMenuOpen && (
-            <div className="absolute right-12 top-5 flex -translate-y-1/2  items-center gap-2 w-auto">
-              <FadeUpContainer direction="left">
-                <div className=" flex gap-2 relative">
-                  {isSearchOpen ? (
-                    <div
-                      ref={searchRef}
-                      className="animate-fadeIn absolute  top-0 right-24"
-                    >
-                      <SearchField handleSearchToggle={handleSearchToggle}/>
-                    </div>
-                  ) : (
+            {isMenuOpen && (
+              <div className="absolute right-12 top-5 flex -translate-y-1/2  items-center gap-2 w-auto">
+                <FadeUpContainer direction="left">
+                  <div className=" flex gap-2 relative">
+                    <div ref={searchRef} className="absolute  top-0 right-24">
                     <Tooltip description={"Search"} position="bottom">
+                      <SearchField
+                        handleSearchToggle={handleSearchToggle}
+                        isSearchOpen={isSearchOpen}
+                      />
+                       </Tooltip>
+                    </div>
+
+                    <Tooltip description={"Instructions"} position="bottom">
                       <button
                         className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
-                        onClick={handleSearchToggle}
+                        onClick={() => handleIsInstruct()}
                       >
-                        <FontAwesomeIcon icon={faSearch} className="h-6 w-6" />
+                        <FontAwesomeIcon
+                          icon={faQuestion}
+                          className="h-6 w-6"
+                        />
                       </button>
                     </Tooltip>
-                  )}
-                  
-                  <Tooltip description={"Instructions"} position="bottom">
-                    <button
-                      className="p-2 text-gray-400 hover:text-purpleBorder transition-colors duration-200"
-                      onClick={() => handleIsInstruct()}
-                    >
-                      <FontAwesomeIcon icon={faQuestion} className="h-6 w-6" />
-                    </button>
-                  </Tooltip>
-                  <Tooltip description={"Logout"} position="bottom">
-                    <Logout />
-                  </Tooltip>
-                </div>
+                    <Tooltip description={"Logout"} position="bottom">
+                      <Logout />
+                    </Tooltip>
+                  </div>
 
-                {instruction &&
-                  ReactDOM.createPortal(
-                    <div className="popup-overlay">
-                      <div className="popup-content" ref={popupInstructRef} onClick={e => e.stopPropagation()}>
-                        <InstructionPopup onClose={handleIsInstruct} />
-                      </div>
-                    </div>,
-                    document.body
-                  )}
-              </FadeUpContainer>
-            </div>
-          )}
+                  {instruction &&
+                    ReactDOM.createPortal(
+                      <div className="popup-overlay">
+                        <div
+                          className="popup-content"
+                          ref={popupInstructRef}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <InstructionPopup onClose={handleIsInstruct} />
+                        </div>
+                      </div>,
+                      document.body
+                    )}
+                </FadeUpContainer>
+              </div>
+            )}
           </AnimatePresence>
         </div>
       </div>

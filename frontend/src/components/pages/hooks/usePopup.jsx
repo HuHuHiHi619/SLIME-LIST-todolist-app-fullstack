@@ -9,7 +9,6 @@ import {
   togglePopup,
   setHover,
   toggleSidebarPinned,
-  toggleRegisterPopup,
   removedCategory,
   removeCategories,
   removedAllTask,
@@ -19,7 +18,7 @@ import {
   fetchSummary,
   fetchSummaryByCategory,
 } from "../../../redux/summarySlice";
-import { fetchUserData } from "../../../redux/userSlice";
+import { fetchUserData, toggleRegisterPopup } from "../../../redux/userSlice";
 
 function usePopup() {
   const dispatch = useDispatch();
@@ -28,11 +27,8 @@ function usePopup() {
   const popupInstructRef = useRef(null);
   const sidebarRef = useRef(null);
   const popupRegisterRef = useRef(null);
-  const { isPopup, isRegisterPopup, activeMenu } = useSelector(
-    (state) => state.tasks
-  );
+  const { isPopup, activeMenu } = useSelector((state) => state.tasks);
   const { tokens } = useSelector((state) => state.user);
-  const { instruction } = useSelector((state) => state.summary);
 
   const handleIsCreate = async () => {
     dispatch(toggleCreatePopup());
@@ -77,13 +73,13 @@ function usePopup() {
   const handleCompletedTask = async (task) => {
     try {
       await dispatch(completedTask(task._id)).unwrap();
-
       setTimeout(async () => {
         await dispatch(fetchSummary()).unwrap();
         if (tokens.accessToken) {
           await dispatch(fetchUserData()).unwrap();
         }
       }, 100);
+     
     } catch (error) {
       console.error("Error completing task:", error);
     }
@@ -142,14 +138,14 @@ function usePopup() {
         !popupEnRef.current.contains(e.target)
       ) {
         dispatch(togglePopup(""));
-      } 
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isPopup,  dispatch]);
+  }, [isPopup, dispatch]);
 
   return {
     handleIsCreate,

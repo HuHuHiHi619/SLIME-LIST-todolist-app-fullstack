@@ -9,10 +9,12 @@ const connectDb = require('./Config/db')
 const app = express();
 const path = require('path')
 const { checkOverdueTasks, updateOverdueTasks, resetDailyStreakStatus } = require('./job/cronJob');
+const mongoSanitize = require('express-mongo-sanitize')
 
 const imagesPath = path.join(__dirname, '../images/badges');
 
 connectDb();
+app.use(mongoSanitize())
 app.use(morgan('dev'));
 app.use(compression({
   threshold: 0, 

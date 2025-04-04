@@ -3,8 +3,14 @@ const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema(
   {
-    username: { type: String, required: true, unique: true, trim: true },
-    password: { type: String, required: true },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      match: [/^\S+$/, "Username cannot contain spaces"],
+    },
+    password: { type: String, required: true, select: false },
     currentStreak: { type: Number, default: 0 },
     bestStreak: { type: Number, default: 0 },
     alreadyCompletedToday: { type: Boolean, default: false },
@@ -21,16 +27,18 @@ const UserSchema = new mongoose.Schema(
       type: String,
     },
     lastCompleted: { type: Date },
-    notifications: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Notification",
-    },
+    notifications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification",
+      },
+    ],
   },
   { timestamps: true }
 );
 // hash password ไม่ต้อง hash ซ้ำใน controller
 UserSchema.pre("save", async function (next) {
-  if (this.isModified("password") && this.isNew) {
+  if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
   }
   next();

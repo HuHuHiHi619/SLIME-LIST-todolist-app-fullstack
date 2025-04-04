@@ -47,7 +47,6 @@ const initialState = {
   isPopup: false,
   isHover: null,
   isSidebarPinned: false,
-  isRegisterPopup : false,
   popupMode: "",
   loading: false,
   error: null,
@@ -119,12 +118,12 @@ export const updatedTask = createAsyncThunk(
     const verifyTask = {
       ...taskData,
       category: taskData.category?._id || taskData.category,
-     // tag: taskData.tag?._id || taskData.tag,
+      // tag: taskData.tag?._id || taskData.tag,
     };
-    console.log("verify task", verifyTask)
+    console.log("verify task", verifyTask);
 
     const response = await updateTask(taskId, verifyTask);
-    console.log("update response", response)
+    console.log("update response", response);
     return response;
   }
 );
@@ -141,7 +140,7 @@ export const completedTask = createAsyncThunk(
   "task/completedTask",
   async (taskId) => {
     const response = await completeTask(taskId);
-    
+
     return response;
   }
 );
@@ -170,8 +169,6 @@ export const removedCategory = createAsyncThunk(
   }
 );
 
-
-
 // reducer
 const taskSlice = createSlice({
   name: "task",
@@ -194,7 +191,7 @@ const taskSlice = createSlice({
       };
       console.log("Updated formTask:", state.formTask);
     },
-    setStreakStatus(state,action) {
+    setStreakStatus(state, action) {
       state.streakStatus = action.payload;
       localStorage.setItem("streakStatus", JSON.stringify(action.payload));
     },
@@ -222,7 +219,7 @@ const taskSlice = createSlice({
         (category) => category._id !== categoryId
       );
     },
-   /* setTags(state, action) {
+    /* setTags(state, action) {
       state.tags = action.payload;
     },*/
     removeTags(state, action) {
@@ -249,9 +246,6 @@ const taskSlice = createSlice({
 
     toggleSidebarPinned(state) {
       state.isSidebarPinned = !state.isSidebarPinned;
-    },
-    toggleRegisterPopup(state) {
-      state.isRegisterPopup = !state.isRegisterPopup;
     },
 
     resetFormTask(state) {
@@ -337,7 +331,7 @@ const taskSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-     /* .addCase(fetchTags.pending, (state) => {
+      /* .addCase(fetchTags.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchTags.fulfilled, (state, action) => {
@@ -363,7 +357,7 @@ const taskSlice = createSlice({
       })
       .addCase(updatedTask.fulfilled, (state, action) => {
         const updatedTask = action.payload;
-        console.log("redux updatetask payload", updatedTask)
+        console.log("redux updatetask payload", updatedTask);
         state.tasks = state.tasks.map((task) => {
           if (task._id === updatedTask._id) {
             return {
@@ -382,7 +376,7 @@ const taskSlice = createSlice({
             ...state.selectedTask,
             ...updatedTask,
             category: updatedTask.category,
-           // tag: updatedTask.tag,
+            // tag: updatedTask.tag,
           };
         }
         state.lastStateUpdate = new Date().toISOString();
@@ -416,20 +410,24 @@ const taskSlice = createSlice({
 
       .addCase(completedTask.fulfilled, (state, action) => {
         const completedTaskId = action.payload._id;
-        const updatedTask = action.payload;
+        const updatedTask = action.payload.updatedTask || action.payload;
+        const newTaskData = {
+          ...updatedTask,
+          lastUpdated: new Date().toISOString(),
+        };
         state.tasks = state.tasks.map((task) =>
-          task._id === completedTaskId
-            ? {
-                ...task,
-                ...updatedTask,
-                lastUpdated: new Date().toISOString(),
-              }
-            : task
+          task._id === completedTaskId ? newTaskData : task
         );
+        state.searchResults = state.searchResults.map((task) =>
+          task._id === completedTaskId ? newTaskData : task
+        );
+
         if (action.payload.user) {
           state.streakStatus = action.payload.user;
-          localStorage.setItem('streakStatus', JSON.stringify(action.payload.user))
-          console.log("act pay user",action.payload.user)
+          localStorage.setItem(
+            "streakStatus",
+            JSON.stringify(action.payload.user)
+          );
         }
 
         if (state.selectedTask && state.selectedTask._id === completedTaskId) {
@@ -450,7 +448,9 @@ const taskSlice = createSlice({
           return;
         }
         state.tasks = state.tasks.filter((task) => task._id !== removedTaskId);
-        state.searchResults = state.searchResults.filter((task) => task._id !== removedTaskId)
+        state.searchResults = state.searchResults.filter(
+          (task) => task._id !== removedTaskId
+        );
         state.isSummaryUpdated = true;
         state.lastStateUpdate = new Date().toISOString();
       })
@@ -468,7 +468,7 @@ const taskSlice = createSlice({
 export const {
   setFormTask,
   setCategories,
- // setTags,
+  // setTags,
   setSelectedTask,
   setStreakStatus,
   toggleCreatePopup,
@@ -483,6 +483,5 @@ export const {
   setHover,
   togglePopup,
   toggleSidebarPinned,
-  toggleRegisterPopup,
 } = taskSlice.actions;
 export default taskSlice.reducer;

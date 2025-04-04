@@ -8,16 +8,11 @@ import SearchField from "../ui/SearchField.jsx";
 
 function Home() {
   return (
-    <div id="home">
-      <div className="md:hidden grid justify-center mb-4">
-        <SearchField />
-      </div>
+    <div id="home" className="flex flex-col lg:flex-row w-full h-full">
+     
       <TaskForm filter={{ status: "pending" }} />
 
-     
-
-      <div className="hidden  lg:pl-14 lg:mt-6 lg:flex lg:flex-col lg:gap-6">
-        
+      <div className="hidden lg:pl-10 lg:mt-6 lg:flex lg:flex-col lg:gap-6 mr-10">
         <FadeUpContainer direction="up" delay={0.2}>
           <StreakField />
         </FadeUpContainer>
