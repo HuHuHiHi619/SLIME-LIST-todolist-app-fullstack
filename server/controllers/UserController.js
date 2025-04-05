@@ -76,7 +76,12 @@ exports.login = async (req, res) => {
     }
     const { username, password } = req.body;
     console.log("Login attempt for username:", username);
-    console.log("Password provided (length):", password ? password.length : 'none');
+    console.log(
+      "Password provided (length):",
+      password ? password.length : "none"
+    );
+    console.log(req.body.username);
+    console.log(req.body.password);
     const user = await User.findOne({ username });
     console.log("User found:", user ? "Yes" : "No");
     if (!user) {
@@ -199,8 +204,8 @@ exports.refreshedToken = async (req, res) => {
 exports.getUserData = async (req, res) => {
   try {
     // Log เพื่อดูสถานะ req.user
-    console.log('Original req.user:', req.user);
-    console.log('Authorization header:', req.headers.authorization);
+    console.log("Original req.user:", req.user);
+    console.log("Authorization header:", req.headers.authorization);
 
     // วิธีหา userId ที่ปลอดภัย
     let userId = null;
@@ -208,16 +213,16 @@ exports.getUserData = async (req, res) => {
     // กรณีที่ 1: req.user มีข้อมูลปกติ
     if (req.user && req.user.id) {
       userId = req.user.id;
-    } 
+    }
     // กรณีที่ 2: ดึง userId จาก token โดยตรง
     else if (req.headers.authorization) {
-      const token = req.headers.authorization.split(' ')[1];
+      const token = req.headers.authorization.split(" ")[1];
       try {
         // ถอดรหัส token เพื่อหา userId
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         userId = decoded.userId;
       } catch (tokenError) {
-        console.error('Token verification error:', tokenError);
+        console.error("Token verification error:", tokenError);
         return res.status(401).json({ error: "Invalid token" });
       }
     }
@@ -229,7 +234,7 @@ exports.getUserData = async (req, res) => {
 
     // ค้นหาข้อมูลผู้ใช้
     const userData = await User.findById(userId).select("-password");
-    
+
     if (!userData) {
       return res.status(404).json({ error: "User not found" });
     }
