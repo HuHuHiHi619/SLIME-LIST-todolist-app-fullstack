@@ -195,39 +195,51 @@ input[type="checkbox"]:hover {
 }
 
 .elegant-datepicker .react-datepicker__current-month {
-  color: white;
+  color: rgb(240, 240, 240);
 }
 
 .elegant-datepicker .react-datepicker__day-name {
-  color: #6c757d;
+  color: #fefefe;
   font-weight: 600;
   padding-top: 5px;
 }
 
-.elegant-datepicker .react-datepicker__day  {
+/* ทำให้ทุกวันมีรูปร่างเป็นวงกลม */
+.elegant-datepicker .react-datepicker__day {
   border-radius: 50%;
   text-align: center;
-  color: #ffffff;
+  color: #f7f7f7;
   transition: all 0.2s ease;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  margin: 2px;
 }
 
-.elegant-datepicker .react-datepicker__day :hover {
-  background-color: theme('colors.purpleBorder');
-  border-radius: 50%;
-  text-align: center;
-  color: #fafafa;
-  transition: all 0.2s ease;
+/* สีเหลืองเมื่อ hover */
+.elegant-datepicker .react-datepicker__day:hover:not(.react-datepicker__day--disabled) {
+  background-color: #FFD700; /* สีเหลือง */
+  color: #000000; /* ตัวอักษรสีดำเพื่อให้อ่านง่ายบนพื้นหลังสีเหลือง */
 }
 
+/* วันที่เลือกเป็นสีม่วง */
 .elegant-datepicker .react-datepicker__day--selected {
-  background-color: var(--start-date-theme, #5d48e5) !important;
-  color: rgb(255, 248, 248) !important;
+  background-color: #7a36df !important; /* สีม่วงเข้ม */
+  color: #ffffff !important;
   font-weight: bold;
 }
 
+/* วันที่ปัจจุบันเป็นสีแดง */
+.elegant-datepicker .react-datepicker__day--today {
+  background-color: #FF4136 !important; /* สีแดง */
+  color: #ffffff !important;
+}
+
+/* วันที่ถูก disable */
 .elegant-datepicker .react-datepicker__day--disabled {
-  color: #999999 !important;
+  color: #585858;
   pointer-events: none;
+  opacity: 0.5;
 }
 
 .elegant-datepicker .react-datepicker__navigation {
@@ -238,6 +250,7 @@ input[type="checkbox"]:hover {
 .popup-content {
   position: relative;
 }
+
 .react-datepicker-wrapper,
 .react-datepicker__input-container {
   display: block;

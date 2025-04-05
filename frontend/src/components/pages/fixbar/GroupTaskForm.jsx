@@ -8,6 +8,7 @@ import usePopup from "../hooks/usePopup";
 import CreateButton from "../ui/CreateButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import Tooltip from "../ui/Tooltip";
 
  const TaskDetail = React.lazy(() =>  import("../ui/taskDetail"))
 
@@ -27,7 +28,7 @@ function GroupTaskForm({ filter }) {
   } = usePopup();
 
   return (
-    <div className="  md:ml-28 md:mr-16 md:grid-cols-2 md:grid gap-6 mt-8  ">
+    <div >
       {fetchedAllTasks &&
       Array.isArray(fetchedAllTasks) &&
       fetchedAllTasks.length > 0 ? (
@@ -41,22 +42,24 @@ function GroupTaskForm({ filter }) {
          
 
           return (
-            <div className="mr-8  md:mx-0" key={keys}>
+            <div className="mx-8 sm:mx-14 grid-cols-1 grid gap-6 my-8" key={keys}>
               {label.toLowerCase() === "completed" &&
                 tasks.filter((task) => task.status === "completed").length >
                   0 &&
                 !isSideBarPinned && (
+                  <Tooltip>
+
                   <button
-                    className="red-button clear-allTask absolute"
+                    className="red-button clear-allTask"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleRemovedAllTask();
                     }}
-                  >
-                    <FontAwesomeIcon icon={faTrashCan} className="pr-2" />
-                    Clear completed
+                    >
+                    <FontAwesomeIcon icon={faTrashCan} />
                   </button>
+                    </Tooltip>
                 )}
               <TaskList
                 key={keys}

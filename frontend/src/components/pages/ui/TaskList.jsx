@@ -24,7 +24,7 @@ function TaskList({
   const [isHover, setIsHover] = useState({});
 
   return (
-    <div className="w-full min-w-0  border-2 bg-purpleSidebar border-purpleNormal rounded-3xl py-4 px-3 md:p-6">
+    <div className="w-full min-w-0 p-8 border-2 bg-purpleSidebar border-purpleNormal rounded-3xl ">
       <div className="flex justify-between mb-4 mr-0 md:mr-3">
         <p className="text-white text-lg md:text-2xl flex items-center pr-2 md:pr-24 w-auto truncate">
           {label}
@@ -34,7 +34,7 @@ function TaskList({
 
       {filteredTasks.length === 0 ? null : (
         <div className="w-full">
-          <ul className="flex flex-col gap-4 overflow-y-auto overflow-x-hidden scrollbar-custom max-h-[350px] md:max-h-[250px] lg:max-h-[570px] pr-1 w-full">
+          <ul className="flex flex-col gap-4 overflow-y-auto overflow-x-hidden scrollbar-custom max-h-[550px] md:max-h-[520px] pr-4 w-full">
             {filteredTasks.map((task, index) => (
               <li
                 key={index}

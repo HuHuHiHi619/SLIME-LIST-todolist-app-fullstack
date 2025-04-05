@@ -6,15 +6,18 @@ const Sidebar = React.lazy(() =>  import("./pages/fixbar/Sidebar"))
 function MainLayout() {
   return (
     <section id="mainLayout">
-      <div className="grid grid-col ">
-        <Navbar />
-        <Suspense fallback= {null}>
+    <div className="layout-container">
+      <Navbar />
+      <div className="content-wrapper">
+        <Suspense fallback={null}>
           <Sidebar />
         </Suspense>
-
-        <Outlet />
+        <main className="main-content">
+          <Outlet />
+        </main>
       </div>
-    </section>
+    </div>
+  </section>
   );
 }
 

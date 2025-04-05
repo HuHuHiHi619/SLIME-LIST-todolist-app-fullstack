@@ -71,7 +71,7 @@ function SearchField({ handleSearchToggle, isSearchOpen }) {
             placeholder="Search task here !"
             value={searchTerm}
             onChange={handleSearch}
-            className={`rounded-xl p-2 text-white focus-visible:outline-none ${
+            className={`rounded-xl p-2 text-white focus-visible:outline-2 outline-purpleBorder ${
               isSearchOpen ? "pl-14" : ""
             } text-xl  z-20 bg-purpleNormal`}
             animate={{

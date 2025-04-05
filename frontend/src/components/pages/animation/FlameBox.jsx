@@ -47,7 +47,7 @@ const FlameBox = ({  index , streak }) => {
     <div className="relative">
       {/* Base flame box */}
       <motion.div
-        className={`relative w-12 h-20 rounded-lg overflow-hidden ${boxStreak(index, streak)}`}
+        className={`relative w-14 2xl:w-12 h-20 rounded-lg overflow-hidden ${boxStreak(index, streak)}`}
         variants={flameVariants}
         animate="animate"
         style={{
