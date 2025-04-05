@@ -36,7 +36,22 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
+app.use((req, res, next) => {
+  if (req.body && req.path.includes('/login')) {
+    console.log('Before sanitize:', JSON.stringify(req.body));
+  }
+  next();
+});
+
 app.use(mongoSanitize());
+
+app.use((req, res, next) => {
+  if (req.body && req.path.includes('/login')) {
+    console.log('After sanitize:', JSON.stringify(req.body));
+  }
+  next();
+});
+
 app.use(
   "/uploads",
   compression(),

@@ -74,14 +74,9 @@ exports.login = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).send({ error: errors.array() });
     }
-    const { username, password } = req.body;
-    console.log("Login attempt for username:", username);
-    console.log(
-      "Password provided (length):",
-      password ? password.length : "none"
-    );
-    console.log(req.body.username);
-    console.log(req.body.password);
+    const username = req.body.username;
+    const password = req.body.password;
+    
     const user = await User.findOne({ username });
     console.log("User found:", user ? "Yes" : "No");
     if (!user) {
