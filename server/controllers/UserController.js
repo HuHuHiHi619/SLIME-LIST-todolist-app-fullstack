@@ -75,9 +75,10 @@ exports.login = async (req, res) => {
       return res.status(400).send({ error: errors.array() });
     }
     const { username, password } = req.body;
-
+    console.log("Login attempt for username:", username);
+    console.log("Password provided (length):", password ? password.length : 'none');
     const user = await User.findOne({ username });
-   
+    console.log("User found:", user ? "Yes" : "No");
     if (!user) {
       return res.status(400).json({ error: "Invalid credentials 1" });
     }
