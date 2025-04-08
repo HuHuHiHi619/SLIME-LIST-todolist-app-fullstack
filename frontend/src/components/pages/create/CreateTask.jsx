@@ -23,7 +23,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-
 function CreateTask({ onClose }) {
   const dispatch = useDispatch();
   const { formTask, progress, categories } = useSelector(
@@ -77,9 +76,16 @@ function CreateTask({ onClose }) {
   };
 
   const handleDateChange = (date, field) => {
-    const selectedDate = date ? date : new Date();
-
-    dispatch(setFormTask({ [field]: selectedDate.toISOString() }));
+    if (field === "startDate") {
+      const selectedDate = date ? date : new Date();
+      dispatch(setFormTask({ [field]: selectedDate.toISOString() }));
+    } else if (field === "deadline") {
+      if (date) {
+        dispatch(setFormTask({ [field]: date.toISOString() }));
+      } else {
+        dispatch(setFormTask({ [field]: null }));
+      }
+    }
   };
 
   const handleRemoveStep = (index) => {
@@ -125,12 +131,16 @@ function CreateTask({ onClose }) {
         <div className="bg-purpleSidebar p-6 rounded-xl">
           <form onSubmit={handleSubmit}>
             <div className="flex justify-between items-center">
-            <h1 className="text-white tracking-wide">CREATE A TASK</h1>
-            <Tooltip description={"Close"} position="top">
-                <FontAwesomeIcon icon={faXmark} onClick={onClose} className="delete-step text-xl text-gray-400" />
+              <h1 className="text-white tracking-wide">CREATE A TASK</h1>
+              <Tooltip description={"Close"} position="top">
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  onClick={onClose}
+                  className="delete-step text-xl text-gray-400"
+                />
               </Tooltip>
             </div>
-           
+
             <div className="flex flex-col gap-4 my-4">
               {error && <p className="text-red-500 text-xl ">{error}</p>}
               <InputField
@@ -230,7 +240,6 @@ function CreateTask({ onClose }) {
               >
                 Create
               </button>
-              
             </div>
           </form>
         </div>

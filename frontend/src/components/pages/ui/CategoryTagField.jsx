@@ -79,13 +79,13 @@ function CategoryTagField({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="md:w-[230px] w-full h-[48px] cursor-pointer appearance-none text-[20px] shadow border-[2px] border-categoryTheme bg-transparent rounded-lg p-2 pl-12 text-categoryTheme leading-tight focus:outline-none focus:ring-2 focus:ring-categoryTheme focus:ring-opacity-50"
+        className="md:w-[230px] w-full h-[48px] cursor-pointer appearance-none text-xl shadow border-[2px] border-categoryTheme bg-transparent rounded-lg p-2 pl-12 text-categoryTheme leading-tight focus:outline-none focus:ring-2 focus:ring-categoryTheme focus:ring-opacity-50"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         data-value={localValue}
       >
         <div className="flex justify-between items-center">
-          <span className="truncate">{getDisplayText()}</span>
+          <span className="truncate text-categoryTheme text-xl">{getDisplayText()}</span>
           <FontAwesomeIcon 
             icon={faChevronDown} 
             className={`ml-2 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}
@@ -142,7 +142,7 @@ function CategoryTagField({
         className="hidden" // ซ่อนไว้ไม่ให้แสดงผล
         aria-hidden="true"
       >
-        <option value="No category">{`No ${placeholder ? placeholder.toLowerCase() : 'category'}`}</option>
+        <option  value="No category">{`No ${placeholder ? placeholder.toLowerCase() : 'category'}`}</option>
         {Array.isArray(entities) && entities.length > 0 && 
           entities.map((entity) => (
             <option key={entity._id} value={entity[`${name}Name`]}>

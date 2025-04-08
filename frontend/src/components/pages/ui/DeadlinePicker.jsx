@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 
 function DeadlinePicker({ id, name, selected, onChange, placeholder }) {
-  const selectedDate = selected ? new Date(selected) : new Date();
+  const selectedDate = selected ? new Date(selected) : null;
   return (
     <div className="relative w-full">
       <DatePicker
