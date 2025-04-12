@@ -351,13 +351,14 @@ const taskSlice = createSlice({
         state.progress = initialState.progress;
         state.tasks.push(action.payload);
         state.lastStateUpdate = new Date().toISOString();
+        state.isSummaryUpdated = !state.isSummaryUpdated;
       })
       .addCase(createNewTask.rejected, (state, action) => {
         state.error = action.error.message;
       })
       .addCase(updatedTask.fulfilled, (state, action) => {
         const updatedTask = action.payload;
-        console.log("redux updatetask payload", updatedTask);
+       
         state.tasks = state.tasks.map((task) => {
           if (task._id === updatedTask._id) {
             return {
@@ -380,6 +381,7 @@ const taskSlice = createSlice({
           };
         }
         state.lastStateUpdate = new Date().toISOString();
+        state.isSummaryUpdated = !state.isSummaryUpdated;
       })
       .addCase(updatedTaskAttempt.fulfilled, (state, action) => {
         const updatedTask = action.payload;

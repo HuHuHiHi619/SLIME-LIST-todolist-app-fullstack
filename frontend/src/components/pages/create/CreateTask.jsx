@@ -107,8 +107,20 @@ function CreateTask({ onClose }) {
 
     try {
       const response = await dispatch(createNewTask(taskData)).unwrap();
-      await dispatch(fetchSummary()).unwrap();
-      await dispatch(fetchSummaryByCategory()).unwrap();
+      // เพิ่ม delay เล็กน้อย
+      setTimeout(async () => {
+        try {
+          await dispatch(fetchSummary()).unwrap();
+          console.log("Summary fetched successfully");
+          await dispatch(fetchSummaryByCategory()).unwrap();
+          console.log("Summary by category fetched successfully");
+        } catch (summaryError) {
+          console.error(
+            "Error fetching summary after task creation:",
+            summaryError
+          );
+        }
+      }, 300);
       if (response) {
         console.log("Task created successfully!", response);
         resetFormTask();

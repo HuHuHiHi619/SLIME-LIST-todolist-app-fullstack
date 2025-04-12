@@ -318,7 +318,7 @@ exports.getTask = async (req, res) => {
 
         return priorityComparison;
       });
-
+      console.log('task fetch',tasksWithProgress)
     return res.status(200).json(tasksWithProgress);
   } catch (error) {
     handleError(res, error, "Failed to retrieve product");
@@ -341,8 +341,8 @@ exports.createTask = async (req, res) => {
       console.error("unauthorized");
       return res.status(400).json({ error: "Unauthorized" });
     }
-
-    // ตรวจสอบค่าก่อนแปลงเป็น objectid
+    
+    // ตรวจสอบค่าก่อนแปลงเป็น objectid 
     let categoryId = null;
     if (category && category.length > 0) {
       const existingCategory = await Category.findOne({
@@ -497,7 +497,7 @@ exports.updatedTask = async (req, res) => {
     }
 
     // นำค่าที่มีอยู่มาใช้ถ้าไม่มีการส่งค่ามาใหม่
-    const finalUpdateData = {
+    const finalUpdateData = {  
       title: updateData.title || existingTask.title,
       note:  updateData.note !== undefined ? updateData.note : "",
       startDate: updateData.startDate

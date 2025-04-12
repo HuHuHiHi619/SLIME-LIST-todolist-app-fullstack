@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": " nodemon server",
+    "dev": "set NODE_ENV=development && nodemon server.js",
+    "dev:local": "set NODE_ENV=development && set USE_LOCAL_DB=true && nodemon server.js",
+    "start": "set NODE_ENV=production && node server.js",
     "test": "jest"
   },
   "jest": {

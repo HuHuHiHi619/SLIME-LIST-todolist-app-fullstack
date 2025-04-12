@@ -20,10 +20,10 @@ function SidebarLink({
 }) {
   const isActive = activeMenu === to;
   const isCategoryActive = activeMenu.startsWith('/category/');
-console.log(categories)
+
   return (
     <div 
-      className="relative"
+      className="relative pl-2"
       onMouseEnter={() => label === "CATEGORY" && handleHover(true)}
       onMouseLeave={() => label === "CATEGORY" && handleHover(false)}
     >

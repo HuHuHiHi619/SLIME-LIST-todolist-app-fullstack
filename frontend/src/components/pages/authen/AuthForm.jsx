@@ -8,8 +8,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import SlimePortal from "../animation/SlimePortal";
 
-
-
 function AuthForm({ isRegister, setActiveTab }) {
   const [user, setUser] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
@@ -23,13 +21,12 @@ function AuthForm({ isRegister, setActiveTab }) {
   };
 
   const handleSubmit = async (e) => {
-    console.log("submit")
     e.preventDefault();
     if (loading || isSubmitting) return;
     setError("");
     if (!user.username || !user.password) {
       setError("Username and password are required.");
-      console.error("Username and password are required")
+      console.error("Username and password are required");
       return;
     }
     setError("");
@@ -40,21 +37,17 @@ function AuthForm({ isRegister, setActiveTab }) {
         setActiveTab("login");
       } else {
         const response = await dispatch(loginUser(user)).unwrap();
-        if (response.tokens?.accessToken) {
-          await dispatch(fetchUserData(response.user.id)).unwrap();
-          console.log("login completed")
-        } else {
-          console.error("Username and password are required")
-          throw new Error("No access token found.");
-        }
+        console.log('authForm login response',response)
+        await dispatch(fetchUserData()).unwrap();
+        console.log("login completed");
       }
     } catch (err) {
       setError(
         isRegister ? "Registration failed." : "Login failed. Please try again."
       );
-      console.error(err)
+      console.error("ERROR",err);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   };
 
@@ -62,7 +55,7 @@ function AuthForm({ isRegister, setActiveTab }) {
     <div className="relative border border-purpleNormal bg-purpleSidebar p-10 rounded-2xl shadow-lg w-full max-w-lg ">
       {loading && (
         <div className="popup-overlay">
-          <SlimePortal  />
+          <SlimePortal />
         </div>
       )}
 

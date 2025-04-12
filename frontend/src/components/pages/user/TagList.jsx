@@ -4,7 +4,6 @@ import TaskForm from "../fixbar/TaskForm";
 import FadeUpContainer from "../animation/FadeUpContainer";
 function TagList() {
   const { tagName } = useParams();
-  console.log('test', tagName)
   return (
     <div id='otherPage'>
         <FadeUpContainer>

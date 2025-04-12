@@ -6,7 +6,7 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clearSummaryState } from "../../../redux/summarySlice";
 import FadeUpContainer from "../animation/FadeUpContainer";
-import Cookies from "js-cookie";
+
 import ReactDOM from "react-dom";
 
 function Logout() {
@@ -16,10 +16,6 @@ function Logout() {
   const handleLogout = async () => {
     try {
       const response = await dispatch(logoutUser()).unwrap();
-
-      Cookies.remove("accessToken", { path: "/" });
-      Cookies.remove("refreshToken", { path: "/" });
-
       localStorage.clear();
 
     await Promise.all([

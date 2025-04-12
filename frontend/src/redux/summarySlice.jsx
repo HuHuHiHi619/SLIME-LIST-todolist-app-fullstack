@@ -3,6 +3,7 @@ import {
   getSummaryTaskByCategory,
   getSummaryTask,
 } from "../functions/summary";
+import { logoutUser } from "./userSlice";
 
 const initialState = {
   summary: [],
@@ -15,26 +16,30 @@ const initialState = {
 
 export const fetchSummary = createAsyncThunk(
   "/summary/fetchSummary",
-  async () => {
+  async (_, { rejectWithValue }) => {
     try {
+      console.log("Dispatching fetchSummary...");
       const response = await getSummaryTask();
+      console.log("fetchSummary response:", response);
       return response || [];
     } catch (error) {
-      console.error("Error fetching cateories:", error);
-      throw error;
+      console.error("Error in fetchSummary:", error);
+      return rejectWithValue(error.message || "Failed to fetch summary");
     }
   }
 );
 
 export const fetchSummaryByCategory = createAsyncThunk(
   "/summary/fetchSummaryByCategory",
-  async () => {
+  async (_, { rejectWithValue }) => {
     try {
+      console.log("Dispatching fetchSummaryByCategory...");
       const response = await getSummaryTaskByCategory();
+      console.log("fetchSummaryByCategory response:", response);
       return response || [];
     } catch (error) {
-      console.error("Error fetching cateories:", error);
-      throw error;
+      console.error("Error in fetchSummaryByCategory:", error);
+      return rejectWithValue(error.message || "Failed to fetch summary by category");
     }
   }
 );

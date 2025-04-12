@@ -14,8 +14,7 @@ function Settings() {
   const { userData, loading, error, isAuthenticated } = useSelector(
     (state) => state.user
   );
-  console.log(userData)
-
+ 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 

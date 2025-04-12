@@ -75,9 +75,9 @@ function usePopup() {
       await dispatch(completedTask(task._id)).unwrap();
       setTimeout(async () => {
         await dispatch(fetchSummary()).unwrap();
-        if (tokens.accessToken) {
+       
           await dispatch(fetchUserData()).unwrap();
-        }
+        
       }, 100);
      
     } catch (error) {

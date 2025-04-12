@@ -22,10 +22,10 @@ import TagList from "./components/pages/user/TagList";
 import { useSelector } from "react-redux";
 
 function App() {
-  const { isAuthenticated } = useSelector((state) => state.user);
+  const { isAuthenticated , isGuest } = useSelector((state) => state.user);
   return (
     <>
-      <AuthProvider>
+      <AuthProvider skip={isGuest}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<MainLayout />}>

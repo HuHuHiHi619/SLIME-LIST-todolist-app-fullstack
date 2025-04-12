@@ -1,6 +1,6 @@
 import axios from "axios";
+import API_URL from "../Config/apiConfig";
 
-const API_URL = import.meta.env.VITE_API_URL;
 
 
 export const createTask = async (data) => {
@@ -27,6 +27,7 @@ export const createTask = async (data) => {
 
 export const getData = async (filter) => {
   try {
+    
     const response = await axios.get(`${API_URL}/task`, {
       params: filter,
       headers: {
@@ -70,7 +71,7 @@ export const searchedTask = async (searchTerm) => {
 };
 
 export const completeTask = async (taskId) => {
-  console.log("taskID FOR COMPLETED", taskId);
+  
 
   try {
     const response = await axios.patch(
@@ -83,7 +84,7 @@ export const completeTask = async (taskId) => {
         withCredentials: true,
       }
     );
-    console.log('completed data', response.data)
+  
    
     
     

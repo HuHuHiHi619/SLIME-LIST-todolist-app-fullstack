@@ -9,7 +9,7 @@ const { handleError } = require("./helperController");
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
-
+const isProduction = process.env.NODE_ENV === "production";
 // Register
 exports.register = async (req, res) => {
   upload(req, res, async (error) => {
@@ -75,7 +75,7 @@ exports.login = async (req, res) => {
       return res.status(400).send({ error: errors.array() });
     }
     const { username, password } = req.body;
-  
+
     const user = await User.findOne({ username }).select("+password");
     console.log("User found:", user ? "Yes" : "No");
     if (!user) {
@@ -109,22 +109,22 @@ exports.login = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       maxAge: 15 * 60 * 1000, // 15m
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7d
     });
 
     res.clearCookie("guestId", {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       path: "/",
     });
 
@@ -150,14 +150,14 @@ exports.logout = async (req, res) => {
   try {
     res.clearCookie("accessToken", {
       httpOnly: true,
-      sameSite: "None",
-      secure: true,
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       path: "/",
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      sameSite: "None",
-      secure: true,
+      secure: isProduction,
+      sameSite: isProduction ? "None" : "Lax",
       path: "/",
     });
   } catch (error) {
@@ -199,26 +199,12 @@ exports.getUserData = async (req, res) => {
   try {
     // Log เพื่อดูสถานะ req.user
     console.log("Original req.user:", req.user);
-    console.log("Authorization header:", req.headers.authorization);
-
-    // วิธีหา userId ที่ปลอดภัย
+    console.log("Authorization header:", req.headers);
     let userId = null;
 
     // กรณีที่ 1: req.user มีข้อมูลปกติ
     if (req.user && req.user.id) {
       userId = req.user.id;
-    }
-    // กรณีที่ 2: ดึง userId จาก token โดยตรง
-    else if (req.headers.authorization) {
-      const token = req.headers.authorization.split(" ")[1];
-      try {
-        // ถอดรหัส token เพื่อหา userId
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        userId = decoded.userId;
-      } catch (tokenError) {
-        console.error("Token verification error:", tokenError);
-        return res.status(401).json({ error: "Invalid token" });
-      }
     }
 
     // ตรวจสอบ userId
@@ -232,7 +218,7 @@ exports.getUserData = async (req, res) => {
     if (!userData) {
       return res.status(404).json({ error: "User not found" });
     }
-
+ console.log(userData)
     // ส่งข้อมูลกลับ
     return res.status(200).json(userData);
   } catch (error) {

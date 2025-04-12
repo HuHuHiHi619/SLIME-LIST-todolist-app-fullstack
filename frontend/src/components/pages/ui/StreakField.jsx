@@ -62,7 +62,7 @@ function StreakField() {
   }, [dispatch, userData.id]);
 
   const streak = userData.currentStreak;
-  console.log("already completed", userData.alreadyCompletedToday);
+ 
   return (
     <div className="flex  w-full gap-4">
       {isAuthenticated ? (

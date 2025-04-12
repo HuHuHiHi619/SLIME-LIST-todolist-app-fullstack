@@ -13,16 +13,8 @@ function Navbar() {
   const { isAuthenticated, loading, isRegisterPopup } = useSelector(
     (state) => state.user
   );
-  const { handleToggleRegister, handleToggleSidebar, popupRegisterRef } = usePopup();
-
-  useEffect(() => {
-    console.log("Authentication status:", isAuthenticated);
-    console.log("Loading status:", loading);
-    console.log("Register popup status:", isRegisterPopup);
-  }, [isAuthenticated, loading, isRegisterPopup]);
-
-  // ไม่ return null เมื่อกำลัง loading เพื่อให้ยังแสดง UI
-  // แต่เราจะแสดง loading spinner ถ้าจำเป็น
+  const { handleToggleRegister, handleToggleSidebar, popupRegisterRef } =
+    usePopup();
 
   return (
     <>
@@ -48,7 +40,10 @@ function Navbar() {
               disabled={loading}
             >
               {loading ? (
-                <FontAwesomeIcon icon={faSpinner} className="animate-spin mr-2" />
+                <FontAwesomeIcon
+                  icon={faSpinner}
+                  className="animate-spin mr-2"
+                />
               ) : (
                 "Sign up"
               )}
@@ -57,11 +52,11 @@ function Navbar() {
         )}
 
         {/* แสดงป๊อปอัพเสมอถ้า isRegisterPopup เป็น true โดยไม่สนใจ loading */}
-        {!isAuthenticated && 
+        {!isAuthenticated &&
           isRegisterPopup &&
           ReactDOM.createPortal(
             <div className="popup-overlay ">
-              <div className="popup-content" >
+              <div className="popup-content">
                 <FadeUpContainer direction="top">
                   <AuthTabs ref={popupRegisterRef} />
                 </FadeUpContainer>

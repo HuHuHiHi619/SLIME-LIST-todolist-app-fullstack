@@ -1,17 +1,14 @@
-import { configureStore } from '@reduxjs/toolkit';
-import taskReducer from './taskSlice'
-import  userReducer  from './userSlice';
-import summaryReducer from './summarySlice'
-import authMiddleware from './authMiddleware';
+import { configureStore } from "@reduxjs/toolkit";
+import taskReducer from "./taskSlice";
+import userReducer from "./userSlice";
+import summaryReducer from "./summarySlice";
 
 export const store = configureStore({
-    reducer:{
-        tasks: taskReducer,
-        user: userReducer,
-        summary:summaryReducer
-    },
-    middleware:(getDefaultMiddleware) => 
-        getDefaultMiddleware().concat(authMiddleware)
+  reducer: {
+    tasks: taskReducer,
+    user: userReducer,
+    summary: summaryReducer,
+  },
 });
 
 export default store;

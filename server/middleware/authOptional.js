@@ -4,7 +4,7 @@ const User = require("../Models/User");
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
-
+const isProduction = process.env.NODE_ENV === "production";
 const jwtVerify = promisify(jwt.verify);
 
 let isRefreshing = false;
@@ -13,9 +13,7 @@ let refreshQueue = [];
 const authMiddlewareOptional =
   (allowGuest = false) =>
   async (req, res, next) => {
-   
-    const accessToken =
-      req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
+    const accessToken = req.cookies.accessToken;
     const refreshToken = req.cookies.refreshToken;
 
     if (!accessToken) {
@@ -45,8 +43,8 @@ const authMiddlewareOptional =
             const user = await User.findById(decoded.userId);
 
             if (!user) {
-                res.clearCookie('accessToken')
-                res.clearCookie('refreshToken')
+              res.clearCookie("accessToken");
+              res.clearCookie("refreshToken");
               throw Error("User not found.");
             }
 
@@ -58,8 +56,8 @@ const authMiddlewareOptional =
 
             res.cookie("accessToken", newToken, {
               httpOnly: true,
-              secure: true,
-              sameSite: "None",
+              secure: isProduction,
+              sameSite: isProduction ? "None" : "Lax",
               maxAge: 10 * 60 * 1000,
             });
 

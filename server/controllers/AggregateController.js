@@ -13,7 +13,9 @@ exports.getTasksCompletedRate = async (req, res) => {
         : req.guestId
         ? { guestId: req.guestId }
         : {};
-  
+      console.log('getTasksCompletedRate user:', userFilter)
+      console.log('getting result...')
+      
       const result = await Tasks.aggregate([
         {
           $match: userFilter,
@@ -56,7 +58,7 @@ exports.getTasksCompletedRate = async (req, res) => {
       if (result.length === 0) {
         return res.status(200).json({ message: "No data found" });
       }
-  
+      console.log('getTasksCompletedRate result:', result)
       return res.status(200).json(result);
     } catch (err) {
       console.error(err);
@@ -76,7 +78,7 @@ exports.getTasksCompletedRate = async (req, res) => {
         : req.guestId
         ? { guestId: req.guestId }
         : {};
-  
+        console.log('getTasksCompletedRateBycategory user:', userFilter)
       const result = await Tasks.aggregate([
         {
           $match: userFilter,
@@ -166,7 +168,7 @@ exports.getTasksCompletedRate = async (req, res) => {
       if (result.length === 0) {
         return res.status(200).json({ message: "No data found" });
       }
-  
+      console.log('gettaskcompletedtate by category :', result)
       return res.status(200).json(result);
     } catch (err) {
       console.error(err);

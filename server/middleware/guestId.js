@@ -1,7 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
-
+const isProduction = process.env.NODE_ENV === "production";
 const guestMiddleware = (req, res, next) => {
- 
   try {
     const user = req.user;
 
@@ -10,7 +9,7 @@ const guestMiddleware = (req, res, next) => {
       if (req.cookies && req.cookies.guestId) {
         // ถ้ามี guestId ในคุกกี้อยู่แล้ว
         req.guestId = req.cookies.guestId;
-        console.log('GuestId from cookie:', req.guestId);
+        console.log("GuestId from cookie:", req.guestId);
       } else {
         // ถ้าไม่มี guestId ในคุกกี้ ให้สร้างใหม่
         const guestId = uuidv4();
@@ -18,10 +17,10 @@ const guestMiddleware = (req, res, next) => {
         res.cookie("guestId", guestId, {
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 วัน
           httpOnly: true,
-          secure: true, 
-          sameSite: 'None'
+          secure: isProduction,
+          sameSite: isProduction ? "None" : "Lax",
         });
-        req.guestId = guestId; 
+        req.guestId = guestId;
         console.log("New Guest ID created:", guestId);
       }
     } else {
@@ -30,7 +29,7 @@ const guestMiddleware = (req, res, next) => {
     }
     next();
   } catch (error) {
-    console.error('Error in guestMiddleware:', error);
+    console.error("Error in guestMiddleware:", error);
     next(error);
   }
 };
