@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Slime Component
-const BouncingSlime = ({ size = 200, duration = 2 }) => {
+export const BouncingSlime = ({ size = 200, duration = 2 }) => {
   return (
     <AnimatePresence>
       <motion.div
