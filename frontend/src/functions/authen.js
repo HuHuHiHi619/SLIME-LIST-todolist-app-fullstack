@@ -59,9 +59,9 @@ export const userLogout = async () => {
   }
 };
 
-export const getUserData = async (id) => {
+export const getUserData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/user/${id}/profile`, {
+    const response = await axios.get(`${API_URL}/user/profile`, {
       headers: {
         "Content-type": "application/json",
       },

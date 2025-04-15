@@ -3,16 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserData, logoutUser, setAuthError } from "../../../redux/userSlice";
 import { clearSummaryState } from "../../../redux/summarySlice";
 import { fetchSummary, fetchSummaryByCategory } from "../../../redux/summarySlice";
+import { fetchTasks } from "../../../redux/taskSlice";
 
-// เพิ่มฟังก์ชันตรวจสอบว่ามี token หรือไม่
+// ปรับปรุงฟังก์ชัน hasAuthToken ให้มีความเชื่อถือได้มากขึ้น
 const hasAuthToken = () => {
-  // เช็คจาก cookies หรือตรวจสอบจากสิ่งอื่นที่บ่งชี้ว่ามีการ login
-  // เช่น คุณอาจมี cookie ที่ชื่อ 'accessToken' หรือ 'isLoggedIn'
   const cookies = document.cookie.split(';');
-  return cookies.some(cookie => 
-    cookie.trim().startsWith('accessToken=') || 
-    cookie.trim().startsWith('refreshToken=')
-  );
+  // ตรวจสอบทั้ง accessToken และ refreshToken
+  const hasAccess = cookies.some(cookie => cookie.trim().startsWith('accessToken='));
+  const hasRefresh = cookies.some(cookie => cookie.trim().startsWith('refreshToken='));
+  
+  console.log("Token check - Access:", hasAccess, "Refresh:", hasRefresh);
+  return hasAccess || hasRefresh;
 };
 
 const AuthProvider = ({ children }) => {
@@ -22,76 +23,58 @@ const AuthProvider = ({ children }) => {
 
   React.useEffect(() => {
     const checkAuth = async () => {
-      try {
-        console.log("Checking authentication status...");
-        
-        // ตรวจสอบว่ามี token หรือไม่
-        if (!hasAuthToken()) {
-          console.log("No auth token found - setting as guest");
-          // ไม่มี token - เป็น guest
-          dispatch(logoutUser()); // เพื่อให้แน่ใจว่าสถานะเป็น guest
-          
-          // เรียก fetchSummary สำหรับ guest ได้เลย
-          console.log("Fetching summary for guest...");
-          await dispatch(fetchSummary()).unwrap();
-          await dispatch(fetchSummaryByCategory()).unwrap();
-          
-          setInitialCheckDone(true);
-          return;
+        try {
+            console.log("Attempting to fetch user data...");
+            // ลอง fetch user data เลย ไม่ต้องเช็ค token ฝั่ง client
+            await dispatch(fetchUserData()).unwrap(); 
+            console.log("User authenticated successfully via fetched data!");
+
+            // ดึงข้อมูลอื่นๆ สำหรับ user ที่ login แล้ว (อาจจะไม่จำเป็นถ้า fetchUserData ได้ข้อมูลครบแล้ว)
+            // await dispatch(fetchSummary()).unwrap();
+            // await dispatch(fetchSummaryByCategory()).unwrap();
+            // await dispatch(fetchTasks()).unwrap();
+
+        } catch (error) {
+            // fetchUserData ล้มเหลว (อาจจะ 401 Unauthorized หรือ Network error)
+            console.warn("Failed to fetch user data or not authenticated:", error);
+
+            // ตรวจสอบว่าเป็น lỗi ที่เกี่ยวกับการยืนยันตัวตนหรือไม่ (เช่น status 401)
+            // ถ้าใช่ หรือถ้าต้องการให้เป็น Guest เมื่อ fetch ล้มเหลว:
+            if (error?.message?.includes("401") || error?.message?.toLowerCase().includes('unauthorized') || !isAuthenticated) { // เพิ่มการตรวจสอบสถานะปัจจุบันด้วย
+                console.log("Authentication failed or no valid session - switching to guest mode");
+                // ไม่จำเป็นต้อง dispatch(logoutUser()) อีก ถ้า fetchUserData.rejected จัดการ state เป็น guest แล้ว
+                // dispatch(logoutUser()); // อาจจะเอาออกได้ถ้า extraReducer จัดการดีแล้ว
+                dispatch(clearSummaryState()); 
+                dispatch(setAuthError(null)); // หรือตั้งค่า error ที่เหมาะสม
+
+                // ดึงข้อมูลสำหรับ guest
+                // ควรตรวจสอบให้แน่ใจว่า API endpoint เหล่านี้ทำงานได้สำหรับ guest ด้วย
+                try {
+                     await dispatch(fetchSummary()).unwrap();
+                     await dispatch(fetchSummaryByCategory()).unwrap();
+                     await dispatch(fetchTasks()).unwrap();
+                } catch (guestError) {
+                    console.error("Error fetching data for guest:", guestError);
+                }
+            } else {
+                // จัดการ Error อื่นๆ ที่ไม่ใช่เรื่อง Authentication (เช่น Network Error)
+                console.error("Auth check failed due to non-auth error:", error);
+                dispatch(setAuthError("Failed to connect to server.")); 
+            }
+        } finally {
+            setInitialCheckDone(true);
         }
-        
-        // มี token - พยายาม fetchUserData
-        console.log("Auth token found - attempting to fetch user data");
-        await dispatch(fetchUserData()).unwrap();
-        console.log("User authenticated!");
-        
-        // ถ้าสำเร็จ ให้ดึง summary data ของ user
-        await dispatch(fetchSummary()).unwrap();
-        await dispatch(fetchSummaryByCategory()).unwrap();
-      } catch (error) {
-        console.error("Auth check failed:", error);
-        // ถ้าล้มเหลว ให้ logout และเปลี่ยนเป็น guest
-        dispatch(logoutUser());
-        dispatch(clearSummaryState());
-        
-        // ดึง summary data ของ guest
-        await dispatch(fetchSummary()).unwrap();
-        await dispatch(fetchSummaryByCategory()).unwrap();
-      } finally {
-        setInitialCheckDone(true);
-      }
     };
 
-    checkAuth();
-  }, [dispatch]);
-
-  // refresh user data เป็นระยะ (เฉพาะเมื่อ authenticated)
-  React.useEffect(() => {
-    let interval;
-
-    // จัดการ interval สำหรับ refresh เฉพาะเมื่อเป็น user ที่ login แล้วเท่านั้น
-    if (isAuthenticated && !isGuest && initialCheckDone && !isRefreshing) {
-      interval = setInterval(async () => {
-        try {
-          await dispatch(fetchUserData()).unwrap();
-        } catch (error) {
-          console.warn("Error refreshing user data:", error);
-          dispatch(logoutUser());
-          dispatch(clearSummaryState());
-          dispatch(setAuthError("Session expired. Please login again."));
-          
-          // ดึง summary data ของ guest หลัง logout
-          await dispatch(fetchSummary()).unwrap();
-          await dispatch(fetchSummaryByCategory()).unwrap();
-        }
-      }, 3 * 60 * 1000);
+    if (!initialCheckDone) { // ตรวจสอบเพื่อให้แน่ใจว่าทำงานครั้งเดียวเมื่อโหลด
+         checkAuth();
     }
 
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isAuthenticated, isRefreshing, initialCheckDone, isGuest, dispatch]);
+}, [dispatch, initialCheckDone, isAuthenticated]); // เพิ่ม isAuthenticated ใน dependency array
 
+// ส่วนของ Interval Refresh อาจจะต้องปรับปรุงเรื่องการ Handling Error คล้ายๆ กัน
+// และควรพิจารณา Implement การ Refresh Token อัตโนมัติถ้า fetchUserData ล้มเหลวเพราะ Access Token หมดอายุ
+  
   if (!initialCheckDone) return null;
   return children;
 };

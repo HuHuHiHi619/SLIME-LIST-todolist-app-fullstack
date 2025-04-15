@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon  } from "@fortawesome/react-fontawesome";
-import { faCross } from "@fortawesome/free-solid-svg-icons";
+import {  faXmark } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 
 function SidebarLink({
@@ -23,7 +23,7 @@ function SidebarLink({
 
   return (
     <div 
-      className="relative pl-2"
+      className="relative mx-2"
       onMouseEnter={() => label === "CATEGORY" && handleHover(true)}
       onMouseLeave={() => label === "CATEGORY" && handleHover(false)}
     >
@@ -49,7 +49,7 @@ function SidebarLink({
         </div>
         
         {isSidebarPinned && (
-          <div className="flex justify-between items-center w-full ml-3">
+          <div className="flex justify-between items-center w-full mx-3">
             <span className={`text-xl ${isActive ? "text-white font-normal" : ""}`}>
               {label}
             </span>
@@ -87,7 +87,7 @@ function SidebarLink({
               >
                 <Link
                   to={`/category/${category._id}`}
-                  className={`flex  py-2 px-3 rounded  ${
+                  className={`flex items-center justify-between py-2 px-8 rounded  ${
                     activeMenu === `/category/${category._id}`
                       ? "text-white bg-purpleActive bg-opacity-50"
                       : "text-white opacity-75 hover:bg-purpleNormal hover:bg-opacity-30"
@@ -95,14 +95,14 @@ function SidebarLink({
                 >
                   <span>{category.categoryName}</span>
                   <button
-                    className=" group-hover:opacity-100 hover:text-red-400 transition-opacity duration-200"
+                    className=" opacity-50 hover:opacity-100 hover:text-red-400 transition-opacity duration-200"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       handleRemovedItem(category._id);
                     }}
                   >
-                    <FontAwesomeIcon icon={faCross} className="text-xl" />
+                    <FontAwesomeIcon icon={faXmark}  />
                   </button>
                 </Link>
               </motion.li>

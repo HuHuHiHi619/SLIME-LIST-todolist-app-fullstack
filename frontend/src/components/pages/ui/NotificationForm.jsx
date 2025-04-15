@@ -44,7 +44,7 @@ const NotificationForm = () => {
   };
 
   return (
-    <div className=" p-2 m-0 md:mr-8 z-50 ">
+    <div className=" p-2 mr-4 md:mr-8 z-50 ">
       <div className=" flex relative  items-center" ref={menuRef}>
         {/* Main Menu Icon and Click Area */}
         <div className="relative flex items-center">
@@ -53,7 +53,7 @@ const NotificationForm = () => {
               ref={buttonRef}
               className={`text-gray-400 hover:text-purpleBorder transition-transform duration-500 ease-in-out transform ${
                 isMenuOpen
-                  ? "-rotate-[135deg] -translate-y-1 text-purpleBorder "
+                  ? "-rotate-[135deg]  text-purpleBorder "
                   : ""
               }`}
               onClick={() => {
@@ -65,14 +65,14 @@ const NotificationForm = () => {
             >
               <FontAwesomeIcon
                 icon={faSquare}
-                className="h-8 w-8 transform origin-center"
+                className="h-6 w-6 md:h-6 md:w-6 transform origin-center"
               />
             </button>
           </Tooltip>
           {/* Sliding Icons Container */}
           <AnimatePresence>
             {isMenuOpen && (
-              <div className="absolute right-12 top-5 flex -translate-y-1/2  items-center gap-2 w-auto">
+              <div className="absolute flex  right-12 top-5  -translate-y-1/2  items-center gap-2 w-auto">
                 <FadeUpContainer direction="left">
                   <div className=" flex gap-2 relative">
                     <div ref={searchRef} className="absolute  top-0 right-24">

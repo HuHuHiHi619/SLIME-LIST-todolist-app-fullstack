@@ -13,7 +13,7 @@ const { upload } = require("../middleware/upload");
 const authMiddlewareOptional = require("../middleware/authOptional");
 
 
-router.get("/user/:id/profile",authMiddlewareOptional(false),getUserData)
+router.get("/user/profile",authMiddlewareOptional(false),getUserData)
 router.post(
   "/register",
   upload,

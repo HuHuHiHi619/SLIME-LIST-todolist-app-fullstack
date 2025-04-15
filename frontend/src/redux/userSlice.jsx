@@ -131,12 +131,17 @@ const userSlice = createSlice({
         state.authError = null;
       })
       .addCase(logoutUser.fulfilled, (state) => {
-        return { ...defaultState }; // Reset to default state
+        return {
+          ...defaultState,
+          isAuthenticated: false, // ให้แน่ใจว่ามีการตั้งค่านี้
+          isGuest: true,
+        }; // Reset to default state
       })
       .addCase(fetchUserData.fulfilled, (state, action) => {
         state.userData = { ...state.userData, ...action.payload };
         state.loading = false;
         state.isAuthenticated = true;
+        state.isGuest = false;
       })
       .addCase(fetchUserData.rejected, (state, action) => {
         state.loading = false;

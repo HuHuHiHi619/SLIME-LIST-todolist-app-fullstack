@@ -199,7 +199,6 @@ exports.getUserData = async (req, res) => {
   try {
     // Log เพื่อดูสถานะ req.user
     console.log("Original req.user:", req.user);
-    console.log("Authorization header:", req.headers);
     let userId = null;
 
     // กรณีที่ 1: req.user มีข้อมูลปกติ
@@ -207,11 +206,9 @@ exports.getUserData = async (req, res) => {
       userId = req.user.id;
     }
 
-    // ตรวจสอบ userId
-    if (!userId) {
-      return res.status(401).json({ error: "Unable to authenticate user" });
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Not authenticated" });
     }
-
     // ค้นหาข้อมูลผู้ใช้
     const userData = await User.findById(userId).select("-password");
 
