@@ -75,7 +75,7 @@ const AuthProvider = ({ children }) => {
 // ส่วนของ Interval Refresh อาจจะต้องปรับปรุงเรื่องการ Handling Error คล้ายๆ กัน
 // และควรพิจารณา Implement การ Refresh Token อัตโนมัติถ้า fetchUserData ล้มเหลวเพราะ Access Token หมดอายุ
   
-  if (!initialCheckDone) return null;
+  if (!initialCheckDone) return <div className="text-[500px] text-black">Loading...</div>;
   return children;
 };
 
