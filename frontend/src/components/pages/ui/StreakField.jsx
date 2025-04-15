@@ -103,7 +103,7 @@ function StreakField() {
 
           {/* STREAK BAR */}
           <div
-            className={`bg-purpleMain border-4 rounded-3xl  px-4 py-2  flex-1
+            className={`bg-purpleMain border-2 rounded-3xl  px-4 py-2  flex-1
             ${streak === 0 ? "border-purpleNormal" : ""}
             ${streak <= 5 && streak !== 0 ? "border-orange-400" : ""}
             ${streak >= 6 && streak <= 10 ? "border-sky-500" : ""}
