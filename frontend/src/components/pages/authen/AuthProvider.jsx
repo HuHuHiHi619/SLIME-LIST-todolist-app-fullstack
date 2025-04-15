@@ -81,7 +81,7 @@ const AuthProvider = ({ children }) => {
   if (!initialCheckDone)
     return (
       <>
-        <div className="popup-overlay bg-darkBackground">
+        <div className="fixed inset-0 pl-32 w-full h-full flex justify-center items-center bg-darkBackground">
           <BouncingSlime />
         </div>
       </>
