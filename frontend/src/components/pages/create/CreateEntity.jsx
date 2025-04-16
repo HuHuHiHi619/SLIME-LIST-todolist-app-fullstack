@@ -5,6 +5,8 @@ import FadeUpContainer from "../animation/FadeUpContainer";
 import { createCategory } from "../../../functions/category";
 import { useSelector } from "react-redux";
 import Tooltip from "../ui/Tooltip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function CreateEntity({ onAddItem, entityType ,onClose}) {
   const [formEntity, setFormEntity] = useState({
@@ -59,22 +61,22 @@ function CreateEntity({ onAddItem, entityType ,onClose}) {
   return (
     <>
       <FadeUpContainer>
-        <div className="bg-purpleGradient p-1 rounded-xl md:w-[450px] relative">
+        <div className="bg-purpleGradient p-0.5 rounded-xl md:w-[450px] relative">
           <div className="bg-purpleSidebar p-8 rounded-xl">
-            <p className="text-2xl md:text-3xl text-white">Create new {entityType}</p>
+            <p className="text-2xl md:text-3xl text-white">CREATE  {entityType}</p>
             {error && <p className="text-xl text-rose-500">{error}</p>}
             <InputField
               type="text"
-              placeholder={`Enter ${entityType}`}
+              placeholder={`Enter ${entityType} name`}
               value={formEntity.name}
               onChange={handleChange}
               onKeyDown={handleSubmit}
               className="w-full placeholder:text-xl px-4 py-3 rounded-xl my-6"
             />
               <button onClick={handleSubmit} className="done-button mx-auto active:scale-105">Create</button>
-                <button className="text-gray-500 text-xl  hover:text-red-500 absolute top-3 right-5" onClick={onClose}>
+                <button className="text-gray-500 text-xl  absolute top-3 right-5" onClick={onClose}>
               <Tooltip description={"close"} position="top">
-                  <span>X</span>
+                  <FontAwesomeIcon icon={faXmark} className="hover:text-red-500" />
               </Tooltip>
                   </button>
           </div>

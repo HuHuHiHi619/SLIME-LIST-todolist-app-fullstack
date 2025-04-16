@@ -3,7 +3,7 @@ name: Auto tasks Update
 on:
   schedule:
     - cron : '0 0 * * *'
-  workFlow_dispatch:
+  workflow_dispatch:
 
 jobs: 
   update-tasks : 
@@ -48,8 +48,8 @@ jobs:
           runTasks();
           EOL
     - name : Run cron tasks
-      working-derectory : ./server
+      working-directory : ./server
       env:
-          MONGODB_URI: ${{ secret.MONGO_URI }}
+          MONGODB_URI: ${{ secrets.MONGO_URI }}
           
       run: node run-cron.js
