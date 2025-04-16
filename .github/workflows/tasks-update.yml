@@ -7,7 +7,7 @@ on:
 
 jobs: 
   update-tasks : 
-    runs-on : ubantu-latest
+    runs-on : ubuntu-latest
 
     steps: 
     - name : Checkout repository
