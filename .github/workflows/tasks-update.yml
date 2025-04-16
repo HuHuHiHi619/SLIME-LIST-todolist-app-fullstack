@@ -22,15 +22,23 @@ jobs:
       working-directory : ./server
       run : npm install 
     
+    - name: Debug files in server folder
+      working-directory: ./server
+      run: |
+        echo "📁 Current files in ./server:"
+        ls -R
+    
+
     - name: Create and run tasks script
       working-directory: ./server
       run: |
         cat << 'EOF' > run-cron.js
-        const connectDb = require("../../server/config/db")
+        const connectDb = require("./config/db")
         const { updateOverdueTasks, resetDailyStreakStatus } = require('./job/cronJob');
     
         async function runTasks() {
           try {
+            console.log('📁 Current __dirname:', __dirname);
 
             console.log('Connecting to database...')
             await connectDb();
