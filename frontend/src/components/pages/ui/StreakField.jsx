@@ -69,7 +69,7 @@ function StreakField() {
         <>
           {/* BEST STREAK */}
             <div className="hidden xl:flex items-center justify-center   border-2 border-fuchsia-400  rounded-3xl  flex-1">
-          <Tooltip description="Best Streak" direction="top" >
+          <Tooltip description="Best Streak" position="top" >
               <div className="flex items-center gap-2 bg-fuchsia-400 bg-clip-text text-transparent">
                 <p className=" text-6xl">{userData.bestStreak}</p>
                 <div className=" hidden 2xl:block text-lg">
@@ -86,11 +86,11 @@ function StreakField() {
                 ${
                   userData.alreadyCompletedToday
                   ? "bg-purpleBorder bg-clip-text text-transparent"
-                  : "opacity-50 bg-purpleNormal border-purpleNormal"
+                  : "opacity-70 text-purpleNormal border-purpleNormal"
               }
               `}
               >
-              <Tooltip description="Current Streak" direction="top">
+              <Tooltip description="Current Streak" position="top">
               <div className="flex items-center gap-2 ">
                 <p className="text-6xl">{userData.currentStreak}</p>
                 <div className="hidden 2xl:block text-lg">
