@@ -22,30 +22,31 @@ jobs:
       working-directory : ./server
       run : npm install 
     
-    - name : Create and run tasks script
+    - name: Create and run tasks script
       working-directory: ./server
-      run :
-        cat > run-cron.js << 'EOL'
+      run: |
+        cat << 'EOF' > run-cron.js
         const { updateOverdueTasks, resetDailyStreakStatus } = require('./job/cronJob');
-
+    
         async function runTasks() {
-        try{
-          console.log('Starting update overdue tasks...')
-          await updateOverdueTasks();
-
-          console.log('Starting reset daily streak status...')
-          await resetDailyStreakStatus();
-
-          console.log('All tasks completed successfully');
-          process.exit(0);
-
-        } catch(error){
-          console.error('Error running scheduled tasks:', error);
-          process.exit(1);
+          try {
+            console.log('Starting update overdue tasks...');
+            await updateOverdueTasks();
+    
+            console.log('Starting reset daily streak status...');
+            await resetDailyStreakStatus();
+    
+            console.log('All tasks completed successfully');
+            process.exit(0);
+          } catch (error) {
+            console.error('Error running scheduled tasks:', error);
+            process.exit(1);
+          }
         }
-  
+    
         runTasks();
-        EOL
+        EOF
+    
     - name : Run cron tasks
       working-directory : ./server
       env:
