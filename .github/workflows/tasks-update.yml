@@ -43,10 +43,9 @@ jobs:
           console.error('Error running scheduled tasks:', error);
           process.exit(1);
         }
-
-         // run
-          runTasks();
-          EOL
+  
+        runTasks();
+        EOL
     - name : Run cron tasks
       working-directory : ./server
       env:
