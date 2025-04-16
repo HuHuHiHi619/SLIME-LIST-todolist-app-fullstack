@@ -50,6 +50,7 @@ jobs:
     - name : Run cron tasks
       working-directory : ./server
       env:
-          MONGODB_URI: ${{ secrets.MONGO_URI }}
+          NODE_ENV: production
+          MONGO_URI: ${{ secrets.MONGO_URI }}
           
       run: node run-cron.js
