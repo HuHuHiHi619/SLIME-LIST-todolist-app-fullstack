@@ -26,10 +26,15 @@ jobs:
       working-directory: ./server
       run: |
         cat << 'EOF' > run-cron.js
+        const connectDb =require('./config/db')
         const { updateOverdueTasks, resetDailyStreakStatus } = require('./job/cronJob');
     
         async function runTasks() {
           try {
+
+            console.log('Connecting to database...')
+            await connectDb();
+
             console.log('Starting update overdue tasks...');
             await updateOverdueTasks();
     
