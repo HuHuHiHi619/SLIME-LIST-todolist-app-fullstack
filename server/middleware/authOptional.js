@@ -1,90 +1,64 @@
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
-const User = require("../Models/User");
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = process.env.NODE_ENV === "production"; 
+
 const jwtVerify = promisify(jwt.verify);
 
-let isRefreshing = false;
-let refreshQueue = [];
-
-const authMiddlewareOptional =
+const authMiddlewareOptional = // ชื่อ Optional ก็ยังใช้ได้ ถ้าบาง Route ไม่ต้องการให้บังคับ Auth
   (allowGuest = false) =>
   async (req, res, next) => {
+   
     const accessToken = req.cookies.accessToken;
-    const refreshToken = req.cookies.refreshToken;
 
     if (!accessToken) {
-      console.log("req.cookies.guestId", req.cookies.guestId);
-
+      console.log("No accessToken found in cookies.");
       if (allowGuest && req.cookies.guestId) {
-        req.user = null;
-        req.guestId = req.cookies.guestId;
-        console.log("Guest ID from cookies:", req.guestId);
-        return next();
+        req.user = null; // Ensure req.user is null for guest
+        req.guestId = req.cookies.guestId; // Keep guestId if it exists and guest allowed
+        console.log("Proceeding as Guest.");
+        // --- authMiddlewareOptional End (Guest) ---\n");
+        return next(); // Proceed as guest
       } else {
-        console.log("No accessToken found in cookies.");
-        req.user = null;
-        return next();
+        console.log("No accessToken found and guest not allowed. Setting req.user=null.");
+        req.user = null; // Ensure req.user is null
+         // *** ไม่ต้อง clearCookie ตรงนี้ ถ้าไม่มี token ตั้งแต่แรก ***
+        // --- authMiddlewareOptional End (No Auth/Guest) ---\n");
+        return next(); // Proceed with no user. Endpoint ปลายทางควรเช็ค !req.user และตอบ 401 เอง
       }
     }
 
+    // ถ้ามี Access Token ให้ตรวจสอบ
+    console.log("Found accessToken. Attempting verification.");
     try {
       const decoded = await jwtVerify(accessToken, accessTokenSecret);
-      req.user = { id: decoded.userId };
 
-      if (decoded.exp * 1000 - Date.now() < 2 * 60 * 1000) {
-        if (!isRefreshing) {
-          isRefreshing = true;
-          try {
-            const decoded = jwt.verify(refreshToken, refreshTokenSecret);
-            const user = await User.findById(decoded.userId);
+      req.user = { id: decoded.userId }; // Set req.user ถ้าตรวจสอบผ่าน
 
-            if (!user) {
-              res.clearCookie("accessToken");
-              res.clearCookie("refreshToken");
-              throw Error("User not found.");
-            }
+      // --- authMiddlewareOptional End (Auth Success) ---\n");
+      
+      console.log("req.user is set:", req.user);
+      next(); // ผ่านไป Route Handler ปลายทาง
 
-            const newToken = jwt.sign(
-              { userId: decoded.userId },
-              accessTokenSecret,
-              { expiresIn: "10m" }
-            );
-
-            res.cookie("accessToken", newToken, {
-              httpOnly: true,
-              secure: isProduction,
-              sameSite: isProduction ? "None" : "Lax",
-              maxAge: 10 * 60 * 1000,
-            });
-
-            refreshQueue.forEach((resolve) => resolve());
-            refreshQueue = [];
-          } catch (error) {
-            console.error("Token refresh error:", error);
-            refreshQueue.forEach((reject) => reject(error));
-            refreshQueue = [];
-          } finally {
-            isRefreshing = false;
-          }
-        } else {
-          await new Promise((resolve, reject) => {
-            refreshQueue.push(resolve, reject);
-          });
-        }
-      }
-
-      next();
     } catch (error) {
-      console.error("Token verification error:", error.message);
+      // --- !!! ถ้า Verify Access Token ล้มเหลว (หมดอายุ, ไม่ถูกต้อง) !!! ---
+      console.error("\n--- !!! Access Token verification FAILED (Middleware) !!! ---");
+      console.error("!!! Error Message:", error.message); // <<< ข้อความ Error ตรงนี้สำคัญที่สุด !!!
+      console.error("!!! Error Name:", error.name);
+      // console.error("!!! Error Stack:", error.stack); // Optional stack trace
+      console.error("!!! Token received:", accessToken);
 
-      res.clearCookie("accessToken");
-      res.clearCookie("refreshToken");
-      req.user = null;
-      next();
+      // **ลบเฉพาะ Access Token Cookie** (หรือลบทั้งคู่ก็ได้ แต่ลบ AT ชัวร์ๆ Refresh Token ให้ Endpoint /refreshToken จัดการ)
+      console.log("Clearing expired/invalid accessToken cookie.");
+       res.clearCookie("accessToken", { httpOnly: true, secure: isProduction, sameSite: isProduction ? "None" : "Lax", path: "/" });
+       // ไม่ต้องลบ refreshToken cookie ตรงนี้ ปล่อยให้ Frontend เรียก /refreshToken แล้วให้ Endpoint /refreshToken ตัดสินใจลบเองถ้า Refresh Token ไม่ถูกต้อง
+
+      req.user = null; // Ensure req.user is null
+      console.log("req.user set to null. Authentication Failed in Middleware.");
+      // --- authMiddlewareOptional End (Auth Failed) ---\n");
+      next(); // ผ่านไป Route Handler ปลายทาง (เช่น getUserData) ซึ่งควรจะเช็ค !req.user และตอบ 401 เอง
+
     }
   };
 

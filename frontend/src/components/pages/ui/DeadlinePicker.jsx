@@ -18,7 +18,7 @@ function DeadlinePicker({ id, name, selected, onChange, placeholder }) {
         filterDate={date => date >= new Date()}
         placeholderText={placeholder}
         popperPlacement="bottom-start"
-        className="w-full cursor-pointer p-2 pl-14 shadow placeholder:text-deadlineTheme text-deadlineTheme text-xl border-[2px] border-deadlineTheme bg-transparent rounded-lg focus:outline-none focus:shadow-outline"
+        className="w-full cursor-pointer p-2 pl-14 shadow placeholder:text-deadlineTheme text-deadlineTheme text-xl border-[2px] border-deadlineTheme bg-transparent rounded-xl focus:outline-none focus:shadow-outline"
         calendarClassName="elegant-datepicker"
         showPopperArrow={false}
      />

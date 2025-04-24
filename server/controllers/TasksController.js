@@ -318,7 +318,7 @@ exports.getTask = async (req, res) => {
 
         return priorityComparison;
       });
-      console.log('task fetch',tasksWithProgress)
+      
     return res.status(200).json(tasksWithProgress);
   } catch (error) {
     handleError(res, error, "Failed to retrieve product");
@@ -514,10 +514,11 @@ exports.updatedTask = async (req, res) => {
       progress: updateData.progress || existingTask.progress,
       status: updateData.status || existingTask.status,
     };
-    console.log("final updateData.note", finalUpdateData.note);
-
+    
+    
     // ตรวจสอบและจัดการข้อมูล category
     if (finalUpdateData.category) {
+      console.log('update data.category process')
       if (isValidObjectId(finalUpdateData.category)) {
         const categoryPromise = await processCategory(
           finalUpdateData.category,
@@ -525,6 +526,7 @@ exports.updatedTask = async (req, res) => {
           req.guestId
         );
         finalUpdateData.category = categoryPromise;
+        console.log('final category', finalUpdateData.category)
       } else {
         return res.status(400).json({ error: "Invalid category value" });
       }

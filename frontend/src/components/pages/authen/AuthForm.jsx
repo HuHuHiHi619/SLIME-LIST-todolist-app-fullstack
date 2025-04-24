@@ -37,7 +37,7 @@ function AuthForm({ isRegister, setActiveTab }) {
         setActiveTab("login");
       } else {
         const response = await dispatch(loginUser(user)).unwrap();
-        console.log('authForm login response',response)
+        console.log("authForm login response", response);
         await dispatch(fetchUserData()).unwrap();
         console.log("login completed");
       }
@@ -45,14 +45,20 @@ function AuthForm({ isRegister, setActiveTab }) {
       setError(
         isRegister ? "Registration failed." : "Login failed. Please try again."
       );
-      console.error("ERROR",err);
+      console.error("ERROR", err);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="relative border border-purpleNormal bg-purpleSidebar p-10 rounded-2xl shadow-lg w-full max-w-lg ">
+    <div
+      className={`relative border   ${
+        isRegister
+          ? "bg-purpleSidebar border-purpleNormal"
+          : "bg-purpleMain border-purpleNormal "
+      } p-10 rounded-2xl shadow-lg w-full max-w-lg `}
+    >
       {loading && (
         <div className="popup-overlay">
           <SlimePortal />
@@ -87,7 +93,7 @@ function AuthForm({ isRegister, setActiveTab }) {
         />
         <button
           type="submit"
-          className="text-white text-xl bg-purpleNormal p-2 rounded-xl w-full tracking-widest hover:bg-violet-500 transition-all duration-300"
+          className="text-white text-xl bg-purpleNormal p-2 rounded-xl w-full tracking-widest hover:font-bold hover:bg-violet-500 transition-all duration-300"
         >
           {isRegister ? "CREATE ACCOUNT" : "LOGIN"}
         </button>
@@ -95,11 +101,20 @@ function AuthForm({ isRegister, setActiveTab }) {
 
       <button
         onClick={() => setActiveTab(isRegister ? "login" : "register")}
-        className="text-center mt-4  text-gray-400 hover:text-white"
+        className="w-full text-center mt-4  text-gray-400 hover:text-white "
       >
-        {isRegister
-          ? "Already have an account ? Sign in"
-          : "Don't have an account? Sign up"}
+        {isRegister ? (
+          <p>
+            Already have an account ?
+            <br />
+            Sign in
+          </p>
+        ) : (
+          <p>
+            Don't have an account? <br />
+            Sign up
+          </p>
+        )}
       </button>
     </div>
   );

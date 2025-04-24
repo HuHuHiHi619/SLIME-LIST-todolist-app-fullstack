@@ -1,13 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-
+import './Config/axiosConfig'
 // component
 import Home from "./components/pages/user/Home";
 import MainLayout from "./components/MainLayout";
 import Settings from "./components/pages/user/Settings";
-
+import AppleUserNotification from "./components/pages/ui/AppleUserNotification";
 // authen
 import AuthTabs from "./components/pages/authen/AuthTabs";
-
 import AuthProvider from "./components/pages/authen/AuthProvider";
 
 // routes
@@ -26,6 +25,7 @@ function App() {
   return (
     <>
       <AuthProvider skip={isGuest}>
+        <AppleUserNotification />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<MainLayout />}>

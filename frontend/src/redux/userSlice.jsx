@@ -126,7 +126,7 @@ const userSlice = createSlice({
         state.isAuthenticated = false;
       })
       .addCase(logoutUser.pending, (state) => {
-        state.isAuthenticated = false;
+       
         state.loading = true;
         state.authError = null;
       })

@@ -1,7 +1,8 @@
 import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL;
+import API_URL from "../Config/apiConfig";
 
 export const createCategory = async (data) => {
+  console.log('Create cate sending:', data)
   try {
     const response = await axios.post(`${API_URL}/categories`, data, {
       headers: {

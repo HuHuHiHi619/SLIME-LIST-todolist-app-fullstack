@@ -12,19 +12,17 @@ function BadgeField() {
     iron : "./images/Iron-badge.png"
   }
 
- 
-
   useEffect(() => {
     if (userData.id) {
       dispatch(fetchUserData(userData.id));
     }
   }, [dispatch, userData.id]);
   return (
-    <div className="bg-purpleSidebar border-2 border-purpleNormal  justify-start items-center rounded-3xl  ">
+    <div className="justify-start items-center  ">
       {isAuthenticated ? (
         
-          <div className="bg-purpleGradient p-1 rounded-2xl ">
-            <div className="bg-purpleSidebar rounded-xl p-4 px-10 w-full flex justify-center">
+          <div className="bg-purpleGradient p-0.5 rounded-3xl ">
+            <div className="bg-purpleSidebar rounded-3xl py-8 px-10 w-full flex justify-center">
               <div className="max-w-[128px] w-full aspect-square ">
                 <img  className="w-full h-full object-contain" src={badgeImages[userData.currentBadge] || "./images/Iron-badge.png"} alt="" />
               </div>
@@ -36,8 +34,8 @@ function BadgeField() {
           </div>
         
       ) : (
-        <div>
-          <p className="text-gray-400 text-center text-2xl p-10">
+        <div className="border-2 border-purpleNormal rounded-3xl">
+          <p className="text-gray-400 text-center text-2xl p-16">
             Please log in to view your badge
           </p>
         </div>

@@ -20,7 +20,7 @@ function StartDatePicker({ id, name, selected, onChange, placeholder }) {
         filterDate={(date) => date >= minDate}
         placeholderText={placeholder}
         popperPlacement="bottom-start"
-        className="w-full cursor-pointer p-2 pl-14 shadow placeholder:text-startDateTheme text-startDateTheme text-xl border-[2px] border-startDateTheme bg-transparent rounded-lg focus:outline-none focus:shadow-outline"
+        className="w-full cursor-pointer p-2 pl-14 shadow placeholder:text-startDateTheme text-startDateTheme text-xl border-[2px] border-startDateTheme bg-transparent rounded-xl focus:outline-none focus:shadow-outline"
         calendarClassName="elegant-datepicker"
         showPopperArrow={false}
       />

@@ -93,7 +93,7 @@ function SidebarLink({
                       : "text-white opacity-75 hover:bg-purpleNormal hover:bg-opacity-30"
                   }`}
                 >
-                  <span>{category.categoryName}</span>
+                  <span className={`${isCategoryActive ? "text-white" : ""} `}>{category.categoryName}</span>
                   <button
                     className=" opacity-50 hover:opacity-100 hover:text-red-400 transition-opacity duration-200"
                     onClick={(e) => {

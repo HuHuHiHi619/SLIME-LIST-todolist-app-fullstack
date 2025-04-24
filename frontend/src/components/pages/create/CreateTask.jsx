@@ -139,8 +139,8 @@ function CreateTask({ onClose }) {
 
   return (
     <FadeUpContainer>
-      <div className=" h-full max-h-[600px]  md:w-[800px] p-1 rounded-2xl relative">
-        <div className="bg-purpleSidebar p-6 rounded-xl">
+      <div className="relative">
+        <div className="bg-purpleSidebar p-6 rounded-3xl">
           <form onSubmit={handleSubmit}>
             <div className="flex justify-between items-center">
               <h1 className="text-white tracking-wide">CREATE A TASK</h1>
@@ -205,11 +205,11 @@ function CreateTask({ onClose }) {
             </div>
 
             <div className=" my-4 flex flex-col gap-2">
-              <h3 className="text-white text-2xl">Progress (optional)</h3>
+              <h3 className="text-white text-xl">Progress :</h3>
               <div className="flex flex-col gap-2">
                 <InputField
                   type="text"
-                  placeholder="Type a step and press Enter"
+                  placeholder="Type a subtask and press Enter"
                   name="progress"
                   id="progress"
                   value={currentStep}
@@ -248,9 +248,9 @@ function CreateTask({ onClose }) {
               </div>
               <button
                 type="submit"
-                className="done-button hover:scale-110 transition-all duration-100 "
+                className="register"
               >
-                Create
+                CREATE
               </button>
             </div>
           </form>

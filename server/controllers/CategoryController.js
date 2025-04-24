@@ -3,6 +3,7 @@ const { handleError } = require("../controllers/helperController");
 const { isValidObjectId , Types} = require("mongoose");
 
 exports.getCategory = async (req, res) => {
+ 
   try {
     const { id } = req.params;
     const formatUser =
@@ -42,7 +43,7 @@ exports.getCategory = async (req, res) => {
 exports.createCategory = async (req, res) => {
   try {
     const { categoryName } = req.body;
-
+    
     if (!categoryName) {
       return res.status(400).send({ error: "Category name is required" });
     }
@@ -54,7 +55,7 @@ exports.createCategory = async (req, res) => {
     const newCategory = new Category({
       categoryName,
       user: formatUser,
-      guestId: req.guestId || null,
+      guestId: formatUser ? null : req.guestId
     });
 
     const savedCategory = await newCategory.save();

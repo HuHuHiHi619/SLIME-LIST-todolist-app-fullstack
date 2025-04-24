@@ -12,12 +12,15 @@ const {
   updateOverdueTasks,
   resetDailyStreakStatus,
 } = require("./job/cronJob");
-const mongoSanitize = require("express-mongo-sanitize");
+
 
 const imagesPath = path.join(__dirname, "../images/badges");
 require("dotenv").config();
 connectDb();
-
+app.use((req, res, next) => {
+  console.log(`[Incoming Request] ${req.method} ${req.url}`);
+  next();
+});
 app.use(morgan("dev"));
 app.use(
   compression({
@@ -27,7 +30,7 @@ app.use(
 
 app.use(
   cors({
-    origin: ["https://slimelist.netlify.app", "http://localhost:5173"],
+    origin: ["https://slimelist.netlify.app", "http://localhost:5173"  ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -36,8 +39,6 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
-app.use(mongoSanitize());
-
 
 app.use(
   "/uploads",

@@ -27,7 +27,7 @@ function Navbar() {
           />
           <Link to="/" className=" flex items-center gap-3 pl-4 ">
             <img src="./images/Logo-slime.png" className="w-8 " alt="" />
-            <p className="text-sm md:text-3xl bg-purpleGradient bg-clip-text text-transparent">
+            <p className="text-sm md:text-3xl font-bold bg-purpleGradient bg-clip-text text-transparent">
               SLIME LIST
             </p>
           </Link>
@@ -39,14 +39,7 @@ function Navbar() {
               onClick={() => !loading && handleToggleRegister()}
               disabled={loading}
             >
-              {loading ? (
-                <FontAwesomeIcon
-                  icon={faSpinner}
-                  className="animate-spin mr-2"
-                />
-              ) : (
-                "Sign up"
-              )}
+              Sign up
             </button>
           </div>
         )}

@@ -79,7 +79,7 @@ function CategoryTagField({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="md:w-[230px] w-full h-[48px] cursor-pointer appearance-none text-xl shadow border-[2px] border-categoryTheme bg-transparent rounded-lg p-2 pl-12 text-categoryTheme leading-tight focus:outline-none focus:ring-2 focus:ring-categoryTheme focus:ring-opacity-50"
+        className="md:w-[230px] w-full h-[48px] cursor-pointer appearance-none text-xl shadow border-[2px] border-categoryTheme bg-transparent rounded-xl p-2 pl-12 text-categoryTheme leading-tight focus:outline-none focus:ring-2 focus:ring-categoryTheme focus:ring-opacity-50"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         data-value={localValue}
@@ -104,7 +104,7 @@ function CategoryTagField({
       {/* Dropdown options */}
       {isOpen && (
         <div 
-          className="absolute z-20 w-full mt-2 bg-darkBackground border border-purpleNormal rounded-lg shadow-lg overflow-auto" 
+          className="absolute z-20 w-full mt-2 bg-darkBackground border border-purpleNormal rounded-xl shadow-lg overflow-auto" 
           role="listbox"
         >
           <div

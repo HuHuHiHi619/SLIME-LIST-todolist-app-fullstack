@@ -26,9 +26,9 @@ function SearchField({ handleSearchToggle, isSearchOpen }) {
     if (!term) {
       dispatch(clearSearchResults());
     }
-    if (term.length > 100) {
+    if (term.length > 50) {
       return;
-    } else if (term.length < 100) {
+    } else if (term.length < 50) {
       dispatch(fetchSearchTasks(term));
     }
   }, 500);

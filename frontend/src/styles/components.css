@@ -26,7 +26,7 @@ span {
   @apply bg-purpleNormal  
   focus:outline-none  flex justify-center 
   cursor-pointer p-2 px-4 text-sm md:text-lg 
-  hover:bg-purpleBorder transition-all duration-75 ease-in
+  hover:bg-purpleBorder hover:font-bold transition-all duration-75 ease-in
   rounded-lg text-white;
 }
 
@@ -69,6 +69,18 @@ title {
   @apply bg-purpleBorder flex justify-center cursor-pointer p-2 px-4 text-2xl rounded-lg text-white;
 }
 
+.pixel-speech-bubble {
+  /* ... CSS อื่นๆ ของคุณ ... */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 11 12' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='0' width='8' height='1' fill='currentColor' /%3E%3Crect x='1' y='1' width='1' height='1' fill='currentColor' /%3E%3Crect x='0' y='2' width='1' height='8' fill='currentColor' /%3E%3Crect x='1' y='10' width='1' height='1' fill='currentColor' /%3E%3Crect x='2' y='11' width='7' height='1' fill='currentColor' /%3E%3Crect x='10' y='2' width='1' height='8' fill='currentColor' /%3E%3Crect x='9' y='1' width='1' height='1' fill='currentColor' /%3E%3Crect x='9' y='10' width='1' height='1' fill='currentColor' /%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain; /* หรือ 'auto' ขึ้นอยู่กับความต้องการ */
+  background-position: center; /* จัดตำแหน่งตรงกลาง */
+  color: rgb(223, 217, 217); /* กำหนดสีของ Pixel Art */
+  padding: 10px; /* เพิ่ม Padding เพื่อให้ Content ไม่ชิดขอบ */
+  min-width: 50px;
+  min-height: 30px;
+  
+}
 /* no task */
 .popup-notask {
   position: fixed;
@@ -178,7 +190,6 @@ input[type="checkbox"]:hover {
   border: 1px solid theme("colors.purpleNormal");
   border-radius: 12px;
   background-color: theme("colors.purpleMain");
-  
 }
 
 /* แก้ไขปัญหาที่ datepicker แสดงผลที่ top ของหน้าจอ */
@@ -217,8 +228,9 @@ input[type="checkbox"]:hover {
 }
 
 /* สีเหลืองเมื่อ hover */
-.elegant-datepicker .react-datepicker__day:hover:not(.react-datepicker__day--disabled) {
-  background-color: #FFD700; /* สีเหลือง */
+.elegant-datepicker
+  .react-datepicker__day:hover:not(.react-datepicker__day--disabled) {
+  background-color: #ffd700; /* สีเหลือง */
   color: #000000; /* ตัวอักษรสีดำเพื่อให้อ่านง่ายบนพื้นหลังสีเหลือง */
 }
 
@@ -231,7 +243,7 @@ input[type="checkbox"]:hover {
 
 /* วันที่ปัจจุบันเป็นสีแดง */
 .elegant-datepicker .react-datepicker__day--today {
-  background-color: #FF4136 !important; /* สีแดง */
+  background-color: #ff4136 !important; /* สีแดง */
   color: #ffffff !important;
 }
 

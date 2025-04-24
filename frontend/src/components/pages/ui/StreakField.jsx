@@ -9,7 +9,6 @@ import ReactDOM from "react-dom";
 
 import FadeUpContainer from "../animation/FadeUpContainer";
 
-
 function StreakField() {
   const dispatch = useDispatch();
   const { userData, isAuthenticated } = useSelector((state) => state.user);
@@ -62,35 +61,50 @@ function StreakField() {
   }, [dispatch, userData.id]);
 
   const streak = userData.currentStreak;
- 
+
+  const rawSvg = `
+  <svg viewBox="0 0 103 22" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="0" width="99" height="1" fill="#363669" />
+    <rect x="1" y="1" width="1" height="1" fill="#363669" />
+    <rect x="0" y="2" width="1" height="18" fill="#363669" />
+    <rect x="1" y="20" width="1" height="1" fill="#363669" />
+    <rect x="2" y="21" width="99" height="1" fill="#363669" />
+
+    <rect x="101" y="1" width="1" height="1" fill="#363669" />
+    <rect x="102" y="2" width="1" height="18" fill="#363669" />
+    <rect x="101" y="20" width="1" height="1" fill="#363669" />
+  </svg>
+  `;
+
+  const svgDataUrl = `data:image/svg+xml,${encodeURIComponent(rawSvg)}`;
   return (
-    <div className="flex  w-full gap-4">
+    <div className="flex w-full gap-4">
       {isAuthenticated ? (
         <>
           {/* BEST STREAK */}
-            <div className="hidden xl:flex items-center justify-center   border-2 border-fuchsia-400  rounded-3xl  flex-1">
-          <Tooltip description="Best Streak" position="top" >
-              <div className="flex items-center gap-2 bg-fuchsia-400 bg-clip-text text-transparent">
+          <div className=" hidden xl:flex items-center justify-center rounded-3xl border-2 border-fuchsia-400  flex-1">
+            <Tooltip description="Best Streak" position="top">
+              <div className=" flex items-center gap-2 bg-fuchsia-400 bg-clip-text text-transparent">
                 <p className=" text-6xl">{userData.bestStreak}</p>
                 <div className=" hidden 2xl:block text-lg">
                   <p>BEST</p>
                   <p>STREAK</p>
                 </div>
               </div>
-          </Tooltip>
-            </div>
+            </Tooltip>
+          </div>
 
           {/* CURRENT STREAK */}
-            <div
-              className={`hidden xl:flex items-center justify-center border-2 border-purpleBorder rounded-3xl  flex-1
+          <div
+            className={`hidden xl:flex items-center justify-center border-2 border-purpleBorder rounded-3xl  flex-1
                 ${
                   userData.alreadyCompletedToday
-                  ? "bg-purpleBorder bg-clip-text text-transparent"
-                  : "opacity-70 text-purpleNormal border-purpleNormal"
-              }
+                    ? "bg-purpleBorder bg-clip-text text-transparent"
+                    : "opacity-70 text-purpleNormal border-purpleNormal"
+                }
               `}
-              >
-              <Tooltip description="Current Streak" position="top">
+          >
+            <Tooltip description="Current Streak" position="top">
               <div className="flex items-center gap-2 ">
                 <p className="text-6xl">{userData.currentStreak}</p>
                 <div className="hidden 2xl:block text-lg">
@@ -98,12 +112,12 @@ function StreakField() {
                   <p>NOW</p>
                 </div>
               </div>
-          </Tooltip>
-            </div>
+            </Tooltip>
+          </div>
 
           {/* STREAK BAR */}
           <div
-            className={`bg-purpleMain border-2 rounded-3xl  px-4 py-2  flex-1
+            className={`bg-darkBackground border-2 rounded-3xl  px-4 py-2  flex-1
             ${streak === 0 ? "border-purpleNormal" : ""}
             ${streak <= 5 && streak !== 0 ? "border-orange-400" : ""}
             ${streak >= 6 && streak <= 10 ? "border-sky-500" : ""}
@@ -151,8 +165,11 @@ function StreakField() {
           </div>
         </>
       ) : (
-        <div className="bg-purpleSidebar border-2 border-purpleNormal rounded-3xl  w-full">
-          <p className="text-gray-400 text-center text-2xl p-16">
+        <div
+          className="w-full  rounded-3xl border-2 border-purpleNormal"
+          
+        >
+          <p className="text-gray-400 text-center text-2xl p-12">
             Please log in to view your streak
           </p>
         </div>

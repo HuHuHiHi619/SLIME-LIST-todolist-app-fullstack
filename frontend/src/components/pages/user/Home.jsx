@@ -12,7 +12,7 @@ function Home() {
      
       <TaskForm filter={{ status: "pending" }} />
 
-      <div className="hidden lg:pl-10 lg:mt-6 lg:flex lg:flex-col lg:gap-6 mr-10">
+      <div className="hidden lg:pl-2 lg:mt-6 lg:flex lg:flex-col lg:gap-6 mr-6">
         <FadeUpContainer direction="up" delay={0.2}>
           <StreakField />
         </FadeUpContainer>

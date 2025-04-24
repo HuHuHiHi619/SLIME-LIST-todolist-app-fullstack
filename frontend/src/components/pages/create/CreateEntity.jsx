@@ -8,12 +8,12 @@ import Tooltip from "../ui/Tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-function CreateEntity({ onAddItem, entityType ,onClose}) {
+function CreateEntity({ onAddItem, entityType, onClose }) {
   const [formEntity, setFormEntity] = useState({
     name: "",
   });
   const [error, setError] = useState("");
-  const { categories} = useSelector((state) => state.tasks);
+  const { categories } = useSelector((state) => state.tasks);
   const validator = () => {
     setError("");
     if (formEntity.name.length > 10) {
@@ -34,7 +34,10 @@ function CreateEntity({ onAddItem, entityType ,onClose}) {
   };
 
   const handleSubmit = async (e) => {
-    if ((e.key === "Enter" || e.type === "click") && formEntity.name.trim() !== "") {
+    if (
+      (e.key === "Enter" || e.type === "click") &&
+      formEntity.name.trim() !== ""
+    ) {
       e.preventDefault();
       if (!validator()) {
         return;
@@ -63,7 +66,9 @@ function CreateEntity({ onAddItem, entityType ,onClose}) {
       <FadeUpContainer>
         <div className="bg-purpleGradient p-0.5 rounded-xl md:w-[450px] relative">
           <div className="bg-purpleSidebar p-8 rounded-xl">
-            <p className="text-2xl md:text-3xl text-white">CREATE  {entityType}</p>
+            <p className="text-2xl md:text-3xl text-white">
+              CREATE {entityType}
+            </p>
             {error && <p className="text-xl text-rose-500">{error}</p>}
             <InputField
               type="text"
@@ -73,14 +78,24 @@ function CreateEntity({ onAddItem, entityType ,onClose}) {
               onKeyDown={handleSubmit}
               className="w-full placeholder:text-xl px-4 py-3 rounded-xl my-6"
             />
-              <button onClick={handleSubmit} className="done-button mx-auto active:scale-105">Create</button>
-                <button className="text-gray-500 text-xl  absolute top-3 right-5" onClick={onClose}>
+            <button
+              onClick={handleSubmit}
+              className="done-button mx-auto active:scale-105"
+            >
+              Create
+            </button>
+            <button
+              className="text-gray-500 text-xl  absolute top-3 right-5"
+              onClick={onClose}
+            >
               <Tooltip description={"close"} position="top">
-                  <FontAwesomeIcon icon={faXmark} className="hover:text-red-500" />
+                <FontAwesomeIcon
+                  icon={faXmark}
+                  className="hover:text-red-500"
+                />
               </Tooltip>
-                  </button>
+            </button>
           </div>
-        
         </div>
       </FadeUpContainer>
     </>

@@ -1,9 +1,9 @@
-const { startOfDay, differenceInDays,} = require("date-fns");
-const { formatInTimeZone } = require("date-fns-tz");  // Fixed typo here
+const { startOfDay, differenceInDays } = require("date-fns");
+const { formatInTimeZone } = require("date-fns-tz"); // Fixed typo here
 const Category = require("../Models/Category");
 const Tag = require("../Models/Tag");
 const User = require("../Models/User");
-const Tasks = require("../Models/Tasks");
+
 
 exports.handleError = (
   res,
@@ -54,10 +54,10 @@ exports.processCategory = async (categoryId, userId, guestId) => {
     _id: categoryId, // ค้นหาจาก ID
     $or: [],
   };
-
   if (userId) query.$or.push({ user: userId });
   if (guestId) query.$or.push({ guestId });
-
+  
+  console.log('category query',query)
   const existCategory = await Category.findOne(query);
   console.log("exist cat:", existCategory);
   if (!existCategory) {
@@ -86,7 +86,11 @@ const calculateBadge = (streakDays) => {
   if (streakDays >= 1) return "bronze";
   return "iron";
 };
-exports.updateUserStreak = async (userId, completed, taskCompletionDetails = {}) => {
+exports.updateUserStreak = async (
+  userId,
+  completed,
+  taskCompletionDetails = {}
+) => {
   console.log("Updating streak for user:", userId, "completed:", completed);
   try {
     const user = await User.findById(userId);
@@ -95,25 +99,42 @@ exports.updateUserStreak = async (userId, completed, taskCompletionDetails = {})
       throw new Error("User not found!");
     }
 
-    const currentDate = startOfDay(new Date(formatInTimeZone(new Date(), 'Asia/Bangkok', 'yyyy-MM-dd HH:mm:ss')));
-const lastCompletedDate = user.lastCompleted
-  ? startOfDay(new Date(formatInTimeZone(new Date(user.lastCompleted), 'Asia/Bangkok', 'yyyy-MM-dd HH:mm:ss')))
-  : null;
+    const currentDate = startOfDay(
+      new Date(
+        formatInTimeZone(new Date(), "Asia/Bangkok", "yyyy-MM-dd HH:mm:ss")
+      )
+    );
+    const lastCompletedDate = user.lastCompleted
+      ? startOfDay(
+          new Date(
+            formatInTimeZone(
+              new Date(user.lastCompleted),
+              "Asia/Bangkok",
+              "yyyy-MM-dd HH:mm:ss"
+            )
+          )
+        )
+      : null;
     // Debug logs
     console.log("Current date:", currentDate);
     console.log("Last completed:", lastCompletedDate);
     console.log("Current streak:", user.currentStreak);
-    
+
     if (completed) {
       // ถ้ายังไม่เคยทำ task วันนี้
       if (!user.alreadyCompletedToday) {
-        const dayDifference = lastCompletedDate ? 
-          differenceInDays(currentDate, lastCompletedDate) : null;
-        
+        const dayDifference = lastCompletedDate
+          ? differenceInDays(currentDate, lastCompletedDate)
+          : null;
+
         console.log("Days difference:", dayDifference);
 
         // กรณีแรกเริ่มใช้งาน หรือ streak ขาด (ไม่ได้ทำมาเกิน 1 วัน)
-        if (!lastCompletedDate || user.currentStreak === 0 || dayDifference > 1) {
+        if (
+          !lastCompletedDate ||
+          user.currentStreak === 0 ||
+          dayDifference > 1
+        ) {
           console.log("Starting new streak");
           user.currentStreak = 1;
         }
@@ -124,17 +145,20 @@ const lastCompletedDate = user.lastCompleted
         }
         // ทำในวันเดียวกัน
         else if (dayDifference === 0) {
-          console.log("Same day completion, streak remains:", user.currentStreak);
+          console.log(
+            "Same day completion, streak remains:",
+            user.currentStreak
+          );
           // ไม่ต้องเพิ่ม streak เพราะเป็นวันเดียวกัน
         }
 
         // อัพเดต last completed และ flag
         user.lastCompleted = currentDate;
         user.alreadyCompletedToday = true;
-        
+
         // อัพเดต best streak
         user.bestStreak = Math.max(user.currentStreak, user.bestStreak || 0);
-        
+
         console.log("Updated streak:", user.currentStreak);
         console.log("Updated best streak:", user.bestStreak);
       } else {

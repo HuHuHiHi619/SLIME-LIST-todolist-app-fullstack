@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const CreateButton = ({ children , onClick }) => {
+const CreateButton = ({ children, onClick }) => {
   // Animation variants
   const buttonVariants = {
     initial: {
@@ -48,9 +48,6 @@ const CreateButton = ({ children , onClick }) => {
       },
     },
   };
-
- 
-
 
   const iconVariants = {
     initial: { rotate: 0 },
@@ -123,9 +120,9 @@ const CreateButton = ({ children , onClick }) => {
 
         {/* Button content */}
         <motion.div className="relative z-10 flex items-center ">
-          <motion.div variants={iconVariants} >
+          <motion.div variants={iconVariants}>
             <svg
-              className="w-4 h-4 md:w-8 md:h-8"
+              className="w-4 h-4 md:w-6 md:h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

@@ -24,8 +24,8 @@ function TaskList({
   const [isHover, setIsHover] = useState({});
 
   return (
-    <div className="w-full min-w-0 p-8 border-2 bg-purpleSidebar border-purpleNormal rounded-3xl ">
-      <div className="flex justify-between mb-4 mr-0 md:mr-3">
+    <div className="w-full min-w-0 p-6 border-2 bg-purpleSidebar border-purpleNormal rounded-3xl ">
+      <div className="flex justify-between mb-4 mr-0 md:mr-4">
         <p className="text-white text-lg md:text-2xl flex items-center pr-2 md:pr-24 w-auto truncate">
           {label}
         </p>

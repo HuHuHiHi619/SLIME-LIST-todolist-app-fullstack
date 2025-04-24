@@ -4,11 +4,7 @@ import StartDatePicker from "./StartDatePicker";
 import DeadlinePicker from "./DeadlinePicker";
 import ProgressField from "./ProgressField";
 import CategoryTagField from "./CategoryTagField";
-import {
-  updatedTask,
-  fetchCategories,
-  updatedTaskAttempt,
-} from "../../../redux/taskSlice";
+import { updatedTask, updatedTaskAttempt } from "../../../redux/taskSlice";
 import { debounce } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import FadeUpContainer from "../animation/FadeUpContainer";
@@ -28,7 +24,6 @@ function TaskDetail({ onClose }) {
   const [editedTask, setEditedTask] = useState(selectedTask || {});
   const [currentStep, setCurrentStep] = useState("");
 
-  //useref for Debounce
   const debouncedUpdateTask = useRef(
     debounce(async (taskData) => {
       try {
@@ -59,10 +54,17 @@ function TaskDetail({ onClose }) {
     }
   }, [selectedTask]);
 
+  useEffect(() => {
+    return () => {
+      // บังคับ run debounce เมื่อ unmount
+      debouncedUpdateTask.flush();
+    };
+  }, [debouncedUpdateTask]);
+
   const handleInputChange = useCallback(
     (e) => {
       const { name, value } = e.target;
-      const updatedValue = value.trim() === "" ? "" : value
+      const updatedValue = value.trim() === "" ? "" : value;
       setEditedTask((prevTask) => {
         const updatedTask = { ...prevTask };
         if (name === "category") {
@@ -76,8 +78,8 @@ function TaskDetail({ onClose }) {
           }
         } else {
           updatedTask[name] = updatedValue;
-          console.log(value)
-          console.log(updatedValue)
+          console.log(value);
+          console.log(updatedValue);
         }
         debouncedUpdateTask(updatedTask);
         return updatedTask;
@@ -110,8 +112,7 @@ function TaskDetail({ onClose }) {
         setEditedTask((prevTask) => {
           const updatedSteps = [
             ...(prevTask.progress?.steps || []),
-            { label: currentStep },
-            { completed: false },
+            { label: currentStep, completed: false },
           ];
           const updatedTask = {
             ...prevTask,
@@ -120,9 +121,9 @@ function TaskDetail({ onClose }) {
               steps: updatedSteps,
               totalSteps: updatedSteps.length,
               allStepsCompleted:
-              updatedSteps.length > 0
-                ? updatedSteps.every((step) => step.completed)
-                : false,
+                updatedSteps.length > 0
+                  ? updatedSteps.every((step) => step.completed)
+                  : false,
             },
           };
           debouncedUpdateTask(updatedTask);
@@ -177,8 +178,8 @@ function TaskDetail({ onClose }) {
                 : false,
           },
         };
-        debouncedUpdateTask(updatedTask)
-        return updatedTask
+        debouncedUpdateTask(updatedTask);
+        return updatedTask;
       });
     },
     [debouncedUpdateTask]
@@ -190,7 +191,7 @@ function TaskDetail({ onClose }) {
 
   return (
     <FadeUpContainer>
-      <div className="bg-purpleSidebar p-6 rounded-xl">
+      <div className="bg-darkBackground p-6 rounded-3xl">
         <div className="flex justify-between items-center">
           <p className="text-white text-xl">TASK DETAILS</p>
           <div className="flex items-center gap-6 ">
@@ -260,14 +261,14 @@ function TaskDetail({ onClose }) {
             placeholder="Note"
             value={editedTask.note || ""}
             onChange={handleInputChange}
-            className=" scrollbar-custom w-full  text-xl text-white  bg-darkBackground rounded-lg p-2 px-4 focus:outline-none focus:border-purple-400"
+            className="scrollbar-custom w-full text-xl text-white bg-purpleMain rounded-lg p-2 px-4 border-0.5 border-transparent focus:outline-none focus:ring focus:ring-purple-400 focus:border-purple-400 "
           />
           <div className="flex flex-col gap-4 mt-4 mb-2">
             <div>
               <InputField
                 type="text"
                 name="progress"
-                placeholder="Enter a step "
+                placeholder="Type a subtask and press enter"
                 value={currentStep || ""}
                 onChange={handleStepChange}
                 onKeyDown={handleStepKeyDown}
@@ -306,7 +307,7 @@ function TaskDetail({ onClose }) {
             ))}*/}
             </div>
           </div>
-          <button className="done-button mt-4" onClick={onClose}>
+          <button className="register mt-4" onClick={onClose}>
             Done
           </button>
         </div>

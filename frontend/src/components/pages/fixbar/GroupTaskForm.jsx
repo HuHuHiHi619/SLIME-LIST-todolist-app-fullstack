@@ -1,4 +1,4 @@
-import React , { Suspense }from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import TaskList from "../ui/TaskList";
 import CreateTask from "../create/CreateTask";
@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import Tooltip from "../ui/Tooltip";
 
- const TaskDetail = React.lazy(() =>  import("../ui/taskDetail"))
+const TaskDetail = React.lazy(() => import("../ui/taskDetail"));
 
 function GroupTaskForm({ filter }) {
   const { selectedTask, isCreate, isSideBarPinned } = useSelector(
@@ -28,7 +28,7 @@ function GroupTaskForm({ filter }) {
   } = usePopup();
 
   return (
-    <div >
+    <div>
       {fetchedAllTasks &&
       Array.isArray(fetchedAllTasks) &&
       fetchedAllTasks.length > 0 ? (
@@ -38,28 +38,29 @@ function GroupTaskForm({ filter }) {
           const keys = `
             ${group.categoryId || group.status || group.deadlineCase}-${index}`;
           const tasks = group.tasks || [];
-          console.log("Fetched Tasks:",tasks);
-         
+          console.log("Fetched Tasks:", tasks);
 
           return (
-            <div className="mx-8 sm:mx-14 grid-cols-1 grid gap-6 my-8" key={keys}>
+            <div
+              className="mx-8 sm:mx-14 grid-cols-1 grid gap-6 my-8"
+              key={keys}
+            >
               {label.toLowerCase() === "completed" &&
                 tasks.filter((task) => task.status === "completed").length >
                   0 &&
                 !isSideBarPinned && (
                   <Tooltip>
-
-                  <button
-                    className="red-button clear-allTask"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      handleRemovedAllTask();
-                    }}
+                    <button
+                      className="red-button clear-allTask"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleRemovedAllTask();
+                      }}
                     >
-                    <FontAwesomeIcon icon={faTrashCan} />
-                  </button>
-                    </Tooltip>
+                      <FontAwesomeIcon icon={faTrashCan} />
+                    </button>
+                  </Tooltip>
                 )}
               <TaskList
                 key={keys}

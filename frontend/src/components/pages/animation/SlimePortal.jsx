@@ -2,64 +2,58 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Slime Component
-export const BouncingSlime = ({ size = 200, duration = 2 }) => {
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ x: -50, scale: 0.2, opacity: 0 }} // เริ่มต้นที่ left: 10%
-        animate={{
-          opacity: 1,
-          scale: 1,
-          y: [-300, 0, -180, 0, -100, 0, -20, 0],
-          scaleY: [1, 0.8, 1.2, 0.8, 1.2, 0.8, 1, 1, ],
-          scaleX: [1, 1.2, 0.8, 1.2, 0.8, 1.2, 1, 1, ],
-        }}
-        transition={{
-          opacity: { duration: 0.2 },
-          scale: { duration: 0.5 },
 
-          y: {
-            duration: duration,
-            type: "keyframes",
-            ease: "easeInOut",
-            delay: 0,
-            repeat: false,
-          },
-          scaleX: {
-            duration: duration,
-            times: [0, 0.1, 0.2, 0.35, 0.5, 0.65, 0.8, 0.9, 1],
-            repeat: Infinity,
-            type: "keyframes",
-          },
-          scaleY: {
-            duration: duration,
-            times: [0, 0.1, 0.2, 0.35, 0.5, 0.65, 0.8, 0.9, 1],
-            repeat: Infinity,
-            type: "keyframes",
-          },
-        }}
-        style={{
-          width: size,
-          height: size,
-          backgroundImage: `url(./images/Logo-slime.png)`,
-          backgroundSize: "cover",
-          zIndex: 10,
-        }}
-      />
-    </AnimatePresence>
+export const BouncingSlime = ({ size = 200, duration = 2 , isLooping = false , repeatCount = 0}) => {
+
+ const animationRepeat = isLooping ? Infinity : repeatCount;
+ const animationRepeatType = "loop"; // หรือ "reverse"
+
+  return (
+      <AnimatePresence>
+          <motion.div
+              initial={{ x: -50, scale: 0.2, opacity: 0, y: -300 }} // เริ่มต้นที่ y สูงหน่อย
+              animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: 0
+              }}
+              transition={{
+                  opacity: { duration: 0.2 },
+                  scale: { duration: 0.5 },
+                  repeat: animationRepeat, // ใชัค่าที่คำนวณจาก props
+                  repeatType: animationRepeatType, // ใช้ "loop"
+                  y: {
+                      type: "spring",
+                      bounce: 0.8, // Bounce 0-1, 1 คือเด้งตลอด
+                      duration : duration
+                  },
+              }}
+              style={{
+                 // ... styles เหมือนเดิม
+                 width: size,
+                 height: size,
+                 backgroundImage: `url(./images/Logo-slime.png)`,
+                 backgroundSize: "cover",
+                 backgroundRepeat: "no-repeat",
+                 backgroundPosition: "center",
+                 zIndex: 10,
+                 position: "absolute",
+              }}
+          />
+      </AnimatePresence>
   );
 };
 
 // zigzagtext
 const Zigzagtext = ({ text = "SLIMELIST", delay = 0.5 }) => {
   return (
-    <div className="flex ">
+    <div className="flex ml-32">
       {text.split("").map((char, index) => {
         const isEven = index % 2 === 0;
         return (
           <motion.div
-            key={`${char}-${index}`}
-            className=" text-[100px] bg-gradient-to-b from-white to-purpleBorder bg-clip-text text-transparent"
+            key={`${char}-${index}`} 
+            className=" text-[100px] font-bold bg-gradient-to-b from-fuchsia-600 to-purpleBorder bg-clip-text text-transparent"
             initial={{
               y: isEven ? -200 : 200,
               opacity: 0,

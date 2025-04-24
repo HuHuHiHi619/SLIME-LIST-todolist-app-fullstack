@@ -1,85 +1,66 @@
-import React , { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchUserData,
-  setAuthError,
-} from "../../../redux/userSlice";
-import { clearSummaryState } from "../../../redux/summarySlice";
-import {
-  fetchSummary,
-  fetchSummaryByCategory,
-} from "../../../redux/summarySlice";
-import { fetchTasks } from "../../../redux/taskSlice";
+import { fetchUserData } from "../../../redux/userSlice"; // fetchUserData เป็น Thunk
 import { BouncingSlime } from "../animation/SlimePortal";
 
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state) => state.user);
-  const [initialCheckDone, setInitialCheckDone] = useState(() => {
-      const storedCheck = sessionStorage.getItem('initialCheckDone')
-      return storedCheck === 'true'
-  });
-  React.useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        console.log("Attempting to fetch user data...");
-        // ลอง fetch user data เลย ไม่ต้องเช็ค token ฝั่ง client
-        await dispatch(fetchUserData()).unwrap();
-        console.log("User authenticated successfully via fetched data!");
-        sessionStorage.setItem('initialCheckDone', 'true')
-      
-      } catch (error) {
-        // fetchUserData ล้มเหลว (อาจจะ 401 Unauthorized หรือ Network error)
-        console.warn("Failed to fetch user data or not authenticated:", error);
-        sessionStorage.setItem('initialAuthCheckDone', 'true');
-        if (
-          error?.message?.includes("401") ||
-          error?.message?.toLowerCase().includes("unauthorized") ||
-          !isAuthenticated
-        ) {
-          // เพิ่มการตรวจสอบสถานะปัจจุบันด้วย
-          console.log(
-            "Authentication failed or no valid session - switching to guest mode"
-          );
-        
-          dispatch(clearSummaryState());
-          dispatch(setAuthError(null)); 
+  
+  const {isAuthenticated} = useSelector(state => state.user); 
 
-          // ดึงข้อมูลสำหรับ guest
-          try {
-            await dispatch(fetchSummary()).unwrap();
-            await dispatch(fetchSummaryByCategory()).unwrap();
-            await dispatch(fetchTasks()).unwrap();
-          } catch (guestError) {
-            console.error("Error fetching data for guest:", guestError);
-          }
-        } else {
-          
-          console.error("Auth check failed due to non-auth error:", error);
-          dispatch(setAuthError("Failed to connect to server."));
-        }
-      } finally {
-        setInitialCheckDone(true);
-      }
+  // ใช้ local state เพื่อติดตามว่าได้พยายามตรวจสอบ Authentication ครั้งแรกไปแล้วหรือยัง
+  const [initialCheckAttempted, setInitialCheckAttempted] = useState(false);
+
+
+  useEffect(() => {
+   
+    if (isAuthenticated) {
+        console.log("AuthProvider: User already authenticated in Redux state. Skipping initial fetch.");
+        setInitialCheckAttempted(true); // เช็คแล้ว
+        return; 
+    }
+
+    // ถ้า Redux State บอกว่ายังไม่ Login ให้พยายาม Fetch ข้อมูลผู้ใช้
+    // การเรียก fetchUserData นี้จะไป Trigger Interceptor ถ้า Access Token หมดอายุ
+    console.log("AuthProvider: User not authenticated in Redux state. Attempting to fetch user data...");
+
+    const attemptFetchUser = async () => {
+       try {
+         // Dispatch Thunk fetchUserData และรอผลลัพธ์ (รวมถึง Interceptor และ Retry)
+         await dispatch(fetchUserData()).unwrap();
+         console.log("AuthProvider: fetchUserData (and potential refresh/retry) succeeded.");
+         // State isAuthenticated จะถูกอัปเดตเป็น true โดย Reducer fetchUserData.fulfilled
+
+       } catch (error) {
+         // หาก fetchUserData ล้มเหลว (รวมถึงกรณี Interceptor Refresh ล้มเหลวและ Dispatch logoutUser ไปแล้ว)
+         console.warn("AuthProvider: fetchUserData failed during initial check.", error);
+         // State isAuthenticated จะถูกตั้งค่าเป็น false โดย Reducer fetchUserData.rejected หรือ logoutUser.fulfilled
+       } finally {
+         // ไม่ว่าสำเร็จหรือล้มเหลว ให้ตั้งค่าว่าพยายามตรวจสอบครั้งแรกเสร็จแล้ว
+         setInitialCheckAttempted(true);
+         console.log("AuthProvider: Initial authentication check attempt finished.");
+       }
     };
 
-    if (!initialCheckDone) {
-      //ทำงานครั้งเดียวเมื่อโหลด
-      checkAuth();
-    }
-  }, [dispatch, initialCheckDone, isAuthenticated]); // เพิ่ม isAuthenticated ใน dependency array
+   
+    attemptFetchUser();
 
- 
-  // รอ Implement การ Refresh Token อัตโนมัติถ้า fetchUserData ล้มเหลวเพราะ Access Token หมดอายุ
+   
+  }, [dispatch]); 
 
-  if (!initialCheckDone)
-    return (
-      <>
-        <div className="fixed inset-0 pl-32 w-full h-full flex justify-center items-center bg-darkBackground">
-          <BouncingSlime />
-        </div>
-      </>
-    );
+   if (!initialCheckAttempted) { 
+       console.log("AuthProvider: Showing loading spinner (Initial check not attempted or still loading)...");
+       return (
+         <>
+           <div className="fixed inset-0 pl-32 w-full h-full flex justify-center items-center bg-darkBackground">
+             <BouncingSlime isLooping={true} />
+           </div>
+         </>
+       );
+   }
+
+  // เมื่อตรวจสอบครั้งแรกเสร็จแล้ว (สำเร็จหรือล้มเหลว) ให้ Render children
+  console.log("AuthProvider: Initial check attempted. Rendering children.");
   return children;
 };
 
