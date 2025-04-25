@@ -23,7 +23,7 @@ export const register = async (data) => {
 
 export const userLogin = async (data) => {
   try {
-    console.log("API_URL",API_URL)
+    
     const response = await axios.post(`/login`, data, {
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export const userLogin = async (data) => {
 export const userLogout = async () => {
   try {
     const response = await axios.post(
-      `${API_URL}/logout`,
+      `/logout`,
       {},
       {
         headers: {
@@ -83,7 +83,7 @@ export const getUserData = async () => {
 export const getRefreshToken = async () => {
   try {
     const response = await axios.post(
-      `${API_URL}/refreshToken`,
+      `/refreshToken`,
       {},
       {
         headers: {
