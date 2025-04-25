@@ -1,5 +1,5 @@
 [[redirects]]
-    from = "/api/*
+    from = "/api/*"
     to = "https://slime-list-todolist-app-fullstack.onrender.com/api/:splat"
     status = 200
     force = true
