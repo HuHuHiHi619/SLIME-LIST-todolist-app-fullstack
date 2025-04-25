@@ -1,11 +1,8 @@
 import axios from "axios";
-import API_URL from "../Config/apiConfig";
-
-
 
 export const createTask = async (data) => {
   try {
-    const response = await axios.post(`${API_URL}/task`, data, {
+    const response = await axios.post(`/task`, data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -28,7 +25,7 @@ export const createTask = async (data) => {
 export const getData = async (filter) => {
   try {
     
-    const response = await axios.get(`${API_URL}/task`, {
+    const response = await axios.get(`/task`, {
       params: filter,
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +48,7 @@ export const getData = async (filter) => {
 
 export const searchedTask = async (searchTerm) => {
   try {
-    const response = await axios.get(`${API_URL}/task/searchTask?q=${searchTerm}`, {
+    const response = await axios.get(`/task/searchTask?q=${searchTerm}`, {
       headers:{
         "Content-Type": "application/json"
       },
@@ -75,7 +72,7 @@ export const completeTask = async (taskId) => {
 
   try {
     const response = await axios.patch(
-      `${API_URL}/task/${taskId}/completed`,
+      `/task/${taskId}/completed`,
       {},
       {
         headers: {
@@ -103,7 +100,7 @@ export const completeTask = async (taskId) => {
 export const updateTask = async (id, data) => {
   console.log("SENT DATA", data);
   try {
-    const response = await axios.put(`${API_URL}/task/${id}`, data, {
+    const response = await axios.put(`/task/${id}`, data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -128,7 +125,7 @@ export const updateTask = async (id, data) => {
 
 export const removeTask = async (taskId) => {
   try {
-    const response = await axios.delete(`${API_URL}/task/${taskId}/`, {
+    const response = await axios.delete(`/task/${taskId}/`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -148,7 +145,7 @@ export const removeTask = async (taskId) => {
 
 export const removeAllCompletedTask = async () => {
   try{
-    const response = await axios.delete(`${API_URL}/completedTask`,{
+    const response = await axios.delete(`/completedTask`,{
       headers:{
         "Content-type": "application/json"
       },
@@ -169,7 +166,7 @@ export const removeAllCompletedTask = async () => {
 export const updateTaskAttempt = async (taskId) => {
   try {
     const response = await axios.put(
-      `${API_URL}/user/${taskId}/attempt`,
+      `/user/${taskId}/attempt`,
       {},
       {
         headers: { "Content-Type": "application/json" },

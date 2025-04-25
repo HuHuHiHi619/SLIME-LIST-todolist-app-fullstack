@@ -1,12 +1,10 @@
 import axios from "axios";
-import API_URL from "../Config/apiConfig";
+
 
 export const getSummaryTask = async () => {
   try {
-    console.log("===== FETCHING SUMMARY =====");
-    console.log("URL:", `${API_URL}/summary/completed-rate`);
-    console.log("withCredentials:", true);
-    const response = await axios.get(`${API_URL}/summary/completed-rate`, {
+  
+    const response = await axios.get(`/summary/completed-rate`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -35,7 +33,7 @@ export const getSummaryTask = async () => {
 export const getSummaryTaskByCategory = async () => {
   try {
     const response = await axios.get(
-      `${API_URL}/summary/completed-rate-by-category`,
+      `/summary/completed-rate-by-category`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +65,7 @@ export const getSummaryTaskByCategory = async () => {
 export const getSummaryProgressRate = async (id) => {
   try {
     const response = await axios.get(
-      `${API_URL}/summary/completed-progress-rate/${id}`,
+      `/summary/completed-progress-rate/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -94,7 +92,7 @@ export const getSummaryProgressRate = async (id) => {
 
 export const summaryNotification = async () => {
   try {
-    const response = await axios.get(`${API_URL}/notification`, {
+    const response = await axios.get(`/notification`, {
       headers: {
         "Content-Type": "application/json",
       },

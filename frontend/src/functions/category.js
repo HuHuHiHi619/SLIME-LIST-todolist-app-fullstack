@@ -1,10 +1,10 @@
 import axios from "axios";
-import API_URL from "../Config/apiConfig";
+
 
 export const createCategory = async (data) => {
   console.log('Create cate sending:', data)
   try {
-    const response = await axios.post(`${API_URL}/categories`, data, {
+    const response = await axios.post(`/categories`, data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -25,7 +25,7 @@ export const createCategory = async (data) => {
 
 export const removeCategory = async (categoryId) => {
   try{
-    const response = await axios.delete(`${API_URL}/categories/${categoryId}`,{
+    const response = await axios.delete(`/categories/${categoryId}`,{
       headers:{
         "Content-Type":"application/json"
       },
@@ -45,7 +45,7 @@ export const removeCategory = async (categoryId) => {
 
 export const getCategoryData = async () => {
   try{
-    const response = await axios.get(`${API_URL}/categories`,{
+    const response = await axios.get(`/categories`,{
       headers: {
         "Content-Type":"application/json",
       },

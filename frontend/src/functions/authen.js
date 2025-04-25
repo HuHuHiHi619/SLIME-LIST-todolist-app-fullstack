@@ -1,9 +1,9 @@
 import axios from "axios";
-import API_URL from "../Config/apiConfig";
+
 
 export const register = async (data) => {
   try {
-    const response = await axios.post(`${API_URL}/register`, data, {
+    const response = await axios.post(`/register`, data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -24,7 +24,7 @@ export const register = async (data) => {
 export const userLogin = async (data) => {
   try {
     console.log("API_URL",API_URL)
-    const response = await axios.post(`${API_URL}/login`, data, {
+    const response = await axios.post(`/login`, data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -61,7 +61,7 @@ export const userLogout = async () => {
 
 export const getUserData = async () => {
   try {
-    const response = await axios.get(`${API_URL}/user/profile`, {
+    const response = await axios.get(`/user/profile`, {
       headers: {
         "Content-type": "application/json",
       },
