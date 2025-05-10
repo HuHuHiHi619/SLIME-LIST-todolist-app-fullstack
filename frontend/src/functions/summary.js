@@ -1,21 +1,17 @@
 import axios from "axios";
 
-
 export const getSummaryTask = async () => {
   try {
-  
     const response = await axios.get(`/summary/completed-rate`, {
       headers: {
         "Content-Type": "application/json",
       },
       withCredentials: true,
     });
-    console.log("Raw summary  response:", response.data);
-        
+
     // แก้ไขตรงนี้ - ตรวจสอบ message ให้ถูกต้อง
-    if (response.data.message === 'No data found') {
-        console.log("No tasks found for summary.");
-        return [];
+    if (response.data.message === "No data found") {
+      return [];
     }
     return response.data || [];
   } catch (error) {
@@ -32,23 +28,16 @@ export const getSummaryTask = async () => {
 
 export const getSummaryTaskByCategory = async () => {
   try {
-    const response = await axios.get(
-      `/summary/completed-rate-by-category`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
-   
+    const response = await axios.get(`/summary/completed-rate-by-category`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
 
-    console.log("Raw summary by category response:", response.data);
-        
     // แก้ไขตรงนี้ - ตรวจสอบ message ให้ถูกต้อง
-    if (response.data.message === 'No data found') {
-        console.log("No tasks found for summary by category.");
-        return [];
+    if (response.data.message === "No data found") {
+      return [];
     }
     return response.data || [];
   } catch (error) {
@@ -64,17 +53,13 @@ export const getSummaryTaskByCategory = async () => {
 };
 export const getSummaryProgressRate = async (id) => {
   try {
-    const response = await axios.get(
-      `/summary/completed-progress-rate/${id}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
+    const response = await axios.get(`/summary/completed-progress-rate/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
     if (response.data.message === "No tasks available") {
-      console.log("No tasks found.");
       return [];
     }
     return response.data || [];

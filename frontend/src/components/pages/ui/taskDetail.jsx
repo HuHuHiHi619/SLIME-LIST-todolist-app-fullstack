@@ -228,7 +228,7 @@ function TaskDetail({ onClose }) {
               placeholder="Title"
               value={editedTask.title || ""}
               onChange={handleInputChange}
-              className="text-3xl w-full border-none py-0"
+              className="text-3xl w-full border-none rounded-xl "
             />
           </div>
           <div className="flex flex-col md:flex-row gap-2 pb-4">

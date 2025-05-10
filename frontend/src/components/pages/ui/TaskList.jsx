@@ -26,7 +26,7 @@ function TaskList({
   return (
     <div className="w-full min-w-0 p-6 border-2 bg-purpleSidebar border-purpleNormal rounded-3xl ">
       <div className="flex justify-between mb-4 mr-0 md:mr-4">
-        <p className="text-white text-lg md:text-2xl flex items-center pr-2 md:pr-24 w-auto truncate">
+        <p className="text-white text-lg md:text-2xl flex items-center pl-2 pr-2 md:pr-24 w-auto truncate">
           {label}
         </p>
         <CreateButton onClick={handleIsCreate} className="flex-shrink-0" />
@@ -105,11 +105,11 @@ function TaskList({
                     e.stopPropagation();
                     handleRemovedTask(task);
                   }}
-                  className={`transition-opacity duration-200 ease-out flex-shrink-0 ${
+                  className={`transition-opacity duration-200 ease-out flex-shrink-0 flex ${
                     isHover[task._id] && task.status === "pending" ? "opacity-100" : "opacity-0"
                   }`}
                 >
-                  <FontAwesomeIcon icon={faXmark} className="delete-step text-xl" />
+                  <FontAwesomeIcon icon={faXmark} className="delete-step text-xl " />
                 </button>
               </li>
             ))}

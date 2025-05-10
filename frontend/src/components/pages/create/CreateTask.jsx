@@ -162,7 +162,7 @@ function CreateTask({ onClose }) {
                 name="title"
                 value={formTask.title}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border text-xl border-gray-300 rounded-xl "
+                className="w-full px-4 py-2 border  text-xl border-gray-300 rounded-xl "
               />
               <InputField
                 type="text"

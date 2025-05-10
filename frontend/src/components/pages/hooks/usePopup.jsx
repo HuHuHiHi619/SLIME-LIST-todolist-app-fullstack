@@ -28,7 +28,7 @@ function usePopup() {
   const sidebarRef = useRef(null);
   const popupRegisterRef = useRef(null);
   const { isPopup, activeMenu } = useSelector((state) => state.tasks);
-  const { tokens } = useSelector((state) => state.user);
+  
 
   const handleIsCreate = async () => {
     dispatch(toggleCreatePopup());

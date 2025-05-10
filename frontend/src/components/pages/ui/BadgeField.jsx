@@ -27,7 +27,7 @@ function BadgeField() {
                 <img  className="w-full h-full object-contain" src={badgeImages[userData.currentBadge] || "./images/Iron-badge.png"} alt="" />
               </div>
               <div className="grid items-center ">
-                <p className="text-[50px]  px-10  text-white">{userData.currentBadge.toUpperCase()}</p>
+                <p className="text-[80px]  px-10  text-white">{userData.currentBadge.toUpperCase()}</p>
               </div>
             </div>
            

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserData } from "../../../redux/userSlice"; // fetchUserData เป็น Thunk
 import { BouncingSlime } from "../animation/SlimePortal";
+import AutoTyping from "../animation/AutoTyping";
 
 const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
@@ -13,23 +14,17 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log(
-        "AuthProvider: User already authenticated in Redux state. Skipping initial fetch."
-      );
       setInitialCheckAttempted(true); // เช็คแล้ว
       return;
     }
 
     // ถ้า Redux State บอกว่ายังไม่ Login ให้พยายาม Fetch ข้อมูลผู้ใช้
     // การเรียก fetchUserData นี้จะไป Trigger Interceptor ถ้า Access Token หมดอายุ
-    console.log(
-      "AuthProvider: User not authenticated in Redux state. Attempting to fetch user data..."
-    );
+   
 
     const attemptFetchUser = async () => {
       try {
         await dispatch(fetchUserData()).unwrap();
-        console.log("AuthProvider: fetchUserData succeeded.");
       } catch (error) {
         console.warn(
           "AuthProvider: fetchUserData failed during initial check.",
@@ -39,9 +34,6 @@ const AuthProvider = ({ children }) => {
       } finally {
         // ไม่ว่าสำเร็จหรือล้มเหลว ให้ตั้งค่าว่าพยายามตรวจสอบครั้งแรกเสร็จแล้ว
         setInitialCheckAttempted(true);
-        console.log(
-          "AuthProvider: Initial authentication check attempt finished."
-        );
       }
     };
 
@@ -49,13 +41,12 @@ const AuthProvider = ({ children }) => {
   }, [dispatch]);
 
   if (!initialCheckAttempted) {
-    console.log(
-      "AuthProvider: Showing loading spinner (Initial check not attempted or still loading)..."
-    );
+   
     return (
       <>
         <div className="fixed inset-0 pl-32 w-full h-full flex justify-center items-center bg-darkBackground">
-          <BouncingSlime isLooping={true} />
+          <BouncingSlime isLooping={true} repeatCount={15} />
+          <AutoTyping text="LOADING..." speed={100} pause={1000}/>
         </div>
       </>
     );

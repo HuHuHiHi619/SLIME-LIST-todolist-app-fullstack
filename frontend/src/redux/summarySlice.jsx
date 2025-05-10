@@ -18,9 +18,9 @@ export const fetchSummary = createAsyncThunk(
   "/summary/fetchSummary",
   async (_, { rejectWithValue }) => {
     try {
-      console.log("Dispatching fetchSummary...");
+   
       const response = await getSummaryTask();
-      console.log("fetchSummary response:", response);
+     
       return response || [];
     } catch (error) {
       console.error("Error in fetchSummary:", error);
@@ -33,9 +33,9 @@ export const fetchSummaryByCategory = createAsyncThunk(
   "/summary/fetchSummaryByCategory",
   async (_, { rejectWithValue }) => {
     try {
-      console.log("Dispatching fetchSummaryByCategory...");
+    
       const response = await getSummaryTaskByCategory();
-      console.log("fetchSummaryByCategory response:", response);
+     
       return response || [];
     } catch (error) {
       console.error("Error in fetchSummaryByCategory:", error);

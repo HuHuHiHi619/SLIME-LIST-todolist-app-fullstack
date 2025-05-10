@@ -26,7 +26,7 @@ function TaskForm({ filter, filterKey }) {
     <>
       <FadeUpContainer>
         {fetchedTasks.length > 0 ? (
-          <div className="mx-6 mb-6 lg:mt-6">
+          <div className="mx-6 mb-6 mt-6">
             <TaskList
               label="TASKS"
               handleCompletedTask={handleCompletedTask}

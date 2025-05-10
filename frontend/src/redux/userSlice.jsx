@@ -28,28 +28,29 @@ const defaultState = {
 const initialState = { ...defaultState };
 
 // Delay function for loading states
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const minimumLoading = async (promise, minTimeMs = 2500) => {
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve,ms))
+const minimumLoading = async (promise , minTimeMs = 2500) => {
   const startTime = Date.now();
-  try {
-    const result = await promise;
-    const remainingTime = minTimeMs - (Date.now() - startTime);
-    if (remainingTime > 0) {
-      await delay(remainingTime);
+  try{
+    const result = await promise // await function ที่รับมา
+    const remainingTime = minTimeMs - (Date.now() - startTime) // เอาเวลาที่กำหนด - (เวลาปัจจุบัน - เวลาที่เริ่ม)
+    if(remainingTime > 0) {
+      await delay(remainingTime) // ดึงเวลารอด้วย delay
     }
-    return result;
-  } catch (error) {
-    throw error;
+    return result
+  } catch(error){
+    throw error
   }
-};
-
+}
 // Thunks
 export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userInput, { rejectWithValue }) => {
     try {
       const response = await minimumLoading(userLogin(userInput));
-
+      if(response){
+        console.log('login response from redux :',response)
+      }
       return { user: response.user };
     } catch (error) {
       return rejectWithValue(error.message);

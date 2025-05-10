@@ -89,7 +89,7 @@ const SlimePortal = ({ slimeSize = 120 }) => {
          }}
          className="flex"
       >
-        <BouncingSlime size={slimeSize} />
+        <BouncingSlime size={slimeSize} isLooping={false}  />
         <Zigzagtext />
       </motion.div>
     </AnimatePresence>

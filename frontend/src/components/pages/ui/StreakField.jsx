@@ -85,8 +85,8 @@ function StreakField() {
           <div className=" hidden xl:flex items-center justify-center rounded-3xl border-2 border-fuchsia-400  flex-1">
             <Tooltip description="Best Streak" position="top">
               <div className=" flex items-center gap-2 bg-fuchsia-400 bg-clip-text text-transparent">
-                <p className=" text-6xl">{userData.bestStreak}</p>
-                <div className=" hidden 2xl:block text-lg">
+                <p className=" text-7xl">{userData.bestStreak}</p>
+                <div className=" hidden 2xl:block text-2xl">
                   <p>BEST</p>
                   <p>STREAK</p>
                 </div>
@@ -106,8 +106,8 @@ function StreakField() {
           >
             <Tooltip description="Current Streak" position="top">
               <div className="flex items-center gap-2 ">
-                <p className="text-6xl">{userData.currentStreak}</p>
-                <div className="hidden 2xl:block text-lg">
+                <p className="text-7xl">{userData.currentStreak}</p>
+                <div className="hidden 2xl:block text-2xl">
                   <p>STREAK</p>
                   <p>NOW</p>
                 </div>

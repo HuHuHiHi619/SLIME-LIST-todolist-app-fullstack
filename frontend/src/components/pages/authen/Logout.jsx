@@ -36,11 +36,11 @@ function Logout() {
 
       {showConfirm &&
         ReactDOM.createPortal(
-          <div className="popup-overlay">
+          <div className="popup-overlay ">
             <FadeUpContainer>
-              <div className="popup-content border-2 p-8 rounded-xl border-purpleNormal bg-purpleSidebar">
+              <div className="popup-content border-2 p-8  rounded-xl border-purpleNormal bg-purpleSidebar">
                 <div>
-                  <p className="text-2xl text-white ">
+                  <p className="text-2xl text-white text-center">
                     Are you sure you want to logout ?
                   </p>
                   <div className="flex justify-center gap-4 mt-6">
