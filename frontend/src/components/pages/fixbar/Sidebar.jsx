@@ -84,14 +84,14 @@ function Sidebar() {
         onClick={handlePinSidebar}
       >
         <div
-          className={`h-2 w-full  md:bg-purpleActive rounded-full ${
+          className={`h-2 w-full  lg:bg-purpleActive rounded-full ${
             isSidebarPinned ? "opacity-100" : "opacity-0"
           } transition-opacity duration-300`}
         ></div>
           <Tooltip description={"Side bar"} position="right">
         <FontAwesomeIcon
           icon={faBars}
-          className={`  hidden md:block transform origin-center text-2xl ${
+          className={`  hidden lg:block transform origin-center text-2xl ${
             isSidebarPinned ? "rotate-180" : "pr-3"
           } `}
         />

@@ -61,7 +61,7 @@ function SearchField({ handleSearchToggle, isSearchOpen }) {
             <FontAwesomeIcon
               icon={faSearch}
               onClick={handleSearchToggle}
-              className={`z-30 absolute top-3 hover:text-purpleBorder text-xl text-gray-400  cursor-pointer transition-transform duration-300 ${
+              className={`z-30 absolute top-2.5 hover:text-purpleBorder text-xl text-gray-400  cursor-pointer transition-transform duration-300 ${
                 isSearchOpen ? "translate-x-[-200%] left-16" : "translate-x-0 -left-2"
               }`}
             />
@@ -71,7 +71,7 @@ function SearchField({ handleSearchToggle, isSearchOpen }) {
             placeholder="Search task here !"
             value={searchTerm}
             onChange={handleSearch}
-            className={`rounded-xl p-2 text-white focus-visible:outline-2 outline-purpleBorder ${
+            className={`rounded-xl p-1.5 text-white focus-visible:outline-2 outline-purpleBorder ${
               isSearchOpen ? "pl-14" : ""
             } text-xl  z-20 bg-purpleNormal`}
             animate={{

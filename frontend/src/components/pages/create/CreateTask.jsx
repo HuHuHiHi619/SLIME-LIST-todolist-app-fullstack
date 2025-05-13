@@ -248,7 +248,8 @@ function CreateTask({ onClose }) {
               </div>
               <button
                 type="submit"
-                className="register"
+                className="register tracking-wider"
+                
               >
                 CREATE
               </button>

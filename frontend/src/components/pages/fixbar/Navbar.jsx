@@ -23,11 +23,11 @@ function Navbar() {
           <FontAwesomeIcon
             icon={faBars}
             onClick={() => handleToggleSidebar()}
-            className="pl-4 text-white text-xl cursor-pointer hover:scale-105 md:hidden"
+            className="pl-4 text-white text-xl cursor-pointer hover:scale-105 lg:hidden"
           />
           <Link to="/" className=" flex items-center gap-3 pl-4 ">
-            <img src="./images/Logo-slime.png" className="w-8 " alt="" />
-            <p className="text-sm md:text-3xl font-bold bg-purpleGradient bg-clip-text text-transparent">
+            <img src="./images/Logo-slime.png" className="w-6 md:w-8  hidden sm:block" alt="" />
+            <p className="text-2xl md:text-4xl font-bold bg-purpleGradient bg-clip-text text-transparent">
               SLIME LIST
             </p>
           </Link>
@@ -44,7 +44,6 @@ function Navbar() {
           </div>
         )}
 
-        {/* แสดงป๊อปอัพเสมอถ้า isRegisterPopup เป็น true โดยไม่สนใจ loading */}
         {!isAuthenticated &&
           isRegisterPopup &&
           ReactDOM.createPortal(
@@ -58,7 +57,12 @@ function Navbar() {
             document.body
           )}
 
-        {isAuthenticated && <NotificationForm />}
+        {isAuthenticated && (
+        
+             <NotificationForm />
+         
+        )
+        }
       </div>
     </>
   );

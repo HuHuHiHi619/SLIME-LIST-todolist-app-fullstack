@@ -53,7 +53,7 @@ const Zigzagtext = ({ text = "SLIMELIST", delay = 0.5 }) => {
         return (
           <motion.div
             key={`${char}-${index}`} 
-            className=" text-[100px] font-bold bg-gradient-to-b from-fuchsia-600 to-purpleBorder bg-clip-text text-transparent"
+            className="text-[50px] sm:text-[100px] tracking-wider font-bold bg-gradient-to-b from-fuchsia-600 to-purpleBorder bg-clip-text text-transparent"
             initial={{
               y: isEven ? -200 : 200,
               opacity: 0,

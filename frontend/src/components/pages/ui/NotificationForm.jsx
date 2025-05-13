@@ -51,11 +51,7 @@ const NotificationForm = () => {
           <Tooltip description={"Menu"} position="bottom">
             <button
               ref={buttonRef}
-              className={`text-gray-400 hover:text-purpleBorder transition-transform duration-500 ease-in-out transform ${
-                isMenuOpen
-                  ? "-rotate-[135deg]  text-purpleBorder "
-                  : ""
-              }`}
+              className={`text-gray-400 pt-2 hover:text-purpleBorder`} // คลาสที่ไม่เกี่ยวกับการ transform สามารถอยู่ที่ button ได้
               onClick={() => {
                 if (isMenuOpen) {
                   setIsSearchOpen(false);
@@ -65,23 +61,26 @@ const NotificationForm = () => {
             >
               <FontAwesomeIcon
                 icon={faSquare}
-                className="h-6 w-6 md:h-6 md:w-6 transform origin-center"
+                className={`h-6 w-6  transition-transform duration-500 ease-in-out transform origin-center ${
+                  isMenuOpen ? "-rotate-[135deg]" : ""
+                } ${isMenuOpen ? "text-purpleBorder" : "text-gray-400"}`}
               />
             </button>
           </Tooltip>
           {/* Sliding Icons Container */}
           <AnimatePresence>
             {isMenuOpen && (
-              <div className="absolute flex  right-12 top-5  -translate-y-1/2  items-center gap-2 w-auto">
+              <div className="absolute flex right-12 top-6 -translate-y-1/2 items-center gap-2 w-auto">
                 <FadeUpContainer direction="left">
-                  <div className=" flex gap-2 relative">
-                    <div ref={searchRef} className="absolute  top-0 right-24">
-                    <Tooltip description={"Search"} position="bottom">
-                      <SearchField
-                        handleSearchToggle={handleSearchToggle}
-                        isSearchOpen={isSearchOpen}
-                      />
-                       </Tooltip>
+                  <div className="flex gap-2">
+                    <div ref={searchRef} className="relative hidden sm:block">
+                      {" "}
+                      <Tooltip description={"Search"} position="bottom">
+                        <SearchField
+                          handleSearchToggle={handleSearchToggle}
+                          isSearchOpen={isSearchOpen}
+                        />
+                      </Tooltip>
                     </div>
 
                     <Tooltip description={"Instructions"} position="bottom">

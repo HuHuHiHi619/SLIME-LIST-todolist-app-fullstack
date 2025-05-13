@@ -63,7 +63,7 @@ const GradientCircularProgressbar = ({ percentage }) => {
             value={animatePercent}
             text={`${Math.round(animatePercent)}%`}
             styles={buildStyles({
-              textSize: "28px",
+              textSize: "38px",
               textColor: "#ffffff",
               pathColor: `url(#GradientColor)`,
               trailColor: "none",
@@ -134,12 +134,12 @@ function Summary() {
                   transition={{ delay: 0.3 }}
                   className="text-white p-2 text-xl leading-normal"
                 >
-                  <div className="text-2xl pb-1">
+                  <div className="text-4xl pb-1">
                     ALL TASKS : {item.completedTasks} / {item.totalTasks}
                   </div>
                   <div className="bg-purpleGradient bg-clip-text text-transparent ">
                     {item.completedRate === 100 ? (
-                      <div className="font-bold">
+                      <div className="font-bold tracking-wide text-2xl">
                         <p>CONGRATS !</p>
                         <p>IT'S OVER 9000</p>
                       </div>
@@ -162,8 +162,8 @@ function Summary() {
                 className=" px-4 py-2 cursor-pointer rounded-lg text-xl text-white bg-purpleNormal list-shadow "
               >
                 <div className="flex justify-between mb-2">
-                  <h3>{catItem.category || "No category"}</h3>
-                  <h3>{Math.round(catItem.completedRate)}%</h3>
+                  <p>{catItem.category || "No category"}</p>
+                  <p>{Math.round(catItem.completedRate)}%</p>
                 </div>
                 <ProgressBar value={catItem.completedRate} />
               </div>

@@ -186,6 +186,7 @@ input[type="checkbox"]:hover {
 }
 
 /* DatePicker Styling with Fixed Positioning */
+/* CSS เดิมของคุณ */
 .elegant-datepicker {
   border: 1px solid theme("colors.purpleNormal");
   border-radius: 12px;
@@ -197,6 +198,7 @@ input[type="checkbox"]:hover {
   z-index: 1000 !important;
   transform-origin: top center !important;
   margin-left: 10px;
+  /* พิจารณาปรับ margin-left นี้ใน @media query ด้วย ถ้ายังมีปัญหาการจัดตำแหน่ง */
 }
 
 .elegant-datepicker .react-datepicker__header {
@@ -213,6 +215,7 @@ input[type="checkbox"]:hover {
   color: #fefefe;
   font-weight: 600;
   padding-top: 5px;
+  /* อาจจะลด padding-top หรือ font-size ใน @media query ด้วย */
 }
 
 /* ทำให้ทุกวันมีรูปร่างเป็นวงกลม */
@@ -221,10 +224,12 @@ input[type="checkbox"]:hover {
   text-align: center;
   color: #f7f7f7;
   transition: all 0.2s ease;
-  width: 36px;
-  height: 36px;
-  line-height: 36px;
-  margin: 2px;
+  width: 36px; /* <-- เดิม */
+  height: 36px; /* <-- เดิม */
+  line-height: 36px; /* <-- เดิม */
+  margin: 2px; /* <-- เดิม */
+  /* อาจจะกำหนด font-size ที่นี่ด้วย เพื่อให้ง่ายต่อการปรับใน @media */
+  font-size: 1rem; /* ตัวอย่างค่า default */
 }
 
 /* สีเหลืองเมื่อ hover */
@@ -266,9 +271,36 @@ input[type="checkbox"]:hover {
 .react-datepicker-wrapper,
 .react-datepicker__input-container {
   display: block;
-  width: 100%;
+  width: 100%; /* <-- อันนี้ดีแล้ว เพราะ input จะยืดเต็มพื้นที่ */
 }
 
 .react-datepicker__input-container input {
-  width: 100%;
+  width: 100%; /* <-- อันนี้ดีแล้ว */
 }
+
+
+/* =========== ส่วนที่เพิ่มเข้าไปสำหรับ Responsive =========== */
+
+/* ตัวอย่าง Media Query สำหรับหน้าจอขนาดเล็ก (ปรับค่า breakpoint ได้ตามต้องการ เช่น max-width: 768px หรือ 640px) */
+@media (max-width: 640px) {
+  .elegant-datepicker .react-datepicker__day {
+    width: 28px; /* ลดความกว้าง */
+    height: 28px; /* ลดความสูง */
+    line-height: 28px; /* ปรับ line-height ตามความสูงใหม่ */
+    margin: 1px; /* ลด margin */
+    font-size: 0.875rem; /* อาจจะลดขนาดตัวอักษรด้วย */
+  }
+
+  .elegant-datepicker .react-datepicker__day-name {
+     padding-top: 2px; /* ลด padding */
+     font-size: 0.875rem; /* ลดขนาดตัวอักษรชื่อวัน */
+  }
+
+  .elegant-datepicker .react-datepicker__header {
+     padding: 5px; /* ลด padding ของ header */
+  }
+
+  
+}
+
+

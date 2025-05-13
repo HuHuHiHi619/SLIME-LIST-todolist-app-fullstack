@@ -15,7 +15,7 @@
 }
 
 #side-bar {
-  @apply absolute h-full  z-40 bg-purpleSidebar bg-opacity-50 pt-4;
+  @apply absolute h-full  z-40 bg-purpleSidebar bg-opacity-50 md:pt-4;
   @apply lg:relative;
   width: 17rem;
   max-width: 17rem;
