@@ -28,7 +28,7 @@
     "react-calendar": "^5.1.0",
     "react-circular-progressbar": "^2.1.0",
     "react-datepicker": "^7.4.0",
-    "react-day-picker": "^9.6.4",
+    "react-day-picker": "^9.7.0",
     "react-dom": "^18.3.1",
     "react-progress-bar": "^0.1.0",
     "react-redux": "^9.1.2",

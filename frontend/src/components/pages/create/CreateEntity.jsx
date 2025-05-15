@@ -67,7 +67,7 @@ function CreateEntity({ onAddItem, entityType, onClose }) {
         <div className="bg-purpleGradient p-0.5 rounded-xl md:w-[450px] relative">
           <div className="bg-purpleSidebar p-8 rounded-xl">
             <p className="text-2xl md:text-3xl text-white">
-              CREATE {entityType}
+              CREATE {entityType.toUpperCase()}
             </p>
             {error && <p className="text-xl text-rose-500">{error}</p>}
             <InputField

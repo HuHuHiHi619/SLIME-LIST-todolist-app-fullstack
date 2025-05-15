@@ -18,13 +18,13 @@ function DeadlinePicker({ id, name, selected, onChange, placeholder }) {
         filterDate={date => date >= new Date()}
         placeholderText={placeholder}
         popperPlacement="bottom-start"
-        className="w-full cursor-pointer p-2 pl-14 shadow placeholder:text-deadlineTheme text-deadlineTheme text-xl border-[2px] border-deadlineTheme bg-transparent rounded-xl focus:outline-none focus:shadow-outline"
+        className="w-full cursor-pointer p-1 pl-14 shadow placeholder:text-deadlineTheme text-deadlineTheme text-2xl border-[2px] border-deadlineTheme bg-transparent rounded-xl focus:outline-none focus:shadow-outline"
         calendarClassName="elegant-datepicker"
         showPopperArrow={false}
      />
       <FontAwesomeIcon
         icon={faCalendarAlt}
-        className="absolute left-5 bottom-[14px] text-xl text-red-500" // ฟิกสีแดง
+        className="absolute left-5 bottom-[13px] text-xl text-red-500" // ฟิกสีแดง
       />
     </div>
   );

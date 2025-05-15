@@ -80,7 +80,7 @@ function TaskList({
                   )}
 
                   <div className="w-full min-w-0">
-                    <h3 className="md:text-xl truncate max-w-full">{task.title}</h3>
+                    <h3 className="md:text-2xl  truncate max-w-full">{task.title}</h3>
                     {task.status === "pending" && task.progress && task.progress.totalSteps > 0 ? (
                       <div className="items-center hidden md:flex flex-wrap">
                         <span className="pr-2 md:pr-4 text-sm">

@@ -59,7 +59,7 @@ function AuthForm({ isRegister, setActiveTab }) {
           : "bg-purpleMain border-purpleNormal "
       } p-10 rounded-2xl shadow-lg w-full max-w-lg `}
     >
-      {!loading && (
+      {loading && (
         <div className="popup-overlay">
           <SlimePortal />
         </div>

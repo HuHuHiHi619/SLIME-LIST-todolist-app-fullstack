@@ -193,7 +193,7 @@ function TaskDetail({ onClose }) {
     <FadeUpContainer>
       <div className="bg-darkBackground p-6 rounded-3xl">
         <div className="flex justify-between items-center">
-          <p className="text-white text-xl">TASK DETAILS</p>
+          <p className="text-white text-3xl ">TASK DETAILS</p>
           <div className="flex items-center gap-6 ">
             {editedTask.status === "failed" && (
               <FontAwesomeIcon
@@ -208,7 +208,7 @@ function TaskDetail({ onClose }) {
             )}
 
             <p
-              className={`  ${
+              className={`text-2xl  ${
                 editedTask.status === "pending"
                   ? "pending"
                   : editedTask.status === "failed"

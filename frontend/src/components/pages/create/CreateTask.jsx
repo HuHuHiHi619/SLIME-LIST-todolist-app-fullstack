@@ -143,7 +143,7 @@ function CreateTask({ onClose }) {
         <div className="bg-purpleSidebar p-6 rounded-3xl">
           <form onSubmit={handleSubmit}>
             <div className="flex justify-between items-center">
-              <h1 className="text-white tracking-wide">CREATE A TASK</h1>
+              <h1 className="text-white tracking-wide pl-1 text-3xl">CREATE A TASK</h1>
               <Tooltip description={"Close"} position="top">
                 <FontAwesomeIcon
                   icon={faXmark}
@@ -205,7 +205,7 @@ function CreateTask({ onClose }) {
             </div>
 
             <div className=" my-4 flex flex-col gap-2">
-              <h3 className="text-white text-xl">Progress :</h3>
+              <h3 className="text-white text-2xl pl-1">Progress :</h3>
               <div className="flex flex-col gap-2">
                 <InputField
                   type="text"
@@ -215,7 +215,7 @@ function CreateTask({ onClose }) {
                   value={currentStep}
                   onChange={handleInputChange}
                   onKeyDown={handleAddProgress}
-                  className="px-4 py-2 rounded-xl md:text-xl"
+                  className="px-4 py-2 rounded-xl md:text-xl "
                 />
                 <ProgressField
                   steps={progress.steps}
@@ -249,7 +249,6 @@ function CreateTask({ onClose }) {
               <button
                 type="submit"
                 className="register tracking-wider"
-                
               >
                 CREATE
               </button>

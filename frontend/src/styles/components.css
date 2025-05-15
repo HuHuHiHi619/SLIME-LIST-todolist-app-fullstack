@@ -11,7 +11,7 @@ span {
 
 /*Status */
 .pending {
-  @apply border-2 p-2 rounded-lg text-pendingdTheme border-pendingdTheme;
+  @apply border-2 p-2 leading-none rounded-lg text-pendingdTheme border-pendingdTheme;
 }
 
 .completed {
@@ -24,8 +24,8 @@ span {
 /*button*/
 .register {
   @apply bg-purpleNormal  
-  focus:outline-none  flex justify-center 
-  cursor-pointer p-2 px-4 text-sm md:text-lg 
+  focus:outline-none  flex justify-center tracking-wide
+  cursor-pointer p-1 px-4 text-sm md:text-xl
   hover:bg-purpleBorder hover:font-bold transition-all duration-75 ease-in
   rounded-lg text-white;
 }
@@ -69,18 +69,6 @@ title {
   @apply bg-purpleBorder flex justify-center cursor-pointer p-2 px-4 text-2xl rounded-lg text-white;
 }
 
-.pixel-speech-bubble {
-  /* ... CSS อื่นๆ ของคุณ ... */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 11 12' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='0' width='8' height='1' fill='currentColor' /%3E%3Crect x='1' y='1' width='1' height='1' fill='currentColor' /%3E%3Crect x='0' y='2' width='1' height='8' fill='currentColor' /%3E%3Crect x='1' y='10' width='1' height='1' fill='currentColor' /%3E%3Crect x='2' y='11' width='7' height='1' fill='currentColor' /%3E%3Crect x='10' y='2' width='1' height='8' fill='currentColor' /%3E%3Crect x='9' y='1' width='1' height='1' fill='currentColor' /%3E%3Crect x='9' y='10' width='1' height='1' fill='currentColor' /%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-size: contain; /* หรือ 'auto' ขึ้นอยู่กับความต้องการ */
-  background-position: center; /* จัดตำแหน่งตรงกลาง */
-  color: rgb(223, 217, 217); /* กำหนดสีของ Pixel Art */
-  padding: 10px; /* เพิ่ม Padding เพื่อให้ Content ไม่ชิดขอบ */
-  min-width: 50px;
-  min-height: 30px;
-  
-}
 /* no task */
 .popup-notask {
   position: fixed;
@@ -186,121 +174,119 @@ input[type="checkbox"]:hover {
 }
 
 /* DatePicker Styling with Fixed Positioning */
-/* CSS เดิมของคุณ */
+
+/* --- Base Styles for Elegant Datepicker --- */
 .elegant-datepicker {
   border: 1px solid theme("colors.purpleNormal");
   border-radius: 12px;
   background-color: theme("colors.purpleMain");
 }
 
+/* --- Popper Positioning Fix --- */
 /* แก้ไขปัญหาที่ datepicker แสดงผลที่ top ของหน้าจอ */
 .react-datepicker-popper {
-  z-index: 1000 !important;
-  transform-origin: top center !important;
-  margin-left: 10px;
-  /* พิจารณาปรับ margin-left นี้ใน @media query ด้วย ถ้ายังมีปัญหาการจัดตำแหน่ง */
+  z-index: 1000 !important; /* Needs to be high to appear above other elements */
+  transform-origin: top center !important; /* Ensures scaling/transformations originate correctly */
+
 }
 
+/* --- Datepicker Header --- */
 .elegant-datepicker .react-datepicker__header {
-  background-color: theme("colors.purpleMain");
-  padding: 10px;
+  background-color: theme("colors.purpleMain"); /* Consistent with datepicker background */
+  padding: 5px;
   border: none;
 }
 
 .elegant-datepicker .react-datepicker__current-month {
-  color: rgb(240, 240, 240);
+  color: #ffffff;
+  font-size: large;
+  font-weight: 100;
+  padding-top: 10px;
 }
 
 .elegant-datepicker .react-datepicker__day-name {
-  color: #fefefe;
-  font-weight: 600;
-  padding-top: 5px;
-  /* อาจจะลด padding-top หรือ font-size ใน @media query ด้วย */
+  color: #fefefe; /*เกือบขาว, พิจารณาใช้ #ffffff หากไม่ต่างกันมาก */
+  font-size: large;
+  padding-top: 15px;
+  margin: 0 7px; /* Shorthand for margin-left and margin-right */
 }
 
-/* ทำให้ทุกวันมีรูปร่างเป็นวงกลม */
+/* --- Datepicker Day Cells --- */
 .elegant-datepicker .react-datepicker__day {
   border-radius: 50%;
   text-align: center;
-  color: #f7f7f7;
+  color: #ffffff; /* Default text color for days */
+  font-weight: 100; /* Default font weight for days */
   transition: all 0.2s ease;
-  width: 36px; /* <-- เดิม */
-  height: 36px; /* <-- เดิม */
-  line-height: 36px; /* <-- เดิม */
-  margin: 2px; /* <-- เดิม */
-  /* อาจจะกำหนด font-size ที่นี่ด้วย เพื่อให้ง่ายต่อการปรับใน @media */
-  font-size: 1rem; /* ตัวอย่างค่า default */
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  font-size: 1.25rem;
 }
 
-/* สีเหลืองเมื่อ hover */
-.elegant-datepicker
-  .react-datepicker__day:hover:not(.react-datepicker__day--disabled) {
-  background-color: #ffd700; /* สีเหลือง */
-  color: #000000; /* ตัวอักษรสีดำเพื่อให้อ่านง่ายบนพื้นหลังสีเหลือง */
+/* Hover and Today (not selected) states */
+.elegant-datepicker .react-datepicker__day:hover:not(.react-datepicker__day--disabled),
+.elegant-datepicker .react-datepicker__day--today:not(.react-datepicker__day--selected) {
+  background-color: #363669;
+  color: #ffffff; /* Ensure text color remains white, though it might be inherited */
 }
 
-/* วันที่เลือกเป็นสีม่วง */
+/* Selected day state */
 .elegant-datepicker .react-datepicker__day--selected {
-  background-color: #7a36df !important; /* สีม่วงเข้ม */
-  color: #ffffff !important;
-  font-weight: bold;
+  background-color: #7a36df; /* สีม่วงเข้ม */
+  color: #ffffff; /* Ensure text color remains white */
+  /* font-weight is inherited from .react-datepicker__day */
 }
 
-/* วันที่ปัจจุบันเป็นสีแดง */
-.elegant-datepicker .react-datepicker__day--today {
-  background-color: #ff4136 !important; /* สีแดง */
-  color: #ffffff !important;
-}
-
-/* วันที่ถูก disable */
+/* Disabled day state */
 .elegant-datepicker .react-datepicker__day--disabled {
   color: #585858;
   pointer-events: none;
   opacity: 0.5;
 }
 
+/* --- Navigation Arrows --- */
 .elegant-datepicker .react-datepicker__navigation {
-  top: 10px;
+  top: 10px; /* Adjusts vertical position of prev/next arrows */
 }
 
-/* แก้ไขปัญหา popup ที่อาจซ่อนบางส่วนของ datepicker */
-.popup-content {
-  position: relative;
-}
-
+/* --- Input Container --- */
+/* Ensuring the datepicker input and its wrapper take full width */
 .react-datepicker-wrapper,
 .react-datepicker__input-container {
   display: block;
-  width: 100%; /* <-- อันนี้ดีแล้ว เพราะ input จะยืดเต็มพื้นที่ */
+  width: 100%;
 }
 
 .react-datepicker__input-container input {
-  width: 100%; /* <-- อันนี้ดีแล้ว */
+  width: 100%; /* Make the actual input field take full width of its container */
 }
 
+/* --- Popup Content Context --- */
+/* แก้ไขปัญหา popup ที่อาจซ่อนบางส่วนของ datepicker (ถ้า .popup-content เป็น container ของ datepicker) */
+.popup-content {
+  position: relative; /* Useful if datepicker popper is positioned absolutely relative to this */
+}
 
-/* =========== ส่วนที่เพิ่มเข้าไปสำหรับ Responsive =========== */
-
-/* ตัวอย่าง Media Query สำหรับหน้าจอขนาดเล็ก (ปรับค่า breakpoint ได้ตามต้องการ เช่น max-width: 768px หรือ 640px) */
+/* --- Responsive Adjustments for Small Screens --- */
 @media (max-width: 640px) {
-  .elegant-datepicker .react-datepicker__day {
-    width: 28px; /* ลดความกว้าง */
-    height: 28px; /* ลดความสูง */
-    line-height: 28px; /* ปรับ line-height ตามความสูงใหม่ */
-    margin: 1px; /* ลด margin */
-    font-size: 0.875rem; /* อาจจะลดขนาดตัวอักษรด้วย */
+  .react-datepicker-popper {
+    margin-left: 30px; /* Adjusted margin for popper on small screens */
   }
 
   .elegant-datepicker .react-datepicker__day-name {
-     padding-top: 2px; /* ลด padding */
-     font-size: 0.875rem; /* ลดขนาดตัวอักษรชื่อวัน */
+    padding-top: 2px;
+    font-size: 0.875rem; /* Smaller font for day names */
+    margin: 0 1.5px; /* Reduced horizontal margins */
   }
 
-  .elegant-datepicker .react-datepicker__header {
-     padding: 5px; /* ลด padding ของ header */
+  .elegant-datepicker .react-datepicker__day {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    margin: 1px; /* Adding small margin as days are smaller */
+    font-size: 0.875rem; /* Smaller font for day numbers */
   }
 
-  
+ 
 }
-
-

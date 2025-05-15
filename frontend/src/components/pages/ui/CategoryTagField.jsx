@@ -79,7 +79,7 @@ function CategoryTagField({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="md:w-[230px] w-full h-[48px] cursor-pointer appearance-none text-xl shadow border-[2px] border-categoryTheme bg-transparent rounded-xl p-2 pl-12 text-categoryTheme leading-tight focus:outline-none focus:ring-2 focus:ring-categoryTheme focus:ring-opacity-50"
+        className="md:w-[230px] w-full h-[44px] cursor-pointer appearance-none text-xl shadow border-[2px] border-categoryTheme bg-transparent rounded-xl p-2 pl-14 text-categoryTheme leading-tight focus:outline-none focus:ring-2 focus:ring-categoryTheme focus:ring-opacity-50"
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         data-value={localValue}
@@ -88,7 +88,7 @@ function CategoryTagField({
           <span className="truncate text-categoryTheme text-xl">{getDisplayText()}</span>
           <FontAwesomeIcon 
             icon={faChevronDown} 
-            className={`ml-2 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}
+            className={`mr-1 text-base transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`}
             aria-hidden="true"
           />
         </div>
@@ -96,7 +96,7 @@ function CategoryTagField({
 
       {/* Folder Icon */}
       <FontAwesomeIcon 
-        className="text-categoryTheme pr-2 text-xl left-5 bottom-4 absolute pointer-events-none" 
+        className="text-categoryTheme  text-xl left-5 bottom-3 absolute pointer-events-none" 
         icon={faFolder}
         aria-hidden="true"
       />

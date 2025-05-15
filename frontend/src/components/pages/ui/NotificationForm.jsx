@@ -61,7 +61,7 @@ const NotificationForm = () => {
             >
               <FontAwesomeIcon
                 icon={faSquare}
-                className={`h-6 w-6  transition-transform duration-500 ease-in-out transform origin-center ${
+                className={`h-6 w-6 hover:text-purpleBorder  transition-all duration-500 ease-in-out transform origin-center ${
                   isMenuOpen ? "-rotate-[135deg]" : ""
                 } ${isMenuOpen ? "text-purpleBorder" : "text-gray-400"}`}
               />
@@ -73,7 +73,7 @@ const NotificationForm = () => {
               <div className="absolute flex right-12 top-6 -translate-y-1/2 items-center gap-2 w-auto">
                 <FadeUpContainer direction="left">
                   <div className="flex gap-2">
-                    <div ref={searchRef} className="relative hidden sm:block">
+                    <div ref={searchRef} className="relative hidden lg:block">
                       {" "}
                       <Tooltip description={"Search"} position="bottom">
                         <SearchField
