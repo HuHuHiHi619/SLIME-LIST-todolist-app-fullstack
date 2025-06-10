@@ -45,19 +45,19 @@
 </div>
 
 - **Frontend:**
-  - React 18 (UI Library)
-  - Vite (Build Tool)
-  - Tailwind CSS (Styling)
-  - Redux Toolkit (State Management)
-  - React Router (Navigation)
+  - React
+  - Vite 
+  - Tailwind CSS 
+  - Redux Toolkit 
+  - React Router 
 
 - **Backend:**
-  - Node.js (Runtime)
-  - Express.js (Server Framework)
-  - MongoDB (Database)
-  - JWT (Authentication)
-  - Node-cron (Scheduled Tasks)
-  - Jest (Testing)
+  - Node.js 
+  - Express.js 
+  - MongoDB 
+  - JWT 
+  - Node-cron 
+  - Jest 
 
 ## 🚀 Getting Started
 
@@ -115,31 +115,12 @@ Make sure you have the following installed:
    ```bash
    cd server
    npm run dev
-   # Server will run on http://localhost:5000
    ```
 
 2. **Start the Frontend Development Server**
    ```bash
    cd frontend
    npm run dev
-   # Application will run on http://localhost:3000
-   ```
-
-3. **Access the Application**
-   Open your browser and navigate to `http://localhost:3000`
-
-### Build for Production
-
-1. **Build Frontend**
-   ```bash
-   cd frontend
-   npm run build
-   ```
-
-2. **Build Backend**
-   ```bash
-   cd server
-   npm start
    ```
    
 ## 🌟 Key Features Explained
@@ -155,8 +136,6 @@ Make sure you have the following installed:
 
 ### Cross-Platform Compatibility
 - **iOS Fix:** Resolved cookie issues through proxy configuration
-- **Responsive Design:** Mobile-first approach with Tailwind CSS
-
 
 ## 🌟 Roadmap
 - [ ] Mobile application (React Native)
