@@ -1,8 +1,8 @@
-# SlimeList - Gamified Todo List Application
+# 🧪 SlimeList - Gamified Todo List Application
 <div align="center">
   <img src="https://slimelist.netlify.app/images/Logo-slime.png" width="200" alt="SlimeList Logo">
   
-  [Live Demo](https://slimelist.netlify.app/) | [GitHub Repository](https://github.com/your-username/slimelist)
+  [Live Demo](https://slimelist.netlify.app/) | [GitHub Repository](https://github.com/HuHuHiHi619/slimelist)
 
   *Transform your daily tasks into an engaging journey with SlimeList - where productivity meets fun!*
 </div>
@@ -16,121 +16,157 @@
   - Set start dates and deadlines
   - Organize with categories
   - Track progress with subtasks
-- **Smart Search:** Quickly find tasks with the search functionality
+- **Search:** Quickly find tasks with the search functionality
 - **Task Tracking:** Monitor tasks by:
   - Deadline status
   - Pending tasks
-  - Completed items
+  - Completed tasks
+  - Category tasks
 
 ### 🎮 Gamification
 - **Streak System:** Build and maintain daily completion streaks
 - **Level Progression:** Level up by completing tasks
 - **Badge Collection:** Earn badges for achievements
-- **Progress Tracking:** Visual representation of your journey
+- **Ranking System:** Compete with yourself and track progress
 
 ### 📊 Dashboard & Analytics
 - **Interactive Graphics:** Visual representation of your productivity
 - **Task Statistics:** Track completion rates and patterns
 - **Category Analysis:** Monitor task distribution across categories
 
+### 👤 User Experience
+- **Guest Mode:** Try the app without registration
+- **User Authentication:** Secure login with JWT
+- **Responsive Design:** Works seamlessly on all devices
+
 ## 💻 Tech Stack
 <div align="center">
-  <img src="https://go-skill-icons.vercel.app/api/icons?i=react,express,vite,jest,mongodb,tailwind" alt="Tech Stack">
+  <img src="https://go-skill-icons.vercel.app/api/icons?i=react,express,vite,mongodb,tailwind,nodejs" alt="Tech Stack">
 </div>
 
 - **Frontend:**
-  - React (UI Library)
+  - React 18 (UI Library)
   - Vite (Build Tool)
   - Tailwind CSS (Styling)
-  - React Query (Data Fetching)
+  - Redux Toolkit (State Management)
   - React Router (Navigation)
 
 - **Backend:**
+  - Node.js (Runtime)
   - Express.js (Server Framework)
   - MongoDB (Database)
   - JWT (Authentication)
   - Node-cron (Scheduled Tasks)
-
-- **Testing:**
-  - Jest (Testing Framework)
+  - Jest (Testing)
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB
-- npm or yarn
+Make sure you have the following installed:
+- [Node.js](https://nodejs.org/) (v16 or higher)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- [MongoDB](https://www.mongodb.com/) (local installation or MongoDB Atlas account)
 
 ### Installation
 
-1. Clone the repository
-```bash
-git clone https://github.com/your-username/slimelist.git
-cd slimelist
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/HuHuHiHi619/slimelist.git
+   cd slimelist
+   ```
 
-2. Install dependencies
-```bash
-# Install frontend dependencies
-cd client
-npm install
+2. **Install Backend Dependencies**
+   ```bash
+   cd server
+   npm install
+   ```
 
-# Install backend dependencies
-cd ../server
-npm install
-```
+3. **Install Frontend Dependencies**
+   ```bash
+   cd ../frontend
+   npm install
+   ```
 
-3. Set up environment variables
-```bash
-# In server directory, create .env file
-MONGODB_URI=your_mongodb_uri
-JWT_SECRET=your_jwt_secret
-PORT=5000
+### Environment Setup
 
-# In client directory, create .env file
-VITE_API_URL=http://localhost:5000
-```
+1. **Create Backend Environment File**
+   Create a `.env` file in the `backend` directory:
+   ```env
+   PORT=5000
+   MONGODB_URI=mongodb://localhost:27017/slimelist
+   # or use MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/slimelist
+   JWT_SECRET=your-super-secret-jwt-key
+   NODE_ENV=development
+   CLIENT_URL=http://localhost:3000
+   ```
 
-4. Start the application
-```bash
-# Start backend server
-cd server
-npm run dev
+2. **Create Frontend Environment File**
+   Create a `.env` file in the `frontend` directory:
+   ```env
+   VITE_API_URL=http://localhost:5000
+   ```
 
-# Start frontend in new terminal
-cd client
-npm run dev
-```
+### Running the Application
 
-## 📱 Screenshots
+1. **Start the Backend Server**
+   ```bash
+   cd server
+   npm run dev
+   # Server will run on http://localhost:5000
+   ```
 
-<div align="center">
-  <img src="path_to_dashboard_screenshot.png" width="700" alt="Dashboard">
-  <p><em>Dashboard with Task Analytics</em></p>
-  
-  <img src="path_to_task_management_screenshot.png" width="700" alt="Task Management">
-  <p><em>Task Management Interface</em></p>
-</div>
+2. **Start the Frontend Development Server**
+   ```bash
+   cd frontend
+   npm run dev
+   # Application will run on http://localhost:3000
+   ```
+
+3. **Access the Application**
+   Open your browser and navigate to `http://localhost:3000`
+
+### Build for Production
+
+1. **Build Frontend**
+   ```bash
+   cd frontend
+   npm run build
+   ```
+
+2. **Build Backend**
+   ```bash
+   cd server
+   npm start
+   ```
+   
+## 🌟 Key Features Explained
+
+### Gamification System
+- **Streak Tracking:** Maintains daily task completion streaks
+- **Automatic score:** Cron jobs calculate and update user streak
+
+### Authentication
+- **Dual Mode:** Supports both guest and registered users
+- **JWT Integration:** Secure token-based authentication
+- **Cookie Management:** Handles session persistence across devices
+
+### Cross-Platform Compatibility
+- **iOS Fix:** Resolved cookie issues through proxy configuration
+- **Responsive Design:** Mobile-first approach with Tailwind CSS
+
 
 ## 🌟 Roadmap
-- [ ] Mobile application
-- [ ] Team collaboration features
-- [ ] Advanced analytics
+- [ ] Mobile application (React Native)
+- [ ] Advanced analytics dashboard
 - [ ] Integration with calendar apps
 - [ ] Custom theme builder
+- [ ] Notification system
 
-## 🤝 Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-- [React Icons](https://react-icons.github.io/react-icons/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [MongoDB Atlas](https://www.mongodb.com/atlas/database)
-
 ---
 <div align="center">
-  Made with ❤️ by [Huhuhihi]
+  Made with ❤️ by HuHuHiHi619
 </div>
