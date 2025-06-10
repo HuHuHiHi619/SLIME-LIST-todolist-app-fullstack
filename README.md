@@ -95,15 +95,18 @@ Make sure you have the following installed:
    PORT=5000
    MONGODB_URI=mongodb://localhost:27017/slimelist
    # or use MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/slimelist
-   JWT_SECRET=your-super-secret-jwt-key
+   LOCAL_URI=your-local-mongodb
    NODE_ENV=development
-   CLIENT_URL=http://localhost:3000
+   ACCESS_TOKEN_SECRET=your-secret-jwt-key
+   REFRESH_TOKEN_SECRET=your-secret-jwt-key
+   IS_PRODUCTION=true
+ 
    ```
 
 2. **Create Frontend Environment File**
    Create a `.env` file in the `frontend` directory:
    ```env
-   VITE_API_URL=http://localhost:5000
+   VITE_LOCAL_API_URL = http://localhost:5000/api
    ```
 
 ### Running the Application
