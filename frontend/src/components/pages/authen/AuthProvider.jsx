@@ -20,7 +20,6 @@ const AuthProvider = ({ children }) => {
 
     // ถ้า Redux State บอกว่ายังไม่ Login ให้พยายาม Fetch ข้อมูลผู้ใช้
     // การเรียก fetchUserData นี้จะไป Trigger Interceptor ถ้า Access Token หมดอายุ
-   
 
     const attemptFetchUser = async () => {
       try {
@@ -41,12 +40,15 @@ const AuthProvider = ({ children }) => {
   }, [dispatch]);
 
   if (!initialCheckAttempted) {
-   
     return (
       <>
         <div className="fixed inset-0 pl-32 w-full h-full flex justify-center items-center bg-darkBackground">
-          <BouncingSlime isLooping={true} repeatCount={15} />
-          <AutoTyping text="LOADING..." speed={100} pause={1000}/>
+          <BouncingSlime
+            isLooping={true}
+            repeatCount={15}
+            className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-52 lg:h-52"
+          />
+          <AutoTyping text="LOADING..." speed={100} pause={1000} />
         </div>
       </>
     );

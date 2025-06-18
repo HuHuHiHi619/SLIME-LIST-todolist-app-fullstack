@@ -1,5 +1,4 @@
 import axios from "axios";
-// import { getRefreshToken } from './functions/authen'; // ไม่ต้อง import function นี้แล้ว เรียกตรงๆ แทน
 import store from "../redux/store";
 import { logoutUser } from "../redux/userSlice";
 
@@ -23,13 +22,13 @@ const processQueue = (error, token = null) => {
     if (error) {
       prom.reject(error);
     } else {
-      prom.resolve(); // ไม่ต้องส่ง token, การ retry จะใช้ cookie ใหม่
+      prom.resolve();
     }
   });
   failedQueue = [];
 };
 
-// *** แนบ Interceptor เข้ากับ Global Axios ***
+//  แนบ Interceptor เข้ากับ Global Axios 
 axios.interceptors.response.use(
   (response) => {
     return response;
@@ -39,7 +38,7 @@ axios.interceptors.response.use(
 
     const refreshTokenUrl = "/refreshToken";
 
-    // เช็ค 401 และไม่ใช่การ retry หรือเรียก /refreshToken
+   
     if (
       error.response?.status === 401 &&
       originalRequest.url !== refreshTokenUrl &&

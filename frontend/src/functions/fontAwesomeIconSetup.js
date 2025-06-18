@@ -12,6 +12,12 @@ import {
   faCalendarAlt,
   faCaretLeft,
   faCaretRight,
+  faBoltLightning,
+  faLifeRing,
+  faTrophy,
+  faCalendarDays,
+  faFire,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
 
@@ -27,7 +33,13 @@ library.add(
   faXmark,
   faCalendarAlt,
   faCaretLeft,
-  faCaretRight
+  faCaretRight,
+  faBoltLightning,
+  faLifeRing,
+  faTrophy,
+  faCalendarDays,
+  faFire,
+  faUser,
 );
 
 
@@ -43,3 +55,9 @@ export const homeIcon = 'home';
 export const trashCanIcon = 'trash-can';
 export const caretLeftIcon = 'caret-left';
 export const caretRightIcon = 'caret-right';
+export const boltLightningIcon = 'bolt-lightning';
+export const lifeRingIcon = 'life-ring';
+export const trophyIcon = 'trophy';
+export const calendarDaysIcon = 'calendar-days';
+export const fireIcon = 'fire';
+export const userIcon = 'user';

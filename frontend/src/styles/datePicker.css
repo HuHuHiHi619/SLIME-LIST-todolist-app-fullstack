@@ -1,0 +1,187 @@
+/* DatePicker.css - ง่าย อ่านง่าย ใช้งานได้จริง */
+
+/* ===== ตัวแปรสี (ง่ายต่อการแก้ไข) ===== */
+:root {
+  --datepicker-primary: #2563eb;     /* สีหลัก (น้ำเงิน) */
+  --datepicker-primary-light: #3b82f6; /* สีหลักอ่อน */
+  --datepicker-bg: theme('colors.purpleMain');          /* พื้นหลังปฏิทิน */
+  --datepicker-header-bg: #1e40af;   /* พื้นหลังหัวปฏิทิน */
+  --datepicker-text: #1f2937;        /* สีข้อความ */
+  --datepicker-text-light: #6b7280;  /* สีข้อความอ่อน */
+  --datepicker-hover: #dbeafe;       /* สี hover */
+  --datepicker-selected: #2563eb;    /* สีวันที่เลือก */
+  --datepicker-disabled: #9ca3af;    /* สีวันที่ disable */
+}
+
+/* ===== Base Datepicker ===== */
+.custom-datepicker {
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background-color: var(--datepicker-bg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  font-family: inherit;
+}
+
+.react-datepicker-popper {
+  z-index: 1000 !important;
+}
+
+/* ===== Header (เดือน/ปี) ===== */
+.custom-datepicker .react-datepicker__header {
+  background-color: var(--datepicker-header-bg);
+  border-bottom: none;
+  border-radius: 11px 11px 0 0;
+  padding: 16px;
+}
+
+.custom-datepicker .react-datepicker__current-month {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* ===== Navigation Arrows ===== */
+.custom-datepicker .react-datepicker__navigation {
+  top: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.custom-datepicker .react-datepicker__navigation:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* ===== Day Names (จ อ พ ศ) ===== */
+.custom-datepicker .react-datepicker__day-names {
+  background-color: var(--datepicker-header-bg);
+  margin: 0;
+  padding: 0 16px 16px 16px;
+}
+
+.custom-datepicker .react-datepicker__day-name {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 500;
+  width: 36px;
+  margin: 0 2px;
+}
+
+/* ===== Month Container ===== */
+.custom-datepicker .react-datepicker__month-container {
+  background-color: var(--datepicker-bg);
+}
+
+.custom-datepicker .react-datepicker__month {
+  padding: 16px;
+  margin: 0;
+}
+
+/* ===== Day Cells (วันที่) ===== */
+.custom-datepicker .react-datepicker__day {
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  margin: 2px;
+  border-radius: 8px;
+  color: var(--datepicker-text);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+/* ===== Day States ===== */
+
+/* วันปกติ hover */
+.custom-datepicker .react-datepicker__day:hover:not(.react-datepicker__day--disabled):not(.react-datepicker__day--selected) {
+  background-color: var(--datepicker-hover);
+  color: var(--datepicker-primary);
+}
+
+/* วันที่เลือก */
+.custom-datepicker .react-datepicker__day--selected {
+  background-color: var(--datepicker-selected) !important;
+  color: white !important;
+}
+
+/* วันนี้ (ถ้าไม่ได้เลือก) */
+.custom-datepicker .react-datepicker__day--today:not(.react-datepicker__day--selected) {
+  background-color: var(--datepicker-primary-light);
+  color: white;
+}
+
+/* วันที่ disable */
+.custom-datepicker .react-datepicker__day--disabled {
+  color: var(--datepicker-disabled) !important;
+  background-color: transparent !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* วันที่อยู่นอกเดือน */
+.custom-datepicker .react-datepicker__day--outside-month {
+  color: var(--datepicker-text-light);
+}
+
+/* ===== Input Wrapper ===== */
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+  display: block;
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .custom-datepicker {
+    font-size: 14px;
+  }
+  
+  .custom-datepicker .react-datepicker__day {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 13px;
+    margin: 1px;
+  }
+  
+  .custom-datepicker .react-datepicker__day-name {
+    width: 32px;
+    font-size: 12px;
+  }
+  
+  .custom-datepicker .react-datepicker__current-month {
+    font-size: 16px;
+  }
+}
+
+/* ===== เปลี่ยนสี Theme ง่ายๆ ===== */
+
+/* Theme สีเขียว */
+.custom-datepicker.theme-green {
+  --datepicker-primary: #059669;
+  --datepicker-primary-light: #10b981;
+  --datepicker-header-bg: #047857;
+  --datepicker-selected: #059669;
+}
+
+/* Theme สีแดง */
+.custom-datepicker.theme-red {
+  --datepicker-primary: #dc2626;
+  --datepicker-primary-light: #ef4444;
+  --datepicker-header-bg: #b91c1c;
+  --datepicker-selected: #dc2626;
+}
+
+/* Theme สีม่วง */
+.custom-datepicker.theme-purple {
+  --datepicker-primary: #7c3aed;
+  --datepicker-primary-light: #8b5cf6;
+  --datepicker-header-bg: #6d28d9;
+  --datepicker-selected: #7c3aed;
+}

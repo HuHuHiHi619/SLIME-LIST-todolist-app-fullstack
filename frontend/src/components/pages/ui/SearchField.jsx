@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { debounce } from "lodash";
-import InputField from "./inputField";
 import { useDispatch, useSelector } from "react-redux";
 import { clearSearchResults, fetchSearchTasks } from "../../../redux/taskSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +8,7 @@ import SearchTaskList from "./SearchTaskList";
 import usePopup from "../hooks/usePopup";
 import { motion } from "framer-motion";
 
-function SearchField({ handleSearchToggle, isSearchOpen }) {
+function SearchField({ handleSearchToggle, isSearchOpen, className, alwaysOpen = false }) {
   const [searchTerm, setSearchTerm] = useState("");
   const { searchResults, selectedTask } = useSelector((state) => state.tasks);
   const { isAuthenticated } = useSelector((state) => state.user);
@@ -56,42 +55,53 @@ function SearchField({ handleSearchToggle, isSearchOpen }) {
   return (
     <>
       {isAuthenticated ? (
-        <div className=" relative ">
-          <button>
-            <FontAwesomeIcon
-              icon={faSearch}
-              onClick={handleSearchToggle}
-              className={`z-30 absolute top-2.5 hover:text-purpleBorder text-xl text-gray-400  cursor-pointer transition-transform duration-300 ${
-                isSearchOpen ? "translate-x-[-200%] left-16" : "translate-x-0 -left-2"
-              }`}
-            />
-          </button>
-          <motion.input
-            type="text"
-            placeholder="Search task here !"
-            value={searchTerm}
-            onChange={handleSearch}
-            className={`rounded-xl p-1.5 text-white focus-visible:outline-2 outline-purpleBorder ${
-              isSearchOpen ? "pl-14" : ""
-            } text-xl  z-20 bg-purpleNormal`}
-            animate={{
-              width: isSearchOpen ? 260 : 0,
-              opacity: isSearchOpen ? 1 : 0,
-            }}
-            transition={{
-              duration: 0.2,
-              type: "keyframes",
-              ease: "easeInOut",
-             
-            }}
-            initial={false}
-          />
+        <div className="relative">
          
+      
+            <button>
+              <FontAwesomeIcon
+                icon={faSearch}
+                onClick={handleSearchToggle}
+                className={`z-30 absolute top-2.5 hover:text-purpleBorder text-xl text-gray-400 cursor-pointer transition-transform duration-300 ${
+                  isSearchOpen ? "translate-x-[-200%] left-16" : "translate-x-0 -left-2"
+                }`}
+              />
+            </button>
+        
+
+          {/* ถ้า alwaysOpen = true ใช้ input ธรรมดา, ถ้าไม่ใช้ motion.input */}
+          {alwaysOpen ? (
+            <input
+              type="text"
+              placeholder="Search task here !"
+              value={searchTerm}
+              onChange={handleSearch}
+              className={className}
+            />
+          ) : (
+            <motion.input
+              type="text"
+              placeholder="Search task here !"
+              value={searchTerm}
+              onChange={handleSearch}
+              className={className}
+              animate={{
+                width: isSearchOpen ? 260 : 0,
+                opacity: isSearchOpen ? 1 : 0,
+              }}
+              transition={{
+                duration: 0.2,
+                type: "keyframes",
+                ease: "easeInOut",
+              }}
+              initial={false}
+            />
+          )}
 
           <div>
             {Array.isArray(searchResults) && searchResults.length > 0 && (
-              <div className="absolute top-full -right-5 mt-3 w-[300px] p-0.5 bg-purpleNormal  shadow-lg rounded-xl z-50">
-                <div className="bg-darkBackground rounded-xl pl-2">
+              <div className="absolute top-full -right-5 mt-3 w-[300px] p-0.5 bg-purpleNormal shadow-lg rounded-xl z-50">
+                <div className="bg-darkBackground rounded-xl">
                   <SearchTaskList
                     allTasks={searchResults}
                     handleCompletedTask={handleCompletedTask}

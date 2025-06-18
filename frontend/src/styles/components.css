@@ -173,39 +173,34 @@ input[type="checkbox"]:hover {
   transform: translateX(0);
 }
 
-/* DatePicker Styling with Fixed Positioning */
-
-/* --- Base Styles for Elegant Datepicker --- */
-.elegant-datepicker {
-  border: 1px solid theme("colors.purpleNormal");
-  border-radius: 12px;
-  background-color: theme("colors.purpleMain");
+/* Base Datepicker Styling */
+.react-datepicker.elegant-datepicker {
+  border-radius: 20px !important;
+  background-color: theme("colors.purpleMain") !important;
+  border: none !important;
 }
 
-/* --- Popper Positioning Fix --- */
-/* แก้ไขปัญหาที่ datepicker แสดงผลที่ top ของหน้าจอ */
 .react-datepicker-popper {
-  z-index: 1000 !important; /* Needs to be high to appear above other elements */
-  transform-origin: top center !important; /* Ensures scaling/transformations originate correctly */
-
+  z-index: 1000 !important;
+  transform-origin: top center !important;
 }
 
 /* --- Datepicker Header --- */
 .elegant-datepicker .react-datepicker__header {
-  background-color: theme("colors.purpleMain"); /* Consistent with datepicker background */
+  background-color: theme("colors.purpleMain");
   padding: 5px;
   border: none;
 }
 
 .elegant-datepicker .react-datepicker__current-month {
-  color: #ffffff;
+  color: #fcfcfc; /* Dark gray for current month text */
   font-size: large;
-  font-weight: 100;
+  font-weight: 500; /* Slightly bolder for readability */
   padding-top: 10px;
 }
 
 .elegant-datepicker .react-datepicker__day-name {
-  color: #fefefe; /*เกือบขาว, พิจารณาใช้ #ffffff หากไม่ต่างกันมาก */
+  color: #f8f8f8; /* Medium gray for day names */
   font-size: large;
   padding-top: 15px;
   margin: 0 7px; /* Shorthand for margin-left and margin-right */
@@ -213,10 +208,10 @@ input[type="checkbox"]:hover {
 
 /* --- Datepicker Day Cells --- */
 .elegant-datepicker .react-datepicker__day {
-  border-radius: 50%;
+  border-radius: 10%;
   text-align: center;
-  color: #ffffff; /* Default text color for days */
-  font-weight: 100; /* Default font weight for days */
+  color: #fcfcfc; /* Dark gray for default day text */
+  font-weight: 400; /* Regular font weight for days */
   transition: all 0.2s ease;
   width: 36px;
   height: 36px;
@@ -224,34 +219,79 @@ input[type="checkbox"]:hover {
   font-size: 1.25rem;
 }
 
-/* Hover and Today (not selected) states */
-.elegant-datepicker .react-datepicker__day:hover:not(.react-datepicker__day--disabled),
-.elegant-datepicker .react-datepicker__day--today:not(.react-datepicker__day--selected) {
-  background-color: #363669;
-  color: #ffffff; /* Ensure text color remains white, though it might be inherited */
+/* --- 1. วันปกติ (Default Days) --- */
+.elegant-datepicker .react-datepicker__day {
+  border-radius: 10%;
+  text-align: center;
+  color: #ffffff;
 }
 
-/* Selected day state */
-.elegant-datepicker .react-datepicker__day--selected {
-  background-color: #7a36df; /* สีม่วงเข้ม */
-  color: #ffffff; /* Ensure text color remains white */
-  /* font-weight is inherited from .react-datepicker__day */
+/* --- 2. วันปกติ + Hover (เฉพาะวันธรรมดา) --- */
+.elegant-datepicker
+  .react-datepicker__day:hover:not(.react-datepicker__day--disabled):not(
+    .react-datepicker__day--selected
+  ):not(.react-datepicker__day--today) {
+  background-color: #4fa1f2 !important; /* สีน้ำเงินสำหรับ hover ปกติ */
+  color: #ffffff !important;
 }
 
-/* Disabled day state */
+/* --- 3. วันปัจจุบัน (Today) แต่ยังไม่เลือก --- */
+.elegant-datepicker
+  .react-datepicker__day--today:not(.react-datepicker__day--selected) {
+  background-color: #4d4078 !important; /* สีเขียวสำหรับวันปัจจุบัน */
+  color: #ffffff !important;
+}
+
+/* --- 4. วันปัจจุบัน + Hover --- */
+.elegant-datepicker
+  .react-datepicker__day--today:not(.react-datepicker__day--selected):hover {
+  background-color: #8b5fbf !important; /* เขียวเข้มขึ้นเมื่อ hover */
+  color: #ffffff !important;
+}
+
+/* --- 6. วันที่เลือก + Hover --- */
+.react-datepicker.elegant-datepicker .react-datepicker__day--selected:hover {
+  background-color: #7c3aed;
+  color: #ffffff !important;
+  transform: scale(1.05);
+}
+
+.react-datepicker.deadline-datepicker .react-datepicker__day--selected:hover {
+  background-color: #ff2727;
+  color: #ffffff !important;
+  transform: scale(1.05);
+}
+
+/* --- 8. วันที่ Disabled --- */
 .elegant-datepicker .react-datepicker__day--disabled {
-  color: #585858;
+  color: #9ca3af !important; /* ตัวเลขเทา */
   pointer-events: none;
   opacity: 0.5;
 }
 
-/* --- Navigation Arrows --- */
-.elegant-datepicker .react-datepicker__navigation {
-  top: 10px; /* Adjusts vertical position of prev/next arrows */
+/* Selected day state */
+.elegant-datepicker .react-datepicker__day--selected {
+  background-color: theme( "colors.purpleBorder"); 
+  color: #ffffff; /* White text on selected day */
 }
 
-/* --- Input Container --- */
-/* Ensuring the datepicker input and its wrapper take full width */
+.deadline-datepicker .react-datepicker__day--selected {
+  background-color: theme("colors.deadlineTheme"); 
+  color: #ffffff; /* White text on selected day */
+}
+
+/* Disabled day state */
+.elegant-datepicker .react-datepicker__day--disabled {
+  color: #858586; /* Lighter gray for disabled days */
+  pointer-events: none;
+  opacity: 0.6; /* Slightly less opaque to differentiate */
+}
+
+/* --- Navigation Arrows --- */
+.elegant-datepicker .react-datepicker__navigation {
+  top: 10px;
+}
+
 .react-datepicker-wrapper,
 .react-datepicker__input-container {
   display: block;
@@ -259,7 +299,7 @@ input[type="checkbox"]:hover {
 }
 
 .react-datepicker__input-container input {
-  width: 100%; /* Make the actual input field take full width of its container */
+  width: 100%;
 }
 
 /* --- Popup Content Context --- */
@@ -271,7 +311,7 @@ input[type="checkbox"]:hover {
 /* --- Responsive Adjustments for Small Screens --- */
 @media (max-width: 640px) {
   .react-datepicker-popper {
-    margin-left: 30px; /* Adjusted margin for popper on small screens */
+    margin-left: 30px;
   }
 
   .elegant-datepicker .react-datepicker__day-name {
@@ -287,6 +327,4 @@ input[type="checkbox"]:hover {
     margin: 1px; /* Adding small margin as days are smaller */
     font-size: 0.875rem; /* Smaller font for day numbers */
   }
-
- 
 }

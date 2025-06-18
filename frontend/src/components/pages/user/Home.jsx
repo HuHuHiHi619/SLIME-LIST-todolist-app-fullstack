@@ -5,19 +5,22 @@ import StreakField from "../ui/StreakField";
 import BadgeField from "../ui/BadgeField";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import SearchField from "../ui/SearchField.jsx";
+import DashboardTab from "../ui/DashboardTab.jsx";
 
 function Home() {
-  const alwaysOpen = true;
-
   const handleSearchToggle = () => {};
+
   return (
     <div id="home" className="flex flex-col lg:flex-row w-full h-full">
       <div>
-        <div className="flex justify-center mt-2 lg:hidden ">
+        <div className="grid justify-center mt-4 lg:hidden ">
           <SearchField
             handleSearchToggle={handleSearchToggle}
-            isSearchOpen={alwaysOpen}
+            isSearchOpen={true}
+            alwaysOpen={true}
+            className="rounded-xl p-1.5 pl-14 mb-3 w-[280px] text-white focus-visible:outline-2 outline-purpleBorder text-xl z-20 bg-purpleMain"
           />
+          <DashboardTab />
         </div>
         <TaskForm filter={{ status: "pending" }} />
       </div>

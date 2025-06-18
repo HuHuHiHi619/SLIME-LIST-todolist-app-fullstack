@@ -23,7 +23,10 @@ function AutoTyping({text = '', speed = 100 , pause = 1000}) {
     }, [text, speed, index, deleting, pause]);
    
   return (
-    <span className='text-white text-4xl mt-56 mr-24'>{displayed}</span>
+    <div className='relative'>
+
+    <span className='absolute top-14 md:top-16 lg:top-24 -left-32 md:-left-36 lg:-left-44 text-white text-[60px] md:text-[80px] lg:text-[100px]'>{displayed}</span>
+    </div>
   )
 }
 

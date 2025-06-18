@@ -76,7 +76,7 @@ function SidebarLink({
           exit={{ opacity: 0, y: -50 }}
           transition={{ duration: 0.5 }}
         >
-          <ul className="space-y-2 py-1">
+          <ul className="space-y-2 pt-4">
             {categories.map((category) => (
               <motion.li
                 key={category._id}
@@ -87,13 +87,13 @@ function SidebarLink({
               >
                 <Link
                   to={`/category/${category._id}`}
-                  className={`flex items-center justify-between ml-4 py-2 pl-14 pr-2 rounded  ${
+                  className={`flex items-center justify-between ml-4 py-2 px-4  rounded  ${
                     activeMenu === `/category/${category._id}`
                       ? "text-white bg-purpleActive bg-opacity-50"
-                      : "text-white opacity-75 hover:bg-purpleNormal hover:bg-opacity-30"
+                      : "text-white opacity-85 hover:bg-purpleNormal hover:bg-opacity-30"
                   }`}
                 >
-                  <span className={`${isCategoryActive ? "text-white text-xl" : ""} `}>{category.categoryName}</span>
+                  <span className={`${isCategoryActive ? "text-white " : ""} `}>{category.categoryName}</span>
                   <button
                     className="flex items-center p-1  opacity-50 hover:opacity-100 hover:text-red-400 transition-opacity duration-200"
                     onClick={(e) => {

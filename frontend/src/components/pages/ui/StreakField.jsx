@@ -62,21 +62,7 @@ function StreakField() {
 
   const streak = userData.currentStreak;
 
-  const rawSvg = `
-  <svg viewBox="0 0 103 22" xmlns="http://www.w3.org/2000/svg">
-    <rect x="2" y="0" width="99" height="1" fill="#363669" />
-    <rect x="1" y="1" width="1" height="1" fill="#363669" />
-    <rect x="0" y="2" width="1" height="18" fill="#363669" />
-    <rect x="1" y="20" width="1" height="1" fill="#363669" />
-    <rect x="2" y="21" width="99" height="1" fill="#363669" />
 
-    <rect x="101" y="1" width="1" height="1" fill="#363669" />
-    <rect x="102" y="2" width="1" height="18" fill="#363669" />
-    <rect x="101" y="20" width="1" height="1" fill="#363669" />
-  </svg>
-  `;
-
-  const svgDataUrl = `data:image/svg+xml,${encodeURIComponent(rawSvg)}`;
   return (
     <div className="flex w-full gap-4">
       {isAuthenticated ? (

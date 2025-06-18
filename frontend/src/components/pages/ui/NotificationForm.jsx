@@ -5,7 +5,6 @@ import Logout from "../authen/Logout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faQuestion,
-  faSearch,
   faSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import InstructionPopup from "./InstructionPopup";
@@ -79,6 +78,9 @@ const NotificationForm = () => {
                         <SearchField
                           handleSearchToggle={handleSearchToggle}
                           isSearchOpen={isSearchOpen}
+                          className={`rounded-xl p-1.5   text-white focus-visible:outline-2 outline-purpleBorder ${
+                            isSearchOpen ? "pl-14" : ""
+                          } text-xl  z-20 bg-purpleNormal`}
                         />
                       </Tooltip>
                     </div>
