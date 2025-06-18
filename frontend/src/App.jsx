@@ -16,7 +16,7 @@ import PublicRoute from "./components/pages/authen/PublicRoute"; // Component to
 // --- Lazy Loaded Components (Code Splitting) ---
 const Home = lazy(() => import("./components/pages/user/Home"));
 const Upcoming = lazy(() => import("./components/pages/user/Upcoming"));
-const AllTask = lazy(() => import("./components/pages/user/Alltask"));
+const AllTask = lazy(() => import("./components/pages/user/AllTask"));
 const Category = lazy(() => import("./components/pages/user/Category"));
 const CategoryList = lazy(() => import("./components/pages/user/CategoryList"));
 const Tag = lazy(() => import("./components/pages/user/Tag"));
