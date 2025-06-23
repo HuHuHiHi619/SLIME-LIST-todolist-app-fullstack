@@ -7,6 +7,7 @@ import usePopup from "../hooks/usePopup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import SlimePortal from "../animation/SlimePortal";
+import SuccessPopup from "../ui/SuccessPopup";
 
 function AuthForm({ isRegister, setActiveTab }) {
   const [user, setUser] = useState({ username: "", password: "" });
@@ -15,6 +16,7 @@ function AuthForm({ isRegister, setActiveTab }) {
   const { handleToggleRegister } = usePopup();
   const { loading } = useSelector((state) => state.user);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -34,6 +36,11 @@ function AuthForm({ isRegister, setActiveTab }) {
     try {
       if (isRegister) {
         await register(user);
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        setShowPopup(true);
+        await delay(1700); 
+        setShowPopup(false);
+        await delay(300); 
         setActiveTab("login");
       } else {
         const response = await dispatch(loginUser(user)).unwrap();
@@ -116,6 +123,15 @@ function AuthForm({ isRegister, setActiveTab }) {
           </p>
         )}
       </button>
+      <SuccessPopup
+        show={showPopup}
+        message={
+          <>
+            <p>SUCCESS !</p>
+            <p>YOUR ACCOUNT HAS BEEN CREATED</p>
+          </>
+        }
+      />
     </div>
   );
 }

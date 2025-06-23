@@ -6,7 +6,7 @@ import BadgeField from "../ui/BadgeField";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import SearchField from "../ui/SearchField.jsx";
 import DashboardTab from "../ui/DashboardTab.jsx";
-
+import LoadingPage from "../animation/LoadingPage.jsx";
 function Home() {
   const handleSearchToggle = () => {};
 

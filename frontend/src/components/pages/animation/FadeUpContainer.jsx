@@ -1,7 +1,7 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import React from 'react';
+import { motion } from 'framer-motion';
 
-const FadeUpContainer = ({ children, delay = 0, direction = "up" ,  }) => {
+const FadeUpContainer = ({ children, delay = 0, direction = 'up' }) => {
   const directions = {
     up: { opacity: 0, y: 20 },
     down: { opacity: 0, y: -20 },
@@ -15,16 +15,16 @@ const FadeUpContainer = ({ children, delay = 0, direction = "up" ,  }) => {
     <motion.div
       initial={animateDirection}
       animate={{ opacity: 1, x: 0, y: 0 }}
-      transition={{ 
+      exit={animateDirection} // ✅ อันนี้จะใช้ตอนหาย
+      transition={{
         duration: 0.5,
         delay,
-        ease: "easeOut"
+        ease: 'easeOut',
       }}
-      exit={animateDirection}
     >
       {children}
     </motion.div>
   );
-}
+};
 
 export default FadeUpContainer;
