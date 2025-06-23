@@ -7,7 +7,7 @@ import { AnimatePresence } from "framer-motion";
 
 export default function SuccessPopup({ show, onRef, message }) {
   return ReactDOM.createPortal(
-    <div className="fixed z-[1000] bottom-16 right-1/2 translate-x-1/2">
+    <div className="fixed z-[9999] bottom-16 right-1/2 translate-x-1/2">
       <AnimatePresence mode="wait"> {/* ✅ เพิ่ม mode="wait" เพื่อให้ exit เสร็จก่อน unmount */}
         {show && (
           <FadeUpContainer key="success-popup" direction="down">

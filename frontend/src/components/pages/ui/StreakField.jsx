@@ -129,7 +129,7 @@ function StreakField() {
 
             {streakPopup &&
               ReactDOM.createPortal(
-                <div className="streak-popup ml-8 md:ml-72 mb-4">
+                <div className="fixed z-[9999] bottom-16 right-1/2 translate-x-1/2 ">
                   <FadeUpContainer direction="down" delay={0.6}>
                     <div
                       className="flex items-center border-4 p-4 rounded-xl bg-darkBackground"

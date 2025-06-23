@@ -13,11 +13,16 @@ export const register = async (data) => {
     }
     return response.data;
   } catch (error) {
-    console.error(
-      "Error during registration:",
-      error.response?.data || error.message
-    );
-    throw error;
+    const resError = error.response?.data;
+
+    // ถ้า error เป็น array (validation error)
+    if (Array.isArray(resError?.error)) {
+      const messages = resError.error.map((e) => e.msg).join(" / ");
+      throw new Error(messages);
+    }
+
+    // ถ้า error เป็นข้อความเดียว
+    throw new Error(resError?.error || "Registration failed.");
   }
 };
 
@@ -35,8 +40,16 @@ export const userLogin = async (data) => {
     }
     return response.data;
   } catch (error) {
-    console.error("Error during login:", error.response?.data || error.message);
-    throw error;
+    const resError = error.response?.data;
+
+    // ถ้า error เป็น array (validation error)
+    if (Array.isArray(resError?.error)) {
+      const messages = resError.error.map((e) => e.msg).join(" / ");
+      throw new Error(messages);
+    }
+
+    // ถ้า error เป็นข้อความเดียว
+    throw new Error(resError?.error || "Login failed.");
   }
 };
 

@@ -26,33 +26,29 @@ function AuthForm({ isRegister, setActiveTab }) {
     e.preventDefault();
     if (loading || isSubmitting) return;
     setError("");
+
     if (!user.username || !user.password) {
       setError("Username and password are required.");
-      console.error("Username and password are required");
       return;
     }
-    setError("");
+
     setIsSubmitting(true);
+
     try {
       if (isRegister) {
         await register(user);
-        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
         setShowPopup(true);
-        await delay(1700); 
+        await new Promise((res) => setTimeout(res, 1700));
         setShowPopup(false);
-        await delay(300); 
+        await new Promise((res) => setTimeout(res, 300));
         setActiveTab("login");
       } else {
         const response = await dispatch(loginUser(user)).unwrap();
-        console.log("authForm login response", response);
         await dispatch(fetchUserData()).unwrap();
-        console.log("login completed");
       }
     } catch (err) {
-      setError(
-        isRegister ? "Registration failed." : "Login failed. Please try again."
-      );
-      console.error("ERROR", err);
+      console.error("AuthForm error:", err);
+      setError(err.message || "Something went wrong.");
     } finally {
       setIsSubmitting(false);
     }
@@ -60,11 +56,11 @@ function AuthForm({ isRegister, setActiveTab }) {
 
   return (
     <div
-      className={`relative border   ${
+      className={`relative border ${
         isRegister
           ? "bg-purpleSidebar border-purpleNormal"
-          : "bg-purpleMain border-purpleNormal "
-      } p-10 rounded-2xl shadow-lg w-full max-w-lg `}
+          : "bg-purpleMain border-purpleNormal"
+      } p-10 rounded-2xl shadow-lg w-full max-w-lg`}
     >
       {loading && (
         <div className="popup-overlay">
@@ -75,12 +71,19 @@ function AuthForm({ isRegister, setActiveTab }) {
       <h1 className="text-xl md:text-3xl text-white my-4 text-center">
         {isRegister ? "SIGN UP" : "SIGN IN"}
       </h1>
+
       <FontAwesomeIcon
         icon={faXmark}
         onClick={handleToggleRegister}
-        className="absolute delete-step text-xl text-gray-400 top-3 right-3"
+        className="absolute delete-step text-xl text-gray-400 top-3 right-3 cursor-pointer"
       />
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+
+      {error && (
+        <div className="bg-red-500 text-white text-center p-2 mb-4 rounded">
+          {error}
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-4 grid">
         <InputField
           className="py-2 rounded-xl text-xl"
@@ -108,26 +111,24 @@ function AuthForm({ isRegister, setActiveTab }) {
 
       <button
         onClick={() => setActiveTab(isRegister ? "login" : "register")}
-        className="w-full text-center mt-4  text-gray-400 hover:text-white "
+        className="w-full text-center mt-4 text-gray-400 hover:text-white"
       >
         {isRegister ? (
           <p>
-            Already have an account ?
-            <br />
-            Sign in
+            Already have an account? <br /> Sign in
           </p>
         ) : (
           <p>
-            Don't have an account? <br />
-            Sign up
+            Don’t have an account? <br /> Sign up
           </p>
         )}
       </button>
+
       <SuccessPopup
         show={showPopup}
         message={
           <>
-            <p>SUCCESS !</p>
+            <p>SUCCESS!</p>
             <p>YOUR ACCOUNT HAS BEEN CREATED</p>
           </>
         }

@@ -80,14 +80,14 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ username }).select("+password");
     console.log("User found:", user ? "Yes" : "No");
     if (!user) {
-      return res.status(400).json({ error: "Invalid credentials 1" });
+      return res.status(400).json({ error: "Invalid username or password" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       console.log("Password is not match");
-      return res.status(400).json({ error: "Invalid credentials , password" });
+      return res.status(400).json({ error: "Invalid credentials" });
     }
 
     const payload = { userId: user._id };
@@ -106,14 +106,7 @@ exports.login = async (req, res) => {
       userAgent: req.headers["user-agent"],
     });
     await loginHistoryEntry.save();
-    console.log("Login history saved:");
-    console.log("Login successful!");
-    console.log("Generated Access Token:", accessToken);
-    console.log("Generated Refresh Token:", refreshToken);
-    console.log("Setting Cookies:");
-    console.log(" - accessToken maxAge:", 15 * 60 * 1000);
-    console.log(" - refreshToken maxAge:", 7 * 24 * 60 * 60 * 1000);
-    console.log(" - isProduction:", isProduction); // ดูว่า secure/sameSite เป็นอะไร
+    
     
     res.cookie("accessToken", accessToken, {
       httpOnly: true,

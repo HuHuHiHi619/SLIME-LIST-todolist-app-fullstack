@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import InputField from "../ui/inputField";
 import FadeUpContainer from "../animation/FadeUpContainer";
-
+import SuccessPopup from "../ui/SuccessPopup";
 import { createCategory } from "../../../functions/category";
 import { useSelector } from "react-redux";
 import Tooltip from "../ui/Tooltip";
@@ -12,6 +12,7 @@ function CreateEntity({ onAddItem, entityType, onClose }) {
   const [formEntity, setFormEntity] = useState({
     name: "",
   });
+  const [showPopup , setShowPopup] = useState(false)
   const [error, setError] = useState("");
   const { categories } = useSelector((state) => state.tasks);
   const validator = () => {
@@ -50,7 +51,11 @@ function CreateEntity({ onAddItem, entityType, onClose }) {
 
         if (response) {
           console.log("Successfully created:", response);
-          onAddItem(response);
+          setShowPopup(true);
+          await new Promise((res) => setTimeout(res, 700));
+          setShowPopup(false);
+          await new Promise((res) => setTimeout(res, 300));
+          onAddItem(response)
         } else {
           console.error("No response received:", error);
         }
@@ -98,6 +103,15 @@ function CreateEntity({ onAddItem, entityType, onClose }) {
           </div>
         </div>
       </FadeUpContainer>
+      <SuccessPopup
+        show={showPopup}
+        message={
+          <>
+            <p>SUCCESS!</p>
+            <p>YOUR ACCOUNT HAS BEEN CREATED</p>
+          </>
+        }
+      />
     </>
   );
 }

@@ -20,10 +20,17 @@ router.post(
     // validator
     body("username")
       .notEmpty()
-      .isLength({ min: 3, max: 20 })
+      .withMessage("Username is required")
+      .isLength({ min: 6, max: 20 })
+      .withMessage("Username must be 6–20 characters")
       .matches(/^[a-zA-Z0-9_.]+$/)
-      .withMessage("Username is required"),
+      .withMessage(
+        "Username must contain only letters, numbers, underscores, or periods"
+      ),
+
     body("password")
+      .notEmpty()
+      .withMessage("Password is required")
       .isLength({ min: 6 })
       .withMessage("Password must be at least 6 characters"),
   ],
