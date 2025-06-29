@@ -47,7 +47,7 @@ function TaskList({
                 }}
                 onMouseEnter={() => setIsHover((prev) => ({ ...prev, [task._id]: true }))}
                 onMouseLeave={() => setIsHover((prev) => ({ ...prev, [task._id]: false }))}
-                className={`group flex items-center justify-between p-2 md:p-3 rounded-2xl cursor-pointer text-white border border-purpleNormal hover:bg-purpleNormal transition-all duration-300 ease-in-out
+                className={`group  flex items-center justify-between p-2 md:p-3 rounded-2xl cursor-pointer text-white border border-purpleNormal hover:bg-purpleNormal transition-all duration-300 ease-in-out
                   ${selectedTask && selectedTask._id === task._id ? "bg-purpleActiveTask" : ""}
                   ${task.status === "completed" ? "bg-completedTask hover:bg-completedTheme" : task.status === "failed" ? "bg-failedTask" : ""}`}
               >
@@ -75,7 +75,7 @@ function TaskList({
                         handleCompletedTask(task);
                       }}
                       disabled={task?.status === "completed"}
-                      className="flex-shrink-0"
+                      className="flex-shrink-0 "
                     />
                   )}
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserData } from "../../../redux/userSlice"; // fetchUserData เป็น Thunk
-import { BouncingSlime } from "../animation/SlimePortal";
+import {  BouncingSlimeLoading } from "../animation/SlimePortal";
 import AutoTyping from "../animation/AutoTyping";
 
 const AuthProvider = ({ children }) => {
@@ -42,8 +42,8 @@ const AuthProvider = ({ children }) => {
   if (!initialCheckAttempted) {
     return (
       <>
-        <div className="fixed inset-0 pl-32 w-full h-full flex justify-center items-center bg-darkBackground">
-          <BouncingSlime
+        <div className="fixed inset-0  w-full h-full flex justify-center items-center bg-darkBackground">
+          <BouncingSlimeLoading
             isLooping={true}
             repeatCount={15}
             className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-52 lg:h-52"

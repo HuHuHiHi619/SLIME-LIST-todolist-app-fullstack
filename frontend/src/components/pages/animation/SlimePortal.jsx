@@ -42,6 +42,29 @@ export const BouncingSlime = ({
   );
 };
 
+export const BouncingSlimeLoading = ({ className = "" }) => {
+  return (
+    <motion.div
+      animate={{
+        y: [0, -100, 0],
+        scaleY: [1, 1.1, 0.9, 1], 
+        scaleX: [1, 0.9, 1.1, 1], 
+        rotate: [0, 20, 0, 0]
+      }}
+      transition={{
+        duration: 0.7, 
+        repeat: Infinity,
+        repeatType: "loop",
+        ease: "easeOut",
+      }}
+      className={`bg-center bg-no-repeat bg-cover ${className}`}
+      style={{
+        backgroundImage: `url(./images/Logo-slime.png)`,
+      }}
+    />
+  );
+};
+
 
 // zigzagtext
 const Zigzagtext = ({ text = "SLIMELIST", delay = 0.5 }) => {
