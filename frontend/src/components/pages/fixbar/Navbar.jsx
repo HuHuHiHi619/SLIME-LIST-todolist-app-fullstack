@@ -26,7 +26,7 @@ function Navbar() {
             className="pl-4 text-white text-xl cursor-pointer hover:scale-105 lg:hidden"
           />
           <Link to="/" className=" flex items-center gap-3 pl-4 ">
-            <img src="./images/Logo-slime.png" className="w-6 md:w-8  hidden sm:block" alt="" />
+            <img src="./images/Logo-slime.png" className="w-6 md:w-8 " alt="" />
             <p className="text-2xl md:text-4xl font-bold bg-purpleGradient bg-clip-text text-transparent">
               SLIME LIST
             </p>
