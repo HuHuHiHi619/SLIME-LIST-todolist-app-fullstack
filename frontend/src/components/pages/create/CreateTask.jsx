@@ -78,10 +78,12 @@ function CreateTask({ onClose }) {
   const handleDateChange = (date, field) => {
     if (field === "startDate") {
       const selectedDate = date ? date : new Date();
-      dispatch(setFormTask({ [field]: selectedDate.toISOString() }));
+      const formatDate = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000));
+      dispatch(setFormTask({ [field]: formatDate.toISOString() }));
     } else if (field === "deadline") {
       if (date) {
-        dispatch(setFormTask({ [field]: date.toISOString() }));
+        const formatDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+        dispatch(setFormTask({ [field]: formatDate.toISOString() }));
       } else {
         dispatch(setFormTask({ [field]: null }));
       }

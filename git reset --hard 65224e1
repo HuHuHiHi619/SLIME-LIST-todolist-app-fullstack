@@ -1,0 +1,179 @@
+[33m70dc9d4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Fix deadline date #2
+[33m99fd5d7[m Fix deadline date
+[33m3d620df[m tired!!
+[33mf9679ac[m tired
+[33meaf8d9c[m Fix userslice state
+[33m6ae526a[m Refactor axios interceptor and Update userlice state
+[33m10c6bfd[m Fix axios and authProvider
+[33mfd915c6[m Fix race condition #2
+[33m6de0b04[m Fix race condition
+[33m3a1d725[m Fix loading server
+[33m7a6f619[m Fix race condition while server starting
+[33m1b1d82f[m Update timezone
+[33m65224e1[m Update browserslist
+[33m8c33c5f[m Fix animation : loading screen, Fix tasks ui size
+[33m3ce5809[m Fix create entity
+[33m081a419[m Fix authen transition
+[33m8f89afe[m Fix dependencies
+[33m35e785d[m Fix case sensitive
+[33m609ef62[m Merge branch 'main' of https://github.com/HuHuHiHi619/todo-app-fullstack
+[33mb2285a5[m fix calendar ui, add more icon and fix setting ui
+[33m96c07d0[m Update README.md
+[33m3977ad9[m Update README.md
+[33m4226033[m Update README.md
+[33m83e9906[m Adjust font size for new font
+[33m01b0be9[m Add dockerfile and fix ui
+[33ma544d49[m Add dockerfile and fix ui
+[33me2b4e5c[m Fix ui font style and server loading
+[33m9879128[m replace api_url with axios
+[33me07fdd9[m Fix typo
+[33m7131212[m Create proxy for netlify
+[33mcc38e99[m Fix refreshtoken
+[33m278dcd0[m Switch to real cron schedule
+[33m3ae5f44[m Fix typo
+[33mc6f3532[m Debug github action
+[33mf64cc36[m Fix github action path
+[33m55ba9cb[m Fix github action import database
+[33m58c0bc6[m Fix github action
+[33m52e5458[m Fix github action format
+[33m4d65df9[m Fix github action typo
+[33mb0912ec[m Fix github action typo
+[33mab203e9[m Test github action
+[33m987db58[m Fix gitgub action typo
+[33md116902[m Fix authprovider loading
+[33m4d9df6b[m Fix loading
+[33me203d9b[m Fix loading
+[33m9c99a2d[m Fix loading
+[33mb3778a0[m Fix loading for cole start
+[33mc0a9fb9[m Fix authprovider
+[33mc74b1ef[m Merge branch 'main' of https://github.com/HuHuHiHi619/todo-app-fullstack
+[33m3969440[m Fix development production status
+[33m166c8b8[m Fix deploy directory
+[33m914227d[m Fix github folder
+[33m09ea1a7[m Fix workflows folder structure
+[33m40138ff[m Add cron to github action , fix sidebar ui
+[33m3e12602[m Fix user model
+[33mab5cf30[m Fix login
+[33m2b32a67[m Fix LOGIN
+[33mc668db6[m Fix login
+[33mf45baa4[m Fix login console.log
+[33m9fd0be6[m Downgrade expressJs
+[33m8084cc1[m Fix dependencies
+[33m065f898[m Fix ui layout
+[33m6d5067f[m Fix ui
+[33m4049087[m Fix debounce taskdetail update
+[33m9624852[m Fix task ui responsive and update new signin popup
+[33mac51a66[m Fix register ui, taskdetail
+[33m91ddc46[m Fix auth ui
+[33m6b9ba27[m Fix navbar scale
+[33md12d937[m Fix dependencies
+[33m25943a9[m Fix dependencies
+[33mab4ae0c[m Fix dependencies
+[33m1fbc1c1[m Add authtabs ui
+[33m694a7fc[m Fix mongoose
+[33m946bfe6[m Fix mongoose
+[33m99ded77[m Fix mongoose type
+[33mf6008ec[m Fix update task with debounce
+[33m638dff9[m Fix summary gradeint
+[33mb10846e[m Fix import location
+[33ma21ab46[m Fix summary gradien
+[33m8391f47[m Fix ui and authProvider
+[33md563dc6[m Fix dependencies date-fns-tz.
+[33m3e2aea5[m Fix dependencies
+[33me0b06ff[m Fix gettask filter ,calulate streak,
+[33mefa3563[m Fix re-render component,gettask dealine filter
+[33m172bda3[m Fix cors
+[33mec1f9ac[m Fix auth middleware , authProvider
+[33mfa75d9e[m Fix auth middlware : store userId after decoded
+[33mffd33df[m Log cookie for backend
+[33mdbe63e8[m Fix auth middleware token
+[33m28deec8[m Fix cookie middlware
+[33m86968f3[m Fix authmiddleware pararell action
+[33m3146002[m Fix middleware
+[33m691514e[m Fix case-sensitivity issue
+[33m3f00c98[m Temporary rename Summary.jsx to temp.jsx
+[33m9572b7f[m Fix backend middleware frontend api function and frontend middlware
+[33m0026b98[m Fix AUTH
+[33m59feec5[m Fix get user data when authen break
+[33m0edf43f[m Merge branch 'main' of https://github.com/HuHuHiHi619/todo-app-fullstack
+[33mdbf7c99[m Fix taskdetail backend function and auth middlware
+[33m31c4cb7[m Update README.md
+[33m39f2044[m Fix debounce update task
+[33m0683b11[m Merge branch 'main' of https://github.com/HuHuHiHi619/todo-app-fullstack
+[33m67debe7[m Fix updated task
+[33me70fa5e[m Rename สกรีนช็อต 2025-02-12 201534.png to category2.png
+[33m48e8f0c[m Add files via upload
+[33m75ed9b2[m Rename สกรีนช็อต 2025-02-12 184731.png to category1.png
+[33m91f4125[m Delete screenshots/สกรีนช็อต 2025-02-12 184720.png
+[33mdc22166[m Rename สกรีนช็อต 2025-02-12 184716.png to tasklist.png
+[33mc08fc64[m Rename สกรีนช็อต 2025-02-12 184641.png to stat.png
+[33m74b0119[m Delete screenshots/สกรีนช็อต 2025-02-12 184626.png
+[33m2ca241f[m Rename สกรีนช็อต 2025-02-12 184614.png to step.png
+[33m392e8d9[m Rename สกรีนช็อต 2025-02-12 184551.png to create.png
+[33md9bfa6d[m Rename สกรีนช็อต 2025-02-12 184544.png to task.png
+[33m6f01cff[m Rename สกรีนช็อต 2025-02-12 184436.png to menu.png
+[33me855e01[m Rename สกรีนช็อต 2025-02-12 184216.png to home.png
+[33m293dfab[m Rename สกรีนช็อต 2024-12-05 115822.png to streakfield.png
+[33m4e5ba7b[m Add files via upload
+[33ma836432[m Create screenshots.png
+[33m9744ded[m Delete screenshots
+[33m0dd7d43[m Create screenshots
+[33mf86516d[m Merge branch 'main' of https://github.com/HuHuHiHi619/todo-app-fullstack
+[33mde58e7c[m Fix nav bar ui
+[33m23cb246[m Update README.md
+[33mbcbb325[m Update README.md
+[33m9d1f94d[m Merge branch 'main' of https://github.com/HuHuHiHi619/todo-app-fullstack
+[33m4f5d151[m Add instructions images
+[33m0982db6[m Update README.md
+[33m3dd94d9[m Update README.md
+[33m8b85b16[m Update README.md
+[33m757515c[m Update README.md
+[33m3e432f3[m Update README.md
+[33mb719b7b[m Update README.md
+[33mb130116[m Update README.md
+[33m924446e[m Update README.md
+[33m7e6feb9[m Update README.md
+[33m0dd227a[m Update README.md
+[33mbc96a89[m Update README.md
+[33mbad7810[m Create README.md
+[33md0b2161[m fix fetchtask when guest completed task
+[33m9448532[m Fix authprovider auth state bug
+[33m3108dea[m Fix streak ui , search input
+[33m2696bf6[m Fix: search background
+[33m025a343[m fix some ui
+[33m6b3a364[m fix typo startDate field
+[33m72e999a[m fix startdate field
+[33mbc52725[m fix api url
+[33mb40b3fa[m fix startdate field
+[33m7cb4580[m fix startdate field : add new date auto when user put empty startdate
+[33m7bc159a[m Fix streak ui position and fix startdate filed
+[33m0a21173[m remove domain
+[33ma1c0d8a[m test
+[33m145b8d6[m test action 2nd
+[33ma0aaf56[m Merge branch 'main' of https://github.com/HuHuHiHi619/todo-app-fullstack
+[33m81e13dd[m test github action
+[33m5f4a340[m Create netlify-deploy.yml
+[33mc7bd313[m fix sameSite typo
+[33m0bf7419[m add domain to cookie
+[33mc349d8c[m Change samesite
+[33mf72e38f[m fix nav bar text
+[33mb554e0e[m Fix cors origin to real frontend
+[33m4da1d06[m Change .env localhost  url to real backend
+[33mc626dc1[m Fix .env variable
+[33mfdfb5c7[m Connect mongodb atlas
+[33md675b81[m Add misssing dependencies
+[33mcc1bdc7[m add framer-motion dependency
+[33me36e617[m fix: resolving Summary.jsx
+[33m57f7a93[m Fix js-cookie dependency
+[33mb1baabb[m Add missing rollup dependency
+[33m93973e7[m add dist folder
+[33m9a76050[m fix responsive and optimize ui component
+[33m952a4ba[m Add some badge images and fix ui
+[33m8d67f3d[m add responsive for mobile and tablet
+[33mc392df2[m add responsive design
+[33m3669199[m fix rerender component and streak logic
+[33m2327f6e[m add streak status and remake tag feature
+[33mf1ba7a2[m Fix client authentication and improve UI styles
+[33m037cbef[m[33m ([m[1;32mimplement-redux-to-taskDetail[m[33m)[m Add Redux integration to task details and update UI components
+[33md4a8c5b[m fix update category
+[33me88b938[m Merge 
