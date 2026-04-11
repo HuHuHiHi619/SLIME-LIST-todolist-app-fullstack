@@ -45,7 +45,7 @@ function DashboardTab() {
       <div className="flex items-center border-[#1ef996] border-2 p-2.5 rounded-xl">
         {summary.map((item, idx) => (
           <p key={idx} className="text-xl  font-bold text-white">
-            {(item.completedRate?.toFixed(0)) ?? 0} %
+            {item.completedRate.toFixed(0)}%
           </p>
         ))}
       </div>
