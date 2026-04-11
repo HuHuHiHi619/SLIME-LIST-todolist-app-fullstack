@@ -1,7 +1,6 @@
 import { faChartBar, faFire, faBolt } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// SearchField is removed from here
 
 function DashboardTab() {
   const { userData } = useSelector((state) => state.user);
@@ -15,7 +14,7 @@ function DashboardTab() {
   };
 
   return (
-    <div className="flex  items-center justify-between">
+    <div className="flex  items-center justify-between gap-4">
       <div className="w-[52px] bg-purpleGradient p-0.5 rounded-xl">
         <div className="bg-purpleSidebar rounded-lg p-2.5">
           <img
@@ -44,13 +43,9 @@ function DashboardTab() {
         </p>
       </div>
       <div className="flex items-center border-[#1ef996] border-2 p-2.5 rounded-xl">
-        <FontAwesomeIcon
-          icon={faChartBar}
-          className="text-[#1ef996] text-xl mr-2"
-        />
         {summary.map((item, idx) => (
           <p key={idx} className="text-xl  font-bold text-white">
-            {item.completedRate.toFixed(0)}%
+            {(item.completedRate?.toFixed(0)) ?? 0} %
           </p>
         ))}
       </div>

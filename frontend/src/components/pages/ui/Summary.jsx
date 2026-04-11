@@ -90,21 +90,7 @@ function Summary() {
     dispatch(fetchSummaryByCategory());
   }, [dispatch, isSummaryUpdated, userData]);
 
-  const rawSvg = `
-  <svg viewBox="0 0 130 60" xmlns="http://www.w3.org/2000/svg">
-    <rect x="2" y="0" width="99" height="1" fill="#363669" />
-    <rect x="1" y="1" width="1" height="1" fill="#363669" />
-    <rect x="0" y="1" width="1" height="60" fill="#363669" />
-    <rect x="1" y="20" width="1" height="1" fill="#363669" />
-    <rect x="2" y="21" width="99" height="1" fill="#363669" />
-
-    <rect x="101" y="1" width="1" height="1" fill="#363669" />
-    <rect x="102" y="2" width="1" height="18" fill="#363669" />
-    <rect x="101" y="20" width="1" height="1" fill="#363669" />
-  </svg>
-  `;
-
-  const svgDataUrl = `data:image/svg+xml,${encodeURIComponent(rawSvg)}`;
+ 
 
   return (
     <div className=" md:hidden lg:grid  border-2 border-purpleNormal rounded-3xl  px-6 grid lg:h-[380px] md:h-auto ">
