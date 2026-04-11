@@ -229,23 +229,7 @@ function CreateTask({ onClose }) {
             <div className="flex justify-between items-center">
               <div className="flex flex-col gap-2">
                 <div className="flex gap-2">
-                  {/*
-          -- Tag is on process --
-              {tags.map((tag) => (
-                  <button
-                    key={tag._id}
-                    type="button"
-                    onClick={() => handleToggleTag(tag)}
-                    className={`px-4 py-2 rounded-full ${
-                      formTask.tag.includes(tag)
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-300 text-black"
-                    }`}
-                  >
-                    {tag.tagName.toUpperCase()}
-                  </button>
-                ))}
-             */}
+    
                 </div>
               </div>
               <button

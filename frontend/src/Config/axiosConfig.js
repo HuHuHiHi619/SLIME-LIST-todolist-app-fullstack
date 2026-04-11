@@ -17,7 +17,7 @@ axios.defaults.headers.common["Content-Type"] = "application/json";
 let isRefreshing = false;
 let failedQueue = [];
 
-const processQueue = (error, token = null) => {
+const processQueue = (error) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
