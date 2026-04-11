@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const { updateOverdueTasks, resetDailyStreakStatus } = require('./job/cronJob');
-require('dotenv').config(); // ถ้าคุณใช้ dotenv
+require('dotenv').config(); 
 
 async function runTasks() {
   try {
-    // เชื่อมต่อกับ MongoDB ก่อน
+
     console.log('Connecting to MongoDB...');
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Connected to MongoDB');

@@ -1,5 +1,5 @@
 const { startOfDay, differenceInDays } = require("date-fns");
-const { formatInTimeZone } = require("date-fns-tz"); // Fixed typo here
+const { formatInTimeZone } = require("date-fns-tz"); 
 const Category = require("../Models/Category");
 const Tag = require("../Models/Tag");
 const User = require("../Models/User");
@@ -43,7 +43,7 @@ exports.processProgress = (progress) => {
         progress.steps.every((step) => step.completed);
     }
 
-    return progress; // ส่งกลับ progress ที่ถูกประมวลผล
+    return progress; 
   } else {
     throw new Error("Invalid progress data");
   }
@@ -51,7 +51,7 @@ exports.processProgress = (progress) => {
 
 exports.processCategory = async (categoryId, userId, guestId) => {
   const query = {
-    _id: categoryId, // ค้นหาจาก ID
+    _id: categoryId, 
     $or: [],
   };
   if (userId) query.$or.push({ user: userId });
