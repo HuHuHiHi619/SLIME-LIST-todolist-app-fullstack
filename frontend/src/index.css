@@ -9,7 +9,7 @@
   font-family: "Jersey 10","Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   
 }
-ิ
+
 textarea {
   resize: none; /* ป้องกันการ resize */
   overflow-y: auto; /* ทำให้ scrollbar แสดงเมื่อเนื้อหาเกิน */
@@ -30,10 +30,35 @@ textarea {
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #9f7aea ;
+  background-color: #9f7aea;
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   MOBILE DESIGN SYSTEM — global additions (Task 1b)
+   These rules are inert until the corresponding classes are used.
+   They do not affect any existing desktop styles.
+───────────────────────────────────────────────────────────────── */
 
+/* Opt the entire page into dark color-scheme so browser-native UI
+   (scrollbars, date inputs, select dropdowns) renders dark by default. */
+html {
+  color-scheme: dark;
+}
 
+/* Pixel-art rendering for slime badge sprites.
+   Apply class="slime-pixel" to <img> elements using sprite assets. */
+.slime-pixel {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
 
+/* Honour the OS "reduce motion" preference for all slime animations.
+   Targets drawer slide-in, modal backdrop fade, and modal pop-in. */
+@media (prefers-reduced-motion: reduce) {
+  .slime-anim-drawer,
+  .slime-anim-backdrop,
+  .slime-anim-modal {
+    animation: none !important;
+  }
+}
 

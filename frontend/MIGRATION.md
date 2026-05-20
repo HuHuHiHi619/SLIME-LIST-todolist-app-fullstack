@@ -128,3 +128,49 @@ After each phase: run `npm test` (vitest), list pass/fail. Do not start Phase N+
 ### Out of scope (flagged, not fixed)
 - `userSlice.jsx` pre-existing lint: `minimumLoading` unnecessary try/catch wrapper; unused `state` params in `restoreState` / `logoutUser.fulfilled`. Pre-date this refactor.
 - `usePopup.jsx:124` — `else if (popupRef)` always truthy (ref object). Lives in the hook, not `redux/`.
+
+---
+
+## [TASK] Mobile Retrofit — Surgical mobile-first overrides
+### Refactoring Goal / Objective
+Retrofit the live Slimelist app (currently desktop-first, broken on mobile)
+so its mobile viewport matches the approved prototype (`Slimelist Mobile Demo.html`)
+without rewriting the desktop layout. Strategy: `md:` responsive prefix isolation —
+mobile baseline classes, `md:` classes restore desktop behavior.
+Breakpoint: **768 px**. Desktop layout must remain byte-identical.
+
+### Active Phases
+
+#### Task 1a — Design tokens (`tailwind.config.js`) ✅
+- **Files Changed**: `frontend/tailwind.config.js`
+- **Test Command**: visual inspection + Tailwind build
+- **Status**: Complete
+- **Done**:
+  - Added `slime.*` nested color object (20 tokens: bg, bg-2, card, card-2, surface, border,
+    border-2, border-3, muted, muted-2, pink, pink-2, blue, blue-2, amber, amber-2, green, red,
+    purple, purple-2). Purely additive — zero existing tokens changed.
+  - Added `fontFamily.display` → Jockey One (font already loaded in `index.html`).
+  - Added `boxShadow` tokens: slime-card, slime-purple, slime-glow.
+  - Added keyframes + animations: slime-slidein, slime-fadein, slime-popin.
+  - **Cleanup during review**: removed `variants: {}` (dead in Tailwind v3); removed
+    `"./src/**/*.css"` from `content` (incorrect purge target); removed `fade-to-green` and
+    `fade-from-green` keyframes (identical to each other, zero usages across the codebase).
+
+#### Task 1b — Global CSS (`src/index.css`) ✅
+- **Files Changed**: `frontend/src/index.css`
+- **Test Command**: visual inspection
+- **Status**: Complete
+- **Done**:
+  - `html { color-scheme: dark }` — native browser controls (date pickers, scrollbars) render dark.
+  - `.slime-pixel` — `image-rendering: pixelated/crisp-edges` for badge sprite assets.
+  - `@media (prefers-reduced-motion: reduce)` — disables `.slime-anim-drawer`, `.slime-anim-backdrop`,
+    `.slime-anim-modal` animations for users with the OS preference set.
+  - **Cleanup**: removed stray Thai combining character `ิ` (Unicode artifact, line 12).
+
+### Post-Mortem & Verified Fixes
+- **`fade-to-green` / `fade-from-green` dead code**: both keyframes were identical and had zero
+  usages across `src/`. Removed both rather than keeping one with no consumers.
+- **CSS content glob**: `"./src/**/*.css"` in the Tailwind content array would scan global CSS files
+  for class names, causing incorrect purging and slower builds. Removed.
+- **Jockey One font**: confirmed present in `index.html` line 9 before adding `fontFamily.display`
+  token — no silent system-ui fallback risk.
