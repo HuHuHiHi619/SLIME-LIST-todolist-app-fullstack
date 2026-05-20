@@ -6,7 +6,7 @@ export const createTask = async (data) => {
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials: true, 
+      withCredentials: true,
     });
 
     console.log("Task created successfully:", response.data);
@@ -19,18 +19,19 @@ export const createTask = async (data) => {
     } else {
       console.error("Axios error:", error.message);
     }
+    throw error;
   }
 };
 
 export const getData = async (filter) => {
   try {
-    
+
     const response = await axios.get(`/task`, {
       params: filter,
       headers: {
         "Content-Type": "application/json",
       },
-      withCredentials: true, 
+      withCredentials: true,
     });
 
     console.log("Task got successfully :", response.data);
@@ -43,6 +44,7 @@ export const getData = async (filter) => {
     } else {
       console.error("Axios error:", error.message);
     }
+    throw error;
   }
 };
 
@@ -64,12 +66,11 @@ export const searchedTask = async (searchTerm) => {
     } else {
       console.error("Axios error:", error.message);
     }
+    throw error;
   }
 };
 
 export const completeTask = async (taskId) => {
-  
-
   try {
     const response = await axios.patch(
       `/task/${taskId}/completed`,
@@ -81,10 +82,6 @@ export const completeTask = async (taskId) => {
         withCredentials: true,
       }
     );
-  
-   
-    
-    
     return { _id: taskId, ...response.data };
   } catch (error) {
     if (error.response) {
@@ -94,6 +91,7 @@ export const completeTask = async (taskId) => {
     } else {
       console.error("Axios error:", error.message);
     }
+    throw error;
   }
 };
 
@@ -108,7 +106,6 @@ export const updateTask = async (id, data) => {
     });
     console.log('response from api',response.data)
     return response.data;
-
   } catch (error) {
     if (error.response) {
       console.error("Error response from server:", error.response.data);
@@ -120,6 +117,7 @@ export const updateTask = async (id, data) => {
     } else {
       console.error("Axios error:", error.message);
     }
+    throw error;
   }
 };
 
@@ -140,6 +138,7 @@ export const removeTask = async (taskId) => {
     } else {
       console.error("Axios error:", error.message);
     }
+    throw error;
   }
 };
 
@@ -160,6 +159,7 @@ export const removeAllCompletedTask = async () => {
     } else {
       console.error("Axios error:", error.message);
     }
+    throw error;
   }
 }
 
@@ -173,7 +173,7 @@ export const updateTaskAttempt = async (taskId) => {
         withCredentials: true,
       }
     );
-    return { _id: taskId, ...response.data }; // ใช้ response.data
+    return { _id: taskId, ...response.data };
   } catch (error) {
     if (error.response) {
       console.error("Error response from server:", error.response.data);
@@ -182,6 +182,6 @@ export const updateTaskAttempt = async (taskId) => {
     } else {
       console.error("Axios error:", error.message);
     }
-    throw error; // โยน error เพื่อจัดการเพิ่มเติมใน thunk
+    throw error;
   }
 };

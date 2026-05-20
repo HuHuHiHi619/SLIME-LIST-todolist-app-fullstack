@@ -20,6 +20,7 @@ export const createCategory = async (data) => {
     } else {
       console.error("Axios error:", error.message);
     }
+    throw error;
   }
 };
 
@@ -35,11 +36,12 @@ export const removeCategory = async (categoryId) => {
   } catch(error){
     if(error.response){
       console.error("Error response from server:", error.response.data)
-    } else if(error.resquest){
+    } else if(error.request){
       console.error("No response received from server:",error.request)
     } else {
       console.error("Axios error:", error.message)
     }
+    throw error;
   }
 }
 
@@ -61,5 +63,6 @@ export const getCategoryData = async () => {
     } else {
       console.error('Axios Error:',error.message)
     }
+    throw error;
   }
 }
