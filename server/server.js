@@ -1,3 +1,8 @@
+const path = require("path");
+require("dotenv").config({
+  path: path.join(__dirname, `.env.${(process.env.NODE_ENV || "development").trim()}`),
+});
+
 const compression = require("compression");
 const express = require("express");
 const morgan = require("morgan");
@@ -6,16 +11,13 @@ const cookieParser = require("cookie-parser");
 const { readdirSync } = require("fs");
 const connectDb = require("./Config/db");
 const app = express();
-const path = require("path");
 const {
   checkOverdueTasks,
   updateOverdueTasks,
   resetDailyStreakStatus,
 } = require("./job/cronJob");
 
-
 const imagesPath = path.join(__dirname, "../images/badges");
-require("dotenv").config();
 connectDb();
 app.use((req, res, next) => {
   console.log(`[Incoming Request] ${req.method} ${req.url}`);

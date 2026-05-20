@@ -2,3 +2,5 @@
 /server/node_modules
 /frontend/node_modules
 /.env
+server/.env
+server/.env.*
