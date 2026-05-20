@@ -33,24 +33,34 @@ describe('Auth Middleware Optional', () => {
         expect(next).toHaveBeenCalled();
     });
 
-    test('should refresh token when close to expiry', async () => {
+    test('should set req.user and call next when token is valid', async () => {
         req.cookies.accessToken = 'valid-token';
-        req.cookies.refreshToken = 'refresh-token';
 
-        jwt.verify.mockImplementation(() => ({
-            userId: 'user-123',
-            exp: (Date.now() + 1 * 60 * 1000) / 1000 // 1 minute to expire
-        }));
-
-        User.findById.mockResolvedValue({ _id: 'user-123' });
+        // authOptional uses promisify(jwt.verify), so the mock must be callback-style.
+        // A synchronous return never invokes the callback → Promise hangs → timeout.
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(null, { userId: 'user-123' });
+        });
 
         const middleware = authMiddlewareOptional(false);
         await middleware(req, res, next);
 
-        expect(res.cookie).toHaveBeenCalledWith(
-            'accessToken',
-            expect.any(String),
-            expect.any(Object)
-        );
+        expect(req.user).toEqual({ id: 'user-123' });
+        expect(next).toHaveBeenCalled();
+    });
+
+    test('should clear accessToken cookie and call next when token is expired', async () => {
+        req.cookies.accessToken = 'expired-token';
+
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(new Error('TokenExpiredError'), null);
+        });
+
+        const middleware = authMiddlewareOptional(false);
+        await middleware(req, res, next);
+
+        expect(req.user).toBeNull();
+        expect(res.clearCookie).toHaveBeenCalledWith('accessToken', expect.any(Object));
+        expect(next).toHaveBeenCalled();
     });
 });

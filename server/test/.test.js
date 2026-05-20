@@ -1,19 +1,9 @@
-const {
-  updateUserStreak,
-  calculateBadge,
-} = require("../controllers/helperController");
+const { updateUserStreak, calculateBadge } = require("../shared/services/streakService");
 const User = require("../Models/User");
 const { resetDailyStreakStatus } = require("../job/cronJob");
 const { startOfDay, subDays, differenceInDays } = require("date-fns");
 
 jest.mock("../Models/User");
-jest.mock("../controllers/helperController", () => {
-  const actualModule = jest.requireActual("../controllers/helperController");
-  return {
-    ...actualModule,
-    calculateBadge: jest.fn(),
-  };
-});
 
 describe("updateUserStreak", () => {
   let mockConsole;
@@ -155,7 +145,6 @@ describe("updateUserStreak", () => {
     };
 
     User.findById.mockResolvedValue(mockUser);
-    calculateBadge.mockReturnValueOnce("bronze");
 
     const result = await updateUserStreak("123", true);
 
