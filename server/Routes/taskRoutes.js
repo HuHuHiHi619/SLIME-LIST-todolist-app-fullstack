@@ -6,8 +6,9 @@ const {
   updatedTask,
   completedTask,
   searchTask,
-} = require("../controllers/TasksController");
-const {  removeTask, removeAllCompletedTask } = require('../controllers/removeController')
+  removeTask,
+  removeAllCompletedTask,
+} = require("../modules/task/controller");
 const { upload } = require("../middleware/upload");
 const guestMiddleware = require("../middleware/guestId");
 const authMiddlewareOptional = require("../middleware/authOptional");

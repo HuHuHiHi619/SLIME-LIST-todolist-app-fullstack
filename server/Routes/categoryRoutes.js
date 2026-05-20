@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getCategory,createCategory, removedCategory } = require('../controllers/CategoryController');
+const { getCategory,createCategory, removedCategory } = require('../modules/category/controller');
 const guestMiddleware = require('../middleware/guestId');
 const authMiddlewareOptional = require('../middleware/authOptional');
 

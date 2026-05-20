@@ -7,8 +7,8 @@ const {
   refreshedToken,
   getUserData,
   logout,
-} = require("../controllers/UserController");
-const { updatedTaskAttempt } = require("../controllers/TasksController");
+} = require("../modules/user/controller");
+const { updatedTaskAttempt } = require("../modules/task/controller");
 const { upload } = require("../middleware/upload");
 const authMiddlewareOptional = require("../middleware/authOptional");
 
