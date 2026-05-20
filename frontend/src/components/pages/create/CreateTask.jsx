@@ -42,15 +42,15 @@ function CreateTask({ onClose }) {
       dispatch(setFormTask({ startDate: new Date().toISOString() }));
     }
 
-    if (formTask.title > 50) {
+    if (formTask.title.length > 50) {
       setError("Title cannot more than 50 characters.");
       return false;
     }
-    if (formTask.note > 2) {
+    if (formTask.note.length > 200) {
       setError("Note cannot more than 200 characters.");
       return false;
     }
-    if (currentStep > 50) {
+    if (currentStep.length > 50) {
       setError("Step cannot more than 50 characters");
       return false;
     }

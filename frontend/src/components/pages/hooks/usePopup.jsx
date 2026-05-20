@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSelectedTask,
@@ -22,6 +23,7 @@ import { fetchUserData, toggleRegisterPopup } from "../../../redux/userSlice";
 
 function usePopup() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const popupRef = useRef(null);
   const popupEnRef = useRef(null);
   const popupInstructRef = useRef(null);
