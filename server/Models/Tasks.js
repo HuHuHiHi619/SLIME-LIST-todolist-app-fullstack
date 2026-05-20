@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { type } = require("os");
+const { TASK_STATUSES } = require("../shared/utils/taskConstants");
 
 const TasksSchema = new mongoose.Schema(
   {
@@ -36,7 +36,7 @@ const TasksSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "completed", "failed"],
+      enum: TASK_STATUSES,
       default: "pending",
     },
     tryAgainCount: {
