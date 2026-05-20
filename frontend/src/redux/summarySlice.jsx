@@ -3,7 +3,6 @@ import {
   getSummaryTaskByCategory,
   getSummaryTask,
 } from "../functions/summary";
-import { logoutUser } from "./userSlice";
 
 const initialState = {
   summary: [],
@@ -72,7 +71,7 @@ const summarySlice = createSlice({
       })
       .addCase(fetchSummary.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
         state.summary = [];
       })
       .addCase(fetchSummaryByCategory.pending, (state) => {
@@ -84,7 +83,7 @@ const summarySlice = createSlice({
       })
       .addCase(fetchSummaryByCategory.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
         state.summaryCategory = [];
       })
      

@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getUserData, userLogin, userLogout } from "../functions/authen";
-import { completedTask } from "./taskSlice";
 
 const defaultState = {
   userData: {
@@ -27,9 +26,11 @@ const defaultState = {
 
 const initialState = { ...defaultState };
 
+const MIN_LOADING_MS = 2500;
+
 // Delay function for loading states
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve,ms))
-const minimumLoading = async (promise , minTimeMs = 2500) => {
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const minimumLoading = async (promise, minTimeMs = MIN_LOADING_MS) => {
   const startTime = Date.now();
   try{
     const result = await promise // await function ที่รับมา
@@ -98,14 +99,6 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(completedTask.fulfilled, (state, action) => {
-        const updatedTask = action.payload?.updatedTask;
-        if (updatedTask && updatedTask.status) {
-          console.log("Updated task status:", updatedTask.status);
-        } else {
-          console.warn("Unexpected payload structure:", action.payload);
-        }
-      })
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.isAuthenticated = false;
