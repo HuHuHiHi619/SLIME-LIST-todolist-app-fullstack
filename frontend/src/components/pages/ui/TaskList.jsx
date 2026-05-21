@@ -82,7 +82,7 @@ function TaskList({
                   <div className="w-full min-w-0">
                     <h3 className="md:text-2xl  truncate max-w-full">{task.title}</h3>
                     {task.status === "pending" && task.progress && task.progress.totalSteps > 0 ? (
-                      <div className="items-center hidden md:flex flex-wrap">
+                      <div className="items-center flex flex-wrap">
                         <span className="pr-2 md:pr-4 text-sm">
                           Progress: {task.progress.completedSteps}/{task.progress.totalSteps}
                         </span>
@@ -106,7 +106,11 @@ function TaskList({
                     handleRemovedTask(task);
                   }}
                   className={`transition-opacity duration-200 ease-out flex-shrink-0 flex ${
-                    isHover[task._id] && task.status === "pending" ? "opacity-100" : "opacity-0"
+                    task.status !== "pending"
+                      ? "opacity-0"
+                      : isHover[task._id]
+                      ? "opacity-100"
+                      : "opacity-40 lg:opacity-0"
                   }`}
                 >
                   <FontAwesomeIcon icon={faXmark} className="delete-step text-xl " />

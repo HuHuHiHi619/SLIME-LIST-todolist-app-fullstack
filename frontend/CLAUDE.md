@@ -123,4 +123,23 @@ Full phase history and resolved-issue log: **`frontend/MIGRATION.md`**.
 
 ---
 
+## UI Polish Skill
+
+**File**: `frontend/skills/ui-polish/SKILL.md`
+
+**Read this file first** whenever the task involves any of the following:
+- Choosing or auditing color tokens (background, border, text)
+- Applying or correcting border radius on a component
+- Selecting font sizes (use only the documented scale — not the full Tailwind scale)
+- Setting spacing, padding, or gap values
+- Adding hover/transition/animation behavior
+- Fixing visual imbalance between components
+- Adding new mobile-responsive styles
+
+The skill file documents every custom token, the border-radius convention, the font size scale
+actually in use, spacing patterns, and polish rules observed across the codebase. Do not
+introduce values that are not listed there without an explicit reason.
+
+---
+
 

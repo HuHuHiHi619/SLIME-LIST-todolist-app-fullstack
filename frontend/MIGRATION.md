@@ -205,6 +205,41 @@ Breakpoint: **768 px**. Desktop layout must remain byte-identical.
   3. Mobile reopen drawer → pill fades back in ✓
   4. Desktop navigate → instant swap, no opacity change ✓
 
+#### Task 3 — Home Layout Mobile-First (`Home.jsx` + `layout.css` + component responsive tweaks) ✅
+- **Files Changed**: `src/components/pages/user/Home.jsx`, `src/styles/layout.css`,
+  `src/components/pages/ui/StreakField.jsx`, `src/components/pages/ui/Summary.jsx`,
+  `src/components/pages/ui/TaskList.jsx`
+- **Test Command**: visual inspection at <1024px and ≥1024px; vitest run (63 passed, 6 files)
+- **Status**: Complete
+- **Done**:
+  - `layout.css` — `#home` is now mobile-first: `flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-y-6`.
+    Previously `pt-2 lg:grid grid-cols-2` (mobile had no layout rule, components were hidden).
+  - `Home.jsx` — complete layout rewrite using explicit CSS Grid placement. Removed the old
+    `hidden lg:flex` sidebar-column wrapper and the mobile-only `SearchField`/`DashboardTab` block
+    (search and tabs are now handled by the sidebar/navbar retrofit). Four semantic divs with
+    `lg:col-start-*` / `lg:row-start-*` classes control desktop placement; mobile stacking order
+    is document order: Streak → Tasks → Badge → Summary.
+  - `StreakField.jsx` — removed `hidden xl:flex` (was hiding streak on most viewport widths).
+    Text sizes now responsive (`text-3xl lg:text-7xl`); icon `text-[36px] lg:text-[50px]`;
+    flame-box row `hidden lg:flex`; added `py-3` padding to stat cards.
+  - `Summary.jsx` — removed `md:hidden` (was fully hiding the chart on mobile). Simplified
+    class string: `grid border-2 border-purpleNormal rounded-3xl px-6 lg:h-[380px]`.
+  - `TaskList.jsx` — task progress bar now visible on all viewports (removed `hidden md:flex`).
+    Delete icon now `opacity-40` on mobile (touch-friendly) vs `opacity-0` on desktop (hover-reveal).
+
+#### Tooling — UI Polish Skill (`frontend/skills/ui-polish/SKILL.md` + `frontend/CLAUDE.md`) ✅
+- **Files Changed**: `frontend/skills/ui-polish/SKILL.md` (new), `frontend/CLAUDE.md`
+- **Status**: Complete
+- **Done**:
+  - Created `SKILL.md` as the single source of truth for design tokens — extracted from
+    `tailwind.config.js` and live components. Documents all custom color tokens (9 desktop flat,
+    20 slime mobile, 11 gradient, 3 shadow), border-radius patterns, font-size scale actually in
+    use, spacing/gap conventions, and 10 polish rules (borders, hover transitions, opacity floor
+    on mobile, breakpoint discipline, text-gradient pattern, dark-only palette, animation classes).
+  - Added a "UI Polish Skill" trigger section to `frontend/CLAUDE.md` listing 7 task types
+    (color audit, border radius, font size, spacing, hover/animation, visual imbalance, mobile
+    styles) that must consult `SKILL.md` before making changes.
+
 ### Known Bugs
 - **Sidebar desktop transition asymmetry** (`layout.css`): On desktop, the sidebar open (expand)
   animation is perceived as faster than close (collapse). Root cause: CSS `@media (min-width: 1024px)`

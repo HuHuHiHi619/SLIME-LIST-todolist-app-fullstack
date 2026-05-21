@@ -93,7 +93,7 @@ function Summary() {
  
 
   return (
-    <div className=" md:hidden lg:grid  border-2 border-purpleNormal rounded-3xl  px-6 grid lg:h-[380px] md:h-auto ">
+    <div className="grid border-2 border-purpleNormal rounded-3xl px-6 lg:h-[380px]">
       {!Array.isArray(summary) ||
       summary.length === 0 ||
       !Array.isArray(summaryCategory) ||

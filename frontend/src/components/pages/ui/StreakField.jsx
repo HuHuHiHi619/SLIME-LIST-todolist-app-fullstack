@@ -68,10 +68,10 @@ function StreakField() {
       {isAuthenticated ? (
         <>
           {/* BEST STREAK */}
-          <div className=" hidden xl:flex items-center justify-center rounded-3xl border-2 border-fuchsia-400  flex-1">
+          <div className="flex items-center justify-center rounded-3xl border-2 border-fuchsia-400 flex-1 py-3">
             <Tooltip description="Best Streak" position="top">
               <div className=" flex items-center gap-2 bg-fuchsia-400 bg-clip-text text-transparent">
-                <p className=" text-7xl">{userData.bestStreak}</p>
+                <p className="text-3xl lg:text-7xl">{userData.bestStreak}</p>
                 <div className=" hidden 2xl:block text-2xl leading-6">
                   <p>BEST</p>
                   <p>STREAK</p>
@@ -82,7 +82,7 @@ function StreakField() {
 
           {/* CURRENT STREAK */}
           <div
-            className={`hidden xl:flex items-center justify-center border-2 border-purpleBorder rounded-3xl  flex-1
+            className={`flex items-center justify-center border-2 border-purpleBorder rounded-3xl flex-1 py-3
                 ${
                   userData.alreadyCompletedToday
                     ? "bg-purpleBorder bg-clip-text text-transparent"
@@ -92,7 +92,7 @@ function StreakField() {
           >
             <Tooltip description="Current Streak" position="top">
               <div className="flex items-center gap-2 ">
-                <p className="text-7xl">{userData.currentStreak}</p>
+                <p className="text-3xl lg:text-7xl">{userData.currentStreak}</p>
                 <div className="hidden 2xl:block text-2xl leading-6">
                   <p>STREAK</p>
                   <p>NOW</p>
@@ -103,16 +103,16 @@ function StreakField() {
 
           {/* STREAK BAR */}
           <div
-            className={`bg-darkBackground border-2 rounded-3xl  px-4 py-2  flex-1
+            className={`bg-darkBackground border-2 rounded-3xl px-4 py-3 flex-1
             ${streak === 0 ? "border-purpleNormal" : ""}
             ${streak <= 5 && streak !== 0 ? "border-orange-400" : ""}
             ${streak >= 6 && streak <= 10 ? "border-sky-500" : ""}
             ${streak > 10 ? "border-purple-500" : ""}
           `}
           >
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-center lg:justify-between gap-4">
               <FontAwesomeIcon
-                className={`text-[50px] flex-1
+                className={`text-[36px] lg:text-[50px]
                 ${streak === 0 ? "text-purpleNormal" : ""}
                 ${streak <= 5 && streak !== 0 ? "text-orange-400" : ""}
                 ${streak >= 6 && streak <= 10 ? "text-sky-500" : ""}
@@ -120,7 +120,7 @@ function StreakField() {
               `}
                 icon={faBolt}
               />
-              <div className="flex  gap-2">
+              <div className="hidden lg:flex gap-2">
                 {[...Array(5)].map((_, index) => (
                   <FlameBox key={index} index={index} streak={streak} />
                 ))}
