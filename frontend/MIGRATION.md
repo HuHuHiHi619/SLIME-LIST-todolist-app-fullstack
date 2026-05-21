@@ -167,6 +167,37 @@ Breakpoint: **768 px**. Desktop layout must remain byte-identical.
     `.slime-anim-modal` animations for users with the OS preference set.
   - **Cleanup**: removed stray Thai combining character `ิ` (Unicode artifact, line 12).
 
+#### Task 2a — Mobile TopBar (`Navbar.jsx` + `layout.css`) ✅
+- **Files Changed**: `src/components/pages/fixbar/Navbar.jsx`, `src/styles/layout.css`
+- **Test Command**: visual inspection at <768px and ≥768px
+- **Status**: Complete
+- **Done**:
+  - `layout.css` — `#nav-bar` rule changed from `flex` → `hidden md:flex`.
+    Required because CSS ID specificity (0,1,0,0) beats Tailwind class (0,0,1,0);
+    responsive guard must live at the ID rule, not on the JSX element.
+  - `Navbar.jsx` — new `<header className="md:hidden …">` inserted before `<div id="nav-bar">`.
+    Contains: hamburger (reuses `handleToggleSidebar()` from `usePopup`), brand logo + wordmark,
+    and a no-op search button (`faMagnifyingGlass` — correct FA v6 name; search wired in a later task).
+  - Desktop layout byte-identical — `<div id="nav-bar">` untouched.
+
+#### Task 2b — Mobile Sidebar Drawer (`Sidebar.jsx` + `layout.css`) 🔄 In Progress
+- **Files Changed (Phase A)**: `src/styles/layout.css`
+- **Files Pending (Phase B)**: `src/components/pages/fixbar/Sidebar.jsx`
+- **Test Command**: visual inspection at <768px and ≥768px
+- **Status**: Phase A complete — Phase B pending
+- **Phase A Done**:
+  - `layout.css` — added `transition: transform 0.3s ease` to `#side-bar` base rule so the
+    slide-in on mobile is animated (previously only `transition-width` existed, which animates
+    width but not position).
+  - `layout.css` — updated `#side-bar.sidebar-collapsed` transition from `width 0.3s ease` →
+    `width 0.3s ease, transform 0.3s ease` so the mobile hide (`-translate-x-full`) also
+    animates smoothly instead of snapping instantly.
+- **Phase B Pending**:
+  - `Sidebar.jsx` — add mobile backdrop portal (`md:hidden fixed inset-0 bg-black/50 z-30`)
+    so tapping outside the drawer closes it.
+  - `Sidebar.jsx` — add `closeDrawerOnMobile()` helper + wire it to each nav link's
+    `handleActiveMenu` callback so the drawer auto-closes after navigation on mobile.
+
 ### Post-Mortem & Verified Fixes
 - **`fade-to-green` / `fade-from-green` dead code**: both keyframes were identical and had zero
   usages across `src/`. Removed both rather than keeping one with no consumers.
@@ -174,3 +205,6 @@ Breakpoint: **768 px**. Desktop layout must remain byte-identical.
   for class names, causing incorrect purging and slower builds. Removed.
 - **Jockey One font**: confirmed present in `index.html` line 9 before adding `fontFamily.display`
   token — no silent system-ui fallback risk.
+- **CSS ID specificity trap** (Task 2a): `#nav-bar { display: flex }` in `layout.css` has specificity
+  (0,1,0,0) and overrides any Tailwind class. The `hidden md:flex` guard was applied directly to the
+  ID rule — not to the JSX element — to avoid a silent no-op.

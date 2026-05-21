@@ -20,12 +20,13 @@
   width: 17rem;
   max-width: 17rem;
   min-width: 17rem;
+  transition: transform 0.3s ease;
 }
 
 #side-bar.sidebar-collapsed {
   @apply -translate-x-full lg:translate-x-0;
   width: 5rem;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, transform 0.3s ease;
   min-width: 5rem;
 }
 
