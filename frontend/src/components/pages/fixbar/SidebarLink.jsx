@@ -30,12 +30,7 @@ function SidebarLink({
       }}
     >
       {isActive && (
-        <motion.div
-          className="absolute left-0 w-full h-12 bg-purpleActive rounded-md"
-          layoutId="activeMenuBackground"
-          initial={false}
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-        />
+        <div className="active-pill absolute left-0 w-full h-12 bg-purpleActive rounded-md" />
       )}
       <Link
         to={to}

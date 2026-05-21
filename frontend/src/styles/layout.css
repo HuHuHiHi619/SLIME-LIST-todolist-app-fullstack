@@ -26,8 +26,28 @@
 #side-bar.sidebar-collapsed {
   @apply -translate-x-full lg:translate-x-0;
   width: 5rem;
-  transition: width 0.3s ease, transform 0.3s ease;
   min-width: 5rem;
+  transition: transform 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  #side-bar {
+    transition: width 0.3s ease;
+  }
+
+  #side-bar.sidebar-collapsed {
+    transition: width 0.3s ease;
+  }
+}
+
+@media (max-width: 1023px) {
+  #side-bar .active-pill {
+    transition: opacity 0.3s ease;
+  }
+
+  #side-bar.sidebar-collapsed .active-pill {
+    opacity: 0;
+  }
 }
 
 .main-content {

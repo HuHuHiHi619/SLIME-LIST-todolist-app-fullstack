@@ -67,12 +67,16 @@ function Sidebar() {
     dispatch(toggleSidebarPinned());
   };
 
+  const closeDrawerOnMobile = () => {
+    if (window.innerWidth < 1024 && isSidebarPinned) handlePinSidebar();
+  };
+
   return (
     <div
       id="side-bar"
-      className={` md:translate-x-0  flex  flex-col gap-4  ${
-        isSidebarPinned ? "" : " sidebar-collapsed"
-      } transition-width duration-300`}
+      className={`md:translate-x-0 flex flex-col gap-4 ${
+        isSidebarPinned ? "" : "sidebar-collapsed"
+      }`}
     >
       <div
         className={`items-center gap-4 ${
@@ -107,6 +111,7 @@ function Sidebar() {
           activeMenu={activeMenu}
           handleActiveMenu={() => {
             if (isSidebarPinned) handleActiveMenu();
+            closeDrawerOnMobile();
           }}
           isSidebarPinned={isSidebarPinned}
         />
@@ -119,6 +124,7 @@ function Sidebar() {
           activeMenu={activeMenu}
           handleActiveMenu={() => {
             if (isSidebarPinned) handleActiveMenu();
+            closeDrawerOnMobile();
           }}
           isSidebarPinned={isSidebarPinned}
         />
@@ -131,6 +137,7 @@ function Sidebar() {
           activeMenu={activeMenu}
           handleActiveMenu={() => {
             if (isSidebarPinned) handleActiveMenu();
+            closeDrawerOnMobile();
           }}
           isSidebarPinned={isSidebarPinned}
         />
@@ -145,6 +152,7 @@ function Sidebar() {
           activeMenu={activeMenu}
           handleActiveMenu={() => {
             if (isSidebarPinned) handleActiveMenu();
+            closeDrawerOnMobile();
           }}
           handlePopup={(e) => handlePopup(e, "category")}
           isSidebarPinned={isSidebarPinned}
@@ -161,11 +169,21 @@ function Sidebar() {
           activeMenu={activeMenu}
           handleActiveMenu={() => {
             if (isSidebarPinned) handleActiveMenu();
+            closeDrawerOnMobile();
           }}
           isSidebarPinned={isSidebarPinned}
         />
       </Tooltip>
-     
+
+      {isSidebarPinned && ReactDOM.createPortal(
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-30"
+          onClick={handlePinSidebar}
+          aria-hidden="true"
+        />,
+        document.body
+      )}
+
       {isPopup &&
         ReactDOM.createPortal(
           <div className="popup-overlay">
