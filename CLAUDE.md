@@ -112,6 +112,22 @@ To optimize project budget and response latency, adhere to the following model s
 - **Sonnet (Efficient & Fast)**: Use for Phase 0 (Writing characterization/unit tests), Phase 3 (Deduplication/Boilerplate reduction), routine updates, and standard script executions.
 - **Opus (Deep Intelligence)**: Reserved for Phase 1 (Complex debugging of latent bugs) and Phase 2 (Architectural alignment, cross-slice dependency decisions, and breaking down complex state machines).
 
+---
+
+## ⚡ Custom Agent Shortcuts
+Whenever the user inputs the shorthand commands below, immediately execute the corresponding multi-step prompt instructions without waiting for further explanation.
+
+- **`/wrap-day`**: 
+  1. Update `MIGRATION.md` with current task status, what was completed, what's still in progress, and any blockers.
+  2. Run project tests and document the latest test results.
+  3. Git status, stage, and commit everything in logical groups following the project conventions. Do NOT start any new work.
+
+- **`/morning-brief`**:
+  1. Read the git log for today/yesterday's commits, `MIGRATION.md` for pending tasks, and any TODO/FIXME comments in modified files.
+  2. Generate a daily log report inside `frontend/daily-logs/YYYY-MM-DD.md` (use today's exact date).
+  3. Format the log with headings: "## ✅ What was done today", "## ⚠️ In progress / TODOs", and "## 🔜 Plan for tomorrow" (suggesting the next 3 priority steps). Keep it short and actionable.
+
+
 ## Security Rules
 - When reading .env files, NEVER print actual values of secrets. Show keys as: `SECRET_KEY=******`
 - Never include real credentials in any code suggestions.
