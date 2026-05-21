@@ -97,6 +97,13 @@ VITE_LOCAL_API_URL=http://localhost:5000/api
 - When working on backend tasks, you MUST read and follow `server/CLAUDE.md`.
 - Ask me when you need to read across workspace.
 
+## Bug Fix Rules
+- Before any CSS/style fix, trace ALL contexts 
+  (mobile/desktop/states) the rule applies to.
+- If a fix fails twice, STOP coding. 
+  Reproduce → Trace all affected states → 
+  Falsify hypothesis → then fix.
+
 ## Session Workflow Rules
 1. **Look Before You Leap**: Always explore the directory structure and read relevant files before suggesting changes.
 2. **Plan Mode First**: Always use Plan Mode and present a conceptual "Refactoring/Feature Plan" first.
