@@ -8,7 +8,6 @@ import {
   removeAllCompletedTask,
   removeTask,
   searchedTask,
-  updateTaskAttempt,
 } from "../functions/task";
 import { updateTask } from "../functions/task";
 
@@ -40,7 +39,6 @@ const initialState = {
     deadline: null,
     category: "",
     status: "pending",
-    tryAgainCount: 0,
   },
   progress: {
     steps: [],
@@ -131,14 +129,6 @@ export const updatedTask = createAsyncThunk(
 
     const response = await updateTask(taskId, verifyTask);
     console.log("update response", response);
-    return response;
-  }
-);
-
-export const updatedTaskAttempt = createAsyncThunk(
-  "task/updateTaskAttemp",
-  async (taskId) => {
-    const response = await updateTaskAttempt(taskId);
     return response;
   }
 );
@@ -349,33 +339,6 @@ const taskSlice = createSlice({
         state.lastStateUpdate = new Date().toISOString();
         state.isSummaryUpdated = !state.isSummaryUpdated;
       })
-      .addCase(updatedTaskAttempt.fulfilled, (state, action) => {
-        const updatedTask = action.payload;
-        state.tasks = state.tasks.map((task) => {
-          if (task._id === updatedTask._id) {
-            return {
-              ...task,
-              ...updatedTask,
-              status: task.status === "failed" ? "pending" : task.status,
-            };
-          }
-          return task;
-        });
-
-        if (state.selectedTask && state.selectedTask._id === updatedTask._id) {
-          state.selectedTask = {
-            ...state.selectedTask,
-            ...updatedTask,
-            status:
-              state.selectedTask.status === "failed"
-                ? "pending"
-                : state.selectedTask.status,
-          };
-        }
-
-        state.lastStateUpdate = new Date().toISOString();
-      })
-
       .addCase(completedTask.fulfilled, (state, action) => {
         const completedTaskId = action.payload._id;
         const updatedTask = action.payload.updatedTask || action.payload;

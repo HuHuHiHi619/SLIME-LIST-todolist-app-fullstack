@@ -4,12 +4,10 @@ import StartDatePicker from "./StartDatePicker";
 import DeadlinePicker from "./DeadlinePicker";
 import ProgressField from "./ProgressField";
 import CategoryTagField from "./CategoryTagField";
-import { updatedTask, updatedTaskAttempt } from "../../../redux/taskSlice";
+import { updatedTask } from "../../../redux/taskSlice";
 import { debounce } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import FadeUpContainer from "../animation/FadeUpContainer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import {
   fetchSummary,
   fetchSummaryByCategory,
@@ -185,28 +183,12 @@ function TaskDetail({ onClose }) {
     [debouncedUpdateTask]
   );
 
-  const handleTryAgainTask = (taskId) => {
-    dispatch(updatedTaskAttempt(taskId));
-  };
-
   return (
     <FadeUpContainer>
       <div className="bg-darkBackground p-6 rounded-3xl">
         <div className="flex justify-between items-center">
           <p className="text-white text-3xl ">TASK DETAILS</p>
           <div className="flex items-center gap-6 ">
-            {editedTask.status === "failed" && (
-              <FontAwesomeIcon
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleTryAgainTask(selectedTask._id);
-                }}
-                icon={faRotateLeft}
-                className="text-white text-3xl cursor-pointer hover:rotate-[-360deg] transition-transform duration-300 ease-in"
-              />
-            )}
-
             <p
               className={`text-2xl  ${
                 editedTask.status === "pending"
