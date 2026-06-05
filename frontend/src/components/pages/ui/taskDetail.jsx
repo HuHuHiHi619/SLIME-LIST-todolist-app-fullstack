@@ -268,27 +268,7 @@ function TaskDetail({ onClose }) {
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-2">
-              {/*
-         -- Tag is on process --
-            {tags.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => handleToggleTag(tag)}
-                className={`px-4 py-2 mt-2 rounded-xl ${
-                  editedTask.tag.includes(tag)
-                    ? "bg-purpleBorder text-white"
-                    : "bg-purpleMain text-gray-500"
-                }`}
-              >
-                {tag.toUpperCase()}
-              </button>
-            ))}*/}
-            </div>
-          </div>
+        <div className="flex justify-end items-center">
           <button className="register mt-4" onClick={onClose}>
             Done
           </button>

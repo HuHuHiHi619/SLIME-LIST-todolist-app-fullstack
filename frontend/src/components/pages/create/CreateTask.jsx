@@ -102,7 +102,7 @@ function CreateTask({ onClose }) {
 
     const taskData = {
       ...formTask,
-      tag: formTask.tag || "low",
+      priority: formTask.priority || "low",
       progress,
       startDate: formTask.startDate || new Date().toISOString(),
     };
