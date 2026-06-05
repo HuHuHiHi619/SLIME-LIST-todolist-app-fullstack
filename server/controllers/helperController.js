@@ -1,5 +1,4 @@
 const Category = require("../Models/Category");
-const Tag = require("../Models/Tag");
 const { updateUserStreak, calculateBadge } = require("../shared/services/streakService");
 
 
@@ -62,20 +61,6 @@ exports.processCategory = async (categoryId, userId, guestId) => {
     throw new Error("Cannot find category");
   }
   return existCategory._id;
-};
-
-exports.processTags = async (tags, userId, guestId) => {
-  tags = Array.isArray(tags) ? tags : [tags];
-  const query = { tagName: { $in: tags }, $or: [] };
-
-  if (userId) query.$or.push({ user: userId });
-  if (guestId) query.$or.push({ guestId });
-
-  const existTags = await Tag.find(query);
-  if (!existTags) {
-    throw new Error("Cannot find tag.");
-  }
-  return existTags.map((tg) => tg._id);
 };
 
 // Streak and badge logic lives in shared/services/streakService.js.

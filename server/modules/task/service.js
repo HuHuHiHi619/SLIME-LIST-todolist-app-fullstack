@@ -7,7 +7,6 @@ const {
   isValid,
 } = require("date-fns");
 const Category = require("../../Models/Category");
-const Tag = require("../../Models/Tag");
 const {
   processProgress,
   processCategory,
@@ -17,7 +16,18 @@ const { updateUserStreak } = require("../../shared/services/streakService");
 const { getTaskDeadlineRange } = require("../../shared/utils/deadlineUtils");
 const repository = require("./repository");
 
-const { STATUS_ORDER, PRIORITY_ORDER, TASK_STATUSES } = require("../../shared/utils/taskConstants");
+const { STATUS_ORDER, PRIORITY_ORDER, PRIORITIES, TASK_STATUSES } = require("../../shared/utils/taskConstants");
+
+// Flat-list ordering: pending → completed → failed, then highest priority first.
+// Exported for direct unit testing (the sort was silently dead before — see taskConstants).
+const compareTasksForFlatList = (a, b) => {
+  const statusComp = STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status);
+  if (statusComp !== 0) return statusComp;
+  return (
+    PRIORITY_ORDER.indexOf(a.priority || "low") -
+    PRIORITY_ORDER.indexOf(b.priority || "low")
+  );
+};
 
 class ServiceError extends Error {
   constructor(message, statusCode = 400) {
@@ -101,7 +111,7 @@ const getTasksGroupedByDeadline = async (userFilter) => {
         $lte: endOfMonth(addMonths(currentDate, 1)),
       },
     },
-    [{ path: "category" }, { path: "tag" }]
+    [{ path: "category" }]
   );
 
   const grouped = tasks.reduce((acc, task) => {
@@ -118,10 +128,7 @@ const getTasksGroupedByDeadline = async (userFilter) => {
 
 const getTasksFlat = async (filter) => {
   const tasks = await repository.findTasks(filter, [
-    { path: "deadline" },
     { path: "category" },
-    { path: "tag" },
-    { path: "status" },
   ]);
 
   if (tasks.length === 0) {
@@ -129,19 +136,13 @@ const getTasksFlat = async (filter) => {
     return [];
   }
 
-  return tasks
-    .map((task) => ({ ...calculateProgress(task), tagName: task.tag?.tagName || "low" }))
-    .sort((a, b) => {
-      const statusComp = STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status);
-      if (statusComp !== 0) return statusComp;
-      return PRIORITY_ORDER.indexOf(a.tag) - PRIORITY_ORDER.indexOf(b.tag);
-    });
+  return tasks.map(calculateProgress).sort(compareTasksForFlatList);
 };
 
 // ── Write operations ──────────────────────────────────────────────────────────
 
 const createTask = async (data, formatUser, guestId) => {
-  const { title, note, startDate, deadline, category, progress } = data;
+  const { title, note, startDate, deadline, category, progress, priority } = data;
 
   if (!title || !startDate) {
     throw new ServiceError("Title and start date are required");
@@ -209,6 +210,7 @@ const createTask = async (data, formatUser, guestId) => {
     deadline: deadlineObj || null,
     category: categoryId,
     progress: formatProgress,
+    priority: PRIORITIES.includes(priority) ? priority : "low",
     user: formatUser || null,
     guestId: formatUser ? null : guestId,
   };
@@ -233,7 +235,7 @@ const updateTask = async (formatId, userFilter, formatUser, guestId, data) => {
     deadline: updateData.deadline ? new Date(updateData.deadline) : existing.deadline,
     category:
       updateData.category === "" ? null : updateData.category || existing.category,
-    tag: updateData.tag || existing.tag,
+    priority: updateData.priority || existing.priority || "low",
     progress: updateData.progress || existing.progress,
     status: updateData.status || existing.status,
   };
@@ -250,12 +252,8 @@ const updateTask = async (formatId, userFilter, formatUser, guestId, data) => {
     final.category = null;
   }
 
-  if (final.tag) {
-    const tag = await Tag.findOne({
-      $or: [{ tagName: updateData.tag }, { _id: updateData.tag }],
-    }).exec();
-    if (!tag) throw new ServiceError("Invalid tag value or ID");
-    final.tag = tag._id;
+  if (!PRIORITIES.includes(final.priority)) {
+    throw new ServiceError("Invalid priority value");
   }
 
   if (final.progress) {
@@ -334,5 +332,6 @@ module.exports = {
   searchTasks,
   removeTask,
   removeAllCompleted,
+  compareTasksForFlatList,
   ServiceError,
 };

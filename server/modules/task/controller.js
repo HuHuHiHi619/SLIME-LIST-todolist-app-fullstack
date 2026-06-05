@@ -20,7 +20,7 @@ const sendServiceError = (res, error) => {
 exports.getTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, category, tag, groupByDeadline, groupByCategory, groupByStatus } =
+    const { status, category, groupByDeadline, groupByCategory, groupByStatus } =
       req.query;
     const { formatUser, userFilter } = buildUserFilter(req);
 
@@ -47,15 +47,6 @@ exports.getTask = async (req, res) => {
     if (category) {
       const cats = Array.isArray(category) ? category : [category];
       baseFilter.category = { $in: cats.map((c) => new Types.ObjectId(c)) };
-    }
-
-    if (tag) {
-      const tags = Array.isArray(tag) ? tag : [tag];
-      baseFilter.tag = {
-        $in: tags.map((t) =>
-          isValidObjectId(t) ? new Types.ObjectId(t) : t
-        ),
-      };
     }
 
     if (groupByCategory) {
