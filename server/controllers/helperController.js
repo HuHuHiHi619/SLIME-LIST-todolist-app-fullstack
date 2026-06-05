@@ -37,7 +37,7 @@ exports.processProgress = (progress) => {
       progress.allStepsCompleted = false;
     } else {
       progress.allStepsCompleted =
-        process.totalSteps > 0 &&
+        progress.totalSteps > 0 &&
         progress.steps.every((step) => step.completed);
     }
 

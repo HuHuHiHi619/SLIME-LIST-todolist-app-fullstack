@@ -74,9 +74,8 @@ const refreshAccessToken = async (refreshToken) => {
   const user = await repository.findById(decoded.userId);
   if (!user) throw new ServiceError("User not found", 401);
 
-  // Known issue: expiresIn "10m" is shorter than the cookie maxAge (15m).
-  // Preserved verbatim — fix separately.
-  return signAccessToken({ userId: user._id }, "10m");
+  // Use signAccessToken's default "15m" so the token lifetime matches the cookie maxAge (ACCESS_MAX_AGE).
+  return signAccessToken({ userId: user._id });
 };
 
 const getUserData = async (userId) => {
