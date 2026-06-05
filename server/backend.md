@@ -74,12 +74,12 @@ filter — returns `null` filter when neither identity is present (callers must 
 - ~~`TagController.js` — `createTag`/`getTag` send no response; `POST /api/tags` hangs.~~ **Resolved by deletion** (`895bfd1`) — route + controller removed; nothing called them.
 - ~~`utils/notification.js` — `checkDeadlinesAndNotify` never resolves; `getNotifications` destructures wrong.~~ **Resolved by deletion** (`37cc33e`) — file + dead route removed; the broken call in `updatedTaskAttempt` removed.
 - ~~`modules/user/service.js` (`refreshAccessToken`) — access token `"10m"` < cookie `maxAge` 15m.~~ **Fixed** (`fb83e94`) — now uses the default `15m`.
-- `modules/task/service.js` (`retryTask`) — calls `tryAgainTask`, never implemented; throws at runtime. **Deferred to Cluster B** — full-stack deletion (live "Try Again" button in `taskDetail.jsx:188`). Endpoint `PUT /user/:id/attempt` still 500s by design until then.
+- ~~`modules/task/service.js` (`retryTask`) — calls `tryAgainTask`, never implemented; throws at runtime.~~ **Backend deleted** (branch `fix/backend-b1-retry-deletion`) — route/handler/service/`findTaskById`/`TryAgainHistory`/`tryAgainCount` removed; `PUT /user/:id/attempt` now 404s. Frontend "Try Again" button (`taskDetail.jsx:188`) removal still pending (Cluster B #1 frontend).
 - ~~`modules/task/controller.js` (`getTask`) — tag filter `new Types.ObjectId(tag)()` (spurious `()`).~~ **Fixed** (`fb83e94`).
 
 **Low**
 - `Models/Notification.js` — field `createAt` (missing `d`); queries on `createdAt` miss it.
-- `Models/TryAgainHistory.js:5` — deprecated `mongoose.Schema.ObjectId`; should be `…Schema.Types.ObjectId`.
+- ~~`Models/TryAgainHistory.js:5` — deprecated `mongoose.Schema.ObjectId`.~~ **File deleted** with the retry feature (branch `fix/backend-b1-retry-deletion`).
 - `Routes/notificationRoute.js` — auto-loaded but all handlers commented out; dead module loaded each start.
 - `Models/LoginHistory.js` — written on every login, never read.
 - `modules/task/service.js` (`createTask`) — inline progress normalisation diverges from `helperController.processProgress` and has a typo `step.lable`.
@@ -93,7 +93,7 @@ filter — returns `null` filter when neither identity is present (callers must 
 | ~~`utils/notification.js`~~ | **Deleted** (`37cc33e`) | — |
 | ~~`Routes/notificationRoute.js`~~ | **Deleted** (`37cc33e`) | — |
 | `Models/LoginHistory.js` | Written, no read path | No — audit feature likely planned |
-| `Models/TryAgainHistory.js` | No confirmed import | Cluster B — remove with the retry feature |
+| ~~`Models/TryAgainHistory.js`~~ | **Deleted** (`fix/backend-b1-retry-deletion`) | — |
 
 ---
 
@@ -169,9 +169,10 @@ as dead code. **Cluster B** (one bug + a refactor) is deferred because it is ful
 
 ### Cluster B — pending (full-stack, own session)
 
-- **#4 retryTask** — `tryAgainTask` was never implemented; `PUT /user/:id/attempt` 500s. **Delete the
-  retry feature end-to-end**: backend route (`Routes/auth.js`)/handler/service + `Models/TryAgainHistory.js`,
-  plus the live frontend "Try Again" button (`taskDetail.jsx:188`), thunk, API fn, and test.
+- **#4 retryTask** — **backend deleted** (branch `fix/backend-b1-retry-deletion`, 25/25 green): route +
+  handler + service `retryTask` + `findTaskById` + `Models/TryAgainHistory.js` + the `tryAgainCount` field
+  all removed; `PUT /user/:id/attempt` now 404s (`"failed"` status kept — cron still produces it). **Frontend
+  still pending**: "Try Again" button (`taskDetail.jsx:188`), thunk, API fn, and test.
 - **Tag-collection → field migration** — collapse the `Tag` model into a plain `priority` string-enum
   field on `Tasks` (priority is kept; the separate collection is not). Touches the Tasks schema, task
   service (create/update/sort), ~12 frontend files, and needs a data migration for existing `Tag`

@@ -1,5 +1,7 @@
 const TASK_STATUSES = ["pending", "completed", "failed"];
 const STATUS_ORDER = ["pending", "completed", "failed"];
-const PRIORITY_ORDER = ["High", "Medium", "Low"];
+const PRIORITIES = ["low", "medium", "high"];
+// Sort order: highest priority first. Lowercase to match the schema enum.
+const PRIORITY_ORDER = ["high", "medium", "low"];
 
-module.exports = { TASK_STATUSES, STATUS_ORDER, PRIORITY_ORDER };
+module.exports = { TASK_STATUSES, STATUS_ORDER, PRIORITIES, PRIORITY_ORDER };

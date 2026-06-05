@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { TASK_STATUSES } = require("../shared/utils/taskConstants");
+const { TASK_STATUSES, PRIORITIES } = require("../shared/utils/taskConstants");
 
 const TasksSchema = new mongoose.Schema(
   {
@@ -29,20 +29,15 @@ const TasksSchema = new mongoose.Schema(
         timestamps:{type:Date, default: Date.now},
       }
     },
-    tag: {
-     type: mongoose.Schema.Types.ObjectId,
-     ref: "Tag",
-     require: true
+    priority: {
+      type: String,
+      enum: PRIORITIES,
+      default: "low",
     },
     status: {
       type: String,
       enum: TASK_STATUSES,
       default: "pending",
-    },
-    tryAgainCount: {
-      type: Number,
-      default: 0,
-      max: 3,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

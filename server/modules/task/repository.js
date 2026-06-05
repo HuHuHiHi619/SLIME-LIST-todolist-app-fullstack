@@ -6,8 +6,6 @@ const findTasks = (filter, populate = []) =>
 // Returns a hydrated Mongoose document — callers may call .save() on it
 const findTask = (filter) => Tasks.findOne(filter);
 
-const findTaskById = (id) => Tasks.findById(id);
-
 const saveTask = (data) => new Tasks(data).save();
 
 const updateTask = (filter, data) =>
@@ -20,7 +18,6 @@ const deleteManyTasks = (filter) => Tasks.deleteMany(filter);
 module.exports = {
   findTasks,
   findTask,
-  findTaskById,
   saveTask,
   updateTask,
   deleteTask,

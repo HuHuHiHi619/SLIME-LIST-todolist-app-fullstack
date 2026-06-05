@@ -20,8 +20,6 @@ const Upcoming = lazy(() => import("./components/pages/user/Upcoming"));
 const AllTask = lazy(() => import("./components/pages/user/AllTask"));
 const Category = lazy(() => import("./components/pages/user/Category"));
 const CategoryList = lazy(() => import("./components/pages/user/CategoryList"));
-const Tag = lazy(() => import("./components/pages/user/Tag"));
-const TagList = lazy(() => import("./components/pages/user/TagList"));
 const Settings = lazy(() => import("./components/pages/user/Settings"));
 
 // Authentication Pages
@@ -46,9 +44,6 @@ function App() {
                 path="/category/:categoryName"
                 element={<CategoryList />}
               />
-              <Route path="/tag" element={<Tag />} />
-
-              <Route path="/tag/:tagName" element={<TagList />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
 

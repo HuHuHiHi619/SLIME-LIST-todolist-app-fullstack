@@ -4,12 +4,10 @@ import StartDatePicker from "./StartDatePicker";
 import DeadlinePicker from "./DeadlinePicker";
 import ProgressField from "./ProgressField";
 import CategoryTagField from "./CategoryTagField";
-import { updatedTask, updatedTaskAttempt } from "../../../redux/taskSlice";
+import { updatedTask } from "../../../redux/taskSlice";
 import { debounce } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import FadeUpContainer from "../animation/FadeUpContainer";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import {
   fetchSummary,
   fetchSummaryByCategory,
@@ -185,28 +183,12 @@ function TaskDetail({ onClose }) {
     [debouncedUpdateTask]
   );
 
-  const handleTryAgainTask = (taskId) => {
-    dispatch(updatedTaskAttempt(taskId));
-  };
-
   return (
     <FadeUpContainer>
       <div className="bg-darkBackground p-6 rounded-3xl">
         <div className="flex justify-between items-center">
           <p className="text-white text-3xl ">TASK DETAILS</p>
           <div className="flex items-center gap-6 ">
-            {editedTask.status === "failed" && (
-              <FontAwesomeIcon
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleTryAgainTask(selectedTask._id);
-                }}
-                icon={faRotateLeft}
-                className="text-white text-3xl cursor-pointer hover:rotate-[-360deg] transition-transform duration-300 ease-in"
-              />
-            )}
-
             <p
               className={`text-2xl  ${
                 editedTask.status === "pending"
@@ -286,27 +268,7 @@ function TaskDetail({ onClose }) {
           </div>
         </div>
 
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-2">
-              {/*
-         -- Tag is on process --
-            {tags.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => handleToggleTag(tag)}
-                className={`px-4 py-2 mt-2 rounded-xl ${
-                  editedTask.tag.includes(tag)
-                    ? "bg-purpleBorder text-white"
-                    : "bg-purpleMain text-gray-500"
-                }`}
-              >
-                {tag.toUpperCase()}
-              </button>
-            ))}*/}
-            </div>
-          </div>
+        <div className="flex justify-end items-center">
           <button className="register mt-4" onClick={onClose}>
             Done
           </button>

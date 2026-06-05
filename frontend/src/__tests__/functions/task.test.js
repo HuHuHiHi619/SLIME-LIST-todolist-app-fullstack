@@ -8,7 +8,6 @@ import {
   updateTask,
   removeTask,
   removeAllCompletedTask,
-  updateTaskAttempt,
 } from '../../functions/task'
 
 vi.mock('axios', () => ({
@@ -64,10 +63,5 @@ describe('task functions — all throw on failure', () => {
   it('removeAllCompletedTask throws when API fails', async () => {
     axios.delete.mockRejectedValueOnce(new Error('Network error'))
     await expect(removeAllCompletedTask()).rejects.toThrow()
-  })
-
-  it('updateTaskAttempt throws when API fails', async () => {
-    axios.put.mockRejectedValueOnce(new Error('Network error'))
-    await expect(updateTaskAttempt('task-id-123')).rejects.toThrow()
   })
 })

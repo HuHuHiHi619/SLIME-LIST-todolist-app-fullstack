@@ -162,26 +162,3 @@ export const removeAllCompletedTask = async () => {
     throw error;
   }
 }
-
-export const updateTaskAttempt = async (taskId) => {
-  try {
-    const response = await axios.put(
-      `/user/${taskId}/attempt`,
-      {},
-      {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      }
-    );
-    return { _id: taskId, ...response.data };
-  } catch (error) {
-    if (error.response) {
-      console.error("Error response from server:", error.response.data);
-    } else if (error.request) {
-      console.error("No response received from server:", error.request);
-    } else {
-      console.error("Axios error:", error.message);
-    }
-    throw error;
-  }
-};
