@@ -39,11 +39,6 @@ const TasksSchema = new mongoose.Schema(
       enum: TASK_STATUSES,
       default: "pending",
     },
-    tryAgainCount: {
-      type: Number,
-      default: 0,
-      max: 3,
-    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

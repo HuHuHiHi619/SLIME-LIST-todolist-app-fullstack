@@ -8,7 +8,6 @@ const {
   getUserData,
   logout,
 } = require("../modules/user/controller");
-const { updatedTaskAttempt } = require("../modules/task/controller");
 const { upload } = require("../middleware/upload");
 const authMiddlewareOptional = require("../middleware/authOptional");
 
@@ -46,11 +45,5 @@ router.post(
 );
 router.post("/logout", authMiddlewareOptional(false), logout);
 router.post("/refreshToken", refreshedToken);
-
-router.put(
-  "/user/:id/attempt",
-  authMiddlewareOptional(false),
-  updatedTaskAttempt
-);
 
 module.exports = router;

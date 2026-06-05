@@ -11,7 +11,6 @@ const Tag = require("../../Models/Tag");
 const {
   processProgress,
   processCategory,
-  tryAgainTask,
   calculateProgress,
 } = require("../../controllers/helperController");
 const { updateUserStreak } = require("../../shared/services/streakService");
@@ -305,12 +304,6 @@ const toggleCompletion = async (formatId, userFilter, formatUser) => {
   return { type: "toggled", updatedTask };
 };
 
-const retryTask = async (formatUser, formatId, formatDeadline) => {
-  // NOTE: tryAgainTask is not exported from helperController — this throws at runtime.
-  // Pre-existing bug; preserved verbatim. See server/CLAUDE.md Known Issues.
-  return tryAgainTask(formatUser, formatId, formatDeadline);
-};
-
 const searchTasks = async (userFilter, searchTerm) => {
   if (!searchTerm) return { warning: "Please provide a search term.", tasks: [] };
   if (searchTerm.length > 100) throw new ServiceError("Search term is too long.");
@@ -338,7 +331,6 @@ module.exports = {
   createTask,
   updateTask,
   toggleCompletion,
-  retryTask,
   searchTasks,
   removeTask,
   removeAllCompleted,

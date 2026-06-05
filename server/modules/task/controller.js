@@ -1,10 +1,8 @@
 const { isValidObjectId, Types } = require("mongoose");
-const { addDays, isValid } = require("date-fns");
 const { handleError } = require("../../controllers/helperController");
 const { buildUserFilter } = require("../../shared/utils/userFilter");
 const { TASK_STATUSES } = require("../../shared/utils/taskConstants");
 const taskService = require("./service");
-const repository = require("./repository");
 
 const { ServiceError } = taskService;
 
@@ -142,31 +140,6 @@ exports.completedTask = async (req, res) => {
     return res.status(201).json({ message: "Task is complete", updatedTask: result.updatedTask });
   } catch (error) {
     return sendServiceError(res, error) || handleError(res, error, "Failed to complete task");
-  }
-};
-
-// ── PUT /user/:id/attempt ─────────────────────────────────────────────────────
-
-exports.updatedTaskAttempt = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { formatUser } = buildUserFilter(req);
-    const formatId = isValidObjectId(id) ? new Types.ObjectId(id) : null;
-    const formatDeadline = addDays(new Date(), 1);
-
-    if (!formatId) return res.status(400).json({ error: "Invalid task ID" });
-    if (!formatUser) return res.status(400).json({ error: "Invalid User ID" });
-    if (!isValid(formatDeadline)) return res.status(400).json({ error: "Invalid new deadline format" });
-
-    const task = await repository.findTaskById(formatId);
-    if (!task) return res.status(404).json({ error: "Task not found!" });
-    if (task.status !== "failed")
-      return res.status(404).json({ error: "Task status is not failed" });
-
-    const updatedTaskAttempt = await taskService.retryTask(formatUser, formatId, formatDeadline);
-    return res.status(200).json({ message: "Try again task updated", updatedTaskAttempt });
-  } catch (error) {
-    handleError(res, error, "Cannot try this task again");
   }
 };
 

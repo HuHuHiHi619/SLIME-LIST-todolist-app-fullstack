@@ -1,7 +1,7 @@
 # Handoff — Backend Cleanup
 
 **Updated:** 2026-06-05
-**Status:** Cluster A complete. Cluster B pending (next session).
+**Status:** Cluster A complete. Cluster B #1 backend done; #1 frontend + #2 pending.
 
 The original six-bug run was split into two clusters by blast radius. The single source of truth for
 bug details is `server/backend.md` §"Bug Fix Plan" — read it, don't duplicate.
@@ -24,12 +24,16 @@ model, and `User.notifications` array (dormant foundation for a real notificatio
 
 1. **Delete the retry feature (#4) end-to-end.** `tryAgainTask` was never implemented;
    `PUT /user/:id/attempt` 500s today.
-   - Backend: route in `Routes/auth.js` (`updatedTaskAttempt`), the `updatedTaskAttempt` handler in
-     `modules/task/controller.js`, `retryTask` in `modules/task/service.js`, and `Models/TryAgainHistory.js`.
-   - Frontend: "Try Again" button in `taskDetail.jsx:188`, the `updatedTaskAttempt` thunk in
-     `redux/taskSlice.jsx`, `updateTaskAttempt` in `functions/task.js`, and its test.
-   - Decide whether the `tryAgainCount` field / `"failed"` status stay (the `failed` status is still
-     produced by the overdue cron — likely keep it; `tryAgainCount` becomes dead — optional removal).
+   - **Backend — DONE** (branch `fix/backend-b1-retry-deletion`, 25/25 Jest green, require-graph clean).
+     Removed: the `PUT /user/:id/attempt` route + import in `Routes/auth.js`; the `updatedTaskAttempt`
+     handler + its now-dead `date-fns`/`repository` imports in `modules/task/controller.js`; `retryTask`
+     (fn + export + `tryAgainTask` import) in `modules/task/service.js`; dead `findTaskById` in
+     `modules/task/repository.js`; `Models/TryAgainHistory.js` (deleted); the `tryAgainCount` field on
+     `Models/Tasks.js`. **Kept** the `"failed"` status + `TASK_STATUSES` (overdue cron still produces it).
+   - **Frontend — TODO:** "Try Again" button in `taskDetail.jsx:188`, the `updatedTaskAttempt` thunk in
+     `redux/taskSlice.jsx`, `updateTaskAttempt` in `functions/task.js`, and its test. The endpoint now
+     404s (was 500); the button is non-functional until this lands — ship with the backend branch to
+     avoid a gap on `main`.
 
 2. **Tag-collection → `priority` field migration.** "Tag" is the priority system (`low|medium|high`),
    not freeform tags. **Keep priority, dissolve the collection**: add a `priority` string-enum field to
