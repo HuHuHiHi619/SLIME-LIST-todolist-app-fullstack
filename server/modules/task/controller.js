@@ -1,6 +1,5 @@
 const { isValidObjectId, Types } = require("mongoose");
 const { addDays, isValid } = require("date-fns");
-const { getNotifications } = require("../../utils/notification");
 const { handleError } = require("../../controllers/helperController");
 const { buildUserFilter } = require("../../shared/utils/userFilter");
 const { TASK_STATUSES } = require("../../shared/utils/taskConstants");
@@ -165,7 +164,6 @@ exports.updatedTaskAttempt = async (req, res) => {
       return res.status(404).json({ error: "Task status is not failed" });
 
     const updatedTaskAttempt = await taskService.retryTask(formatUser, formatId, formatDeadline);
-    await getNotifications(req.user.id, "Keep going!"); // known broken — preserved as-is
     return res.status(200).json({ message: "Try again task updated", updatedTaskAttempt });
   } catch (error) {
     handleError(res, error, "Cannot try this task again");
