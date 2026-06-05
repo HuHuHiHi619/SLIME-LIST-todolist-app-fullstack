@@ -56,7 +56,7 @@ exports.getTask = async (req, res) => {
       const tags = Array.isArray(tag) ? tag : [tag];
       baseFilter.tag = {
         $in: tags.map((t) =>
-          isValidObjectId(t) ? new Types.ObjectId(t)() : t // spurious () preserved — pre-existing bug
+          isValidObjectId(t) ? new Types.ObjectId(t) : t
         ),
       };
     }
