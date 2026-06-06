@@ -33,7 +33,6 @@ on any fix plan before coding (standing memory).
 
 ## P1 — Frontend · critical logic bugs (smallest, safest, highest impact)
 
-- **#4** `task.js:53` — `searchedTask` interpolates `?q=${searchTerm}` unencoded → breaks on `&`, `#`, spaces. Fix: `params: { q: searchTerm }`.
 - **#1** `taskSlice.jsx:314` *(protected)* — `createNewTask.rejected` never sets `loading=false` → stuck spinner. Smoke-test create.
 - **#11** `CreateTask.jsx:128` *(protected)* — `resetFormTask()` called without `dispatch`; should be `dispatch(resetFormTask())`.
 
@@ -87,6 +86,11 @@ the documented prod name) and found it **completely empty** — 0 users / 0 task
 Nothing to migrate; no live run performed (would scan 0 docs). **Not "applied" — vacuously satisfied.**
 Open question parked: if prod was expected to hold real users/tasks, the data lives somewhere other than
 what `.env.production`'s `MONGO_URI` points to — chase that before trusting prod.
+
+### P1 #4 — search query not URL-encoded — DONE (2026-06-06)
+`task.js:53` built `/task/searchTask?q=${searchTerm}` by raw interpolation → `&`/`#`/spaces broke the query.
+Now passes `params: { q: searchTerm }` so Axios URL-encodes it. Backend param name confirmed
+(`controller.js:142` reads `req.query.q`). Isolated — no protected files.
 
 ### P1 #15 — taskDetail white-screen — DONE (2026-06-06)
 `taskDetail.jsx:262` now `editedTask.progress?.steps || []` (matches the file's own idiom at lines 112/140).

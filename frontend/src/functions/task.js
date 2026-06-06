@@ -50,7 +50,8 @@ export const getData = async (filter) => {
 
 export const searchedTask = async (searchTerm) => {
   try {
-    const response = await axios.get(`/task/searchTask?q=${searchTerm}`, {
+    const response = await axios.get(`/task/searchTask`, {
+      params: { q: searchTerm },
       headers:{
         "Content-Type": "application/json"
       },
