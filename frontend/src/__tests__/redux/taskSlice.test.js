@@ -11,6 +11,7 @@ import reducer, {
   setFormTask,
   resetFormTask,
   clearTask,
+  clearTaskError,
   clearSearchResults,
   addSteps,
   removeStep,
@@ -270,5 +271,40 @@ describe("taskSlice — async write lifecycle", () => {
       payload: "create failed",
     });
     expect(state.error).toBe("create failed");
+  });
+});
+
+describe("taskSlice — mutation error surface (#21 / P4 #2)", () => {
+  it("updatedTask.rejected records error from rejectWithValue payload", () => {
+    const state = reducer(init(), {
+      type: updatedTask.rejected.type,
+      payload: "save failed",
+      error: { message: "Rejected" },
+    });
+    expect(state.error).toBe("save failed");
+  });
+  it("falls back to error.message when there is no payload (uncaught throw)", () => {
+    const state = reducer(init(), {
+      type: completedTask.rejected.type,
+      error: { message: "Network Error" },
+    });
+    expect(state.error).toBe("Network Error");
+  });
+  it("falls back to a generic message when neither is present", () => {
+    const state = reducer(init(), { type: removedTask.rejected.type });
+    expect(state.error).toBe("Something went wrong");
+  });
+  it("pending clears a prior error so an identical repeat failure re-fires", () => {
+    const failed = reducer(init(), {
+      type: removedAllTask.rejected.type,
+      payload: "boom",
+    });
+    expect(failed.error).toBe("boom");
+    const retrying = reducer(failed, { type: removedAllTask.pending.type });
+    expect(retrying.error).toBe(null);
+  });
+  it("clearTaskError resets error to null", () => {
+    const state = reducer({ ...init(), error: "x" }, clearTaskError());
+    expect(state.error).toBe(null);
   });
 });

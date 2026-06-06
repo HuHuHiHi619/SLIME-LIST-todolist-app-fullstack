@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  isPending,
+  isRejected,
+} from "@reduxjs/toolkit";
 import { getCategoryData, removeCategory } from "../functions/category";
 
 import {
@@ -204,6 +209,9 @@ const taskSlice = createSlice({
     clearTask(state) {
       state.tasks = [];
     },
+    clearTaskError(state) {
+      state.error = null;
+    },
     clearSearchResults(state) {
       state.searchResults = [];
     },
@@ -394,7 +402,37 @@ const taskSlice = createSlice({
       })
       .addCase(removedCategory.fulfilled, (state) => {
         state.lastStateUpdate = new Date().toISOString();
-      });
+      })
+      // P4 #2 / #21 — surface mutation failures (these thunks reject without a
+      // dedicated .rejected case, so state.error was never set). One matcher per
+      // phase covers all five. Clearing on pending means an identical error string
+      // on a retry is still a fresh transition, so the toast re-fires (see #21).
+      .addMatcher(
+        isPending(
+          updatedTask,
+          completedTask,
+          removedTask,
+          removedAllTask,
+          removedCategory
+        ),
+        (state) => {
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isRejected(
+          updatedTask,
+          completedTask,
+          removedTask,
+          removedAllTask,
+          removedCategory
+        ),
+        (state, action) => {
+          // rejectWithValue lands in payload; an uncaught throw lands in error.
+          state.error =
+            action.payload ?? action.error?.message ?? "Something went wrong";
+        }
+      );
   },
 });
 
@@ -405,6 +443,7 @@ export const {
   setStreakStatus,
   toggleCreatePopup,
   clearTask,
+  clearTaskError,
   clearSearchResults,
   resetFormTask,
   addSteps,

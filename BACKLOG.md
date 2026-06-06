@@ -69,14 +69,23 @@ them `failed` **one full cron cycle (one calendar day) early**.
 
 ## P4 — Frontend · taskSlice mutation thunks *(protected)*
 
-- **#2 — DEFERRED** (depends on the error-UI decision, see below). `taskSlice.jsx:121-167` —
-  `updatedTask`, `completedTask`, `removedTask`, `removedAllTask`, `removedCategory` have no
-  try/catch, no `rejectWithValue`, no `.rejected` handler → silent failures, `error` never set.
-  **Scrutiny (2026-06-06):** the fix would write `state.task.error`, but **no component reads it**
-  (grepped every `useSelector`) — same dead-state as **#21**, and all four call-site catch blocks
-  already just `console.error(...)` without reading `.message`. So the fix is store-correctness only,
-  zero user-facing change. **Bundle with #21**: settle the error/loading UI surface (toast/banner)
-  first so `error` has a consumer, then wire `rejectWithValue` + `.rejected` with a real destination.
+- **#2 + #21 — DONE ✅ (2026-06-06, branch `fix/frontend-21-p4-2-task-error-toast`).** Decision (user):
+  minimal error toast, leave `loading` for later. `/scrutinize` reshaped the fix: the 5 thunks already
+  `.rejected` automatically (promise rejection — `rejectWithValue` not load-bearing), so instead of 10
+  edits to the protected slice, used **two matchers** — `isPending(...)` clears `state.error`,
+  `isRejected(...)` sets `error = payload ?? error.message ?? "Something went wrong"`. Clearing on pending
+  fixes the re-fire bug (identical repeat error still re-triggers). Added `clearTaskError` reducer + new
+  App-level `TaskErrorToast.jsx` (self-rolled, no dep, auto-dismiss 4s). **83/83 Vitest** (+5), lint clean.
+  **Runtime `/verify` DONE ✅ (2026-06-06, Playwright guest mode, forced 500 on `PATCH /task/:id/completed`):**
+  toast renders bottom-right ("Request failed with status code 500"), auto-dismisses ~4.4s, identical repeat
+  error re-fires (pending-clears-error confirmed), manual × works. **But verify caught a shipped app-wide
+  crash:** the committed `TaskErrorToast.jsx` selected `state.task.error` (singular) while the store registers
+  the reducer under `tasks` (plural, `store.jsx:8`) → `undefined.error` threw on every render → no error
+  boundary → **whole app blank for all users**. The 5 unit tests missed it (reducer tested directly, never the
+  selector key). Fixed `state.task`→`state.tasks` (1 char). Lesson: consider an App-level error boundary so a
+  bad selector degrades instead of white-screening.
+  **Spun off → BL #26** (optimistic category-delete not rolled back on failure, surfaced in scrutiny).
+  `loading` (#21's other half) still dead — left as-is, decide if/when a spinner is wanted.
 - **#3** — DONE ✅ (2026-06-06, see Archive). Reachable `null`→1970 bug confirmed at the call site.
 
 ## P5 — Frontend · date handling — DONE ✅ (see Archive)
@@ -120,7 +129,11 @@ Shipped a native-`<select>` `PriorityField` in `CreateTask.jsx` + `taskDetail.js
   P1 #1 fix) but **no component renders it** — only `state.user.loading` is consumed (`AuthForm.jsx`). It's
   dead UI state today. Either wire a task-loading spinner (the create/fetch flows have nothing) or strip the
   flag. Decide before adding more `loading` bookkeeping. *(Surfaced verifying #1 — its "stuck spinner" had no UI.)*
-  **Bundle P4 #2 here:** `state.task.error` is the same dead read-side — decide one error/loading UI surface for both.
+  **Error half DONE** via P4 #2 toast (see P4 above); the `error` read-side now exists. `loading` still dead.
+- **#26** `usePopup.jsx:102` `handleRemovedItem` dispatches `removeCategories(id)` (optimistic UI removal)
+  *before* the awaited `removedCategory(id)`; the catch only `console.error`s — **no rollback**. With the new
+  P4 #2 toast, a failed category delete now shows an error *while the category has already vanished* from the
+  UI until refetch. Surfaced by `/scrutinize` (2026-06-06). Fix: re-insert on failure, or drop the optimism.
 - **#22** Cleanup: one orphan guest task `PASS-create-*` left in **dev** Atlas from the verify run (guest cookie
   gone, so not deletable via UI). Harmless; drop it next time you're in dev Atlas.
 - **Parked (from P0):** prod Atlas `slimelist` is completely empty. If real prod users/tasks were ever expected,
