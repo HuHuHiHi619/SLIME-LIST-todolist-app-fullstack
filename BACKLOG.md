@@ -92,6 +92,11 @@ what `.env.production`'s `MONGO_URI` points to — chase that before trusting pr
   (slice:308-309) on the success path, so the call was redundant. Also removed the now-unused
   `resetFormTask` import. Verified: 67/67 Vitest, no new lint errors (CreateTask's React/prop-types
   warnings are pre-existing project-wide baseline).
+- **Runtime verify (Playwright, guest mode, 2026-06-06):** happy path → task persists, modal closes,
+  reopened form is empty (#11 reset proof). Forced-500 path → `createNewTask.rejected` fires
+  ("Error creating task" logged), modal stays open, app stays usable. **Note:** no component reads
+  `state.task.loading`, so #1's "stuck spinner" has *no UI surface* — it's a store-state correctness
+  fix only. Left one guest test task `PASS-create-*` in dev Atlas.
 
 ### P1 #4 — search query not URL-encoded — DONE (2026-06-06)
 `task.js:53` built `/task/searchTask?q=${searchTerm}` by raw interpolation → `&`/`#`/spaces broke the query.
