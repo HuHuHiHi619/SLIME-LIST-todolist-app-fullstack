@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setFormTask,
-  resetFormTask,
   addSteps,
   removeStep,
   fetchCategories,
@@ -125,7 +124,6 @@ function CreateTask({ onClose }) {
       }, 300);
       if (response) {
         console.log("Task created successfully!", response);
-        resetFormTask();
         onClose();
       } else {
         console.log("No response data received.");

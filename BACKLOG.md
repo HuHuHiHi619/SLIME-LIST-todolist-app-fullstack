@@ -31,10 +31,7 @@ on any fix plan before coding (standing memory).
 
 ---
 
-## P1 — Frontend · critical logic bugs (smallest, safest, highest impact)
-
-- **#1** `taskSlice.jsx:314` *(protected)* — `createNewTask.rejected` never sets `loading=false` → stuck spinner. Smoke-test create.
-- **#11** `CreateTask.jsx:128` *(protected)* — `resetFormTask()` called without `dispatch`; should be `dispatch(resetFormTask())`.
+## P1 — Frontend · critical logic bugs — ALL DONE ✅ (see Archive)
 
 ## P2 — Frontend · search field
 
@@ -86,6 +83,15 @@ the documented prod name) and found it **completely empty** — 0 users / 0 task
 Nothing to migrate; no live run performed (would scan 0 docs). **Not "applied" — vacuously satisfied.**
 Open question parked: if prod was expected to hold real users/tasks, the data lives somewhere other than
 what `.env.production`'s `MONGO_URI` points to — chase that before trusting prod.
+
+### P1 #1 + #11 — create flow: stuck spinner + dead reset — DONE (2026-06-06)
+- **#1** `taskSlice.jsx` `createNewTask.rejected` now sets `state.loading = false` (was only setting `error`,
+  leaving the spinner stuck after a failed create — `.pending` sets `loading=true`).
+- **#11** `CreateTask.jsx:128` `resetFormTask()` was a no-op (called without `dispatch`). Rather than wiring
+  the dispatch, **deleted the line** — `createNewTask.fulfilled` already resets `formTask`+`progress`
+  (slice:308-309) on the success path, so the call was redundant. Also removed the now-unused
+  `resetFormTask` import. Verified: 67/67 Vitest, no new lint errors (CreateTask's React/prop-types
+  warnings are pre-existing project-wide baseline).
 
 ### P1 #4 — search query not URL-encoded — DONE (2026-06-06)
 `task.js:53` built `/task/searchTask?q=${searchTerm}` by raw interpolation → `&`/`#`/spaces broke the query.
