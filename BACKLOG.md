@@ -30,6 +30,32 @@ on any fix plan before coding (standing memory).
 
 ---
 
+## P0 — Backend · overdue cron fails east-of-UTC tasks one day early — DONE ✅ (branch `fix/backend-p0-25-overdue-cron-tz`)
+
+**#25 — FIXED 2026-06-06.** Added `overdueThreshold`/`isOverdue` (pure, UTC-anchored, 1-day grace) to
+`shared/utils/deadlineUtils.js`; `cronJob.js` query now `deadline: { $lt: overdueThreshold() }`. 24h grace
+> 14h max TZ skew → **never fails any zone early** (verified +14 / −12 extremes); cost is east/UTC linger
+~1 cron cycle (benign). Kept P5#18 as-is (user's call). No DB integration seam existed for the cron — the
+fix is the seam: pure-function unit tests (`test/utils/deadlineUtils.test.js`, +5, **36/36 Jest**). Original
+repro confirmed flipped (first fire `true→false`). Earlier detail below for reference:
+
+**#25** `server/job/cronJob.js:15-33` `updateOverdueTasks`. **This is the cron interaction the P5#18
+verify parked (was line 128).** Verified FAIL at runtime (TZ+7, the dev's own zone): P5#18's raw
+local-instant convention pushes east-of-UTC deadlines *back* across the UTC-midnight line, so the
+cron's strict `deadline: { $lt: currentDate }` — running **in UTC on Render**, `0 0 * * *` — marks
+them `failed` **one full cron cycle (one calendar day) early**.
+
+- **Evidence:** "due tomorrow (Jun 7)" picked in +7 → `toDayISO` stores `2026-06-06T17:00:00Z`. First
+  fire `2026-06-07T00:00:00Z`: `17:00Z Jun 6 < 00:00Z Jun 7` → **failed at 07:00 Jun 7 Bangkok, the
+  morning of the day it's due.** Pre-change storage (`2026-06-07T00:00:00Z`) survived to the next cycle.
+- **Asymmetric:** positive (east) offsets regress; west-of-UTC unaffected (local midnight lands *after*
+  UTC midnight). Live in prod — `server.js:52` calls `checkOverdueTasks()` at startup.
+- **Two stacked layers:** (a) deadline stored as **start-of-day** midnight (pre-existing — even in pure
+  UTC a "due Jun 7" task is overdue the instant Jun 7 begins); (b) P5#18's raw instant activated (a) for
+  the most common real users. **Fix direction (not the revert):** cron should compare *calendar days* in
+  a defined zone, or normalize stored deadlines to end-of-day. Isolated to `cronJob.js` — no frontend
+  coupling. UI calendar-day round-trip is unaffected (P5#18's stated goal holds). Next: `/diagnose`.
+
 ## P1 — Frontend · critical logic bugs — ALL DONE ✅ (see Archive)
 
 ## P2 — Frontend · search field — DONE ✅ (see Archive)
@@ -125,8 +151,9 @@ detail in `frontend/MIGRATION.md`. **Runtime `/verify` @ 390/768/1280 still outs
   carries it on edit; backend defaults `updateData.priority || existing.priority || "low"`.
 - **Tests:** 78/78 (was 71; +4 date, +3 priority). **Lint:** only `PriorityField.jsx` adds entries,
   all in the baseline `React`-unused + `prop-types` classes shared by every sibling.
-- **Cron note (verify):** raw ISO shifts the stored deadline instant by ~the TZ offset; the overdue
-  cron compares instants — confirm a task due "tomorrow" isn't prematurely failed.
+- **Cron note (verify):** RESOLVED → **confirmed a real bug, see P0 #25.** Raw ISO shifts the stored
+  deadline instant by the TZ offset; the overdue cron compares instants in UTC and DOES prematurely fail
+  east-of-UTC tasks by one calendar day.
 
 ### P4 #3 — `setFormTask` unsafe date coercion — DONE (2026-06-06, `/scrutinize`)
 `setFormTask` guarded `new Date(value).toISOString()` only against `undefined`. Scrutiny traced the

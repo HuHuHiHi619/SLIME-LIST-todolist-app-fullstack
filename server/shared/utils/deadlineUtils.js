@@ -45,4 +45,29 @@ const getTaskDeadlineRange = (deadline) => {
   if (isNextMonth) return "nextMonth";
 };
 
-module.exports = { getTaskDeadlineRange };
+/**
+ * Overdue threshold for the daily cron (P0 #25).
+ *
+ * Deadlines are stored as a raw local-instant (P5 #18 frontend convention), so a
+ * task the user set for "day D" lands at local-midnight(D) — anywhere within ±14h
+ * of UTC midnight depending on their timezone offset. The server has no per-user
+ * timezone, so it cannot recover which calendar day was meant from the bare instant.
+ *
+ * We therefore grace the comparison by one full day, anchored to UTC start-of-day
+ * (explicit UTC, not date-fns startOfDay, so behaviour is identical wherever the
+ * cron is deployed). 24h grace > the 14h max TZ skew, which guarantees we never
+ * mark a task failed BEFORE its due day has ended in any timezone — the only
+ * user-harmful direction. The cost is that some zones see a task linger as
+ * not-failed up to ~one extra cron cycle, which is benign for gamification.
+ */
+const overdueThreshold = (now = new Date()) => {
+  const t = new Date(now);
+  t.setUTCHours(0, 0, 0, 0);
+  t.setUTCDate(t.getUTCDate() - 1);
+  return t;
+};
+
+const isOverdue = (deadline, now = new Date()) =>
+  new Date(deadline) < overdueThreshold(now);
+
+module.exports = { getTaskDeadlineRange, overdueThreshold, isOverdue };
