@@ -312,3 +312,62 @@ Concern: LOGIC + one small VISUAL element (the button). Pure deletion, no new be
 - **Scrutinize finding (logged to BACKLOG, not P2)**: `taskDetail.jsx:25` uses
   `useRef(debounce(...))` but calls it without `.current` (lines 58/82/100…) — that
   debounce path is broken/dead. Do NOT copy it as the reference idiom.
+
+---
+
+## P4 #3 — `setFormTask` safe date coercion ✅ (2026-06-06, `/scrutinize`)
+
+- **File**: `src/redux/taskSlice.jsx` (protected) + `src/__tests__/redux/taskSlice.test.js`
+- **Test**: `npm test` (71/71, 9 files; was 69) + `npx eslint` on both touched files (clean)
+- **Bug**: `setFormTask` guarded `new Date(value).toISOString()` only on `undefined`. Scrutiny
+  traced the call site: `CreateTask.jsx:87` dispatches `setFormTask({ deadline: null })` when the
+  user clears a deadline → `new Date(null)` = epoch 0 → deadline silently became `1970-01-01`
+  instead of `null`. Invalid-string → `RangeError` reducer crash was latent (all current callers
+  pass `.toISOString()` output or `null`) but real.
+- **Fix**: extracted `toIsoDate(value, fallback)` — `undefined`→keep current · `null`→stay null ·
+  invalid→keep current (no throw) · valid→ISO. Applied to both `startDate` and `deadline`.
+- **Tests added**: clear deadline → `null` (not 1970); invalid date → no throw + prior value kept.
+- **P4 #2 deferred** (not done): would write `state.task.error`, which **no component reads**
+  (same dead-state as runtime-verify #21); all call-site catch blocks already `console.error`
+  without reading `.message`. Bundle with the #21 error/loading-UI decision. See BACKLOG.
+- **Lint**: the 490 baseline errors are the pre-existing project-wide set (`React`/`StrictMode`
+  unused, `userSlice` warnings); the two files touched here are lint-clean.
+
+---
+
+## P5 #18 + P6 — date unification + priority picker ✅ (2026-06-06, code + unit tests; runtime `/verify` pending)
+
+- **Files**: `src/functions/date.js` (new), `src/components/pages/ui/PriorityField.jsx` (new),
+  `src/components/pages/create/CreateTask.jsx` (protected), `src/components/pages/ui/taskDetail.jsx`
+  (protected); tests `src/__tests__/functions/date.test.js`, `src/__tests__/components/PriorityField.test.jsx` (both new).
+- **Test**: `npm test` → **78/78, 11 files** (was 71; +4 date, +3 priority).
+- **P5 #18 — date convention unified (decision: local-instant / raw ISO).** Root cause was
+  *divergence*: `CreateTask` hand-shifted the TZ offset (stored UTC-midnight of the picked day) while
+  `taskDetail` did raw `toISOString()` (stored the local-midnight instant) → a task created then
+  edited could jump a calendar day. Both pickers read back with `new Date(value)` in local time, so
+  the raw ISO instant round-trips to the same calendar day in the user's own TZ for any offset.
+  Extracted `toDayISO(date)` (`functions/date.js`, null/invalid → `null`); both `handleDateChange`
+  paths now call it. CreateTask's offset math deleted. `taskSlice` `toIsoDate` (reducer guard, P4#3)
+  is a separate concern and untouched.
+- **P6 — priority picker shipped.** New `PriorityField` = styled **native `<select>`** (low|medium|high,
+  values match backend `PRIORITIES`); chosen over cloning `CategoryTagField`'s custom dropdown because
+  priority is a fixed enum and a native control is accessible by default and emits a real
+  `{target:{name,value}}` event. Rendered in the category/date row of both files. **No new wiring**:
+  `setFormTask` spreads `...rest` so create persists `priority` (already sent at `handleSubmit`); on
+  taskDetail the existing `handleInputChange`→`debouncedUpdateTask`→`updatedTask` PUT carries it, and
+  backend `updateTask` defaults `updateData.priority || existing.priority || "low"`.
+- **BL #23 correction**: this session's `/scrutinize` traced `taskDetail.jsx:25-47` — the `useRef(...)`
+  ends with **`.current`**, so `debouncedUpdateTask` is the debounced *function* and all call sites
+  (incl. `.flush()`) are correct. The autosave path is **not** broken; the old "called without
+  `.current`" note (BACKLOG BL #23 / P2 scrutinize log above) is stale and should be closed.
+- **Lint**: only `PriorityField.jsx` adds entries, all in the two pre-existing baseline classes
+  (`React`-unused + `react/prop-types` missing) shared by every sibling component; `date.js` and both
+  test files are lint-clean. No prop-types added to PriorityField to stay consistent with the codebase
+  (which uses none).
+- **Backend interaction (verify at runtime)**: raw-ISO moves the stored deadline instant by ~the TZ
+  offset; the overdue cron (`cronJob.js:19-20`) compares instants, so confirm a task due "tomorrow"
+  isn't prematurely failed. Out of scope: the cron already marks tasks overdue from the *start* of the
+  due day (separate latent item).
+- **Outstanding**: runtime `/verify` (guest mode, Playwright @ 390/768/1280) — create+edit date
+  round-trips to same day; priority persists on create and autosaves on edit (network shows `PUT` with
+  `priority`).

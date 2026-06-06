@@ -16,18 +16,17 @@ on any fix plan before coding (standing memory).
 ## Protected / risky files — touch only inside their own phase, smoke-test manually
 
 - `frontend/src/Config/axiosConfig.js`
-- `frontend/src/redux/taskSlice.jsx` — open bugs P1#1, P4#2, P4#3, BL#7
+- `frontend/src/redux/taskSlice.jsx` — open bugs P4#2 (deferred), BL#7 (P1#1, P4#3 done)
 - `frontend/src/components/pages/hooks/usePopup.jsx` — **has uncommitted changes**; bugs P3#14, BL#20
-- `frontend/src/components/pages/create/CreateTask.jsx` — bugs P1#11, P5#18, BL#19, BL#20
+- `frontend/src/components/pages/create/CreateTask.jsx` — bugs BL#19, BL#20 (P1#11, P5#18, P6 done)
 - `server/modules/task/service.js` — no integration tests (see `server/backend.md` §Risk Register)
 
 ## Intersections (why the order below is what it is)
 
-1. **Priority picker (P6)** lands in `CreateTask.jsx` + `taskDetail.jsx` — the *same protected files* as
-   P1#11, P1#15, P5#18, BL#19. Fold the picker into those phases so protected files are opened once.
-2. **Date bug P5#18** spans both `CreateTask.jsx` and `taskDetail.jsx`.
-3. **P3#14 / P3#16** need caller tracing (`/diagnose`) before any edit — do not guess-fix.
-4. Backend P0 is fully isolated — no frontend coupling, can run anytime.
+1. ~~Priority picker (P6) + date bug P5#18 share `CreateTask.jsx`/`taskDetail.jsx`~~ — **done together
+   2026-06-06** (see Archive). Remaining `CreateTask.jsx` items: BL#19, BL#20.
+2. **P3#14 / P3#16** need caller tracing (`/diagnose`) before any edit — do not guess-fix.
+3. Backend P0 is fully isolated — no frontend coupling, can run anytime.
 
 ---
 
@@ -44,16 +43,25 @@ on any fix plan before coding (standing memory).
 
 ## P4 — Frontend · taskSlice mutation thunks *(protected)*
 
-- **#2** `taskSlice.jsx:121-167` — `updatedTask`, `completedTask`, `removedTask`, `removedAllTask`, `removedCategory` have no try/catch, no `rejectWithValue`, no `.rejected` handler → silent failures, `error` never set.
-- **#3** `taskSlice.jsx:179-186` — `setFormTask` does `new Date(startDate).toISOString()` guarded only on `undefined`; `null`→epoch 1970, invalid string→`RangeError` crashes reducer.
+- **#2 — DEFERRED** (depends on the error-UI decision, see below). `taskSlice.jsx:121-167` —
+  `updatedTask`, `completedTask`, `removedTask`, `removedAllTask`, `removedCategory` have no
+  try/catch, no `rejectWithValue`, no `.rejected` handler → silent failures, `error` never set.
+  **Scrutiny (2026-06-06):** the fix would write `state.task.error`, but **no component reads it**
+  (grepped every `useSelector`) — same dead-state as **#21**, and all four call-site catch blocks
+  already just `console.error(...)` without reading `.message`. So the fix is store-correctness only,
+  zero user-facing change. **Bundle with #21**: settle the error/loading UI surface (toast/banner)
+  first so `error` has a consumer, then wire `rejectWithValue` + `.rejected` with a real destination.
+- **#3** — DONE ✅ (2026-06-06, see Archive). Reachable `null`→1970 bug confirmed at the call site.
 
-## P5 — Frontend · date handling (needs `/verify` screenshots @ 390/768/1280)
+## P5 — Frontend · date handling — DONE ✅ (see Archive)
 
-- **#18** `CreateTask.jsx:81,85` hand-shift TZ offset before `toISOString()`; `taskDetail.jsx:97` does **not** → wrong-day bugs around DST/non-zero offsets. Unify the two paths.
+- **#18** — DONE ✅ (2026-06-06). Unified both paths on the local-instant convention via shared
+  `toDayISO`. Runtime `/verify` screenshots @ 390/768/1280 still pending.
 
-## P6 — Feature · priority picker UI (backend ready)
+## P6 — Feature · priority picker UI — DONE ✅ (see Archive)
 
-Backend fully supports `priority` (low|med|high; create defaults `low`). No picker shipped yet — users still can't set priority. Add a selector in `CreateTask.jsx` + `taskDetail.jsx` wired to the `priority` field. **Fold into P1/P5** (same protected files).
+Shipped a native-`<select>` `PriorityField` in `CreateTask.jsx` + `taskDetail.jsx`. Runtime `/verify`
+(persist on create, autosave on edit) still pending.
 
 ## Backlog — quality / lower severity (frontend audit)
 
@@ -66,7 +74,19 @@ Backend fully supports `priority` (low|med|high; create defaults `low`). No pick
 - **#17** `taskDetail.jsx:49-53` — sync effect guards on `isUpdating` but omits it from deps → stale closure can clobber in-progress edits.
 - **#19** `CreateTask.jsx:41-43` *(protected)* — `validator` dispatches `startDate` then reads it stale same-render; redundant (line 107 has `||` fallback).
 - **#20** Magic `setTimeout` sequencing for summary refetch: `usePopup.jsx:78` (100ms), `CreateTask.jsx:113` (300ms). Should await directly.
-- **#23** `taskDetail.jsx:25` *(protected)* — `debouncedUpdateTask = useRef(debounce(...))` but every call site uses it **without `.current`** (lines 58 `.flush()`, 82/100/127/153/179). A `useRef` returns `{current}`, so these call the ref object — that debounce/flush path is broken/dead, not a working reference. **Correction:** the old P2 #13 note ("TaskDetail does it right") was wrong. Surfaced by `/scrutinize` during P2. Fold into a P4-style protected-file phase; trace whether autosave actually fires before "fixing".
+- **#23 — CLOSED ✅ (stale, not a bug).** 2026-06-06 `/scrutinize` during P5/P6 re-traced
+  `taskDetail.jsx:25-47`: the `useRef(...)` **ends with `.current`** (line 47), so `debouncedUpdateTask`
+  IS the debounced function and every call site (`.flush()` line 58; `debouncedUpdateTask(...)` at
+  82/100/127/153/179) is correct. The autosave path works. The earlier "called without `.current`"
+  note (and the P2 #13 self-correction) predate the `.current` now present in the file — nothing to fix.
+
+- **#24** `StartDatePicker` defaults its empty `selected` to `new Date()` (with current time) while
+  `DeadlinePicker` defaults to `null`. So a freshly-picked **startDate stores `<day>T<now-time>Z`**
+  (e.g. `2026-07-10T13:44:10Z`) whereas a picked deadline stores clean local-midnight
+  (`...T17:00:00Z`). Surfaced by the P5 #18 `/verify` run (2026-06-06). The calendar **day** round-trips
+  correctly either way (P5 #18 holds), so this is low severity — just a time-component inconsistency
+  between the two fields. Fix: normalize startDate to local midnight (or default the picker's empty
+  `selected` to `null` like DeadlinePicker). Lives in `CreateTask.jsx` (*protected*).
 
 ### Findings from runtime verify session (2026-06-06, Playwright guest mode)
 
@@ -74,6 +94,7 @@ Backend fully supports `priority` (low|med|high; create defaults `low`). No pick
   P1 #1 fix) but **no component renders it** — only `state.user.loading` is consumed (`AuthForm.jsx`). It's
   dead UI state today. Either wire a task-loading spinner (the create/fetch flows have nothing) or strip the
   flag. Decide before adding more `loading` bookkeeping. *(Surfaced verifying #1 — its "stuck spinner" had no UI.)*
+  **Bundle P4 #2 here:** `state.task.error` is the same dead read-side — decide one error/loading UI surface for both.
 - **#22** Cleanup: one orphan guest task `PASS-create-*` left in **dev** Atlas from the verify run (guest cookie
   gone, so not deletable via UI). Harmless; drop it next time you're in dev Atlas.
 - **Parked (from P0):** prod Atlas `slimelist` is completely empty. If real prod users/tasks were ever expected,
@@ -87,6 +108,37 @@ Most of `components/pages/ui/`, `animation/`, `user/` (`Home`, `AllTask`, `Upcom
 ---
 
 ## Archive — closed work (rationale kept for reference)
+
+### P5 #18 + P6 — date unification + priority picker — DONE (2026-06-06, code + unit tests)
+Bundled because both land in the same protected files (`CreateTask.jsx`, `taskDetail.jsx`). Full
+detail in `frontend/MIGRATION.md`. **Runtime `/verify` @ 390/768/1280 still outstanding.**
+- **#18 (date):** root cause was *divergence* — `CreateTask` hand-shifted the TZ offset (stored
+  UTC-midnight of the picked day), `taskDetail` did raw `toISOString()` (local-midnight instant) → a
+  task created then edited could jump a calendar day. Decision (user): **local-instant / raw ISO** —
+  both pickers read back with `new Date(value)` in local time, so the raw instant round-trips to the
+  same calendar day in the user's TZ for any offset. Extracted `toDayISO` (`functions/date.js`); both
+  `handleDateChange` paths use it; CreateTask's offset math deleted. `toIsoDate` reducer guard (P4#3)
+  left alone (separate concern).
+- **#6 (picker):** `PriorityField` = styled **native `<select>`** (low|medium|high) — chosen over
+  cloning `CategoryTagField`'s custom dropdown (that's for a *dynamic* list; priority is a fixed enum).
+  No new wiring: `setFormTask` `...rest` carries it on create; the existing debounced `updatedTask` PUT
+  carries it on edit; backend defaults `updateData.priority || existing.priority || "low"`.
+- **Tests:** 78/78 (was 71; +4 date, +3 priority). **Lint:** only `PriorityField.jsx` adds entries,
+  all in the baseline `React`-unused + `prop-types` classes shared by every sibling.
+- **Cron note (verify):** raw ISO shifts the stored deadline instant by ~the TZ offset; the overdue
+  cron compares instants — confirm a task due "tomorrow" isn't prematurely failed.
+
+### P4 #3 — `setFormTask` unsafe date coercion — DONE (2026-06-06, `/scrutinize`)
+`setFormTask` guarded `new Date(value).toISOString()` only against `undefined`. Scrutiny traced the
+call site and found the bug is **reachable**: `CreateTask.jsx:87` dispatches
+`setFormTask({ deadline: null })` when the user clears the deadline → `new Date(null)` = epoch 0 →
+deadline silently became `"1970-01-01T00:00:00.000Z"` instead of `null`. The invalid-string→`RangeError`
+reducer crash was latent (every current caller passes `.toISOString()` output or `null`) but real.
+Fix: extracted `toIsoDate(value, fallback)` — `undefined`→keep current, `null`→stay null, invalid→keep
+current (no throw), valid→ISO. Used for both `startDate` and `deadline`. Added 2 regression tests
+(clear→null; invalid→no-throw + prior value kept). **71/71 Vitest** (was 69), no new lint
+(`taskSlice.jsx` + test file lint-clean; the 490 baseline errors are the pre-existing project-wide
+`React`-unused set). **P4 #2 deferred** — see open P4 / #21 (dead `state.task.error`).
 
 ### P3 #16 — `useFetchTask` refetch dep + dead `filterKey` — DONE (2026-06-06, `/diagnose`)
 **No live loop** — diagnosis: `fetchTasks.fulfilled` (`taskSlice.jsx:271-274`) doesn't bump

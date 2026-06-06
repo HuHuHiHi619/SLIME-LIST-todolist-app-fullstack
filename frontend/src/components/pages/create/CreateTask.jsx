@@ -12,9 +12,11 @@ import InputField from "../ui/inputField";
 import DeadlinePicker from "../ui/DeadlinePicker";
 import StartDatePicker from "../ui/StartDatePicker";
 import CategoryTagField from "../ui/CategoryTagField";
+import PriorityField from "../ui/PriorityField";
 import ProgressField from "../ui/ProgressField";
 import Tooltip from "../ui/Tooltip";
 import FadeUpContainer from "../animation/FadeUpContainer";
+import { toDayISO } from "../../../functions/date";
 import {
   fetchSummary,
   fetchSummaryByCategory,
@@ -76,16 +78,9 @@ function CreateTask({ onClose }) {
 
   const handleDateChange = (date, field) => {
     if (field === "startDate") {
-      const selectedDate = date ? date : new Date();
-      const formatDate = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000));
-      dispatch(setFormTask({ [field]: formatDate.toISOString() }));
+      dispatch(setFormTask({ startDate: toDayISO(date) ?? new Date().toISOString() }));
     } else if (field === "deadline") {
-      if (date) {
-        const formatDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
-        dispatch(setFormTask({ [field]: formatDate.toISOString() }));
-      } else {
-        dispatch(setFormTask({ [field]: null }));
-      }
+      dispatch(setFormTask({ deadline: toDayISO(date) }));
     }
   };
 
@@ -201,6 +196,11 @@ function CreateTask({ onClose }) {
                 }
                 onChange={(date) => handleDateChange(date, "deadline")}
                 placeholder="DEADLINE"
+              />
+              <PriorityField
+                name="priority"
+                value={formTask.priority || "low"}
+                handleInputChange={handleInputChange}
               />
             </div>
 
