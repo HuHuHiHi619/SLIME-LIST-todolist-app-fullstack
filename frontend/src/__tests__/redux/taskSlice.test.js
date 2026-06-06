@@ -105,6 +105,20 @@ describe("taskSlice — form & progress", () => {
     expect(typeof state.formTask.startDate).toBe("string");
     expect(state.formTask.startDate).toContain("2026-05-20");
   });
+  it("setFormTask(deadline: null) clears to null, not epoch 1970", () => {
+    const seeded = reducer(init(), setFormTask({ deadline: "2026-05-20" }));
+    const cleared = reducer(seeded, setFormTask({ deadline: null }));
+    expect(cleared.formTask.deadline).toBe(null);
+  });
+  it("setFormTask with an invalid date does not throw and keeps the prior value", () => {
+    const seeded = reducer(init(), setFormTask({ startDate: "2026-05-20" }));
+    const prior = seeded.formTask.startDate;
+    let next;
+    expect(() => {
+      next = reducer(seeded, setFormTask({ startDate: "not-a-date" }));
+    }).not.toThrow();
+    expect(next.formTask.startDate).toBe(prior);
+  });
   it("resetFormTask restores defaults", () => {
     const dirty = {
       ...init(),
