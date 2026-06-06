@@ -37,8 +37,10 @@ on any fix plan before coding (standing memory).
 
 ## P3 — Frontend · trace before fixing (use `/diagnose`)
 
-- **#14** `usePopup.jsx:68-73` *(protected)* — `handleActiveMenu` condition inverted; clicking a *new* menu does nothing. **Grep callers of `handleActiveMenu`** — `activeMenu` may be set elsewhere.
-- **#16** `useFetchTask.jsx:9-11` — `filter` in dep array; inline-object caller → refetch loop. Also ignores `filterKey` (dead prop from `TaskForm`). **Trace how callers build `filter`.**
+- **#14** — DONE ✅ (2026-06-06, see Archive). **Backlog was misdiagnosed** — not an inverted
+  condition; it was dead code. Deleted.
+- **#16** — DONE ✅ (2026-06-06, see Archive). **No live loop** (latent footgun); hardened the dep +
+  removed dead `filterKey`. 69/69 Vitest (added 2 regression tests).
 
 ## P4 — Frontend · taskSlice mutation thunks *(protected)*
 
@@ -85,6 +87,29 @@ Most of `components/pages/ui/`, `animation/`, `user/` (`Home`, `AllTask`, `Upcom
 ---
 
 ## Archive — closed work (rationale kept for reference)
+
+### P3 #16 — `useFetchTask` refetch dep + dead `filterKey` — DONE (2026-06-06, `/diagnose`)
+**No live loop** — diagnosis: `fetchTasks.fulfilled` (`taskSlice.jsx:271-274`) doesn't bump
+`lastStateUpdate` (only mutations do), and all 5 parent pages (`Home`/`AllTask`/`Upcoming`/`Category`/
+`CategoryList`) carry no `useSelector`/local state, so they never re-render → the inline `filter={{...}}`
+object stays referentially stable. The dep-array `filter` was a **latent footgun**: the day any parent
+gains a redux subscription, the fresh-each-render object would cause a refetch on every render. `filterKey`
+was dead end-to-end (no caller passes it to `TaskForm`; `useFetchTask` ignores a 2nd arg).
+Fix: `useFetchTask` now deps on `JSON.stringify(filter)` (reference churn can't refetch; content change or
+post-mutation `lastStateUpdate` still does); removed dead `filterKey` from `TaskForm`'s signature + the stray
+2nd arg. Added `__tests__/hooks/useFetchTask.test.jsx` (new-but-equal object → no refetch; changed content →
+refetch). 69/69 Vitest, no new lint (test file clean; `filter` prop-types + `React`-unused are pre-existing baseline).
+
+### P3 #14 — `handleActiveMenu` dead code — DONE (2026-06-06, `/diagnose`)
+**Backlog misdiagnosed it** as "condition inverted; clicking a new menu does nothing." Caller trace proved
+otherwise: navigation runs through react-router `<Link to={to}>` (`SidebarLink.jsx:35`), and the active-pill
+highlight from `activeMenu === to` is driven by `Sidebar.jsx:62` (`setActiveMenu(location.pathname)` effect) —
+both already correct. `usePopup.handleActiveMenu` was invoked with **no argument** at all 5 Sidebar call sites
+(`handleActiveMenu()`), so `menuName===undefined` and `if (activeMenu === menuName)` was never true → inert.
+**Flipping the condition (the old prescription) would have broken nav** — it would run `navigate(undefined)` +
+`setActiveMenu(undefined)`. Fix = deleted the dead function from `usePopup.jsx` (+ now-unused `useNavigate`,
+`navigate`, `setActiveMenu`, `activeMenu`); simplified the 5 Sidebar wrappers to `handleActiveMenu={closeDrawerOnMobile}`
+(the only live behavior was closing the mobile drawer). 67/67 Vitest, no new lint (only pre-existing `React`-unused baseline).
 
 ### P2 #12 + #13 — SearchField branch logic + debounce — DONE (2026-06-06)
 Single file `SearchField.jsx`, not protected. 67/67 Vitest, no new lint.

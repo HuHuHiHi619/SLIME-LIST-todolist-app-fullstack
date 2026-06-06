@@ -39,7 +39,6 @@ function Sidebar() {
 
   const {
     handleRemovedItem,
-    handleActiveMenu,
     handlePopup,
     handleHover,
     handleClose,
@@ -109,10 +108,7 @@ function Sidebar() {
           icon={faHome}
           label="OVERVIEW"
           activeMenu={activeMenu}
-          handleActiveMenu={() => {
-            if (isSidebarPinned) handleActiveMenu();
-            closeDrawerOnMobile();
-          }}
+          handleActiveMenu={closeDrawerOnMobile}
           isSidebarPinned={isSidebarPinned}
         />
       </Tooltip>
@@ -122,10 +118,7 @@ function Sidebar() {
           icon={faCalendar}
           label="UPCOMING"
           activeMenu={activeMenu}
-          handleActiveMenu={() => {
-            if (isSidebarPinned) handleActiveMenu();
-            closeDrawerOnMobile();
-          }}
+          handleActiveMenu={closeDrawerOnMobile}
           isSidebarPinned={isSidebarPinned}
         />
       </Tooltip>
@@ -135,10 +128,7 @@ function Sidebar() {
           icon={faList}
           label="ALL TASKS"
           activeMenu={activeMenu}
-          handleActiveMenu={() => {
-            if (isSidebarPinned) handleActiveMenu();
-            closeDrawerOnMobile();
-          }}
+          handleActiveMenu={closeDrawerOnMobile}
           isSidebarPinned={isSidebarPinned}
         />
       </Tooltip>
@@ -150,10 +140,7 @@ function Sidebar() {
           label="CATEGORY"
           categories={categories}
           activeMenu={activeMenu}
-          handleActiveMenu={() => {
-            if (isSidebarPinned) handleActiveMenu();
-            closeDrawerOnMobile();
-          }}
+          handleActiveMenu={closeDrawerOnMobile}
           handlePopup={(e) => handlePopup(e, "category")}
           isSidebarPinned={isSidebarPinned}
           handleHover={handleHover}
@@ -167,10 +154,7 @@ function Sidebar() {
           icon={faGear}
           label="SETTINGS"
           activeMenu={activeMenu}
-          handleActiveMenu={() => {
-            if (isSidebarPinned) handleActiveMenu();
-            closeDrawerOnMobile();
-          }}
+          handleActiveMenu={closeDrawerOnMobile}
           isSidebarPinned={isSidebarPinned}
         />
       </Tooltip>

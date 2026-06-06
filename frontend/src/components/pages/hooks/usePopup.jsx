@@ -1,12 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSelectedTask,
   toggleCreatePopup,
   completedTask,
   removedTask,
-  setActiveMenu,
   togglePopup,
   setHover,
   toggleSidebarPinned,
@@ -23,13 +21,12 @@ import { fetchUserData, toggleRegisterPopup } from "../../../redux/userSlice";
 
 function usePopup() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const popupRef = useRef(null);
   const popupEnRef = useRef(null);
   const popupInstructRef = useRef(null);
   const sidebarRef = useRef(null);
   const popupRegisterRef = useRef(null);
-  const { isPopup, activeMenu } = useSelector((state) => state.tasks);
+  const { isPopup } = useSelector((state) => state.tasks);
   
 
   const handleIsCreate = async () => {
@@ -63,13 +60,6 @@ function usePopup() {
     e.preventDefault();
     e.stopPropagation();
     dispatch(togglePopup(mode));
-  };
-
-  const handleActiveMenu = (menuName) => {
-    if (activeMenu === menuName) {
-      dispatch(setActiveMenu(menuName));
-      navigate(menuName);
-    }
   };
 
   const handleCompletedTask = async (task) => {
@@ -121,7 +111,7 @@ function usePopup() {
   const handleClose = () => {
     if (isPopup) {
       dispatch(togglePopup(""));
-    } else if (popupRef) {
+    } else if (popupRef.current) {
       dispatch(toggleCreatePopup());
       dispatch(setSelectedTask(null));
       return;
@@ -157,7 +147,6 @@ function usePopup() {
     handleRemovedTask,
     handleRemovedAllTask,
     handleRemovedItem,
-    handleActiveMenu,
     handleToggleSidebar,
     handleToggleRegister,
     handleHover,
