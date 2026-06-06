@@ -10,9 +10,9 @@ import ReactDOM from "react-dom";
 
 const TaskDetail = React.lazy(() => import("../ui/taskDetail"));
 
-function TaskForm({ filter, filterKey }) {
+function TaskForm({ filter }) {
   const { selectedTask, isCreate } = useSelector((state) => state.tasks);
-  const { tasks: fetchedTasks } = useFetchTask(filter, filterKey);
+  const { tasks: fetchedTasks } = useFetchTask(filter);
   const {
     handleIsCreate,
     handleCloseDetail,

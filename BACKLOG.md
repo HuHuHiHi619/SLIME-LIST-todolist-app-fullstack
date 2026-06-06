@@ -39,7 +39,8 @@ on any fix plan before coding (standing memory).
 
 - **#14** — DONE ✅ (2026-06-06, see Archive). **Backlog was misdiagnosed** — not an inverted
   condition; it was dead code. Deleted.
-- **#16** `useFetchTask.jsx:9-11` — `filter` in dep array; inline-object caller → refetch loop. Also ignores `filterKey` (dead prop from `TaskForm`). **Trace how callers build `filter`.** **Diagnosed 2026-06-06: no live loop today** — `fetchTasks.fulfilled` doesn't bump `lastStateUpdate`, and all 5 parent pages (`Home`/`AllTask`/`Upcoming`/`Category`/`CategoryList`) have no redux subscription or local state, so they never re-render → the inline `filter` object stays referentially stable. **Latent footgun**, not a live bug. `filterKey` confirmed dead end-to-end (no caller passes it; hook ignores 2nd arg). Real fix = serialize `filter` in the hook's dep + strip dead `filterKey`. Not yet applied.
+- **#16** — DONE ✅ (2026-06-06, see Archive). **No live loop** (latent footgun); hardened the dep +
+  removed dead `filterKey`. 69/69 Vitest (added 2 regression tests).
 
 ## P4 — Frontend · taskSlice mutation thunks *(protected)*
 
@@ -86,6 +87,18 @@ Most of `components/pages/ui/`, `animation/`, `user/` (`Home`, `AllTask`, `Upcom
 ---
 
 ## Archive — closed work (rationale kept for reference)
+
+### P3 #16 — `useFetchTask` refetch dep + dead `filterKey` — DONE (2026-06-06, `/diagnose`)
+**No live loop** — diagnosis: `fetchTasks.fulfilled` (`taskSlice.jsx:271-274`) doesn't bump
+`lastStateUpdate` (only mutations do), and all 5 parent pages (`Home`/`AllTask`/`Upcoming`/`Category`/
+`CategoryList`) carry no `useSelector`/local state, so they never re-render → the inline `filter={{...}}`
+object stays referentially stable. The dep-array `filter` was a **latent footgun**: the day any parent
+gains a redux subscription, the fresh-each-render object would cause a refetch on every render. `filterKey`
+was dead end-to-end (no caller passes it to `TaskForm`; `useFetchTask` ignores a 2nd arg).
+Fix: `useFetchTask` now deps on `JSON.stringify(filter)` (reference churn can't refetch; content change or
+post-mutation `lastStateUpdate` still does); removed dead `filterKey` from `TaskForm`'s signature + the stray
+2nd arg. Added `__tests__/hooks/useFetchTask.test.jsx` (new-but-equal object → no refetch; changed content →
+refetch). 69/69 Vitest, no new lint (test file clean; `filter` prop-types + `React`-unused are pre-existing baseline).
 
 ### P3 #14 — `handleActiveMenu` dead code — DONE (2026-06-06, `/diagnose`)
 **Backlog misdiagnosed it** as "condition inverted; clicking a new menu does nothing." Caller trace proved
