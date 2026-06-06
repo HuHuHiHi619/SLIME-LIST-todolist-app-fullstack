@@ -27,6 +27,16 @@ function writeStreakStatus(value) {
   }
 }
 
+// Safe date coercion for form fields. `undefined` = field absent → keep current;
+// `null` = explicit clear → stay null (was silently becoming 1970-01-01); an
+// invalid date keeps the current value instead of throwing RangeError in the reducer.
+function toIsoDate(value, fallback) {
+  if (value === undefined) return fallback;
+  if (value === null) return null;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? fallback : d.toISOString();
+}
+
 const initialState = {
   tasks: [],
   searchResults: [],
@@ -176,14 +186,8 @@ const taskSlice = createSlice({
       state.formTask = {
         ...state.formTask,
         ...rest,
-        startDate:
-          startDate !== undefined
-            ? new Date(startDate).toISOString()
-            : state.formTask.startDate,
-        deadline:
-          deadline !== undefined
-            ? new Date(deadline).toISOString()
-            : state.formTask.deadline,
+        startDate: toIsoDate(startDate, state.formTask.startDate),
+        deadline: toIsoDate(deadline, state.formTask.deadline),
       };
       console.log("Updated formTask:", state.formTask);
     },
