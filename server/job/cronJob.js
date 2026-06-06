@@ -2,6 +2,7 @@ const cron = require("node-cron");
 const Tasks = require("../Models/Tasks");
 const User = require("../Models/User");
 const { startOfDay , subDays } = require("date-fns");
+const { overdueThreshold } = require("../shared/utils/deadlineUtils");
 
 const checkOverdueTasks = () => {
   cron.schedule("0 0 * * *", async () => {
@@ -13,11 +14,13 @@ const checkOverdueTasks = () => {
 
 // manual
 const updateOverdueTasks = async () => {
-  const currentDate = new Date();
+  // P0 #25: grace by one UTC day so raw local-instant deadlines (P5 #18) are not
+  // failed before the due day has ended in the user's own timezone. See overdueThreshold.
+  const cutoff = overdueThreshold();
 
   try {
     const overdueTasks = await Tasks.find({
-      deadline: { $lt: currentDate },
+      deadline: { $lt: cutoff },
       status: { $ne: "completed" },
     });
 
