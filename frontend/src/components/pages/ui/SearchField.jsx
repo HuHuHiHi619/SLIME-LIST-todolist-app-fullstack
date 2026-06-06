@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { debounce } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { clearSearchResults, fetchSearchTasks } from "../../../redux/taskSlice";
@@ -21,16 +21,18 @@ function SearchField({ handleSearchToggle, isSearchOpen, className, alwaysOpen =
   } = usePopup();
   const dispatch = useDispatch();
 
-  const debounceSearch = debounce((term) => {
-    if (!term) {
-      dispatch(clearSearchResults());
-    }
-    if (term.length > 50) {
-      return;
-    } else if (term.length < 50) {
-      dispatch(fetchSearchTasks(term));
-    }
-  }, 500);
+  // useRef.current keeps a single debounced fn across renders (recreating it
+  // each render defeated debouncing). dispatch is stable, so capturing it once
+  // is safe. >50 chars: no-op; empty: clear only; 1–50: search.
+  const debounceSearch = useRef(
+    debounce((term) => {
+      if (!term) {
+        dispatch(clearSearchResults());
+      } else if (term.length <= 50) {
+        dispatch(fetchSearchTasks(term));
+      }
+    }, 500)
+  ).current;
 
   const handleSearch = (e) => {
     const { value } = e.target;
@@ -50,7 +52,7 @@ function SearchField({ handleSearchToggle, isSearchOpen, className, alwaysOpen =
       debounceSearch.cancel();
       dispatch(clearSearchResults());
     };
-  }, [dispatch]);
+  }, [dispatch, debounceSearch]);
 
   return (
     <>

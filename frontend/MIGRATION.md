@@ -240,6 +240,13 @@ Breakpoint: **768 px**. Desktop layout must remain byte-identical.
     (color audit, border radius, font size, spacing, hover/animation, visual imbalance, mobile
     styles) that must consult `SKILL.md` before making changes.
 
+#### Task 4 — Mobile TaskForm / CreateTask ❌ Cancelled
+- **Status**: Cancelled — owner will implement manually
+
+#### Task 5 — Sidebar desktop transition asymmetry ❌ Cancelled
+- **Status**: Cancelled — owner will implement manually
+- **Context**: On desktop, sidebar open (expand) was perceived as faster than close (collapse) despite symmetric `0.3s ease` transition. Root cause not fully traced before cancellation.
+
 ### Known Bugs
 - **Sidebar desktop transition asymmetry** (`layout.css`): On desktop, the sidebar open (expand)
   animation is perceived as faster than close (collapse). Root cause: CSS `@media (min-width: 1024px)`
@@ -257,3 +264,51 @@ Breakpoint: **768 px**. Desktop layout must remain byte-identical.
 - **CSS ID specificity trap** (Task 2a): `#nav-bar { display: flex }` in `layout.css` has specificity
   (0,1,0,0) and overrides any Tailwind class. The `hidden md:flex` guard was applied directly to the
   ID rule — not to the JSX element — to avoid a silent no-op.
+
+---
+
+## [TASK] Cluster B #1 — Delete retry ("Try Again") feature (frontend half)
+### Refactoring Goal / Objective
+Remove the dead client-side retry feature whose backend was already deleted on branch
+`fix/backend-b1-retry-deletion` (the `PUT /user/:id/attempt` endpoint now 404s). Frontend deletion
+must ship with the backend branch so `main` never has a window where the button errors.
+Concern: LOGIC + one small VISUAL element (the button). Pure deletion, no new behavior.
+
+#### Single phase — End-to-end removal ✅
+- **Files Changed**: `src/functions/task.js`, `src/redux/taskSlice.jsx`,
+  `src/components/pages/ui/taskDetail.jsx`, `src/__tests__/functions/task.test.js`
+- **Test Command**: `npm test` + `npm run build` + `npx eslint` (touched files)
+- **Test Results**: 67 passed, 8 files (was 68 — removed the `updateTaskAttempt` throws-on-failure
+  test); build clean; touched files introduced no new lint errors.
+- **Status**: Complete
+- **Done**:
+  - `task.js` — deleted `updateTaskAttempt` axios fn (`PUT /user/:id/attempt`).
+  - `taskSlice.jsx` — dropped `updateTaskAttempt` import, the `updatedTaskAttempt` thunk, its
+    `.fulfilled` extraReducer case, and the dead `tryAgainCount: 0` field in `initialState.formTask`.
+  - `taskDetail.jsx` — removed `handleTryAgainTask`, the `faRotateLeft` rotate-button block (shown
+    only when `status === "failed"`), and the now-unused `FontAwesomeIcon`/`faRotateLeft` imports.
+  - `task.test.js` — removed the `updateTaskAttempt` import + its test.
+- **Kept intact**: the `"failed"` task status and its label rendering in `taskDetail.jsx` — the
+  overdue cron still produces `failed`; only the *recovery action* is removed, not the status.
+- **Note**: the Phase-3 historical note above (taskSlice §"Out of scope", `upsertTaskById` decline)
+  references `updatedTaskAttempt` as one of three write handlers — left as a point-in-time record;
+  that handler no longer exists.
+---
+
+## P2 — SearchField debounce + branch logic ✅ (2026-06-06)
+
+- **File**: `src/components/pages/ui/SearchField.jsx`
+- **Test**: `npx vitest run` (67/67, 8 files) + `npx eslint` (touched file)
+- **#13** debounce was rebuilt every render → no actual debouncing, one request
+  per keystroke, leaked timers. Wrapped in `useRef(debounce(...)).current` (stable
+  across renders; `dispatch` is stable so captured once). Added `debounceSearch`
+  to the cleanup-effect deps now that its identity is stable (silences
+  exhaustive-deps).
+- **#12** branch logic was two separate `if`s: empty term cleared *then still*
+  fired `fetchSearchTasks("")`; an exactly-50-char term hit neither branch (no-op).
+  Now a single chain: `if (!term) clear; else if (len <= 50) fetch;` (>50 → no-op).
+- **Lint**: 5 pre-existing baseline errors remain (`React` unused + 4 `prop-types`);
+  no new problems, exhaustive-deps warning cleared.
+- **Scrutinize finding (logged to BACKLOG, not P2)**: `taskDetail.jsx:25` uses
+  `useRef(debounce(...))` but calls it without `.current` (lines 58/82/100…) — that
+  debounce path is broken/dead. Do NOT copy it as the reference idiom.
