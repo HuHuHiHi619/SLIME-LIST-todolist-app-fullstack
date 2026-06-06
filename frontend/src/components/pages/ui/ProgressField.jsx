@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark , faCheck} from "@fortawesome/free-solid-svg-icons";
 
 function ProgressField({
-  steps,
+  steps = [],
   handleRemoveStep,
   handleStepComplete,
   showCompletion = true,
