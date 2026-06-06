@@ -76,7 +76,14 @@ them `failed` **one full cron cycle (one calendar day) early**.
   `isRejected(...)` sets `error = payload ?? error.message ?? "Something went wrong"`. Clearing on pending
   fixes the re-fire bug (identical repeat error still re-triggers). Added `clearTaskError` reducer + new
   App-level `TaskErrorToast.jsx` (self-rolled, no dep, auto-dismiss 4s). **83/83 Vitest** (+5), lint clean.
-  **Outstanding:** runtime `/verify` (force a 500 on a PUT/DELETE, confirm toast renders + dismisses).
+  **Runtime `/verify` DONE ✅ (2026-06-06, Playwright guest mode, forced 500 on `PATCH /task/:id/completed`):**
+  toast renders bottom-right ("Request failed with status code 500"), auto-dismisses ~4.4s, identical repeat
+  error re-fires (pending-clears-error confirmed), manual × works. **But verify caught a shipped app-wide
+  crash:** the committed `TaskErrorToast.jsx` selected `state.task.error` (singular) while the store registers
+  the reducer under `tasks` (plural, `store.jsx:8`) → `undefined.error` threw on every render → no error
+  boundary → **whole app blank for all users**. The 5 unit tests missed it (reducer tested directly, never the
+  selector key). Fixed `state.task`→`state.tasks` (1 char). Lesson: consider an App-level error boundary so a
+  bad selector degrades instead of white-screening.
   **Spun off → BL #26** (optimistic category-delete not rolled back on failure, surfaced in scrutiny).
   `loading` (#21's other half) still dead — left as-is, decide if/when a spinner is wanted.
 - **#3** — DONE ✅ (2026-06-06, see Archive). Reachable `null`→1970 bug confirmed at the call site.
