@@ -312,6 +312,7 @@ const taskSlice = createSlice({
         state.isSummaryUpdated = !state.isSummaryUpdated;
       })
       .addCase(createNewTask.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       })
       .addCase(updatedTask.fulfilled, (state, action) => {
