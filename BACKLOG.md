@@ -134,10 +134,59 @@ Shipped a native-`<select>` `PriorityField` in `CreateTask.jsx` + `taskDetail.js
   *before* the awaited `removedCategory(id)`; the catch only `console.error`s — **no rollback**. With the new
   P4 #2 toast, a failed category delete now shows an error *while the category has already vanished* from the
   UI until refetch. Surfaced by `/scrutinize` (2026-06-06). Fix: re-insert on failure, or drop the optimism.
+  **→ Folded into planned P7 (popup mutation consistency) below.**
 - **#22** Cleanup: one orphan guest task `PASS-create-*` left in **dev** Atlas from the verify run (guest cookie
   gone, so not deletable via UI). Harmless; drop it next time you're in dev Atlas.
 - **Parked (from P0):** prod Atlas `slimelist` is completely empty. If real prod users/tasks were ever expected,
   the data is not where `.env.production`'s `MONGO_URI` points — chase before trusting prod.
+
+## Planned — designs ready, ordering deferred to next session (added 2026-06-06)
+
+### P7 — Popup mutation consistency *(absorbs BL #26)*
+
+**Problem.** The five popup/sidebar mutation handlers in `usePopup.jsx` follow **three different
+patterns** for the same shape of operation:
+- `handleCompletedTask` (`:65`) — await thunk, then `setTimeout(100ms)` → refetch summary + userData (BL #20 magic delay).
+- `handleRemovedTask` (`:80`) / `handleRemovedAllTask` (`:90`) — await thunk, then `await fetchSummary()`. Pessimistic, clean.
+- `handleRemovedItem` category (`:99`) — **optimistic** `removeCategories(id)` *before* the awaited
+  `removedCategory(id)`, **no rollback** (BL #26). On failure the category is already gone from the UI while the
+  new P4 #2 toast shows an error → contradictory state until refetch.
+
+Only one of five is optimistic, and it's the one that can't undo itself. Every `catch` is a bare `console.error`
+(now redundant with the toast).
+
+**Decision needed (next session):** pick ONE house pattern for all popup mutations.
+- **Option A — pessimistic everywhere (recommended).** Drop the optimistic `removeCategories` from
+  `handleRemovedItem`; await `removedCategory` *then* let the fulfilled reducer / refetch remove it (same as
+  `handleRemovedTask`). Simplest, consistent, no rollback code, and the toast already covers failure. Fits the
+  "keep core simple" product direction. ~1 file, low risk.
+- **Option B — optimistic + rollback everywhere.** Snappier UX but every delete needs a captured-prev +
+  re-insert-on-catch. More surface, more state. Only worth it if delete latency is actually felt.
+- Either way: delete the bare `console.error` catches (toast surfaces the error) and resolve BL #20 (await the
+  summary refetch directly instead of `setTimeout(100ms)` / `300ms`).
+
+**Scope:** `usePopup.jsx` (not protected) + possibly `CreateTask.jsx:113` (300ms timer, *protected* — own phase).
+Add a Vitest for the chosen rollback/no-rollback behavior. Closes BL #26 + folds in BL #20.
+
+### P8 — App-level error boundary
+
+**Why.** The #21 toast crash (selector hit `undefined`) white-screened the **entire app** for every user because
+React has no default error boundary — any throw in render unmounts the whole tree. This is the *second* selector-key
+footgun in this area; the next one will do the same. A boundary converts "blank app" into a recoverable fallback.
+
+**Plan.**
+1. Self-roll `components/ErrorBoundary.jsx` — a class component (`getDerivedStateFromError` + `componentDidCatch`)
+   that renders a branded fallback ("Something went wrong — reload") instead of nothing. No new dependency
+   (mirror the self-rolled `TaskErrorToast` choice; avoid `react-error-boundary` per product direction).
+2. Wrap the route tree in `App.jsx` — inside `AuthProvider`, around `<BrowserRouter>` (so `TaskErrorToast` and
+   routes are both covered). Consider a `key`/reset on `location.pathname` so navigating away clears a caught error.
+3. Log the caught error to console (and leave a hook for future telemetry).
+4. **Verify by regression:** temporarily reintroduce a bad selector → confirm the fallback renders, not a blank
+   page. (This is exactly what would have caught the #21 crash pre-merge.)
+
+**Scope:** new file + a few lines in `App.jsx` (not protected). Low risk, high blast-radius protection.
+
+---
 
 ## Not yet audited (frontend)
 
