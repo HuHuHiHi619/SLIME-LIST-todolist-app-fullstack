@@ -68,6 +68,17 @@ Backend fully supports `priority` (low|med|high; create defaults `low`). No pick
 - **#19** `CreateTask.jsx:41-43` *(protected)* — `validator` dispatches `startDate` then reads it stale same-render; redundant (line 107 has `||` fallback).
 - **#20** Magic `setTimeout` sequencing for summary refetch: `usePopup.jsx:78` (100ms), `CreateTask.jsx:113` (300ms). Should await directly.
 
+### Findings from runtime verify session (2026-06-06, Playwright guest mode)
+
+- **#21** `state.task.loading` is written by *every* task thunk (`pending`/`fulfilled`/`rejected`, incl. the
+  P1 #1 fix) but **no component renders it** — only `state.user.loading` is consumed (`AuthForm.jsx`). It's
+  dead UI state today. Either wire a task-loading spinner (the create/fetch flows have nothing) or strip the
+  flag. Decide before adding more `loading` bookkeeping. *(Surfaced verifying #1 — its "stuck spinner" had no UI.)*
+- **#22** Cleanup: one orphan guest task `PASS-create-*` left in **dev** Atlas from the verify run (guest cookie
+  gone, so not deletable via UI). Harmless; drop it next time you're in dev Atlas.
+- **Parked (from P0):** prod Atlas `slimelist` is completely empty. If real prod users/tasks were ever expected,
+  the data is not where `.env.production`'s `MONGO_URI` points — chase before trusting prod.
+
 ## Not yet audited (frontend)
 
 Most of `components/pages/ui/`, `animation/`, `user/` (`Home`, `AllTask`, `Upcoming`, `Category`,
