@@ -259,7 +259,7 @@ function TaskDetail({ onClose }) {
             </div>
             <div className="px-2">
               <ProgressField
-                steps={editedTask.progress.steps}
+                steps={editedTask.progress?.steps || []}
                 handleRemoveStep={removeProgressStep}
                 handleStepComplete={completeProgressStep}
                 showCompletion={true}
