@@ -37,8 +37,9 @@ on any fix plan before coding (standing memory).
 
 ## P3 — Frontend · trace before fixing (use `/diagnose`)
 
-- **#14** `usePopup.jsx:68-73` *(protected)* — `handleActiveMenu` condition inverted; clicking a *new* menu does nothing. **Grep callers of `handleActiveMenu`** — `activeMenu` may be set elsewhere.
-- **#16** `useFetchTask.jsx:9-11` — `filter` in dep array; inline-object caller → refetch loop. Also ignores `filterKey` (dead prop from `TaskForm`). **Trace how callers build `filter`.**
+- **#14** — DONE ✅ (2026-06-06, see Archive). **Backlog was misdiagnosed** — not an inverted
+  condition; it was dead code. Deleted.
+- **#16** `useFetchTask.jsx:9-11` — `filter` in dep array; inline-object caller → refetch loop. Also ignores `filterKey` (dead prop from `TaskForm`). **Trace how callers build `filter`.** **Diagnosed 2026-06-06: no live loop today** — `fetchTasks.fulfilled` doesn't bump `lastStateUpdate`, and all 5 parent pages (`Home`/`AllTask`/`Upcoming`/`Category`/`CategoryList`) have no redux subscription or local state, so they never re-render → the inline `filter` object stays referentially stable. **Latent footgun**, not a live bug. `filterKey` confirmed dead end-to-end (no caller passes it; hook ignores 2nd arg). Real fix = serialize `filter` in the hook's dep + strip dead `filterKey`. Not yet applied.
 
 ## P4 — Frontend · taskSlice mutation thunks *(protected)*
 
@@ -85,6 +86,17 @@ Most of `components/pages/ui/`, `animation/`, `user/` (`Home`, `AllTask`, `Upcom
 ---
 
 ## Archive — closed work (rationale kept for reference)
+
+### P3 #14 — `handleActiveMenu` dead code — DONE (2026-06-06, `/diagnose`)
+**Backlog misdiagnosed it** as "condition inverted; clicking a new menu does nothing." Caller trace proved
+otherwise: navigation runs through react-router `<Link to={to}>` (`SidebarLink.jsx:35`), and the active-pill
+highlight from `activeMenu === to` is driven by `Sidebar.jsx:62` (`setActiveMenu(location.pathname)` effect) —
+both already correct. `usePopup.handleActiveMenu` was invoked with **no argument** at all 5 Sidebar call sites
+(`handleActiveMenu()`), so `menuName===undefined` and `if (activeMenu === menuName)` was never true → inert.
+**Flipping the condition (the old prescription) would have broken nav** — it would run `navigate(undefined)` +
+`setActiveMenu(undefined)`. Fix = deleted the dead function from `usePopup.jsx` (+ now-unused `useNavigate`,
+`navigate`, `setActiveMenu`, `activeMenu`); simplified the 5 Sidebar wrappers to `handleActiveMenu={closeDrawerOnMobile}`
+(the only live behavior was closing the mobile drawer). 67/67 Vitest, no new lint (only pre-existing `React`-unused baseline).
 
 ### P2 #12 + #13 — SearchField branch logic + debounce — DONE (2026-06-06)
 Single file `SearchField.jsx`, not protected. 67/67 Vitest, no new lint.
