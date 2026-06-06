@@ -33,10 +33,7 @@ on any fix plan before coding (standing memory).
 
 ## P1 — Frontend · critical logic bugs — ALL DONE ✅ (see Archive)
 
-## P2 — Frontend · search field
-
-- **#12** `SearchField.jsx:24-33` — exactly-50-char term matches neither branch (no-op); empty term clears then still fires `fetchSearchTasks("")`. `if`s should be `else if`-chained.
-- **#13** `SearchField.jsx:24` — `debounceSearch` recreated every render → debounce ineffective, timers leak. Use `useRef`/`useMemo` (TaskDetail does it right).
+## P2 — Frontend · search field — DONE ✅ (see Archive)
 
 ## P3 — Frontend · trace before fixing (use `/diagnose`)
 
@@ -67,6 +64,7 @@ Backend fully supports `priority` (low|med|high; create defaults `low`). No pick
 - **#17** `taskDetail.jsx:49-53` — sync effect guards on `isUpdating` but omits it from deps → stale closure can clobber in-progress edits.
 - **#19** `CreateTask.jsx:41-43` *(protected)* — `validator` dispatches `startDate` then reads it stale same-render; redundant (line 107 has `||` fallback).
 - **#20** Magic `setTimeout` sequencing for summary refetch: `usePopup.jsx:78` (100ms), `CreateTask.jsx:113` (300ms). Should await directly.
+- **#23** `taskDetail.jsx:25` *(protected)* — `debouncedUpdateTask = useRef(debounce(...))` but every call site uses it **without `.current`** (lines 58 `.flush()`, 82/100/127/153/179). A `useRef` returns `{current}`, so these call the ref object — that debounce/flush path is broken/dead, not a working reference. **Correction:** the old P2 #13 note ("TaskDetail does it right") was wrong. Surfaced by `/scrutinize` during P2. Fold into a P4-style protected-file phase; trace whether autosave actually fires before "fixing".
 
 ### Findings from runtime verify session (2026-06-06, Playwright guest mode)
 
@@ -87,6 +85,21 @@ Most of `components/pages/ui/`, `animation/`, `user/` (`Home`, `AllTask`, `Upcom
 ---
 
 ## Archive — closed work (rationale kept for reference)
+
+### P2 #12 + #13 — SearchField branch logic + debounce — DONE (2026-06-06)
+Single file `SearchField.jsx`, not protected. 67/67 Vitest, no new lint.
+- **#13** `debounceSearch` was rebuilt every render → debouncing never worked (one request per
+  keystroke, leaked timers). Now `useRef(debounce(...)).current` — stable across renders; `dispatch`
+  is redux-stable so captured once. Added `debounceSearch` to the cleanup-effect deps (now safe,
+  silences exhaustive-deps). Chose `useRef` over `useMemo` (latter can be discarded → drops a pending
+  500ms timer).
+- **#12** Two separate `if`s collapsed to one chain: `if (!term) clear; else if (len <= 50) fetch;`.
+  Fixes empty-term clear-then-`fetchSearchTasks("")` double-fire and the exactly-50-char no-op.
+- Traced for scrutiny: store key `tasks` (selector at `:13` is correct); `searchedTask` returns
+  `response.data.tasks`, always an array (success array + empty-term `{warning,tasks:[]}` both
+  unwrap to an array) so `searchResults` stays array-safe. Backend caps at `>100` chars
+  (`service.js:307`); frontend's `50` is arbitrary/stricter — left as-is (out of P2 scope).
+- Spun off **BL #23** (broken `taskDetail.jsx` `useRef` debounce, called without `.current`).
 
 ### P0 — prod tag→priority migration — DONE (vacuous, 2026-06-06)
 Dry-run against prod Atlas (`NODE_ENV=production`) connected to the correct DB (`databaseName === "slimelist"`,
