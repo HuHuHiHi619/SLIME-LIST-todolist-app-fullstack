@@ -4,7 +4,9 @@ import StartDatePicker from "./StartDatePicker";
 import DeadlinePicker from "./DeadlinePicker";
 import ProgressField from "./ProgressField";
 import CategoryTagField from "./CategoryTagField";
+import PriorityField from "./PriorityField";
 import { updatedTask } from "../../../redux/taskSlice";
+import { toDayISO } from "../../../functions/date";
 import { debounce } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import FadeUpContainer from "../animation/FadeUpContainer";
@@ -93,9 +95,8 @@ function TaskDetail({ onClose }) {
   const handleDateChange = useCallback(
     (date, field) => {
       setEditedTask((prevTask) => {
-        // แปลง date เป็น string เพื่อเก็บใน redux
-        const formattedDate = date instanceof Date ? date.toISOString() : date;
-        const updatedTask = { ...prevTask, [field]: formattedDate };
+        // แปลง date เป็น string เพื่อเก็บใน redux (shared helper — see P5 #18)
+        const updatedTask = { ...prevTask, [field]: toDayISO(date) };
 
         debouncedUpdateTask(updatedTask);
         return updatedTask;
@@ -235,6 +236,11 @@ function TaskDetail({ onClose }) {
               selected={editedTask.deadline}
               onChange={(date) => handleDateChange(date, "deadline")}
               placeholder="DEADLINE"
+            />
+            <PriorityField
+              name="priority"
+              value={editedTask.priority || "low"}
+              handleInputChange={handleInputChange}
             />
           </div>
           <textarea
