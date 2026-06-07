@@ -8,7 +8,7 @@ import usePopup from "../../hooks/usePopup";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import ReactDOM from "react-dom";
 
-const TaskDetail = React.lazy(() => import("../ui/taskDetail"));
+const TaskDetail = React.lazy(() => import("./taskDetail"));
 
 function TaskForm({ filter }) {
   const { selectedTask, isCreate } = useSelector((state) => state.tasks);
