@@ -1,7 +1,7 @@
-import React , { Suspense } from "react";
-import Navbar from "./pages/fixbar/Navbar";
+﻿import React , { Suspense } from "react";
+import Navbar from "./layout/Navbar";
 import { Outlet } from "react-router-dom";
-const Sidebar = React.lazy(() =>  import("./pages/fixbar/Sidebar"))
+const Sidebar = React.lazy(() =>  import("./layout/Sidebar"))
 
 function MainLayout() {
   return (
@@ -22,3 +22,4 @@ function MainLayout() {
 }
 
 export default MainLayout;
+
