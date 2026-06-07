@@ -10,7 +10,6 @@ const guestMiddleware = (req, res, next) => {
       const incoming = req.cookies && req.cookies.guestId;
       if (incoming && uuidValidate(incoming)) {
         req.guestId = incoming;
-        console.log("GuestId from cookie:", req.guestId);
       } else {
         const guestId = uuidv4();
         res.cookie("guestId", guestId, {
@@ -20,11 +19,9 @@ const guestMiddleware = (req, res, next) => {
           sameSite: isProduction ? "None" : "Lax",
         });
         req.guestId = guestId;
-        console.log("New Guest ID created:", guestId);
       }
     } else {
       req.guestId = null;
-      console.log("User is logged in.");
     }
     next();
   } catch (error) {
