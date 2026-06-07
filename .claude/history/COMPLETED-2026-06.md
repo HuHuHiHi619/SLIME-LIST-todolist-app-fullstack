@@ -11,6 +11,7 @@ open work. Open/planned items stay in `BACKLOG.md`. Newest at top.
 
 | # | Area | What | Result |
 |---|------|------|--------|
+| BE-MW-1–7 | Backend | Auth middleware cleanup — dead code, guestId ownership, UUID validation, ordering guard, log sweep | ✅ 🧪 |
 | BL #7 | Frontend | `writeStreakStatus` moved to middleware — reducers now pure | ✅ 🧪 |
 | BL #8 | Frontend | Dead localStorage token write removed from `register` | ✅ |
 | BL #10 | Frontend | Fixed fragile spread order in `completeTask`/`removeTask` | ✅ |
@@ -195,6 +196,21 @@ Migration script `migrate-tag-to-priority.js` (idempotent, `--dry`) — **dev At
 Dry-run against prod Atlas (`slimelist`) found it **completely empty** (0 docs) — nothing to migrate.
 ⚠️ **Open question:** if real prod data was ever expected, it isn't where `.env.production`'s `MONGO_URI`
 points. (Still tracked in `BACKLOG.md`.)
+
+---
+
+### BE-MW-1–7 — Auth middleware cleanup  ✅ 🧪  *(PR #14, branch `fix/auth-middleware-cleanup`)*
+
+Scrutinized before coding — BE-MW-3 (silent pass-through) closed as non-issue: `getUserData` already returns 401 on null user, `logout` intentionally ignores auth state.
+
+- **BE-MW-1:** Deleted two dead string literals in `authOptional.js` — stripped `console.log` calls left as bare expressions.
+- **BE-MW-2:** Removed `req.guestId` ownership from `authOptional` — it duplicated `guestMiddleware`. `authOptional` now only sets `req.user`. Updated `auth.middleware.test.js` to drop the `req.guestId` assertion.
+- **BE-MW-4:** Narrowed cookie clear in `authOptional` catch block to `TokenExpiredError` only. Previously cleared on any JWT error. Fixed test mock (was setting `.message` not `.name`); added `JsonWebTokenError` case asserting no clear.
+- **BE-MW-5:** Added `uuid.validate` on the incoming `guestId` cookie — invalid/spoofed values treated as absent, fresh UUID generated.
+- **BE-MW-6:** Added runtime ordering guard at top of `guestMiddleware` — fails with descriptive error if `req.user === undefined`, catching routes that skip upstream auth middleware.
+- **BE-MW-7:** Removed 12 debug `console.log` calls across both files. `console.error` in catch block retained.
+
+New `guest.middleware.test.js` — 5 cases: ordering guard, valid UUID, invalid UUID regenerated, no cookie, logged-in user. **42/42 Jest** (+5 tests).
 
 ---
 
