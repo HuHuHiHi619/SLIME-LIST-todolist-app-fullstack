@@ -127,7 +127,7 @@ describe("CreateTask — BL #24 startDate midnight regression", () => {
     });
   });
 
-  it("defaults to local midnight when formTask.startDate is unset", async () => {
+  it("defaults to UTC midnight when formTask.startDate is unset", async () => {
     render(<CreateTask onClose={() => {}} />);
 
     await act(async () => { submitForm(); });
@@ -135,10 +135,10 @@ describe("CreateTask — BL #24 startDate midnight regression", () => {
     expect(createNewTask).toHaveBeenCalled();
     const taskData = createNewTask.mock.calls[0][0];
     const startDate = new Date(taskData.startDate);
-    expect(startDate.getHours()).toBe(0);
-    expect(startDate.getMinutes()).toBe(0);
-    expect(startDate.getSeconds()).toBe(0);
-    expect(startDate.getMilliseconds()).toBe(0);
+    expect(startDate.getUTCHours()).toBe(0);
+    expect(startDate.getUTCMinutes()).toBe(0);
+    expect(startDate.getUTCSeconds()).toBe(0);
+    expect(startDate.getUTCMilliseconds()).toBe(0);
   });
 
   it("preserves an explicit startDate already set in formTask", async () => {

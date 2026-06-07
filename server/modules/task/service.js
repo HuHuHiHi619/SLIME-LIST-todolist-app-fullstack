@@ -1,4 +1,3 @@
-const { isValidObjectId, Types } = require("mongoose");
 const {
   startOfDay,
   addMonths,
@@ -9,7 +8,6 @@ const {
 const Category = require("../../Models/Category");
 const {
   processProgress,
-  processCategory,
   calculateProgress,
 } = require("../../controllers/helperController");
 const { updateUserStreak } = require("../../shared/services/streakService");
@@ -18,7 +16,30 @@ const repository = require("./repository");
 
 const { STATUS_ORDER, PRIORITY_ORDER, PRIORITIES, TASK_STATUSES } = require("../../shared/utils/taskConstants");
 
-// Flat-list ordering: pending → completed → failed, then highest priority first.
+// ── Category cache ────────────────────────────────────────────────────────────
+// Both createTask and updateTask accept a category name string. Results are
+// cached per owner for 5 minutes to avoid a DB round-trip on every save.
+const _categoryCache = new Map();
+const CATEGORY_CACHE_TTL = 5 * 60 * 1000;
+
+const lookupCategoryByName = async (name, userId, guestId) => {
+  const key = `${userId || guestId}:${name}`;
+  const hit = _categoryCache.get(key);
+  if (hit && hit.expiresAt > Date.now()) return hit.id;
+
+  const cat = await Category.findOne({
+    categoryName: name,
+    $or: [{ user: userId }, { guestId }],
+  }).lean();
+
+  if (cat) {
+    _categoryCache.set(key, { id: cat._id, expiresAt: Date.now() + CATEGORY_CACHE_TTL });
+    return cat._id;
+  }
+  return null;
+};
+
+// ── Flat-list ordering: pending → completed → failed, then highest priority first.
 // Exported for direct unit testing (the sort was silently dead before — see taskConstants).
 const compareTasksForFlatList = (a, b) => {
   const statusComp = STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status);
@@ -42,7 +63,7 @@ class ServiceError extends Error {
 const getTasksGroupedByStatus = async (userFilter) => {
   const tasks = await repository.findTasks(
     { ...userFilter, status: { $exists: true, $ne: null } },
-    ["status"]
+    [{ path: "category" }]
   );
 
   const grouped = tasks.reduce((acc, task) => {
@@ -59,7 +80,7 @@ const getTasksGroupedByStatus = async (userFilter) => {
     ...group,
     tasks: group.tasks
       .map(calculateProgress)
-      .sort((a, b) => STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status)),
+      .sort((a, b) => PRIORITY_ORDER.indexOf(a.priority || "low") - PRIORITY_ORDER.indexOf(b.priority || "low")),
   }));
 
   return result.sort(
@@ -70,10 +91,8 @@ const getTasksGroupedByStatus = async (userFilter) => {
 const getTasksGroupedByCategory = async (userFilter) => {
   const tasks = await repository.findTasks(
     { ...userFilter, category: { $exists: true, $ne: null } },
-    ["category"]
+    [{ path: "category" }]
   );
-
-  console.log("Fetched tasks with category:", tasks.length);
 
   const grouped = tasks.reduce((acc, task) => {
     if (task.category && task.category._id && task.category.categoryName) {
@@ -96,7 +115,11 @@ const getTasksGroupedByCategory = async (userFilter) => {
     ...group,
     tasks: group.tasks
       .map(calculateProgress)
-      .sort((a, b) => STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status)),
+      .sort((a, b) => {
+        const statusComp = STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status);
+        if (statusComp !== 0) return statusComp;
+        return PRIORITY_ORDER.indexOf(a.priority || "low") - PRIORITY_ORDER.indexOf(b.priority || "low");
+      }),
   }));
 };
 
@@ -123,7 +146,12 @@ const getTasksGroupedByDeadline = async (userFilter) => {
     return acc;
   }, {});
 
-  return Object.values(grouped);
+  return Object.values(grouped).map((group) => ({
+    ...group,
+    tasks: group.tasks.sort(
+      (a, b) => PRIORITY_ORDER.indexOf(a.priority || "low") - PRIORITY_ORDER.indexOf(b.priority || "low")
+    ),
+  }));
 };
 
 const getTasksFlat = async (filter) => {
@@ -132,7 +160,6 @@ const getTasksFlat = async (filter) => {
   ]);
 
   if (tasks.length === 0) {
-    console.log("tasklist is 0");
     return [];
   }
 
@@ -148,20 +175,7 @@ const createTask = async (data, formatUser, guestId) => {
     throw new ServiceError("Title and start date are required");
   }
 
-  // Category lookup by name
-  let categoryId = null;
-  if (category && category.length > 0) {
-    const existingCategory = await Category.findOne({
-      categoryName: category,
-      $or: [{ user: formatUser }, { guestId }],
-    }).lean();
-    if (existingCategory) {
-      categoryId = existingCategory._id;
-      console.log("Category chosen", existingCategory);
-    } else {
-      console.log("Category not found");
-    }
-  }
+  const categoryId = category ? await lookupCategoryByName(category, formatUser, guestId) : null;
 
   let formatProgress = { steps: [], totalSteps: 0, allStepsCompleted: false };
   if (progress && typeof progress === "object" && Array.isArray(progress.steps)) {
@@ -173,8 +187,7 @@ const createTask = async (data, formatUser, guestId) => {
     formatProgress.allStepsCompleted = formatProgress.steps.every((s) => s.completed);
   }
 
-  // Date validation
-  const currentDate = startOfDay(new Date());
+  // Date validation — compare UTC date strings (YYYY-MM-DD) to avoid timezone issues
   const startDateObj = parseISO(startDate);
   if (!isValid(startDateObj)) throw new ServiceError("Invalid start date format");
 
@@ -187,11 +200,13 @@ const createTask = async (data, formatUser, guestId) => {
   if (deadlineObj && startDateObj > deadlineObj) {
     throw new ServiceError("Start date cannot be after deadline!");
   }
-  if (startDateObj < currentDate) {
+
+  const todayUTC = new Date().toISOString().slice(0, 10);
+  const startUTC = startDateObj.toISOString().slice(0, 10);
+  if (startUTC < todayUTC) {
     throw new ServiceError("Start date cannot be in the past!");
   }
 
-  console.log("Format progress", formatProgress);
   const newTask = {
     title,
     note: note || "",
@@ -203,8 +218,6 @@ const createTask = async (data, formatUser, guestId) => {
     user: formatUser || null,
     guestId: formatUser ? null : guestId,
   };
-  console.log("New task", newTask);
-
   return repository.saveTask(newTask);
 };
 
@@ -212,33 +225,30 @@ const updateTask = async (formatId, userFilter, formatUser, guestId, data) => {
   const updateData = { ...data };
   delete updateData._id;
 
-  console.log("UPDATE DATA :", updateData);
-
   const existing = await repository.findTask({ _id: formatId, ...userFilter });
   if (!existing) throw new ServiceError("Task not found", 404);
 
   const final = {
     title: updateData.title || existing.title,
-    note: updateData.note !== undefined ? updateData.note : "",
+    note: updateData.note !== undefined ? updateData.note : existing.note,
     startDate: updateData.startDate ? new Date(updateData.startDate) : existing.startDate,
-    deadline: updateData.deadline ? new Date(updateData.deadline) : existing.deadline,
-    category:
-      updateData.category === "" ? null : updateData.category || existing.category,
+    deadline: updateData.deadline !== undefined
+      ? (updateData.deadline ? new Date(updateData.deadline) : null)
+      : existing.deadline,
     priority: updateData.priority || existing.priority || "low",
     progress: updateData.progress || existing.progress,
     status: updateData.status || existing.status,
   };
 
-  if (final.category) {
-    console.log("update data.category process");
-    if (isValidObjectId(final.category)) {
-      final.category = await processCategory(final.category, formatUser, guestId);
-      console.log("final category", final.category);
+  if (updateData.category !== undefined) {
+    if (!updateData.category) {
+      final.category = null;
     } else {
-      throw new ServiceError("Invalid category value");
+      final.category = await lookupCategoryByName(updateData.category, formatUser, guestId);
+      if (!final.category) throw new ServiceError("Category not found");
     }
-  } else if (final.category === "") {
-    final.category = null;
+  } else {
+    final.category = existing.category;
   }
 
   if (!PRIORITIES.includes(final.priority)) {
@@ -259,7 +269,6 @@ const updateTask = async (formatId, userFilter, formatUser, guestId, data) => {
   );
   if (!updated) throw new ServiceError("Task not found", 404);
 
-  console.log("Update task successful!", updated);
   return updated;
 };
 
@@ -273,12 +282,9 @@ const toggleCompletion = async (formatId, userFilter, formatUser) => {
     task.progress.allStepsCompleted = true;
     task.progress.totalSteps = task.progress.steps.length;
 
-    console.log("FormatUser:", formatUser);
     if (formatUser) {
-      console.log("Calling updateUserStreak...");
       const userUpdate = await updateUserStreak(formatUser.toString(), true);
       const updatedTask = await task.save();
-      console.log("user update", userUpdate);
       return { type: "completed_with_streak", updatedTask, userUpdate };
     }
   } else if (task.status === "completed") {
@@ -294,9 +300,13 @@ const toggleCompletion = async (formatId, userFilter, formatUser) => {
 const searchTasks = async (userFilter, searchTerm) => {
   if (!searchTerm) return { warning: "Please provide a search term.", tasks: [] };
   if (searchTerm.length > 100) throw new ServiceError("Search term is too long.");
-  const regex = new RegExp(searchTerm, "i");
-  const tasks = await repository.findTasks({ ...userFilter, title: { $regex: regex } });
-  return tasks;
+  const escaped = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(escaped, "i");
+  const tasks = await repository.findTasks(
+    { ...userFilter, title: { $regex: regex } },
+    [{ path: "category" }]
+  );
+  return tasks.map(calculateProgress);
 };
 
 const removeTask = async (formatId, userFilter) => {

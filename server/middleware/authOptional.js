@@ -14,6 +14,7 @@ const authMiddlewareOptional =
 
       if (!accessToken) {
         req.user = null;
+        if (!allowGuest) return res.status(401).json({ error: "Not authenticated" });
         return next();
       }
 
@@ -31,6 +32,7 @@ const authMiddlewareOptional =
           });
         }
         req.user = null;
+        if (!allowGuest) return res.status(401).json({ error: "Not authenticated" });
         next();
       }
     };

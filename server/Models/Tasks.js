@@ -21,13 +21,6 @@ const TasksSchema = new mongoose.Schema(
       ],
       totalSteps: { type: Number, default: 0 },
       allStepsCompleted: { type: Boolean, default: false },
-      history: {
-        steps:[{
-          label:{type:String},
-          completed:{type:Boolean},
-        }],
-        timestamps:{type:Date, default: Date.now},
-      }
     },
     priority: {
       type: String,

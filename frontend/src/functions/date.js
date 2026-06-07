@@ -1,7 +1,8 @@
 // Shared date-only serializer for task forms.
-// The date pickers emit a Date at LOCAL midnight of the picked day, and read back
-// with `new Date(value)` in local time — so storing the raw ISO instant round-trips
-// to the same calendar day in the user's own timezone. Keep CreateTask and taskDetail
-// on this one helper so the two paths can't diverge (the root cause of P5 #18).
-export const toDayISO = (date) =>
-  date instanceof Date && !isNaN(date) ? date.toISOString() : null;
+// Normalizes to UTC midnight so the calendar date is the same regardless of the
+// user's timezone — avoids "today" being rejected by the server when the user is
+// east of UTC and local midnight precedes UTC midnight.
+export const toDayISO = (date) => {
+  if (!(date instanceof Date) || isNaN(date)) return null;
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString();
+};

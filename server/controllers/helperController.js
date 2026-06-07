@@ -54,17 +54,12 @@ exports.processCategory = async (categoryId, userId, guestId) => {
   if (userId) query.$or.push({ user: userId });
   if (guestId) query.$or.push({ guestId });
   
-  console.log('category query',query)
   const existCategory = await Category.findOne(query);
-  console.log("exist cat:", existCategory);
   if (!existCategory) {
     throw new Error("Cannot find category");
   }
   return existCategory._id;
 };
-
-// Streak and badge logic lives in shared/services/streakService.js.
-// Re-exported here so existing callers (TasksController, etc.) need no changes.
 exports.updateUserStreak = updateUserStreak;
 exports.calculateBadge = calculateBadge;
 

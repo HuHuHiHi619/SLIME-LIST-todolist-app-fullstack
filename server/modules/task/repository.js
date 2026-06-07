@@ -13,7 +13,7 @@ const updateTask = (filter, data) =>
 
 const deleteTask = (filter) => Tasks.findOneAndDelete(filter).exec();
 
-const deleteManyTasks = (filter) => Tasks.deleteMany(filter);
+const deleteManyTasks = (filter) => Tasks.deleteMany(filter).exec();
 
 module.exports = {
   findTasks,

@@ -72,13 +72,11 @@ exports.getTask = async (req, res) => {
 // ── POST /task ────────────────────────────────────────────────────────────────
 
 exports.createTask = async (req, res) => {
-  console.log("Incoming request", req.body);
   try {
     const { formatUser, userFilter } = buildUserFilter(req);
 
-    if (!formatUser && !req.guestId) {
-      console.error("unauthorized");
-      return res.status(400).json({ error: "Unauthorized" });
+    if (!userFilter) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
     const savedTask = await taskService.createTask(req.body, formatUser, req.guestId);
@@ -121,14 +119,14 @@ exports.completedTask = async (req, res) => {
     const formatId = isValidObjectId(id) ? new Types.ObjectId(id) : null;
 
     if (!formatId) return res.status(400).json({ error: "Invalid task Id." });
-    if (!userFilter) return res.status(400).json({ error: "Unauthorized" });
+    if (!userFilter) return res.status(401).json({ error: "Unauthorized" });
 
     const result = await taskService.toggleCompletion(formatId, userFilter, formatUser);
 
     if (result.type === "completed_with_streak") {
       return res.status(200).json({ updatedTask: result.updatedTask, user: result.userUpdate });
     }
-    return res.status(201).json({ message: "Task is complete", updatedTask: result.updatedTask });
+    return res.status(200).json({ message: "Task is complete", updatedTask: result.updatedTask });
   } catch (error) {
     return sendServiceError(res, error) || handleError(res, error, "Failed to complete task");
   }
@@ -141,7 +139,6 @@ exports.searchTask = async (req, res) => {
     const { formatUser, userFilter } = buildUserFilter(req);
     const searchTerm = req.query.q || "";
 
-    console.log(searchTerm);
     const tasks = await taskService.searchTasks(userFilter, searchTerm);
 
     if (tasks.warning) return res.json(tasks);
@@ -160,6 +157,7 @@ exports.removeTask = async (req, res) => {
     const formatId = isValidObjectId(id) ? new Types.ObjectId(id) : null;
 
     if (!formatId) return res.status(400).json({ error: "Invalid task ID" });
+    if (!userFilter) return res.status(401).json({ error: "Unauthorized" });
 
     const removed = await taskService.removeTask(formatId, userFilter);
     return res.status(200).json({ message: "Task removed successfully", removedTask: removed });

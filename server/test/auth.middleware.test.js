@@ -17,7 +17,9 @@ describe('Auth Middleware Optional', () => {
         };
         res = {
             cookie: jest.fn(),
-            clearCookie: jest.fn()
+            clearCookie: jest.fn(),
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
         };
         next = jest.fn();
     });
@@ -48,7 +50,7 @@ describe('Auth Middleware Optional', () => {
         expect(next).toHaveBeenCalled();
     });
 
-    test('should clear accessToken cookie and call next when token is expired', async () => {
+    test('should clear accessToken cookie and return 401 when token is expired (allowGuest=false)', async () => {
         req.cookies.accessToken = 'expired-token';
 
         const expiredError = new Error('jwt expired');
@@ -62,10 +64,11 @@ describe('Auth Middleware Optional', () => {
 
         expect(req.user).toBeNull();
         expect(res.clearCookie).toHaveBeenCalledWith('accessToken', expect.any(Object));
-        expect(next).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(next).not.toHaveBeenCalled();
     });
 
-    test('should not clear cookie and call next when token is invalid (non-expired)', async () => {
+    test('should not clear cookie and return 401 when token is invalid (allowGuest=false)', async () => {
         req.cookies.accessToken = 'malformed-token';
 
         const invalidError = new Error('invalid signature');
@@ -79,6 +82,7 @@ describe('Auth Middleware Optional', () => {
 
         expect(req.user).toBeNull();
         expect(res.clearCookie).not.toHaveBeenCalled();
-        expect(next).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(next).not.toHaveBeenCalled();
     });
 });

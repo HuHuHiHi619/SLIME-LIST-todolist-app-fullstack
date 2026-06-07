@@ -136,7 +136,7 @@ export const updatedTask = createAsyncThunk(
   async ({ taskId, taskData }) => {
     const verifyTask = {
       ...taskData,
-      category: taskData.category?._id || taskData.category,
+      category: taskData.category?.categoryName || taskData.category,
     };
 
     const response = await updateTask(taskId, verifyTask);

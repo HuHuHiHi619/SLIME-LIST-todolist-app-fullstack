@@ -31,7 +31,6 @@ exports.register = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log("Validation errors:", errors.array);
       return res.status(400).json({ error: errors.array() });
     }
 
@@ -60,7 +59,6 @@ exports.register = async (req, res) => {
 // ── POST /login ──────────────────────────────────────────────────────────────
 
 exports.login = async (req, res) => {
-  console.log(req.body);
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -111,7 +109,6 @@ exports.logout = async (req, res) => {
 
 exports.refreshedToken = async (req, res) => {
   const { refreshToken } = req.cookies;
-  console.log("refresh from frontend :", refreshToken);
 
   if (!refreshToken) {
     clearAccessCookie(res);
