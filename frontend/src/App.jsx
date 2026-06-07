@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+﻿import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { useSelector } from "react-redux"; 
 
@@ -10,22 +10,22 @@ import "./App.css";
 import MainLayout from "./components/MainLayout"; // Main application layout
 
 // --- Authentication Components ---
-import AuthProvider from "./components/pages/authen/AuthProvider"; // Provides authentication context or logic
-import PublicRoute from "./components/pages/authen/PublicRoute"; // Component to restrict access for authenticated users
-import LoadingPage from "./components/pages/animation/LoadingPage";
-import TaskErrorToast from "./components/pages/ui/TaskErrorToast";
+import AuthProvider from "./components/auth/AuthProvider";
+import PublicRoute from "./components/auth/PublicRoute";
+import LoadingPage from "./components/animation/LoadingPage";
+import TaskErrorToast from "./components/feedback/TaskErrorToast";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // --- Lazy Loaded Components (Code Splitting) ---
-const Home = lazy(() => import("./components/pages/user/Home"));
-const Upcoming = lazy(() => import("./components/pages/user/Upcoming"));
-const AllTask = lazy(() => import("./components/pages/user/AllTask"));
-const Category = lazy(() => import("./components/pages/user/Category"));
-const CategoryList = lazy(() => import("./components/pages/user/CategoryList"));
-const Settings = lazy(() => import("./components/pages/user/Settings"));
+const Home = lazy(() => import("./components/views/Home"));
+const Upcoming = lazy(() => import("./components/views/Upcoming"));
+const AllTask = lazy(() => import("./components/views/AllTask"));
+const Category = lazy(() => import("./components/views/Category"));
+const CategoryList = lazy(() => import("./components/views/CategoryList"));
+const Settings = lazy(() => import("./components/views/Settings"));
 
 // Authentication Pages
-const AuthTabs = lazy(() => import("./components/pages/authen/AuthTabs")); // Component containing login/register forms
+const AuthTabs = lazy(() => import("./components/auth/AuthTabs"));
 
 function App() {
   const { isAuthenticated, isGuest } = useSelector((state) => state.user);
@@ -76,3 +76,4 @@ function App() {
 }
 
 export default App;
+

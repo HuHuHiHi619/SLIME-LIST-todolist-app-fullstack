@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+﻿/* eslint-disable react/prop-types */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 
@@ -7,7 +7,7 @@ vi.mock("react-redux", async (importOriginal) => {
   return { ...actual, useDispatch: vi.fn(), useSelector: vi.fn() };
 });
 
-vi.mock("../../components/pages/ui/inputField", () => ({
+vi.mock("../../components/forms/inputField", () => ({
   default: ({ value, onChange, name, onKeyDown }) => (
     <input
       data-testid={`input-${name}`}
@@ -17,13 +17,13 @@ vi.mock("../../components/pages/ui/inputField", () => ({
     />
   ),
 }));
-vi.mock("../../components/pages/ui/StartDatePicker",   () => ({ default: () => null }));
-vi.mock("../../components/pages/ui/DeadlinePicker",    () => ({ default: () => null }));
-vi.mock("../../components/pages/ui/ProgressField",     () => ({ default: () => null }));
-vi.mock("../../components/pages/ui/CategoryTagField",  () => ({ default: () => null }));
-vi.mock("../../components/pages/ui/PriorityField",     () => ({ default: () => null }));
-vi.mock("../../components/pages/ui/Tooltip",           () => ({ default: ({ children }) => <>{children}</> }));
-vi.mock("../../components/pages/animation/FadeUpContainer", () => ({
+vi.mock("../../components/forms/StartDatePicker",   () => ({ default: () => null }));
+vi.mock("../../components/forms/DeadlinePicker",    () => ({ default: () => null }));
+vi.mock("../../components/dashboard/ProgressField",     () => ({ default: () => null }));
+vi.mock("../../components/forms/CategoryTagField",  () => ({ default: () => null }));
+vi.mock("../../components/forms/PriorityField",     () => ({ default: () => null }));
+vi.mock("../../components/feedback/Tooltip",           () => ({ default: ({ children }) => <>{children}</> }));
+vi.mock("../../components/animation/FadeUpContainer", () => ({
   default: ({ children }) => <>{children}</>,
 }));
 vi.mock("@fortawesome/react-fontawesome", () => ({ FontAwesomeIcon: () => null }));
@@ -43,7 +43,7 @@ vi.mock("../../redux/summarySlice", () => ({
   fetchSummaryByCategory: vi.fn(() => ({ type: "summary/fetchSummaryByCategory" })),
 }));
 
-import CreateTask from "../../components/pages/create/CreateTask";
+import CreateTask from "../../components/task/CreateTask";
 import { createNewTask } from "../../redux/taskSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -156,3 +156,5 @@ describe("CreateTask — BL #24 startDate midnight regression", () => {
     expect(taskData.startDate).toBe(explicit);
   });
 });
+
+

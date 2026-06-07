@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
 import { fetchTasks } from "../../redux/taskSlice";
-import useFetchTask from "../../components/pages/hooks/useFetchTask";
+import useFetchTask from "../../hooks/useFetchTask";
 
 // The hook only consumes `state.tasks.{tasks,lastStateUpdate}` and dispatches
 // `fetchTasks`. Mock the thunk to a spyable plain action and back the store

@@ -1,21 +1,21 @@
-/* eslint-disable react/prop-types, react/display-name */
+﻿/* eslint-disable react/prop-types, react/display-name */
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
 // Stub all child UI components — we only care about the effect / state behaviour
-vi.mock("../../components/pages/ui/inputField", () => ({
+vi.mock("../../components/forms/inputField", () => ({
   default: ({ value, onChange, name }) => (
     <input data-testid={`input-${name}`} value={value} onChange={onChange} />
   ),
 }));
-vi.mock("../../components/pages/ui/StartDatePicker", () => ({ default: () => null }));
-vi.mock("../../components/pages/ui/DeadlinePicker",  () => ({ default: () => null }));
-vi.mock("../../components/pages/ui/ProgressField",   () => ({ default: () => null }));
-vi.mock("../../components/pages/ui/CategoryTagField",() => ({ default: () => null }));
-vi.mock("../../components/pages/ui/PriorityField",   () => ({ default: () => null }));
-vi.mock("../../components/pages/animation/FadeUpContainer", () => ({
+vi.mock("../../components/forms/StartDatePicker", () => ({ default: () => null }));
+vi.mock("../../components/forms/DeadlinePicker",  () => ({ default: () => null }));
+vi.mock("../../components/dashboard/ProgressField",   () => ({ default: () => null }));
+vi.mock("../../components/forms/CategoryTagField",() => ({ default: () => null }));
+vi.mock("../../components/forms/PriorityField",   () => ({ default: () => null }));
+vi.mock("../../components/animation/FadeUpContainer", () => ({
   default: ({ children }) => <>{children}</>,
 }));
 
@@ -28,7 +28,7 @@ vi.mock("lodash", () => ({
   },
 }));
 
-import TaskDetail from "../../components/pages/ui/taskDetail";
+import TaskDetail from "../../components/task/taskDetail";
 
 const SET_SELECTED = "TEST/setSelectedTask";
 
@@ -97,3 +97,5 @@ describe("TaskDetail — BL #17 stale-closure regression", () => {
     expect(screen.getByTestId("input-title").value).toBe("Task two");
   });
 });
+
+

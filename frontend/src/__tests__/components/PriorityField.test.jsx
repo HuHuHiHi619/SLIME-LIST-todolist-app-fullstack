@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
+﻿import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 
-import PriorityField from "../../components/pages/ui/PriorityField";
+import PriorityField from "../../components/forms/PriorityField";
 
 describe("PriorityField", () => {
   it("renders the three priority options", () => {
@@ -36,3 +36,4 @@ describe("PriorityField", () => {
     expect(captured).toEqual({ name: "priority", value: "medium" });
   });
 });
+
