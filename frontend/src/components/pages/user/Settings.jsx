@@ -80,7 +80,6 @@ function Settings() {
     );
   }
 
-  console.log('settings status isAuthenticate:', isAuthenticated);
   return (
     <div
       id="otherPage"
