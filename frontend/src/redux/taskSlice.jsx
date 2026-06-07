@@ -75,7 +75,6 @@ const initialState = {
   isHover: null,
   isSidebarPinned: false,
   popupMode: "",
-  loading: false,
   error: null,
 };
 // asyncronous action
@@ -84,7 +83,6 @@ export const fetchCategories = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getCategoryData();
-      console.log("Categories fetched:", response);
       return response || [];
     } catch (error) {
       console.error("Error fetching cateories:", error);
@@ -140,10 +138,8 @@ export const updatedTask = createAsyncThunk(
       ...taskData,
       category: taskData.category?._id || taskData.category,
     };
-    console.log("verify task", verifyTask);
 
     const response = await updateTask(taskId, verifyTask);
-    console.log("update response", response);
     return response;
   }
 );
@@ -194,7 +190,6 @@ const taskSlice = createSlice({
         startDate: toIsoDate(startDate, state.formTask.startDate),
         deadline: toIsoDate(deadline, state.formTask.deadline),
       };
-      console.log("Updated formTask:", state.formTask);
     },
     setStreakStatus(state, action) {
       state.streakStatus = action.payload;
@@ -271,46 +266,29 @@ const taskSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-      .addCase(fetchTasks.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(fetchTasks.fulfilled, (state, action) => {
-        state.loading = false;
         state.tasks = action.payload;
       })
       .addCase(fetchTasks.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
         state.tasks = [];
       })
       .addCase(fetchSearchTasks.pending, (state) => {
-        state.loading = true;
         state.error = null;
       })
       .addCase(fetchSearchTasks.fulfilled, (state, action) => {
-        state.loading = false;
         state.searchResults = action.payload;
       })
       .addCase(fetchSearchTasks.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
       })
-      .addCase(fetchCategories.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(fetchCategories.fulfilled, (state, action) => {
-        state.loading = false;
         state.categories = action.payload;
       })
       .addCase(fetchCategories.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
       })
-      .addCase(createNewTask.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(createNewTask.fulfilled, (state, action) => {
-        state.loading = false;
         state.formTask = initialState.formTask;
         state.progress = initialState.progress;
         state.tasks.push(action.payload);
@@ -318,7 +296,6 @@ const taskSlice = createSlice({
         state.isSummaryUpdated = !state.isSummaryUpdated;
       })
       .addCase(createNewTask.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
       })
       .addCase(updatedTask.fulfilled, (state, action) => {

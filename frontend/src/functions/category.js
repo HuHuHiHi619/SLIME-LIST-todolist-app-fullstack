@@ -2,7 +2,6 @@ import axios from "axios";
 
 
 export const createCategory = async (data) => {
-  console.log('Create cate sending:', data)
   try {
     const response = await axios.post(`/categories`, data, {
       headers: {
@@ -10,7 +9,6 @@ export const createCategory = async (data) => {
       },
       withCredentials: true,
     });
-    console.log("Category created successfully:", response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -53,7 +51,6 @@ export const getCategoryData = async () => {
       },
       withCredentials:true
     })
-    console.log("Category got successfully:", response.data);
     return response.data
   } catch(error){
     if(error.response){

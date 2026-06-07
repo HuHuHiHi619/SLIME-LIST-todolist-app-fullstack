@@ -14,6 +14,7 @@ import AuthProvider from "./components/pages/authen/AuthProvider"; // Provides a
 import PublicRoute from "./components/pages/authen/PublicRoute"; // Component to restrict access for authenticated users
 import LoadingPage from "./components/pages/animation/LoadingPage";
 import TaskErrorToast from "./components/pages/ui/TaskErrorToast";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 // --- Lazy Loaded Components (Code Splitting) ---
 const Home = lazy(() => import("./components/pages/user/Home"));
@@ -31,10 +32,11 @@ function App() {
 
   return (
     <AuthProvider skip={isGuest}>
-      <TaskErrorToast />
-      <BrowserRouter>
-        <Suspense fallback={<LoadingPage />}>
-          <Routes>
+      <ErrorBoundary>
+        <TaskErrorToast />
+        <BrowserRouter>
+          <Suspense fallback={<LoadingPage />}>
+            <Routes>
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />} />
 
@@ -65,9 +67,10 @@ function App() {
                 </PublicRoute>
               }
             />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </ErrorBoundary>
     </AuthProvider>
   );
 }
