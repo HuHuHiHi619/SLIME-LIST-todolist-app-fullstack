@@ -488,6 +488,29 @@ replace `useDispatch`/`useSelector` in ESM (vi.spyOn cannot redefine ESM exports
 
 ---
 
+## BL #7 + BL #8 + BL #10 — reducer purity, dead auth code, spread order  ·  2026-06-07
+
+**BL #7 — `writeStreakStatus` moved to middleware.**
+`localStorage.setItem` was called in two reducer bodies, violating Redux purity. Exported
+`writeStreakStatus` from `taskSlice`; removed both in-reducer calls; added `streakMiddleware` to
+`store.jsx` (`_store => next => action`), fires after `completedTask.fulfilled` when
+`action.payload?.user` is present (the only live dispatch path — `setStreakStatus` had zero call
+sites). `/scrutinize` was run on the plan before coding; it caught that the `setStreakStatus`
+middleware case would be dead and recommended dropping it.
+Two new Vitest cases: write path (with user) and no-write path (without user). **96/96 tests.**
+
+**BL #8 — Dead localStorage token write removed.**
+`authen.js` `register` wrote `localStorage.setItem("token", response.data.token)` after signup.
+The app is entirely cookie-based; `userLogin` never did this; nothing in the codebase read this key.
+Three-line deletion. No tests needed — behaviour unchanged.
+
+**BL #10 — Fragile spread order fixed in `completeTask` / `removeTask`.**
+Both returned `{ _id: taskId, ...response.data }`. Current server responses don't include a
+top-level `_id`, but if they ever did it would silently override `taskId`, breaking the downstream
+reducer keyed on `action.payload._id`. Reversed to `{ ...response.data, _id: taskId }`.
+
+---
+
 ## BL #5 + BL #6 — `userSlice` guest detection + shared-ref footgun  ·  2026-06-07
 
 **BL #5 — `fetchUserData.rejected` did not reset `isGuest`.**

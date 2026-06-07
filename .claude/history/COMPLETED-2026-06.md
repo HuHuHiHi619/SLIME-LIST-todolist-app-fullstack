@@ -11,6 +11,14 @@ open work. Open/planned items stay in `BACKLOG.md`. Newest at top.
 
 | # | Area | What | Result |
 |---|------|------|--------|
+| BL #7 | Frontend | `writeStreakStatus` moved to middleware — reducers now pure | ✅ 🧪 |
+| BL #8 | Frontend | Dead localStorage token write removed from `register` | ✅ |
+| BL #10 | Frontend | Fixed fragile spread order in `completeTask`/`removeTask` | ✅ |
+| BL #5+#6 | Frontend | `userSlice` guest detection + shared-ref footgun | ✅ 🧪 |
+| BL #17 | Frontend | `taskDetail` `useEffect` stale dep fixed | ✅ 🧪 |
+| BL #19+#20+#24 | Frontend | `CreateTask` dead dispatch, 300ms setTimeout, `startDate` midnight | ✅ 🧪 |
+| BL #21+#9 | Frontend | Dead `tasks.loading` stripped; debug `console.log` removed (10 files) | ✅ 🧪 |
+| P7 / BL #26 | Frontend | Popup mutation consistency — pessimistic everywhere, `usePopup` + `taskSlice` | ✅ 🧪 |
 | P8 | Frontend | App-level error boundary (render throws → fallback, not white screen) | ✅ 🧪 |
 | P4 #2/#21 | Frontend | Task mutation errors now show a toast | ✅ 🧪 👁️ — *also fixed an app-wide crash the first commit shipped* |
 | P4 #3 | Frontend | Safe date coercion in `setFormTask` (null→1970 bug) | ✅ 🧪 |
@@ -28,6 +36,59 @@ open work. Open/planned items stay in `BACKLOG.md`. Newest at top.
 | Cluster B#2 | Backend | Built `priority` field (replaced defunct "Tag") | ✅ 🧪 |
 | Prod migration | Backend | Tag→priority on prod | ✅ (vacuous — prod DB empty) |
 | #23 | Frontend | `taskDetail` debounce — **not a bug**, closed | ✅ |
+
+---
+
+## Frontend (2026-06-07 audit pass)
+
+### BL #7 — `writeStreakStatus` moved to middleware  ✅ 🧪
+`localStorage.setItem` was called inside two reducer bodies (`setStreakStatus` and
+`completedTask.fulfilled`), violating Redux purity. Exported `writeStreakStatus` from `taskSlice`;
+removed both in-reducer calls; added `streakMiddleware` to `store.jsx` that fires after
+`completedTask.fulfilled` with `payload.user` (the only live dispatch path — `setStreakStatus` had
+zero call sites). Two new Vitest cases cover the write and no-write branches. **96/96 Vitest.**
+
+### BL #8 — Dead localStorage token write in `register`  ✅
+`authen.js` `register` wrote `localStorage.setItem("token", ...)` after signup. The app is
+cookie-based; `userLogin` never did this; nothing read the key. Three-line deletion.
+
+### BL #10 — Fragile spread order in `completeTask` / `removeTask`  ✅
+Both returned `{ _id: taskId, ...response.data }`. If the server ever added a top-level `_id`,
+it would silently override `taskId`, breaking the downstream thunk reducer keyed on `_id`.
+Reversed to `{ ...response.data, _id: taskId }` so `taskId` is always authoritative.
+
+### BL #5 + BL #6 — `userSlice` guest detection + shared-ref footgun  ✅ 🧪
+**BL #5:** `fetchUserData.rejected` set `isAuthenticated=false` but left `isGuest` at `false`,
+producing the invalid state `{ isAuthenticated: false, isGuest: false }`. Added `state.isGuest = true`.
+**BL #6:** `initialState = { ...defaultState }` shared nested `userData` object references across
+all reset call sites. Replaced with `makeDefaultState()` factory — every reset gets an independent
+tree. **94/94 Vitest** (+3 regression).
+
+### BL #17 — `taskDetail` `useEffect` stale dep  ✅ 🧪
+`useEffect` dep was `[selectedTask]` (whole object reference), so the effect re-ran on every save
+returning from the server (a new object reference for the same task). Changed to
+`[selectedTask?._id]` — syncs only when a different task is opened. **86/86 Vitest** (+2 regression).
+
+### BL #19 + BL #20 + BL #24 — `CreateTask` correctness fixes  ✅ 🧪
+**BL #19:** `validator()` dispatched a stale `startDate` that always lost to the `taskData` midnight
+fallback; deleted the dead block. **BL #20:** 300ms `setTimeout` for summary refetch replaced with
+direct awaits inside an inner `try/catch` so `onClose()` always fires on success even if a summary
+refresh fails. **BL #24:** Normalized all `new Date()` fallbacks to local midnight in `CreateTask`
+and `StartDatePicker`. **91/91 Vitest** (+4 regression).
+
+### BL #21 + BL #9 — Dead `tasks.loading` + debug log strip  ✅ 🧪
+**BL #21:** `state.tasks.loading` was write-only — no component selected it. Removed from
+`initialState` and all 12 thunk writes. **BL #9:** Stripped 14 pure-debug `console.log` calls
+across `taskSlice`, `task.js`, `authen.js`, `category.js`, and 6 component files. All
+`console.error` catch logging preserved. **85/85 Vitest.**
+
+### P7 / BL #26 — Popup mutation consistency  ✅ 🧪
+One house pattern (pessimistic) for all five popup/sidebar mutation handlers in `usePopup.jsx`.
+`handleRemovedItem` was the only optimistic handler and had no rollback — on failure the category
+vanished from the sidebar *and* an error toast fired. Fix: moved category removal into
+`removedCategory.fulfilled` (filter by `action.meta.arg`). Dropped the optimistic pre-dispatch,
+the 100ms `setTimeout` (BL #20 `usePopup` half), `console.error` bodies, and the dead
+`removeCategories` reducer. **86/86 Vitest** (+2 regression). GUI smoke deferred.
 
 ---
 
