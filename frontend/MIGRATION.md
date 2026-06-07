@@ -450,7 +450,38 @@ and intentionally kept `axiosConfig.js` (interceptor tracing) + `ErrorBoundary.j
 baseline (494 errors: `React`/`prop-types`/`no-useless-catch`); edits only delete lines, no new
 violations introduced.
 
-**Still open (out of scope here):** more debug `console.log` survive in *unnamed* files —
-`userSlice.jsx:53` (leaks login response), `CreateEntity.jsx:53`, `usePopup.jsx:40`,
-`Settings.jsx:83`, `GroupTaskForm.jsx:41`, `taskDetail.jsx:81-82`, and `CreateTask.jsx:110-124`
-(**protected**). #9 named only the slice/functions files; these need a follow-up decision.
+**Still open (out of scope here):** more debug `console.log` survive in `userSlice.jsx:53`,
+`CreateEntity.jsx:53`, `usePopup.jsx:40`, `Settings.jsx:83`, `GroupTaskForm.jsx:41`,
+`taskDetail.jsx:81-82`. `CreateTask.jsx` console noise was **cleaned in the BL #20/24 phase** below.
+
+---
+
+## CreateTask.jsx phase — BL #19, BL #20 (remainder), BL #24  ·  2026-06-07
+
+Protected `CreateTask.jsx` + `StartDatePicker.jsx`. All three backlog items done together.
+
+**BL #19 — dead stale `startDate` dispatch in `validator()`.** Lines 42-44 dispatched
+`setFormTask({ startDate: new Date().toISOString() })` but `handleSubmit` read `formTask.startDate`
+from the render-closure before that dispatch flushed → always stale/null → the line 101 fallback fired
+anyway. Deleted the entire `if (!formTask.startDate) { dispatch(...) }` block. Single canonical source
+is now the `taskData` midnight fallback at line 97 (see BL #24 below).
+
+**BL #20 — 300ms `setTimeout` replaced.** `handleSubmit` called `onClose()` immediately after
+`createNewTask` succeeded, then fired summary refreshes inside a 300ms `setTimeout`. Replaced with
+direct awaits inside an inner `try/catch` (so a summary failure is swallowed and `onClose()` still
+fires). Pattern matches `usePopup.jsx` (P7). `/scrutinize` identified this blocker pre-coding: putting
+`onClose()` after two `.unwrap()` calls in the *outer* `try` would have left the modal open on any
+summary network failure (task already created → user stuck, retry = duplicate). Inner catch prevents
+that. Also stripped the dead `console.log` calls in the submit handler (#9 follow-up).
+
+**BL #24 — `startDate` defaults to local midnight.** Three locations normalized:
+- `taskData` fallback (was `new Date().toISOString()` → now `toDayISO(new Date(...setHours(0,0,0,0)))`)
+- `handleDateChange` `startDate` fallback (same)
+- `StartDatePicker.jsx:9` display default (same)
+Consistent with `DeadlinePicker` (which defaults `selectedDate` to `null`) and the `toDayISO` convention
+established in P5#18: pickers emit local midnight; raw ISO round-trips to the same calendar day.
+
+**Tests:** 91/91 pass (14 files; +4 new regression tests in `CreateTask.test.jsx`). 2 tests cover
+the BL #20 modal-close-on-summary-error invariant; 2 cover BL #24 midnight default and explicit-date
+preservation. Mock strategy: `vi.mock("react-redux", async (importOriginal) => ...)` factory to
+replace `useDispatch`/`useSelector` in ESM (vi.spyOn cannot redefine ESM exports).

@@ -17,7 +17,7 @@ on any fix plan before coding (standing memory).
 - `frontend/src/Config/axiosConfig.js`
 - `frontend/src/redux/taskSlice.jsx` — open: BL #7
 - `frontend/src/components/pages/hooks/usePopup.jsx` — P7 ✅ done; no open items
-- `frontend/src/components/pages/create/CreateTask.jsx` — open: BL #19, BL #20, BL #24
+- `frontend/src/components/pages/create/CreateTask.jsx` — ✅ BL #19, BL #20, BL #24 all done (2026-06-07)
 - `server/modules/task/service.js` — no integration tests (see `server/backend.md` §Risk Register)
 
 ---
@@ -73,10 +73,10 @@ phase). Add a Vitest for the chosen behavior. Closes BL #26 + folds in BL #20.
 - **#9** ✅ **DONE (2026-06-07).** Stripped all reachable debug `console.log` calls across `taskSlice`, `task.js`, `authen.js`, `category.js`, `userSlice.jsx`, `CreateEntity.jsx`, `usePopup.jsx`, `Settings.jsx`, `GroupTaskForm.jsx`, `taskDetail.jsx`. `axiosConfig.js` and `CreateTask.jsx:110-124` left intact (protected). No `console.error` catches touched.
 - **#10** `functions/task.js:86` (and `:133`) — `completeTask`/sibling return `{ _id: taskId, ...response.data }`; server `_id` overrides `taskId`. Two endpoints, same pattern.
 - **#17** ✅ **DONE (2026-06-07).** Changed `useEffect` dep from `[selectedTask]` → `[selectedTask?._id]`; syncs only on task-open, not on own-save returning. Stale closure eliminated. 2 regression tests added.
-- **#19** `CreateTask.jsx:41-43` *(protected)* — `validator` dispatches `startDate` then reads it stale same-render; redundant (line 107 has `||` fallback).
-- **#20** Magic `setTimeout` for summary refetch. `usePopup.jsx` 100ms — ✅ **DONE** (P7, 2026-06-07, now awaits directly). `CreateTask.jsx:113` 300ms — still open (*protected*, own phase).
+- **#19** ✅ **DONE (2026-06-07).** Deleted dead stale `startDate` dispatch from `validator()` (lines 42-44); single source of truth is now the `taskData` midnight fallback. 4 regression tests pass.
+- **#20** Magic `setTimeout` for summary refetch. `usePopup.jsx` 100ms — ✅ **DONE** (P7, 2026-06-07). `CreateTask.jsx:113` 300ms — ✅ **DONE (2026-06-07).** Replaced with direct awaits inside inner `try/catch`; `onClose()` always fires on task-creation success.
 - **#21** ✅ **DONE (2026-06-07).** Chose *strip*: removed `loading` from `taskSlice` `initialState` + 12 thunk writes (it was write-only — no component selected it). `userSlice`/`summarySlice` `loading` left intact (those are consumed). Details in `frontend/MIGRATION.md` → "Frontend hygiene".
-- **#24** `StartDatePicker` defaults empty `selected` to `new Date()` (stores `<day>T<now-time>Z`) while `DeadlinePicker` defaults to `null` (clean local-midnight). The calendar **day** round-trips fine, so low severity — just a time-component inconsistency. Fix: normalize startDate to local midnight, or default the picker's empty `selected` to `null`. Lives in `CreateTask.jsx` (*protected*).
+- **#24** ✅ **DONE (2026-06-07).** Normalized all `new Date()` fallbacks to local midnight in `CreateTask.jsx` (taskData, handleDateChange) and `StartDatePicker.jsx` (display default). Consistent with `DeadlinePicker` and `toDayISO` semantics.
 
 ---
 
