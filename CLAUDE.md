@@ -1,10 +1,14 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code when working in this repository.
+
+---
 
 ## Project Overview
 
 **SlimeList** — a gamified fullstack todo app. Users earn streaks, badges (iron → bronze → silver → gold), and track task progress with subtasks. Supports both registered JWT users and anonymous guest users.
+
+---
 
 ## Commands
 
@@ -14,6 +18,7 @@ npm run dev        # Dev server on port 5173
 npm run build      # Production build
 npm run lint       # ESLint check
 npm run preview    # Preview production build
+npm test           # Vitest — 96 tests across 14 files
 ```
 
 ### Backend (`/server`)
@@ -21,13 +26,15 @@ npm run preview    # Preview production build
 npm run dev        # nodemon dev server on port 5000
 npm run dev:local  # Dev with local MongoDB (USE_LOCAL_DB=true)
 npm start          # Production
-npm test           # Jest (10s timeout)
+npm test           # Jest (10s timeout) — 25 tests
 ```
 
 ### Docker (full stack)
 ```bash
 docker-compose up  # Runs frontend + backend + MongoDB together
 ```
+
+---
 
 ## Architecture
 
@@ -41,7 +48,7 @@ Two independent apps — `frontend/` (React + Vite) and `server/` (Express) — 
 
 ### State Management
 Redux Toolkit with three slices in `frontend/src/redux/`:
-- `taskSlice` — task CRUD and filter state
+- `taskSlice` — task CRUD and filter state; `streakStatus` persisted to `localStorage` via `streakMiddleware` in `store.jsx`
 - `userSlice` — auth state (registered vs. guest), profile data
 - `summarySlice` — dashboard analytics (completion rates, badge progress)
 
@@ -66,6 +73,8 @@ MongoDB (Atlas in production, local URI for dev). All models in `server/Models/`
 - Backend → Render.com
 - DB → MongoDB Atlas
 
+---
+
 ## Environment Variables
 
 **`server/.env.development`** and **`server/.env.production`** (never committed — gitignored)
@@ -85,29 +94,26 @@ MongoDB (Atlas in production, local URI for dev). All models in `server/Models/`
 VITE_API_URL=         # Production API base URL
 VITE_LOCAL_API_URL=http://localhost:5000/api
 ```
-# Root CLAUDE.md
 
-## AI Persona & Mentorship
-- **Role**: Act as a Senior Full-Stack Developer and Mentor. Do not just deliver code; explain the architectural "why", trade-offs, and best practices.
-- **Tone**: Professional, collaborative, and educational. Treat the user as a developer teammate.
-- **Output Economy**: Be extremely concise. Avoid conversational fluff or re-printing entire unchanged files. Use brief code diffs or target specific functions instead of printing massive code blocks.
+---
 
-## Workspace Switching Rules
-- When working on frontend tasks, you MUST read and follow `frontend/CLAUDE.md`.
-- When working on backend tasks, you MUST read and follow `server/CLAUDE.md`.
-- Ask me when you need to read across workspace.
+## Working with this Codebase
 
-## Session Workflow Rules
-1. **Look Before You Leap**: Always explore the directory structure and read relevant files before suggesting changes.
-2. **Plan Mode First**: Always use Plan Mode and present a conceptual "Refactoring/Feature Plan" first.
-3. **No Silent Fixes**: NEVER touch or edit any file directly without getting user confirmation on the proposed plan first.
-4. **Incremental Phase Execution**: Divide work into sequential Phases. Never edit Phase N+1 before Phase N passes all tests.
-5. **Phase-End Handshake & Session Reset (Token Economy)**:
-   - Once Phase N is fully executed, verified, and all tests are green (โค้ดเขียว):
-   - You MUST immediately update the respective component's `MIGRATION.md` to reflect the completed work and test results.
-   - After updating `MIGRATION.md`, explicitly prompt the user to **"Close this session and start a new chat"** to clear the context window and save tokens. Do not continue to Phase N+1 in the same session.
+### Role & Tone
+Act as a Senior Full-Stack Developer and Mentor. Explain the architectural "why", trade-offs, and best practices. Be concise — use targeted diffs, not full-file reprints.
 
+### Workspace Rules
+- When working on frontend tasks, read and follow `frontend/CLAUDE.md`.
+- When working on backend tasks, read and follow `server/CLAUDE.md`.
+- Ask before reading across workspaces.
 
-## Security Rules
-- When reading .env files, NEVER print actual values of secrets. Show keys as: `SECRET_KEY=******`
+### Workflow
+1. **Look Before You Leap** — explore the directory and read relevant files before suggesting changes.
+2. **Plan Mode First** — present a plan and get confirmation before editing any file.
+3. **No Silent Fixes** — never edit a file without user confirmation on the proposed plan.
+4. **Incremental Phases** — divide work into sequential phases; never edit Phase N+1 before Phase N passes all tests.
+5. **Phase-End Update** — once a phase is complete and tests are green, update the relevant `MIGRATION.md` to record what was done and the test result.
+
+### Security Rules
+- When reading `.env` files, never print actual secret values. Show keys as: `SECRET_KEY=******`
 - Never include real credentials in any code suggestions.

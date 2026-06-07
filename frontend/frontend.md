@@ -10,7 +10,7 @@ React 18 + Vite, Redux Toolkit, React Router v6, Tailwind, axios, Framer Motion.
 
 ```bash
 npm run dev      # Vite dev server on :5173 (--host)
-npm test         # vitest — 21 tests across 5 files
+npm test         # vitest — 96 tests across 14 files
 npm run build    # production build
 npm run lint     # ESLint
 npm run preview  # preview production build
@@ -45,7 +45,7 @@ dispatches `logoutUser()`.
 
 - **`taskSlice` owns form state** — `formTask` and `progress.steps[]` live in Redux, not local state. Dispatch `setFormTask(task)` to pre-populate the create/edit form.
 - **`isSummaryUpdated`** is a boolean toggle: mutators flip it, Summary watches it to re-fetch. It holds the *fact* of a change, not the value.
-- **`streakStatus`** is persisted to `localStorage` (via `safeReadStreakStatus()` + try/catch-wrapped writes) in addition to Redux.
+- **`streakStatus`** is persisted to `localStorage` via `streakMiddleware` in `store.jsx` (fires after `completedTask.fulfilled`). Initial hydration uses `safeReadStreakStatus()` in `initialState`.
 
 ### Auth model
 
@@ -109,7 +109,7 @@ None open. All resolved issues logged in `frontend/MIGRATION.md`.
 - All `src/functions/*.js` now `throw` on error (Phase 1), so `createAsyncThunk` rejects and the slice `error` state is set. (Previously they swallowed errors and thunks resolved as fulfilled.)
 
 ### localStorage
-- `taskSlice` reads/writes `streakStatus` to `localStorage` inside the slice. Reads go through `safeReadStreakStatus()` and writes are try/catch-wrapped (Phase 4) to survive private-mode / quota errors. Direct side effects in reducer bodies remain a Redux anti-pattern — keep new persistence out of reducers.
+- `streakStatus` is read from `localStorage` at slice init via `safeReadStreakStatus()` and written back via `streakMiddleware` in `store.jsx` (BL #7). Reducers are pure — do not add localStorage writes inside reducer bodies.
 
 ### Auth interceptor
 - A bad `ACCESS_TOKEN_SECRET`, an expired token, and a tampered token all surface the same way: 401 → refresh attempt → potential logout. The interceptor does not distinguish them.
@@ -118,7 +118,7 @@ None open. All resolved issues logged in `frontend/MIGRATION.md`.
 
 ## Migration status
 
-Phases 0–6 complete; all known issues resolved. No open items remain.
+Phases 0–7 complete; all known issues resolved. No open items remain.
 Full phase history and resolved-issue log: **`frontend/MIGRATION.md`**.
 
 
