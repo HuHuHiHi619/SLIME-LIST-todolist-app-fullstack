@@ -22,6 +22,23 @@ on any fix plan before coding (standing memory).
 
 ---
 
+## Backend — open issues
+
+- **BE #1** `Models/Notification.js` — field is `createAt` (missing `d`); any query on `createdAt` silently misses it. Low severity, no active feature reads notifications yet.
+- **BE #2** `Routes/notificationRoute.js` — auto-loaded at every server start with all handlers commented out. Dead module; safe to delete once confirmed no future use.
+- **BE #3** `Models/LoginHistory.js` — written on every login, never read by any route or service. Leave if an audit feature is planned; otherwise delete.
+- **BE #4** `modules/task/service.js` (`createTask`) — inline progress normalisation has typo `step.lable` (missing `b`) and diverges from `helperController.processProgress`. Steps on tasks created via this path may not match the format used elsewhere.
+- **BE #5** `controllers/TasksController.js`, `removeController.js`, `UserController.js` — re-export stubs only. Safe to delete once all importers point at `modules/` paths directly.
+
+---
+
+## Frontend — open items
+
+- **FE #1** "Try Again" UI still in the codebase — `taskDetail.jsx:188` button, its thunk, and API fn were not removed when the backend deleted `PUT /user/:id/attempt` (now 404s). Remove in its own frontend phase.
+- **FE #2** `src/Config/axiosConfig.js` — 401 refresh-queue interceptor has no automated tests. A regression (retry loop or premature logout) surfaces only at runtime.
+
+---
+
 ## Housekeeping / parked
 
 - **#22** One orphan guest task `PASS-create-*` left in **dev** Atlas from a verify run (guest cookie gone, not deletable via UI). Harmless; drop it next time you're in dev Atlas.
