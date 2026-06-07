@@ -11,6 +11,7 @@ open work. Open/planned items stay in `BACKLOG.md`. Newest at top.
 
 | # | Area | What | Result |
 |---|------|------|--------|
+| P8 | Frontend | App-level error boundary (render throws → fallback, not white screen) | ✅ 🧪 |
 | P4 #2/#21 | Frontend | Task mutation errors now show a toast | ✅ 🧪 👁️ — *also fixed an app-wide crash the first commit shipped* |
 | P4 #3 | Frontend | Safe date coercion in `setFormTask` (null→1970 bug) | ✅ 🧪 |
 | P5 #18 | Frontend | Unified create/edit date handling (calendar-day round-trip) | ✅ 🧪 |
@@ -31,6 +32,16 @@ open work. Open/planned items stay in `BACKLOG.md`. Newest at top.
 ---
 
 ## Frontend
+
+### P8 — App-level error boundary  ✅ 🧪
+React has no default boundary, so any throw in render unmounts the whole tree — the #21 toast crash
+white-screened every user. Self-rolled `components/ErrorBoundary.jsx` (class component:
+`getDerivedStateFromError` + `componentDidCatch`), branded `bg-purpleMain` fallback with a Reload
+button, no new dependency (mirrors the `TaskErrorToast` choice). Wrapped `<TaskErrorToast/>` +
+`<BrowserRouter>` in `App.jsx`, inside `AuthProvider`. Skipped the optional `location.pathname` reset
+key — Reload is the honest recovery for corrupted render state. Regression test
+(`__tests__/components/ErrorBoundary.test.jsx`): throw→fallback + healthy→passthrough. **85/85 Vitest**,
+changed files lint-clean. (Note: repo-wide `react/prop-types` lint failure pre-dates this — see BACKLOG housekeeping.)
 
 ### P4 #2 + #21 — Task error toast  ✅ 🧪 👁️  *(branch merged in PR #9)*
 Task mutations (update, complete, delete, delete-all, delete-category) failed silently. Added two

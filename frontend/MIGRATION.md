@@ -423,3 +423,34 @@ leaves the category in the list + shows the toast.
 
 **Out of scope (deferred):** `CreateTask.jsx:113` 300ms timer (protected file, own phase — BL #20
 remainder); BL #24 StartDatePicker time-component (protected).
+
+---
+
+## Frontend hygiene — strip dead `tasks.loading` (#21) + debug `console.log` (#9)  ·  2026-06-07
+
+Two-phase cleanup, no protected files touched. Branch `fix/frontend-p7-popup-mutation-consistency`.
+
+**Phase 1 — #21 dead `tasks.loading`.** Grep confirmed no component selects `state.tasks.loading`
+(every `state.tasks` consumer destructures other keys); the flag was write-only. Removed it from
+`taskSlice.jsx` `initialState` + all 12 `state.loading = …` writes across `fetchTasks`,
+`fetchSearchTasks`, `fetchCategories`, `createNewTask`. Dropped the now-empty `.pending` handlers for
+`fetchTasks`/`fetchCategories`/`createNewTask`; **kept** `fetchSearchTasks.pending` (it also clears
+`error`) and every data/error write. `taskSlice.test.js`: deleted the `fetchTasks.pending sets loading`
+test (nothing left to assert), stripped `loading` assertions + `loading: true` seeds from the
+fulfilled/rejected tests while keeping their `tasks`/`error`/`categories` assertions.
+(`userSlice.loading` / `summarySlice.loading` are separate and untouched — those *are* consumed.)
+
+**Phase 2 — #9 debug logs (logs-only scope).** Removed the 14 pure-debug `console.log` (incl.
+data-dumping ones) from `taskSlice.jsx` (4), `functions/task.js` (5, incl. "SENT DATA"),
+`functions/authen.js` (2 — also dropped the now-empty `if(response){}` Login-success block),
+`functions/category.js` (3). **Kept** all `console.error` catch logging (user chose safe scope),
+and intentionally kept `axiosConfig.js` (interceptor tracing) + `ErrorBoundary.jsx`.
+
+**Tests:** 85/85 pass (12 files; was 86 — one dead test removed). **Lint:** unchanged pre-existing
+baseline (494 errors: `React`/`prop-types`/`no-useless-catch`); edits only delete lines, no new
+violations introduced.
+
+**Still open (out of scope here):** more debug `console.log` survive in *unnamed* files —
+`userSlice.jsx:53` (leaks login response), `CreateEntity.jsx:53`, `usePopup.jsx:40`,
+`Settings.jsx:83`, `GroupTaskForm.jsx:41`, `taskDetail.jsx:81-82`, and `CreateTask.jsx:110-124`
+(**protected**). #9 named only the slice/functions files; these need a follow-up decision.

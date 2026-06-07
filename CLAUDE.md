@@ -97,13 +97,6 @@ VITE_LOCAL_API_URL=http://localhost:5000/api
 - When working on backend tasks, you MUST read and follow `server/CLAUDE.md`.
 - Ask me when you need to read across workspace.
 
-## Bug Fix Rules
-- Before any CSS/style fix, trace ALL contexts 
-  (mobile/desktop/states) the rule applies to.
-- If a fix fails twice, STOP coding. 
-  Reproduce → Trace all affected states → 
-  Falsify hypothesis → then fix.
-
 ## Session Workflow Rules
 1. **Look Before You Leap**: Always explore the directory structure and read relevant files before suggesting changes.
 2. **Plan Mode First**: Always use Plan Mode and present a conceptual "Refactoring/Feature Plan" first.
@@ -113,26 +106,6 @@ VITE_LOCAL_API_URL=http://localhost:5000/api
    - Once Phase N is fully executed, verified, and all tests are green (โค้ดเขียว):
    - You MUST immediately update the respective component's `MIGRATION.md` to reflect the completed work and test results.
    - After updating `MIGRATION.md`, explicitly prompt the user to **"Close this session and start a new chat"** to clear the context window and save tokens. Do not continue to Phase N+1 in the same session.
-
-## Model Recommendations per Task (Cost & Token Optimization)
-To optimize project budget and response latency, adhere to the following model selections based on task nature:
-- **Sonnet (Efficient & Fast)**: Use for Phase 0 (Writing characterization/unit tests), Phase 3 (Deduplication/Boilerplate reduction), routine updates, and standard script executions.
-- **Opus (Deep Intelligence)**: Reserved for Phase 1 (Complex debugging of latent bugs) and Phase 2 (Architectural alignment, cross-slice dependency decisions, and breaking down complex state machines).
-
----
-
-## ⚡ Custom Agent Shortcuts
-Whenever the user inputs the shorthand commands below, immediately execute the corresponding multi-step prompt instructions without waiting for further explanation.
-
-- **`/wrap-day`**: 
-  1. Update `MIGRATION.md` with current task status, what was completed, what's still in progress, and any blockers.
-  2. Run project tests and document the latest test results.
-  3. Git status, stage, and commit everything in logical groups following the project conventions. Do NOT start any new work.
-
-- **`/morning-brief`**:
-  1. Read the git log for today/yesterday's commits, `MIGRATION.md` for pending tasks, and any TODO/FIXME comments in modified files.
-  2. Generate a daily log report inside `frontend/daily-logs/YYYY-MM-DD.md` (use today's exact date).
-  3. Format the log with headings: "## ✅ What was done today", "## ⚠️ In progress / TODOs", and "## 🔜 Plan for tomorrow" (suggesting the next 3 priority steps). Keep it short and actionable.
 
 
 ## Security Rules

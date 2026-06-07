@@ -16,7 +16,7 @@ on any fix plan before coding (standing memory).
 
 - `frontend/src/Config/axiosConfig.js`
 - `frontend/src/redux/taskSlice.jsx` — open: BL #7
-- `frontend/src/components/pages/hooks/usePopup.jsx` — open: P7, BL #20
+- `frontend/src/components/pages/hooks/usePopup.jsx` — P7 ✅ done; no open items
 - `frontend/src/components/pages/create/CreateTask.jsx` — open: BL #19, BL #20, BL #24
 - `server/modules/task/service.js` — no integration tests (see `server/backend.md` §Risk Register)
 
@@ -24,7 +24,17 @@ on any fix plan before coding (standing memory).
 
 ## Planned — designs ready, pick order next session
 
-### P7 — Popup mutation consistency *(absorbs BL #26)*
+### P7 — Popup mutation consistency ✅ DONE (2026-06-07) *(closed BL #26 + BL #20 usePopup half)*
+
+Shipped Option A (pessimistic everywhere) in `usePopup.jsx` + `taskSlice.jsx`. Fixed the category-delete
+contradiction (optimistic-no-rollback vs. the P4 #2 toast) by moving removal into
+`removedCategory.fulfilled` (filter by `action.meta.arg`); deleted the dead `removeCategories` reducer;
+kept the `try/catch` blocks (dropped only the `console.error` noise); removed the 100ms `setTimeout`.
+86/86 unit tests pass incl. 2 new regression tests. GUI smoke not run (no browser driver in-env).
+Details in `frontend/MIGRATION.md` → "P7". **Remaining BL #20 piece:** `CreateTask.jsx:113` 300ms
+timer (protected, own phase).
+
+<details><summary>original plan (kept for reference)</summary>
 
 **Problem.** The five popup/sidebar mutation handlers in `usePopup.jsx` follow **three different
 patterns** for the same shape of operation:
@@ -50,24 +60,7 @@ Only one of five is optimistic, and it's the one that can't undo itself. Every `
 **Scope:** `usePopup.jsx` (not protected) + possibly `CreateTask.jsx:113` (300ms timer, *protected* — own
 phase). Add a Vitest for the chosen behavior. Closes BL #26 + folds in BL #20.
 
-### P8 — App-level error boundary
-
-**Why.** The P4 #2/#21 toast crash (a bad selector hit `undefined`) white-screened the **entire app** for
-every user, because React has no default error boundary — any throw in render unmounts the whole tree.
-This was the *second* selector-key footgun in this area; the next one will do the same. A boundary turns
-"blank app" into a recoverable fallback.
-
-**Plan.**
-1. Self-roll `components/ErrorBoundary.jsx` — a class component (`getDerivedStateFromError` +
-   `componentDidCatch`) rendering a branded fallback ("Something went wrong — reload"). No new dependency
-   (mirror the self-rolled `TaskErrorToast` choice; avoid `react-error-boundary` per product direction).
-2. Wrap the route tree in `App.jsx` — inside `AuthProvider`, around `<BrowserRouter>` (covers both
-   `TaskErrorToast` and routes). Consider a reset keyed on `location.pathname` so navigating away clears it.
-3. Log the caught error to console (leave a hook for future telemetry).
-4. **Verify by regression:** temporarily reintroduce a bad selector → confirm the fallback renders, not a
-   blank page (exactly what would have caught the #21 crash pre-merge).
-
-**Scope:** new file + a few lines in `App.jsx` (not protected). Low risk, high blast-radius protection.
+</details>
 
 ---
 
@@ -77,12 +70,12 @@ This was the *second* selector-key footgun in this area; the next one will do th
 - **#6** `userSlice.jsx:27,144` — `initialState={...defaultState}` shallow → `userData` shares ref with `defaultState`. Latent shared-mutation footgun.
 - **#7** `taskSlice.jsx:192,358` *(protected)* — `writeStreakStatus()` (localStorage) called inside reducers; move to thunk/middleware.
 - **#8** `authen.js:11-13` — `register` writes token to `localStorage` but app is cookie-based; `userLogin` doesn't. Dead/inconsistent.
-- **#9** Production `console.log` noise across `taskSlice`, `authen.js`, `task.js`, `category.js`, `summary.js`.
-- **#10** `task.js:85` — `completeTask` returns `{ _id: taskId, ...response.data }`; server `_id` overrides `taskId`.
+- **#9** Production `console.log` noise. **Partial ✅ (2026-06-07):** stripped 14 debug logs from `taskSlice`, `task.js`, `authen.js`, `category.js` (logs-only scope; `console.error` catches kept; `axiosConfig`/`ErrorBoundary` kept). **Still open:** debug logs in unnamed files — `userSlice.jsx:53` (leaks login response), `CreateEntity.jsx:53`, `usePopup.jsx:40`, `Settings.jsx:83`, `GroupTaskForm.jsx:41`, `taskDetail.jsx:81-82`, `CreateTask.jsx:110-124` (*protected*). (`summary.js` had only `console.error` — nothing to strip.)
+- **#10** `functions/task.js:86` (and `:133`) — `completeTask`/sibling return `{ _id: taskId, ...response.data }`; server `_id` overrides `taskId`. Two endpoints, same pattern.
 - **#17** `taskDetail.jsx:49-53` — sync effect guards on `isUpdating` but omits it from deps → stale closure can clobber in-progress edits.
 - **#19** `CreateTask.jsx:41-43` *(protected)* — `validator` dispatches `startDate` then reads it stale same-render; redundant (line 107 has `||` fallback).
-- **#20** Magic `setTimeout` for summary refetch: `usePopup.jsx:78` (100ms), `CreateTask.jsx:113` (300ms). Should await directly. *(Folded into P7.)*
-- **#21** `state.tasks.loading` is written by every task thunk but **no component renders it** — dead UI state. The error half is done (P4 #2 toast); `loading` still has no surface. Wire a task-loading spinner (create/fetch flows have none) or strip the flag — decide before adding more `loading` bookkeeping.
+- **#20** Magic `setTimeout` for summary refetch. `usePopup.jsx` 100ms — ✅ **DONE** (P7, 2026-06-07, now awaits directly). `CreateTask.jsx:113` 300ms — still open (*protected*, own phase).
+- **#21** ✅ **DONE (2026-06-07).** Chose *strip*: removed `loading` from `taskSlice` `initialState` + 12 thunk writes (it was write-only — no component selected it). `userSlice`/`summarySlice` `loading` left intact (those are consumed). Details in `frontend/MIGRATION.md` → "Frontend hygiene".
 - **#24** `StartDatePicker` defaults empty `selected` to `new Date()` (stores `<day>T<now-time>Z`) while `DeadlinePicker` defaults to `null` (clean local-midnight). The calendar **day** round-trips fine, so low severity — just a time-component inconsistency. Fix: normalize startDate to local midnight, or default the picker's empty `selected` to `null`. Lives in `CreateTask.jsx` (*protected*).
 
 ---
@@ -92,6 +85,7 @@ This was the *second* selector-key footgun in this area; the next one will do th
 - **#22** One orphan guest task `PASS-create-*` left in **dev** Atlas from a verify run (guest cookie gone, not deletable via UI). Harmless; drop it next time you're in dev Atlas.
 - **Prod data (parked from P0):** prod Atlas `slimelist` is completely empty. If real prod users/tasks were ever expected, the data is not where `.env.production`'s `MONGO_URI` points — chase before trusting prod.
 - **Dependabot:** GitHub reports vulnerabilities on the default branch — separate track, not triaged.
+- **Lint not green repo-wide:** `react/prop-types` fails across prop-taking components (e.g. `PublicRoute.jsx`) because `prop-types` was never installed. `npm run lint` is already non-green — install `prop-types` + annotate, or disable the rule in eslint config, before letting lint gate CI.
 
 ---
 
