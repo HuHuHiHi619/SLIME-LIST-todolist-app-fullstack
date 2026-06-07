@@ -22,14 +22,13 @@ describe('Auth Middleware Optional', () => {
         next = jest.fn();
     });
 
-    test('should handle guest users', async () => {
+    test('should set req.user to null and call next when no token present', async () => {
         req.cookies.guestId = 'guest-123';
         const middleware = authMiddlewareOptional(true);
-        
+
         await middleware(req, res, next);
-        
+
         expect(req.user).toBeNull();
-        expect(req.guestId).toBe('guest-123');
         expect(next).toHaveBeenCalled();
     });
 

@@ -14,18 +14,8 @@ const authMiddlewareOptional =
 
       if (!accessToken) {
         console.log("No accessToken found in cookies.");
-        if (allowGuest && req.cookies.guestId) {
-          req.user = null;
-          req.guestId = req.cookies.guestId;
-          console.log("Proceeding as Guest.");
-          return next();
-        } else {
-          console.log(
-            "No accessToken found and guest not allowed. Setting req.user=null."
-          );
-          req.user = null; 
-          return next(); 
-        }
+        req.user = null;
+        return next();
       }
 
       // ถ้ามี Access Token ให้ตรวจสอบ
