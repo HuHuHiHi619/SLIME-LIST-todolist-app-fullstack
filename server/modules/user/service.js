@@ -56,12 +56,6 @@ const loginUser = async ({ username, password, ip, userAgent }) => {
   const accessToken = signAccessToken(payload);
   const refreshToken = signRefreshToken(payload);
 
-  await repository.saveLoginHistory({
-    userId: user._id,
-    ipAddress: ip,
-    userAgent,
-  });
-
   return {
     user: { id: user._id, username: user.username },
     accessToken,

@@ -1,5 +1,4 @@
 const User = require("../../Models/User");
-const LoginHistory = require("../../Models/LoginHistory");
 
 const findByUsername = (username) => User.findOne({ username });
 
@@ -14,13 +13,10 @@ const findByIdSafe = (id) => User.findById(id).select("-password");
 
 const createUser = (data) => new User(data).save();
 
-const saveLoginHistory = (data) => new LoginHistory(data).save();
-
 module.exports = {
   findByUsername,
   findByUsernameWithPassword,
   findById,
   findByIdSafe,
   createUser,
-  saveLoginHistory,
 };

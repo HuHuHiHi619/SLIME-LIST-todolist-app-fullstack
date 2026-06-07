@@ -163,23 +163,12 @@ const createTask = async (data, formatUser, guestId) => {
     }
   }
 
-  // Progress normalisation — inline version preserved verbatim (diverges from processProgress;
-  // handles single-object steps and has a known typo "lable". See server/CLAUDE.md Known Issues.)
   let formatProgress = { steps: [], totalSteps: 0, allStepsCompleted: false };
-  if (progress && typeof progress === "object") {
-    if (Array.isArray(progress.steps)) {
-      formatProgress.steps = progress.steps.map((step) => ({
-        label: step.label,
-        completed: step.completed || false,
-      }));
-    } else if (progress.steps && typeof progress.steps === "object") {
-      formatProgress.steps = [
-        {
-          label: progress.steps.label || progress.steps.lable, // typo preserved
-          completed: progress.steps.completed || false,
-        },
-      ];
-    }
+  if (progress && typeof progress === "object" && Array.isArray(progress.steps)) {
+    formatProgress.steps = progress.steps.map((step) => ({
+      label: step.label,
+      completed: step.completed || false,
+    }));
     formatProgress.totalSteps = formatProgress.steps.length;
     formatProgress.allStepsCompleted = formatProgress.steps.every((s) => s.completed);
   }

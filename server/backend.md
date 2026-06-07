@@ -12,7 +12,7 @@ Node + Express + Mongoose (MongoDB Atlas). Jest for tests.
 npm run dev        # nodemon on :5000  (sets NODE_ENV=development)
 npm run dev:local  # dev with USE_LOCAL_DB=true
 npm start          # production (sets NODE_ENV=production)
-npm test           # Jest, 10s timeout — 25 tests
+npm test           # Jest, 10s timeout — 36 tests
 ```
 
 ---
@@ -50,7 +50,7 @@ filter — returns `null` filter when neither identity is present (callers must 
 | `Routes/` | URL-to-handler wiring only; no business logic |
 | `modules/task/`, `modules/user/`, `modules/category/` | Converted domains — the established 3-layer pattern |
 | `modules/auth/` | Token signing (`signAccessToken`, `signRefreshToken`, `verifyRefreshToken`) + cookie helpers (`setAuthCookies`, `clearAuthCookies`, etc.) — used by `modules/user/` |
-| `controllers/` | Legacy — `helperController.js` owns shared utilities; `TasksController.js`, `removeController.js`, `UserController.js`, `CategoryController.js` are re-export stubs; `AggregateController.js` cleaned up (not split into module) |
+| `controllers/` | Legacy — `helperController.js` owns shared utilities; `CategoryController.js` is a re-export stub; `AggregateController.js` cleaned up (not split into module) |
 | `middleware/` | Cross-cutting: JWT auth, guest ID assignment, file upload |
 | `Models/` | Mongoose schemas and pre-save hooks |
 | `job/` | Cron tasks (overdue marking, streak reset) — mutate DB on a schedule |
@@ -64,22 +64,6 @@ filter — returns `null` filter when neither identity is present (callers must 
 ## Known Issues
 
 Cluster A (2026-06-05) and Cluster B backend (2026-06-05) are resolved — see git history and `server/MIGRATION.md`. Live items below only.
-
-**Low**
-- `Models/Notification.js` — field `createAt` (missing `d`); queries on `createdAt` miss it.
-- `Routes/notificationRoute.js` — auto-loaded but all handlers commented out; dead module loaded each start.
-- `Models/LoginHistory.js` — written on every login, never read.
-- `modules/task/service.js` (`createTask`) — inline progress normalisation diverges from `helperController.processProgress` and has a typo `step.lable`.
-
-**Cluster B frontend — still pending**
-- "Try Again" button (`taskDetail.jsx:188`), its thunk, API fn, and test still exist in the frontend — the backend endpoint (`PUT /user/:id/attempt`) now 404s. Remove the dead UI in its own frontend phase.
-
-### Dead or Unused Files
-
-| File | Status | Safe to delete? |
-|------|--------|----------------|
-| `controllers/TasksController.js`, `removeController.js`, `UserController.js` | Re-export stubs | Yes, once all importers point at the `modules/` path |
-| `Models/LoginHistory.js` | Written, no read path | No — audit feature likely planned |
 
 ---
 
@@ -136,8 +120,4 @@ For Render.com: set `NODE_ENV=production` + all `.env.production` vars in the da
 - The `dayDifference === 0` (same-day) branch does not update `lastCompleted`; a completion just after Bangkok midnight while `lastCompleted` is the prior calendar day can double-increment the streak.
 
 ---
-
-## Deferred Work
-
-- **Frontend Try Again removal** — see Known Issues above.
 
