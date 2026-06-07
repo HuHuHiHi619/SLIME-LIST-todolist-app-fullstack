@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getUserData, userLogin, userLogout } from "../functions/authen";
 
-const defaultState = {
+const makeDefaultState = () => ({
   userData: {
     id: "",
     username: "",
@@ -22,9 +22,9 @@ const defaultState = {
   isAuthenticated: false,
   isGuest: true,
   isRegisterPopup: false,
-};
+});
 
-const initialState = { ...defaultState };
+const initialState = makeDefaultState();
 
 const MIN_LOADING_MS = 2500;
 
@@ -84,9 +84,7 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    restoreState: (state) => {
-      return { ...defaultState }; // Reset to default state
-    },
+    restoreState: () => makeDefaultState(),
     setAuthError: (state, action) => {
       state.authError = action.payload;
     },
@@ -121,13 +119,7 @@ const userSlice = createSlice({
         state.loading = true;
         state.authError = null;
       })
-      .addCase(logoutUser.fulfilled, (state) => {
-        return {
-          ...defaultState,
-          isAuthenticated: false, // ให้แน่ใจว่ามีการตั้งค่านี้
-          isGuest: true,
-        }; // Reset to default state
-      })
+      .addCase(logoutUser.fulfilled, () => makeDefaultState())
       .addCase(fetchUserData.fulfilled, (state, action) => {
         state.userData = { ...state.userData, ...action.payload };
         state.loading = false;
@@ -138,7 +130,8 @@ const userSlice = createSlice({
         state.loading = false;
         state.authError = action.payload;
         state.isAuthenticated = false;
-        state.userData = initialState.userData;
+        state.isGuest = true;
+        state.userData = makeDefaultState().userData;
       });
   },
 });

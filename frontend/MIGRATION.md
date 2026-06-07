@@ -485,3 +485,34 @@ established in P5#18: pickers emit local midnight; raw ISO round-trips to the sa
 the BL #20 modal-close-on-summary-error invariant; 2 cover BL #24 midnight default and explicit-date
 preservation. Mock strategy: `vi.mock("react-redux", async (importOriginal) => ...)` factory to
 replace `useDispatch`/`useSelector` in ESM (vi.spyOn cannot redefine ESM exports).
+
+---
+
+## BL #5 + BL #6 — `userSlice` guest detection + shared-ref footgun  ·  2026-06-07
+
+**BL #5 — `fetchUserData.rejected` did not reset `isGuest`.**
+When both access and refresh tokens expire, `fetchUserData` rejects for a previously-authenticated
+user. The rejected handler set `isAuthenticated=false` but left `isGuest` at its last value (`false`),
+producing the invalid combination `{ isAuthenticated: false, isGuest: false }`. Any component
+branching on `isGuest` (guest-specific prompts, conditional renders) would show registered-user chrome
+for a fully unauthenticated session. The existing `rejected` test did not assert `isGuest`.
+Fix: added `state.isGuest = true` to `fetchUserData.rejected`.
+
+**BL #6 — `initialState` shallow-copied `defaultState`.**
+`const initialState = { ...defaultState }` shared the nested `userData` and `userData.settings`
+object references. Immer's reducer wrapping prevented mutations from reaching the shared ref in
+practice, but `fetchUserData.rejected:141` assigned `state.userData = initialState.userData` directly,
+handing Immer the shared reference as a draft starting point. Any non-Immer write to
+`initialState.userData` would corrupt all future resets simultaneously.
+Fix: replaced the `defaultState` object and shallow spread with a `makeDefaultState()` factory
+function. Every call site (`initialState`, `restoreState`, `logoutUser.fulfilled`,
+`fetchUserData.rejected`) now gets a fully independent object tree. Also dropped the redundant
+`isAuthenticated: false, isGuest: true` overrides from `logoutUser.fulfilled` (already factory
+defaults).
+
+**Files changed:** `src/redux/userSlice.jsx`, `src/__tests__/redux/userSlice.test.js`
+
+**Tests:** 94/94 pass (14 files; +3 regression tests).
+- `fetchUserData.rejected` from authenticated state resets `isGuest` to `true` (BL #5)
+- `restoreState` produces a fresh `userData` object on each call — not a shared ref (BL #6)
+- `logoutUser.fulfilled` produces a fresh `userData` object on each call (BL #6)

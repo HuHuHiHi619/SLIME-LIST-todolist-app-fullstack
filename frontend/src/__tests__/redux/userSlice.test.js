@@ -105,4 +105,24 @@ describe("userSlice — logout and fetch", () => {
     expect(state.isAuthenticated).toBe(false);
     expect(state.authError).toBe("expired");
   });
+
+  it("fetchUserData.rejected resets isGuest to true even when previously authenticated", () => {
+    const loggedIn = { ...init(), isAuthenticated: true, isGuest: false };
+    const state = reducer(loggedIn, { type: fetchUserData.rejected.type, payload: "token expired" });
+    expect(state.isGuest).toBe(true);
+    expect(state.isAuthenticated).toBe(false);
+  });
+
+  it("restoreState userData is a fresh object, not shared with a previous reset", () => {
+    const a = reducer(init(), restoreState());
+    const b = reducer(init(), restoreState());
+    expect(a.userData).not.toBe(b.userData);
+  });
+
+  it("logoutUser.fulfilled userData is independent from initial state", () => {
+    const loggedIn = { ...init(), isAuthenticated: true, isGuest: false };
+    const a = reducer(loggedIn, { type: logoutUser.fulfilled.type });
+    const b = reducer(loggedIn, { type: logoutUser.fulfilled.type });
+    expect(a.userData).not.toBe(b.userData);
+  });
 });

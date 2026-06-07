@@ -66,8 +66,8 @@ phase). Add a Vitest for the chosen behavior. Closes BL #26 + folds in BL #20.
 
 ## Quality / lower severity (frontend audit) — open
 
-- **#5** `userSlice.jsx:134-139` — `fetchUserData.fulfilled` hardcodes `isGuest=false`; guest detection relies on backend *rejecting* for guests. Confirm vs `/user/profile`.
-- **#6** `userSlice.jsx:27,144` — `initialState={...defaultState}` shallow → `userData` shares ref with `defaultState`. Latent shared-mutation footgun.
+- **#5** ✅ **DONE (2026-06-07).** Added `state.isGuest = true` to `fetchUserData.rejected`; token-expiry path no longer leaves `{ isAuthenticated: false, isGuest: false }`. Details in `frontend/MIGRATION.md` → "BL #5 + BL #6".
+- **#6** ✅ **DONE (2026-06-07).** Replaced `defaultState` object + shallow `initialState` spread with `makeDefaultState()` factory; all reset call sites produce fully independent object trees. Details in `frontend/MIGRATION.md` → "BL #5 + BL #6".
 - **#7** `taskSlice.jsx:192,358` *(protected)* — `writeStreakStatus()` (localStorage) called inside reducers; move to thunk/middleware.
 - **#8** `authen.js:11-13` — `register` writes token to `localStorage` but app is cookie-based; `userLogin` doesn't. Dead/inconsistent.
 - **#9** ✅ **DONE (2026-06-07).** Stripped all reachable debug `console.log` calls across `taskSlice`, `task.js`, `authen.js`, `category.js`, `userSlice.jsx`, `CreateEntity.jsx`, `usePopup.jsx`, `Settings.jsx`, `GroupTaskForm.jsx`, `taskDetail.jsx`. `axiosConfig.js` and `CreateTask.jsx:110-124` left intact (protected). No `console.error` catches touched.
