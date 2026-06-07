@@ -88,7 +88,7 @@ Cluster A (2026-06-05) and Cluster B backend (2026-06-05) are resolved — see g
 | File | Why risky | Test before touching |
 |------|-----------|----------------------|
 | `modules/task/service.js` | Core logic for all 8 task ops; calls `updateUserStreak` on completion | No integration tests — smoke-test every grouping mode + completion |
-| `controllers/helperController.js` | Imported by task service, category/aggregate controllers, cron; owns `handleError`, `processProgress`, `processCategory`, `calculateProgress` | Unit-test `processProgress` first; line 42 bug means it's already broken for non-empty steps |
+| `controllers/helperController.js` | Imported by task service, category/aggregate controllers, cron; owns `handleError`, `processProgress`, `processCategory`, `calculateProgress` | Unit-test `processProgress` first before touching |
 | `shared/services/streakService.js` | All streak + badge logic; called by task service + cron; hardcoded Bangkok TZ | Full `test/.test.js` must pass; test the midnight boundary |
 | `middleware/authOptional.js` | Every route passes through it; silently downgrades to guest | Integration test 401 paths + the wrong-secret case |
 | `server.js` | Auto-loads all Routes; inits cron; a startup error kills the server | Verify clean `npm run dev` after route/middleware changes |
@@ -137,8 +137,7 @@ For Render.com: set `NODE_ENV=production` + all `.env.production` vars in the da
 
 ---
 
-## Deferred Work (Cluster B)
+## Deferred Work
 
-- **Tag-collection → priority field migration** — collapse the `Tag` model into a plain `priority` string-enum on `Tasks`. Touches the Tasks schema, task service (create/update/sort), ~12 frontend files, and needs a data migration for existing `Tag` ObjectId refs. Use TDD. Full-stack, own session.
 - **Frontend Try Again removal** — see Known Issues above.
 

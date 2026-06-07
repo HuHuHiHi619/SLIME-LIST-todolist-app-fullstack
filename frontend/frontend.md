@@ -92,7 +92,7 @@ None open. All resolved issues logged in `frontend/MIGRATION.md`.
 | `src/components/pages/hooks/usePopup.jsx` | Used by almost every interactive component; owns task complete/remove, sidebar, popup, close-on-outside-click | Manually test: complete, delete, popup open/close, sidebar toggle, click-outside dismissal |
 | `src/Config/axiosConfig.js` | All API calls flow through it; the 401 refresh-queue is fragile — mistakes cause retry loops or log users out every request | Test: normal request, 401 + valid refresh, 401 + expired refresh |
 | `src/redux/taskSlice.jsx` | Owns tasks, form state, categories, all UI toggles; used by every page | Smoke-test: create/edit/complete/delete task, filter by status |
-| `src/components/pages/create/CreateTask.jsx` | Validation is now fixed (`.length`); remaining risk is the manual date/timezone-offset handling and progress-step logic | Test: title/note/step at boundary lengths, creation with all fields, date/timezone correctness |
+| `src/components/pages/create/CreateTask.jsx` | Validation fixed (`.length`); date/timezone handling normalized (BL #24); remaining risk is the progress-step logic | Test: title/note/step at boundary lengths, creation with all fields, multi-step tasks |
 
 ---
 
