@@ -50,7 +50,6 @@ function CreateEntity({ onAddItem, entityType, onClose }) {
         }
 
         if (response) {
-          console.log("Successfully created:", response);
           setShowPopup(true);
           await new Promise((res) => setTimeout(res, 700));
           setShowPopup(false);

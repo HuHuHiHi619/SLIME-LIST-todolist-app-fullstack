@@ -37,7 +37,6 @@ function usePopup() {
   };
 
   const handleTaskClick = (task) => {
-    console.log("Task clicked:", task);
     dispatch(setSelectedTask(task));
   };
 

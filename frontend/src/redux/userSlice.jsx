@@ -49,9 +49,6 @@ export const loginUser = createAsyncThunk(
   async (userInput, { rejectWithValue }) => {
     try {
       const response = await minimumLoading(userLogin(userInput));
-      if(response){
-        console.log('login response from redux :',response)
-      }
       return { user: response.user };
     } catch (error) {
       return rejectWithValue(error.message);
