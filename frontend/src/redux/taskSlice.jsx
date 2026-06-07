@@ -219,12 +219,6 @@ const taskSlice = createSlice({
     setCategories(state, action) {
       state.categories = action.payload;
     },
-    removeCategories(state, action) {
-      const categoryId = action.payload;
-      state.categories = state.categories.filter(
-        (category) => category._id !== categoryId
-      );
-    },
     toggleCreatePopup(state) {
       state.isCreate = !state.isCreate;
     },
@@ -400,7 +394,12 @@ const taskSlice = createSlice({
         state.isSummaryUpdated = !state.isSummaryUpdated;
         state.lastStateUpdate = new Date().toISOString();
       })
-      .addCase(removedCategory.fulfilled, (state) => {
+      .addCase(removedCategory.fulfilled, (state, action) => {
+        // Pessimistic: remove from the visible list only after the server confirms.
+        // action.meta.arg is the categoryId passed to the thunk. On rejection the
+        // category stays put and the error toast (rejected matcher) explains why.
+        const removedId = action.meta.arg;
+        state.categories = state.categories.filter((c) => c._id !== removedId);
         state.lastStateUpdate = new Date().toISOString();
       })
       // P4 #2 / #21 — surface mutation failures (these thunks reject without a
@@ -448,7 +447,6 @@ export const {
   resetFormTask,
   addSteps,
   removeStep,
-  removeCategories,
   setActiveMenu,
   setHover,
   togglePopup,

@@ -9,7 +9,6 @@ import {
   setHover,
   toggleSidebarPinned,
   removedCategory,
-  removeCategories,
   removedAllTask,
 } from "../../../redux/taskSlice";
 import { toggleInstructPopup } from "../../../redux/summarySlice";
@@ -65,15 +64,10 @@ function usePopup() {
   const handleCompletedTask = async (task) => {
     try {
       await dispatch(completedTask(task._id)).unwrap();
-      setTimeout(async () => {
-        await dispatch(fetchSummary()).unwrap();
-       
-          await dispatch(fetchUserData()).unwrap();
-        
-      }, 100);
-     
-    } catch (error) {
-      console.error("Error completing task:", error);
+      await dispatch(fetchSummary()).unwrap();
+      await dispatch(fetchUserData()).unwrap();
+    } catch {
+      // failure surfaced via TaskErrorToast (rejected matcher)
     }
   };
 
@@ -81,9 +75,8 @@ function usePopup() {
     try {
       await dispatch(removedTask(task._id)).unwrap();
       await dispatch(fetchSummary()).unwrap();
-      console.log("removed task");
-    } catch (error) {
-      console.error("Error removing task:", error);
+    } catch {
+      // failure surfaced via TaskErrorToast (rejected matcher)
     }
   };
 
@@ -91,20 +84,21 @@ function usePopup() {
     try {
       await dispatch(removedAllTask()).unwrap();
       await dispatch(fetchSummary()).unwrap();
-    } catch (error) {
-      console.error("Error removing all task:", error);
+    } catch {
+      // failure surfaced via TaskErrorToast (rejected matcher)
     }
   };
 
   const handleRemovedItem = async (id, type) => {
     try {
       if (type === "category") {
-        dispatch(removeCategories(id)); // optimistic update
+        // Pessimistic: removedCategory.fulfilled removes it from the list only
+        // after the server confirms (no optimistic remove → no rollback needed).
         await dispatch(removedCategory(id)).unwrap();
         await dispatch(fetchSummaryByCategory()).unwrap();
       }
-    } catch (error) {
-      console.error("Error removing item:", error);
+    } catch {
+      // failure surfaced via TaskErrorToast (rejected matcher)
     }
   };
 

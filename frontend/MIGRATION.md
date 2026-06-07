@@ -371,3 +371,55 @@ Concern: LOGIC + one small VISUAL element (the button). Pure deletion, no new be
 - **Outstanding**: runtime `/verify` (guest mode, Playwright @ 390/768/1280) — create+edit date
   round-trips to same day; priority persists on create and autosaves on edit (network shows `PUT` with
   `priority`).
+
+---
+
+## P7 — Popup mutation consistency ✅ (2026-06-07, code + unit tests; GUI smoke not run)
+
+One house pattern (pessimistic) for all five popup/sidebar mutation handlers in `usePopup.jsx`.
+Absorbs BL #26, folds in the `usePopup` half of BL #20. Builds on the P4 #2 / #21 error toast (PR #9).
+
+**Decision: Option A (pessimistic everywhere).** Rejected Option B (optimistic + rollback) — product
+direction is "keep core simple," and the rejected matcher's toast already covers failure, so rollback
+code earns nothing until delete latency is actually felt.
+
+**The bug fixed.** `handleRemovedItem` (category delete) was the *only* optimistic handler and had
+**no rollback**: it dispatched `removeCategories(id)` to drop the category from the sidebar *before*
+awaiting `removedCategory(id)`. After PR #9 a failed delete showed the category gone **and** an error
+toast → contradictory state until refetch.
+
+**`/scrutinize` (run on the plan before coding) caught two errors in the original plan:**
+1. The plan claimed pure Option A ("drop the optimistic call, let the fulfilled reducer / refetch
+   remove it") was enough. **False** — `removedCategory.fulfilled` only set `lastStateUpdate`, and
+   *nothing refetches the category list* (`useFetchTask.jsx:17` refetches **tasks** on the
+   `lastStateUpdate` bump; `state.categories` is only written by `fetchCategories.fulfilled`). The
+   optimistic reducer was the *sole* remover. Fix: move the removal **into** `removedCategory.fulfilled`,
+   filtering by `action.meta.arg` (the categoryId).
+2. The plan said "delete the `catch` blocks." **Would introduce unhandled promise rejections** —
+   `.unwrap()` re-throws, and an async event handler with no catch leaks "Uncaught (in promise)". The
+   matcher sets `state.error` independently, so the toast fires regardless: only the `console.error`
+   *line* was redundant, not the catch. Kept `try/catch`, deleted the logging.
+
+**Changes.**
+- `taskSlice.jsx` — `removedCategory.fulfilled` now filters `state.categories` by `action.meta.arg`
+  (pessimistic; removed only after the server confirms). Deleted the now-dead `removeCategories`
+  reducer + its export (grep confirmed its only non-test refs were the def, export, and the removed
+  `usePopup` call; `Sidebar.jsx:51` uses `setCategories`).
+- `usePopup.jsx` — dropped the optimistic `removeCategories(id)` from `handleRemovedItem`; removed the
+  100ms `setTimeout` in `handleCompletedTask` (await `fetchSummary`/`fetchUserData` directly, BL #20);
+  kept every `try/catch` but replaced the `console.error`/`console.log` bodies with a one-line comment;
+  removed the `removeCategories` import.
+- `taskSlice.test.js` — replaced the dead `removeCategories` reducer test with two regression tests:
+  `removedCategory.fulfilled` removes by `meta.arg`, and `.rejected` leaves `categories` untouched
+  while setting `error` (the no-contradiction guarantee).
+
+**Tests:** 86/86 pass (12 files). Lint: only pre-existing `'React' unused` in `usePopup.jsx:1`
+(baseline, not introduced here); no new lint errors.
+
+**GUI smoke NOT run** (user decision): no browser driver available in-env (Playwright/Chromium not
+installed, no browser MCP). The risky reducer logic is covered by the two new unit tests. Deferred
+manual smoke: happy = delete category disappears, no toast; failure = blocked `DELETE /category`
+leaves the category in the list + shows the toast.
+
+**Out of scope (deferred):** `CreateTask.jsx:113` 300ms timer (protected file, own phase — BL #20
+remainder); BL #24 StartDatePicker time-component (protected).

@@ -6,7 +6,6 @@ import reducer, {
   toggleCreatePopup,
   toggleSidebarPinned,
   setCategories,
-  removeCategories,
   setSelectedTask,
   setFormTask,
   resetFormTask,
@@ -23,6 +22,7 @@ import reducer, {
   completedTask,
   removedTask,
   removedAllTask,
+  removedCategory,
 } from "../../redux/taskSlice";
 
 const init = () => reducer(undefined, { type: "@@INIT" });
@@ -85,13 +85,29 @@ describe("taskSlice — categories", () => {
     const cats = [{ _id: "c1", categoryName: "Work" }];
     expect(reducer(init(), setCategories(cats)).categories).toEqual(cats);
   });
-  it("removeCategories filters out the given id", () => {
+  it("removedCategory.fulfilled removes the category whose _id matches meta.arg", () => {
     const state = {
       ...init(),
       categories: [{ _id: "c1" }, { _id: "c2" }],
     };
-    const next = reducer(state, removeCategories("c1"));
+    const next = reducer(state, {
+      type: removedCategory.fulfilled.type,
+      meta: { arg: "c1" },
+    });
     expect(next.categories).toEqual([{ _id: "c2" }]);
+  });
+
+  it("removedCategory.rejected sets error and leaves categories untouched (no contradiction)", () => {
+    const state = {
+      ...init(),
+      categories: [{ _id: "c1" }, { _id: "c2" }],
+    };
+    const next = reducer(state, {
+      type: removedCategory.rejected.type,
+      error: { message: "boom" },
+    });
+    expect(next.categories).toEqual([{ _id: "c1" }, { _id: "c2" }]);
+    expect(next.error).toBe("boom");
   });
 });
 
