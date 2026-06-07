@@ -18,8 +18,7 @@ const authMiddlewareOptional =
           req.user = null;
           req.guestId = req.cookies.guestId;
           console.log("Proceeding as Guest.");
-          // --- authMiddlewareOptional End (Guest) ---\n");
-          return next(); 
+          return next();
         } else {
           console.log(
             "No accessToken found and guest not allowed. Setting req.user=null."
@@ -34,9 +33,7 @@ const authMiddlewareOptional =
       try {
         const decoded = await jwtVerify(accessToken, accessTokenSecret);
 
-        req.user = { id: decoded.userId }; // Set req.user ถ้าตรวจสอบผ่าน
-
-        // --- authMiddlewareOptional End (Auth Success) ---\n");
+        req.user = { id: decoded.userId };
 
         console.log("req.user is set:", req.user);
         next(); // ผ่านไป Route Handler ปลายทาง
