@@ -8,20 +8,13 @@ export const register = async (data) => {
         "Content-Type": "application/json",
       },
     });
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
-    }
     return response.data;
   } catch (error) {
     const resError = error.response?.data;
-
-    // ถ้า error เป็น array (validation error)
     if (Array.isArray(resError?.error)) {
       const messages = resError.error.map((e) => e.msg).join(" / ");
       throw new Error(messages);
     }
-
-    // ถ้า error เป็นข้อความเดียว
     throw new Error(resError?.error || "Registration failed.");
   }
 };

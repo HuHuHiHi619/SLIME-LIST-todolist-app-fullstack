@@ -80,7 +80,7 @@ export const completeTask = async (taskId) => {
         withCredentials: true,
       }
     );
-    return { _id: taskId, ...response.data };
+    return { ...response.data, _id: taskId };
   } catch (error) {
     if (error.response) {
       console.error("Error response from server:", error.response.data);
@@ -125,7 +125,7 @@ export const removeTask = async (taskId) => {
       },
       withCredentials: true,
     });
-    return { _id: taskId, ...response.data };
+    return { ...response.data, _id: taskId };
   } catch (error) {
     if (error.response) {
       console.error("Error response from server:", error.response.data);
