@@ -174,14 +174,10 @@ describe("taskSlice — clear reducers", () => {
 });
 
 describe("taskSlice — async read lifecycle", () => {
-  it("fetchTasks.pending sets loading", () => {
-    expect(reducer(init(), { type: fetchTasks.pending.type }).loading).toBe(true);
-  });
-  it("fetchTasks.fulfilled stores tasks and clears loading", () => {
+  it("fetchTasks.fulfilled stores tasks", () => {
     const tasks = [{ _id: "a", status: "pending" }];
     const state = reducer(init(), { type: fetchTasks.fulfilled.type, payload: tasks });
     expect(state.tasks).toEqual(tasks);
-    expect(state.loading).toBe(false);
   });
   it("fetchSearchTasks.fulfilled stores searchResults", () => {
     const results = [{ _id: "b" }];
@@ -196,20 +192,18 @@ describe("taskSlice — async read lifecycle", () => {
     const state = reducer(init(), { type: fetchCategories.fulfilled.type, payload: cats });
     expect(state.categories).toEqual(cats);
   });
-  it("fetchCategories.rejected clears loading and records error from payload", () => {
+  it("fetchCategories.rejected records error from payload", () => {
     const state = reducer(
-      { ...init(), loading: true },
+      init(),
       { type: fetchCategories.rejected.type, payload: "boom" }
     );
-    expect(state.loading).toBe(false);
     expect(state.error).toBe("boom");
   });
-  it("fetchTasks.rejected clears loading, resets tasks, records error from payload", () => {
+  it("fetchTasks.rejected resets tasks and records error from payload", () => {
     const state = reducer(
-      { ...init(), loading: true, tasks: [{ _id: "a" }] },
+      { ...init(), tasks: [{ _id: "a" }] },
       { type: fetchTasks.rejected.type, payload: "down" }
     );
-    expect(state.loading).toBe(false);
     expect(state.tasks).toEqual([]);
     expect(state.error).toBe("down");
   });

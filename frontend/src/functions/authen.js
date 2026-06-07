@@ -35,9 +35,6 @@ export const userLogin = async (data) => {
       },
       withCredentials: true,
     });
-    if(response){
-        console.log('Login success')
-    }
     return response.data;
   } catch (error) {
     const resError = error.response?.data;
@@ -105,7 +102,6 @@ export const getRefreshToken = async () => {
         withCredentials: true,
       }
     );
-    console.log("get refresh", response.data);
     return response.data.accessToken;
   } catch (error) {
     console.error(

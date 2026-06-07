@@ -121,24 +121,18 @@ None open. All resolved issues logged in `frontend/MIGRATION.md`.
 Phases 0–6 complete; all known issues resolved. No open items remain.
 Full phase history and resolved-issue log: **`frontend/MIGRATION.md`**.
 
----
 
-## UI Polish Skill
+## Task Separation Rule
+Every frontend task must declare its concern before starting:
+- VISUAL: CSS/Tailwind/layout — use ui-polish skill
+- LOGIC: Redux/handler/API
+- ANIMATION: Framer Motion/transition
+Never mix concerns in one phase.
 
-**File**: `frontend/skills/ui-polish/SKILL.md`
-
-**Read this file first** whenever the task involves any of the following:
-- Choosing or auditing color tokens (background, border, text)
-- Applying or correcting border radius on a component
-- Selecting font sizes (use only the documented scale — not the full Tailwind scale)
-- Setting spacing, padding, or gap values
-- Adding hover/transition/animation behavior
-- Fixing visual imbalance between components
-- Adding new mobile-responsive styles
-
-The skill file documents every custom token, the border-radius convention, the font size scale
-actually in use, spacing patterns, and polish rules observed across the codebase. Do not
-introduce values that are not listed there without an explicit reason.
+## Visual Verification
+After every UI change, run Playwright screenshots
+at mobile (390px), tablet (768px), desktop (1280px).
+/verify triggers this automatically.
 
 ---
 

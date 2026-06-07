@@ -4,3 +4,7 @@
 /.env
 server/.env
 server/.env.*
+Slimelist Mobile Demo.html
+screenshots/
+frontend/dist/assets/
+*.stackdump

@@ -9,7 +9,6 @@ export const createTask = async (data) => {
       withCredentials: true,
     });
 
-    console.log("Task created successfully:", response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -34,7 +33,6 @@ export const getData = async (filter) => {
       withCredentials: true,
     });
 
-    console.log("Task got successfully :", response.data);
     return response.data || [];
   } catch (error) {
     if (error.response) {
@@ -57,7 +55,6 @@ export const searchedTask = async (searchTerm) => {
       },
       withCredentials:true
     })
-    console.log("Task searched successfully :", response.data);
     return response.data.tasks
   } catch (error) {
     if (error.response) {
@@ -97,7 +94,6 @@ export const completeTask = async (taskId) => {
 };
 
 export const updateTask = async (id, data) => {
-  console.log("SENT DATA", data);
   try {
     const response = await axios.put(`/task/${id}`, data, {
       headers: {
@@ -105,7 +101,6 @@ export const updateTask = async (id, data) => {
       },
       withCredentials: true,
     });
-    console.log('response from api',response.data)
     return response.data;
   } catch (error) {
     if (error.response) {
