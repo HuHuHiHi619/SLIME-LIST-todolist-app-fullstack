@@ -6,7 +6,7 @@ import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 
 function StartDatePicker({ id, name, selected, onChange, placeholder }) {
   const minDate = new Date().setHours(0, 0, 0, 0);
-  const selectedDate = selected ? new Date(selected) : new Date();
+  const selectedDate = selected ? new Date(selected) : new Date(new Date().setHours(0, 0, 0, 0));
 
   return (
     <div className="relative w-full">

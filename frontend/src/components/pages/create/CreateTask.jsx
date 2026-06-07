@@ -39,10 +39,6 @@ function CreateTask({ onClose }) {
       return false;
     }
 
-    if (!formTask.startDate) {
-      dispatch(setFormTask({ startDate: new Date().toISOString() }));
-    }
-
     if (formTask.title.length > 50) {
       setError("Title cannot more than 50 characters.");
       return false;
@@ -78,7 +74,7 @@ function CreateTask({ onClose }) {
 
   const handleDateChange = (date, field) => {
     if (field === "startDate") {
-      dispatch(setFormTask({ startDate: toDayISO(date) ?? new Date().toISOString() }));
+      dispatch(setFormTask({ startDate: toDayISO(date) ?? toDayISO(new Date(new Date().setHours(0, 0, 0, 0))) }));
     } else if (field === "deadline") {
       dispatch(setFormTask({ deadline: toDayISO(date) }));
     }
@@ -98,33 +94,20 @@ function CreateTask({ onClose }) {
       ...formTask,
       priority: formTask.priority || "low",
       progress,
-      startDate: formTask.startDate || new Date().toISOString(),
+      startDate: formTask.startDate || toDayISO(new Date(new Date().setHours(0, 0, 0, 0))),
     };
 
     try {
-      const response = await dispatch(createNewTask(taskData)).unwrap();
-      // เพิ่ม delay เล็กน้อย
-      setTimeout(async () => {
-        try {
-          await dispatch(fetchSummary()).unwrap();
-          console.log("Summary fetched successfully");
-          await dispatch(fetchSummaryByCategory()).unwrap();
-          console.log("Summary by category fetched successfully");
-        } catch (summaryError) {
-          console.error(
-            "Error fetching summary after task creation:",
-            summaryError
-          );
-        }
-      }, 300);
-      if (response) {
-        console.log("Task created successfully!", response);
-        onClose();
-      } else {
-        console.log("No response data received.");
+      await dispatch(createNewTask(taskData)).unwrap();
+      try {
+        await dispatch(fetchSummary()).unwrap();
+        await dispatch(fetchSummaryByCategory()).unwrap();
+      } catch {
+        // summary refresh is non-fatal; task was created
       }
+      onClose();
     } catch (error) {
-      console.error("Error creating task", error);
+      setError("Failed to create task. Please try again.");
     }
   };
 
@@ -183,7 +166,7 @@ function CreateTask({ onClose }) {
                 id="startDate"
                 name="startDate"
                 selected={
-                  formTask.startDate ? new Date(formTask.startDate) : new Date()
+                  formTask.startDate ? new Date(formTask.startDate) : new Date(new Date().setHours(0, 0, 0, 0))
                 }
                 onChange={(date) => handleDateChange(date, "startDate")}
                 placeholder="START DATE"
