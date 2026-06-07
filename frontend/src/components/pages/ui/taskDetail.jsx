@@ -52,7 +52,7 @@ function TaskDetail({ onClose }) {
     if (!isUpdating && selectedTask) {
       setEditedTask(selectedTask);
     }
-  }, [selectedTask]);
+  }, [selectedTask?._id]);
 
   useEffect(() => {
     return () => {
@@ -78,8 +78,6 @@ function TaskDetail({ onClose }) {
           }
         } else {
           updatedTask[name] = updatedValue;
-          console.log(value);
-          console.log(updatedValue);
         }
         debouncedUpdateTask(updatedTask);
         return updatedTask;
