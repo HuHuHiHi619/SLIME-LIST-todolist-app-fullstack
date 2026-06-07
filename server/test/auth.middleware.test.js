@@ -51,8 +51,10 @@ describe('Auth Middleware Optional', () => {
     test('should clear accessToken cookie and call next when token is expired', async () => {
         req.cookies.accessToken = 'expired-token';
 
+        const expiredError = new Error('jwt expired');
+        expiredError.name = 'TokenExpiredError';
         jwt.verify.mockImplementation((token, secret, callback) => {
-            callback(new Error('TokenExpiredError'), null);
+            callback(expiredError, null);
         });
 
         const middleware = authMiddlewareOptional(false);
@@ -60,6 +62,23 @@ describe('Auth Middleware Optional', () => {
 
         expect(req.user).toBeNull();
         expect(res.clearCookie).toHaveBeenCalledWith('accessToken', expect.any(Object));
+        expect(next).toHaveBeenCalled();
+    });
+
+    test('should not clear cookie and call next when token is invalid (non-expired)', async () => {
+        req.cookies.accessToken = 'malformed-token';
+
+        const invalidError = new Error('invalid signature');
+        invalidError.name = 'JsonWebTokenError';
+        jwt.verify.mockImplementation((token, secret, callback) => {
+            callback(invalidError, null);
+        });
+
+        const middleware = authMiddlewareOptional(false);
+        await middleware(req, res, next);
+
+        expect(req.user).toBeNull();
+        expect(res.clearCookie).not.toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
     });
 });

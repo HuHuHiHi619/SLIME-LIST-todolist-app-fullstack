@@ -28,19 +28,19 @@ const authMiddlewareOptional =
         console.log("req.user is set:", req.user);
         next(); // ผ่านไป Route Handler ปลายทาง
       } catch (error) {
-        console.log("Clearing expired/invalid accessToken cookie.");
-        res.clearCookie("accessToken", {
-          httpOnly: true,
-          secure: isProduction,
-          sameSite: isProduction ? "None" : "Lax",
-          path: "/",
-        });
+        if (error.name === "TokenExpiredError") {
+          console.log("Clearing expired accessToken cookie.");
+          res.clearCookie("accessToken", {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "None" : "Lax",
+            path: "/",
+          });
+        } else {
+          console.log("Invalid accessToken:", error.message);
+        }
 
         req.user = null;
-        console.log(
-          "req.user set to null. Authentication Failed in Middleware."
-        );
-
         next();
       }
     };
