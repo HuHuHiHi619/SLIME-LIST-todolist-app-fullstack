@@ -1,4 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
+import { configureStore } from "@reduxjs/toolkit";
+import { streakMiddleware } from "../../redux/store";
 import reducer, {
   setActiveMenu,
   setHover,
@@ -316,5 +318,36 @@ describe("taskSlice — mutation error surface (#21 / P4 #2)", () => {
   it("clearTaskError resets error to null", () => {
     const state = reducer({ ...init(), error: "x" }, clearTaskError());
     expect(state.error).toBe(null);
+  });
+});
+
+describe("streakMiddleware — localStorage persistence", () => {
+  const makeStore = () =>
+    configureStore({
+      reducer: { tasks: reducer },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(streakMiddleware),
+    });
+
+  beforeEach(() => localStorage.clear());
+
+  it("writes streakStatus to localStorage when completedTask.fulfilled carries user", () => {
+    const store = makeStore();
+    store.dispatch({
+      type: completedTask.fulfilled.type,
+      payload: { _id: "a", user: { currentStreak: 5 } },
+    });
+    expect(JSON.parse(localStorage.getItem("streakStatus"))).toEqual({
+      currentStreak: 5,
+    });
+  });
+
+  it("does not write to localStorage when completedTask.fulfilled has no user", () => {
+    const store = makeStore();
+    store.dispatch({
+      type: completedTask.fulfilled.type,
+      payload: { _id: "a", updatedTask: { status: "completed" } },
+    });
+    expect(localStorage.getItem("streakStatus")).toBeNull();
   });
 });

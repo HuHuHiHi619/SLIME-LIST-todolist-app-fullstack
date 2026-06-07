@@ -24,7 +24,7 @@ function safeReadStreakStatus() {
   }
 }
 
-function writeStreakStatus(value) {
+export function writeStreakStatus(value) {
   try {
     localStorage.setItem("streakStatus", JSON.stringify(value));
   } catch {
@@ -193,7 +193,6 @@ const taskSlice = createSlice({
     },
     setStreakStatus(state, action) {
       state.streakStatus = action.payload;
-      writeStreakStatus(action.payload);
     },
     setSelectedTask(state, action) {
       state.selectedTask = action.payload || null;
@@ -339,7 +338,6 @@ const taskSlice = createSlice({
 
         if (action.payload.user) {
           state.streakStatus = action.payload.user;
-          writeStreakStatus(action.payload.user);
         }
 
         if (state.selectedTask && state.selectedTask._id === completedTaskId) {
