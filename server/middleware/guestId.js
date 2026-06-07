@@ -1,31 +1,27 @@
-const { v4: uuidv4 } = require("uuid");
+const { v4: uuidv4, validate: uuidValidate } = require("uuid");
 const isProduction = process.env.NODE_ENV === "production";
 const guestMiddleware = (req, res, next) => {
-  try {
-    const user = req.user;
+  if (req.user === undefined) {
+    return next(new Error("guestMiddleware must run after an auth middleware (req.user is undefined)"));
+  }
 
-    if (!user) {
-      // ถ้าไม่มี user แสดงว่าเป็น guest
-      if (req.cookies && req.cookies.guestId) {
-        // ถ้ามี guestId ในคุกกี้อยู่แล้ว
-        req.guestId = req.cookies.guestId;
-        console.log("GuestId from cookie:", req.guestId);
+  try {
+    if (!req.user) {
+      const incoming = req.cookies && req.cookies.guestId;
+      if (incoming && uuidValidate(incoming)) {
+        req.guestId = incoming;
       } else {
-        // ถ้าไม่มี guestId ในคุกกี้ ให้สร้างใหม่
         const guestId = uuidv4();
-        // ตั้งค่า guestId ลงในคุกกี้
         res.cookie("guestId", guestId, {
-          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 วัน
+          maxAge: 7 * 24 * 60 * 60 * 1000,
           httpOnly: true,
           secure: isProduction,
           sameSite: isProduction ? "None" : "Lax",
         });
         req.guestId = guestId;
-        console.log("New Guest ID created:", guestId);
       }
     } else {
       req.guestId = null;
-      console.log("User is logged in.");
     }
     next();
   } catch (error) {
