@@ -32,49 +32,14 @@ export function writeStreakStatus(value) {
   }
 }
 
-// Safe date coercion for form fields. `undefined` = field absent → keep current;
-// `null` = explicit clear → stay null (was silently becoming 1970-01-01); an
-// invalid date keeps the current value instead of throwing RangeError in the reducer.
-function toIsoDate(value, fallback) {
-  if (value === undefined) return fallback;
-  if (value === null) return null;
-  const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? fallback : d.toISOString();
-}
-
 const initialState = {
   tasks: [],
   searchResults: [],
   isSummaryUpdated: false,
   categories: [],
-  formTask: {
-    title: "",
-    note: "",
-    startDate: null,
-    deadline: null,
-    category: "",
-    status: "pending",
-  },
-  progress: {
-    steps: [],
-    totalSteps: 0,
-    allStepsCompleted: false,
-    history: {
-      steps: [],
-      timestamps: new Date().toISOString(),
-    },
-  },
   streakStatus: safeReadStreakStatus(),
   lastUpdated: null,
   lastStateUpdate: null,
-  selectedTask: null,
-  isCreate: false,
-  isTaskDetail: false,
-  activeMenu: "",
-  isPopup: false,
-  isHover: null,
-  isSidebarPinned: false,
-  popupMode: "",
   error: null,
 };
 // asyncronous action
@@ -182,24 +147,9 @@ const taskSlice = createSlice({
   name: "task",
   initialState,
   reducers: {
-    setFormTask(state, action) {
-      const { startDate, deadline, ...rest } = action.payload;
-      state.formTask = {
-        ...state.formTask,
-        ...rest,
-        startDate: toIsoDate(startDate, state.formTask.startDate),
-        deadline: toIsoDate(deadline, state.formTask.deadline),
-      };
-    },
     setStreakStatus(state, action) {
       state.streakStatus = action.payload;
     },
-    setSelectedTask(state, action) {
-      state.selectedTask = action.payload || null;
-      // Deterministic: a task opens the detail panel, null closes it.
-      state.isTaskDetail = action.payload != null;
-    },
-
     clearTask(state) {
       state.tasks = [];
     },
@@ -209,57 +159,8 @@ const taskSlice = createSlice({
     clearSearchResults(state) {
       state.searchResults = [];
     },
-
     setCategories(state, action) {
       state.categories = action.payload;
-    },
-    toggleCreatePopup(state) {
-      state.isCreate = !state.isCreate;
-    },
-
-    setActiveMenu(state, action) {
-      state.activeMenu = action.payload;
-    },
-
-    togglePopup(state, action) {
-      state.isPopup = !state.isPopup;
-      state.popupMode = action.payload || "";
-    },
-
-    setHover(state, action) {
-      state.isHover = action.payload;
-    },
-
-    toggleSidebarPinned(state) {
-      state.isSidebarPinned = !state.isSidebarPinned;
-    },
-
-    resetFormTask(state) {
-      state.formTask = initialState.formTask;
-      state.progress = initialState.progress;
-    },
-
-    addSteps(state, action) {
-      const newStep = action.payload;
-      state.progress.steps.push(newStep);
-      state.progress.totalSteps += 1;
-      state.progress.allStepsCompleted = state.progress.steps.every(
-        (step) => step.completed
-      );
-
-      state.progress.history.steps.push({ ...newStep });
-      state.progress.history.timestamps = new Date().toISOString();
-    },
-
-    removeStep(state, action) {
-      const index = action.payload;
-      state.progress.steps = state.progress.steps.filter((_, i) => i !== index);
-      state.progress.totalSteps -= 1;
-      state.progress.allStepsCompleted = state.progress.steps.every(
-        (step) => step.completed
-      );
-
-      state.progress.history.timestamps = new Date().toISOString();
     },
   },
   extraReducers: (builder) => {
@@ -288,8 +189,6 @@ const taskSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(createNewTask.fulfilled, (state, action) => {
-        state.formTask = initialState.formTask;
-        state.progress = initialState.progress;
         state.tasks.push(action.payload);
         state.lastStateUpdate = new Date().toISOString();
         state.isSummaryUpdated = !state.isSummaryUpdated;
@@ -299,7 +198,7 @@ const taskSlice = createSlice({
       })
       .addCase(updatedTask.fulfilled, (state, action) => {
         const updatedTask = action.payload;
-       
+
         state.tasks = state.tasks.map((task) => {
           if (task._id === updatedTask._id) {
             return {
@@ -312,13 +211,6 @@ const taskSlice = createSlice({
           }
           return task;
         });
-        if (state.selectedTask && state.selectedTask._id === updatedTask._id) {
-          state.selectedTask = {
-            ...state.selectedTask,
-            ...updatedTask,
-            category: updatedTask.category,
-          };
-        }
         state.lastStateUpdate = new Date().toISOString();
         state.isSummaryUpdated = !state.isSummaryUpdated;
       })
@@ -338,13 +230,6 @@ const taskSlice = createSlice({
 
         if (action.payload.user) {
           state.streakStatus = action.payload.user;
-        }
-
-        if (state.selectedTask && state.selectedTask._id === completedTaskId) {
-          state.selectedTask = {
-            ...state.selectedTask,
-            status: updatedTask.status,
-          };
         }
 
         state.isSummaryUpdated = !state.isSummaryUpdated;
@@ -411,20 +296,10 @@ const taskSlice = createSlice({
 });
 
 export const {
-  setFormTask,
   setCategories,
-  setSelectedTask,
   setStreakStatus,
-  toggleCreatePopup,
   clearTask,
   clearTaskError,
   clearSearchResults,
-  resetFormTask,
-  addSteps,
-  removeStep,
-  setActiveMenu,
-  setHover,
-  togglePopup,
-  toggleSidebarPinned,
 } = taskSlice.actions;
 export default taskSlice.reducer;

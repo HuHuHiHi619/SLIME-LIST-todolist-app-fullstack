@@ -2,20 +2,10 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { configureStore } from "@reduxjs/toolkit";
 import { streakMiddleware } from "../../redux/store";
 import reducer, {
-  setActiveMenu,
-  setHover,
-  togglePopup,
-  toggleCreatePopup,
-  toggleSidebarPinned,
   setCategories,
-  setSelectedTask,
-  setFormTask,
-  resetFormTask,
   clearTask,
   clearTaskError,
   clearSearchResults,
-  addSteps,
-  removeStep,
   fetchTasks,
   fetchSearchTasks,
   fetchCategories,
@@ -30,55 +20,13 @@ import reducer, {
 const init = () => reducer(undefined, { type: "@@INIT" });
 
 describe("taskSlice — initial state", () => {
-  it("has empty collections and closed UI", () => {
+  it("has empty collections and no error", () => {
     const state = init();
     expect(state.tasks).toEqual([]);
     expect(state.searchResults).toEqual([]);
     expect(state.categories).toEqual([]);
-    expect(state.isCreate).toBe(false);
-    expect(state.isPopup).toBe(false);
-    expect(state.isSidebarPinned).toBe(false);
-    expect(state.selectedTask).toBe(null);
-    expect(state.formTask.status).toBe("pending");
-    expect(state.progress.totalSteps).toBe(0);
-  });
-});
-
-describe("taskSlice — UI toggles", () => {
-  it("setActiveMenu stores the menu name", () => {
-    expect(reducer(init(), setActiveMenu("home")).activeMenu).toBe("home");
-  });
-  it("setHover stores the hovered id", () => {
-    expect(reducer(init(), setHover("t1")).isHover).toBe("t1");
-  });
-  it("toggleCreatePopup flips isCreate", () => {
-    expect(reducer(init(), toggleCreatePopup()).isCreate).toBe(true);
-  });
-  it("togglePopup flips isPopup and records mode", () => {
-    const state = reducer(init(), togglePopup("delete"));
-    expect(state.isPopup).toBe(true);
-    expect(state.popupMode).toBe("delete");
-  });
-  it("toggleSidebarPinned flips the flag", () => {
-    expect(reducer(init(), toggleSidebarPinned()).isSidebarPinned).toBe(true);
-  });
-  it("setSelectedTask stores the selected task and opens detail", () => {
-    const task = { _id: "a", title: "X" };
-    const state = reducer(init(), setSelectedTask(task));
-    expect(state.selectedTask).toEqual(task);
-    expect(state.isTaskDetail).toBe(true);
-  });
-  it("setSelectedTask(null) clears the task and closes detail", () => {
-    const open = { ...init(), selectedTask: { _id: "a" }, isTaskDetail: true };
-    const state = reducer(open, setSelectedTask(null));
-    expect(state.selectedTask).toBe(null);
-    expect(state.isTaskDetail).toBe(false);
-  });
-  it("selecting a second task keeps detail open (no toggle bug)", () => {
-    const open = reducer(init(), setSelectedTask({ _id: "a" }));
-    const next = reducer(open, setSelectedTask({ _id: "b" }));
-    expect(next.selectedTask._id).toBe("b");
-    expect(next.isTaskDetail).toBe(true);
+    expect(state.error).toBe(null);
+    expect(state.isSummaryUpdated).toBe(false);
   });
 });
 
@@ -110,57 +58,6 @@ describe("taskSlice — categories", () => {
     });
     expect(next.categories).toEqual([{ _id: "c1" }, { _id: "c2" }]);
     expect(next.error).toBe("boom");
-  });
-});
-
-describe("taskSlice — form & progress", () => {
-  it("setFormTask merges fields", () => {
-    const state = reducer(init(), setFormTask({ title: "Hello", note: "N" }));
-    expect(state.formTask.title).toBe("Hello");
-    expect(state.formTask.note).toBe("N");
-  });
-  it("setFormTask converts startDate to ISO", () => {
-    const state = reducer(init(), setFormTask({ startDate: "2026-05-20" }));
-    expect(typeof state.formTask.startDate).toBe("string");
-    expect(state.formTask.startDate).toContain("2026-05-20");
-  });
-  it("setFormTask(deadline: null) clears to null, not epoch 1970", () => {
-    const seeded = reducer(init(), setFormTask({ deadline: "2026-05-20" }));
-    const cleared = reducer(seeded, setFormTask({ deadline: null }));
-    expect(cleared.formTask.deadline).toBe(null);
-  });
-  it("setFormTask with an invalid date does not throw and keeps the prior value", () => {
-    const seeded = reducer(init(), setFormTask({ startDate: "2026-05-20" }));
-    const prior = seeded.formTask.startDate;
-    let next;
-    expect(() => {
-      next = reducer(seeded, setFormTask({ startDate: "not-a-date" }));
-    }).not.toThrow();
-    expect(next.formTask.startDate).toBe(prior);
-  });
-  it("resetFormTask restores defaults", () => {
-    const dirty = {
-      ...init(),
-      formTask: { ...init().formTask, title: "dirty" },
-      progress: { ...init().progress, totalSteps: 5 },
-    };
-    const state = reducer(dirty, resetFormTask());
-    expect(state.formTask.title).toBe("");
-    expect(state.progress.totalSteps).toBe(0);
-    expect(state.progress.steps).toEqual([]);
-  });
-  it("addSteps appends a step and updates totals", () => {
-    const state = reducer(init(), addSteps({ label: "step1", completed: false }));
-    expect(state.progress.steps).toHaveLength(1);
-    expect(state.progress.totalSteps).toBe(1);
-    expect(state.progress.allStepsCompleted).toBe(false);
-    expect(state.progress.history.steps).toHaveLength(1);
-  });
-  it("removeStep deletes by index and decrements totals", () => {
-    const seeded = reducer(init(), addSteps({ label: "s1", completed: true }));
-    const next = reducer(seeded, removeStep(0));
-    expect(next.progress.steps).toHaveLength(0);
-    expect(next.progress.totalSteps).toBe(0);
   });
 });
 

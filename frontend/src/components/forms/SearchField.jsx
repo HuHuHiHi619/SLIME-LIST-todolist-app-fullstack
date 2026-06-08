@@ -10,7 +10,8 @@ import { motion } from "framer-motion";
 
 function SearchField({ handleSearchToggle, isSearchOpen, className, alwaysOpen = false }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const { searchResults, selectedTask } = useSelector((state) => state.tasks);
+  const { searchResults } = useSelector((state) => state.tasks);
+  const { selectedTask } = useSelector((state) => state.ui);
   const { isAuthenticated } = useSelector((state) => state.user);
 
   const {

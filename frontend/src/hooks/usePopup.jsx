@@ -1,16 +1,18 @@
 ﻿import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setSelectedTask,
-  toggleCreatePopup,
   completedTask,
   removedTask,
-  togglePopup,
-  setHover,
-  toggleSidebarPinned,
   removedCategory,
   removedAllTask,
 } from "../redux/taskSlice";
+import {
+  setSelectedTask,
+  toggleCreatePopup,
+  togglePopup,
+  setHover,
+  toggleSidebarPinned,
+} from "../redux/uiSlice";
 import { toggleInstructPopup } from "../redux/summarySlice";
 import {
   fetchSummary,
@@ -25,7 +27,7 @@ function usePopup() {
   const popupInstructRef = useRef(null);
   const sidebarRef = useRef(null);
   const popupRegisterRef = useRef(null);
-  const { isPopup } = useSelector((state) => state.tasks);
+  const { isPopup } = useSelector((state) => state.ui);
   
 
   const handleIsCreate = async () => {

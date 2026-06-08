@@ -12,13 +12,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories, setCategories } from "../../redux/taskSlice";
 import {
-  fetchCategories,
-  setCategories,
   setActiveMenu,
   toggleSidebarPinned,
   togglePopup,
-} from "../../redux/taskSlice";
+} from "../../redux/uiSlice";
 import SidebarLink from "./SidebarLink";
 import CreateEntity from "../task/CreateEntity";
 import usePopup from "../../hooks/usePopup";
@@ -27,14 +26,9 @@ import Tooltip from "../feedback/Tooltip";
 function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
-  const {
-    activeMenu,
-    isHover,
-    isPopup,
-    isSidebarPinned,
-    popupMode,
-    categories,
-  } = useSelector((state) => state.tasks);
+  const { activeMenu, isHover, isPopup, isSidebarPinned, popupMode } =
+    useSelector((state) => state.ui);
+  const { categories } = useSelector((state) => state.tasks);
  
 
   const {
