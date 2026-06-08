@@ -5,58 +5,13 @@ const {
   parseISO,
   isValid,
 } = require("date-fns");
-const Category = require("../../Models/Category");
-const {
-  processProgress,
-  calculateProgress,
-} = require("../../controllers/helperController");
+const { processProgress, calculateProgress } = require("../../shared/utils/progressUtils");
 const { updateUserStreak } = require("../../shared/services/streakService");
 const { getTaskDeadlineRange } = require("../../shared/utils/deadlineUtils");
 const repository = require("./repository");
 
-const { STATUS_ORDER, PRIORITY_ORDER, PRIORITIES, TASK_STATUSES } = require("../../shared/utils/taskConstants");
-
-// ── Category cache ────────────────────────────────────────────────────────────
-// Both createTask and updateTask accept a category name string. Results are
-// cached per owner for 5 minutes to avoid a DB round-trip on every save.
-const _categoryCache = new Map();
-const CATEGORY_CACHE_TTL = 5 * 60 * 1000;
-
-const lookupCategoryByName = async (name, userId, guestId) => {
-  const key = `${userId || guestId}:${name}`;
-  const hit = _categoryCache.get(key);
-  if (hit && hit.expiresAt > Date.now()) return hit.id;
-
-  const cat = await Category.findOne({
-    categoryName: name,
-    $or: [{ user: userId }, { guestId }],
-  }).lean();
-
-  if (cat) {
-    _categoryCache.set(key, { id: cat._id, expiresAt: Date.now() + CATEGORY_CACHE_TTL });
-    return cat._id;
-  }
-  return null;
-};
-
-// ── Flat-list ordering: pending → completed → failed, then highest priority first.
-// Exported for direct unit testing (the sort was silently dead before — see taskConstants).
-const compareTasksForFlatList = (a, b) => {
-  const statusComp = STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status);
-  if (statusComp !== 0) return statusComp;
-  return (
-    PRIORITY_ORDER.indexOf(a.priority || "low") -
-    PRIORITY_ORDER.indexOf(b.priority || "low")
-  );
-};
-
-class ServiceError extends Error {
-  constructor(message, statusCode = 400) {
-    super(message);
-    this.statusCode = statusCode;
-    this.name = "ServiceError";
-  }
-}
+const { STATUS_ORDER, PRIORITY_ORDER, PRIORITIES } = require("../../shared/utils/taskConstants");
+const { ServiceError, compareTasksForFlatList, lookupCategoryByName } = require("./helpers");
 
 // ── Read operations ───────────────────────────────────────────────────────────
 
@@ -171,10 +126,6 @@ const getTasksFlat = async (filter) => {
 const createTask = async (data, formatUser, guestId) => {
   const { title, note, startDate, deadline, category, progress, priority } = data;
 
-  if (!title || !startDate) {
-    throw new ServiceError("Title and start date are required");
-  }
-
   const categoryId = category ? await lookupCategoryByName(category, formatUser, guestId) : null;
 
   let formatProgress = { steps: [], totalSteps: 0, allStepsCompleted: false };
@@ -251,16 +202,8 @@ const updateTask = async (formatId, userFilter, formatUser, guestId, data) => {
     final.category = existing.category;
   }
 
-  if (!PRIORITIES.includes(final.priority)) {
-    throw new ServiceError("Invalid priority value");
-  }
-
   if (final.progress) {
     final.progress = processProgress(final.progress);
-  }
-
-  if (final.status && !TASK_STATUSES.includes(final.status)) {
-    throw new ServiceError("Invalid status value");
   }
 
   const updated = await repository.updateTask(
@@ -331,6 +274,4 @@ module.exports = {
   searchTasks,
   removeTask,
   removeAllCompleted,
-  compareTasksForFlatList,
-  ServiceError,
 };

@@ -12,7 +12,6 @@ const {
 const { upload } = require("../middleware/upload");
 const guestMiddleware = require("../middleware/guestId");
 const authMiddlewareOptional = require("../middleware/authOptional");
-const { getTasksCompletedRateByCategory, getTasksCompletedRate, getProgressStepRate } = require("../controllers/AggregateController");
 
 router.get(
   "/task/searchTask",
@@ -22,10 +21,6 @@ router.get(
 );
 router.get("/task", authMiddlewareOptional(true), guestMiddleware, getTask);
 router.get("/task/:id", authMiddlewareOptional(true), guestMiddleware, getTask);
-router.get("/summary/completed-rate",authMiddlewareOptional(true), guestMiddleware,getTasksCompletedRate)
-router.get("/summary/completed-rate-by-category",authMiddlewareOptional(true), guestMiddleware,getTasksCompletedRateByCategory)
-router.get("/summary/progress-rate/:id",authMiddlewareOptional(true),guestMiddleware, getProgressStepRate)
-
 
 router.post("/task", authMiddlewareOptional(true), guestMiddleware, createTask);
 

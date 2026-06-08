@@ -1,14 +1,7 @@
 const bcrypt = require("bcryptjs");
 const repository = require("./repository");
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require("../auth");
-
-class ServiceError extends Error {
-  constructor(message, statusCode = 400) {
-    super(message);
-    this.statusCode = statusCode;
-    this.name = "ServiceError";
-  }
-}
+const { ServiceError } = require("../../shared/errors");
 
 const registerUser = async ({
   username,
@@ -18,8 +11,6 @@ const registerUser = async ({
   lastCompleted,
   imageProfile,
 }) => {
-  if (!password) throw new ServiceError("Password is required");
-
   const existingUser = await repository.findByUsername(username);
   if (existingUser) throw new ServiceError("User already exists");
 
@@ -83,5 +74,4 @@ module.exports = {
   loginUser,
   refreshAccessToken,
   getUserData,
-  ServiceError,
 };

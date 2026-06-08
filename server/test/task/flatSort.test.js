@@ -1,4 +1,4 @@
-const { compareTasksForFlatList } = require("../../modules/task/service");
+const { compareTasksForFlatList } = require("../../modules/task/helpers");
 
 const sortTasks = (tasks) => [...tasks].sort(compareTasksForFlatList);
 const names = (tasks) => tasks.map((t) => t.name);
