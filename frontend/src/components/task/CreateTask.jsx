@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setFormTask,
-  addSteps,
-  removeStep,
-  fetchCategories,
-  createNewTask,
-} from "../../redux/taskSlice";
+import { fetchCategories, createNewTask } from "../../redux/taskSlice";
+import { setFormTask, addSteps, removeStep } from "../../redux/formSlice";
 import "react-datepicker/dist/react-datepicker.css";
 import InputField from "../forms/inputField";
 import DeadlinePicker from "../forms/DeadlinePicker";
@@ -26,9 +21,8 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function CreateTask({ onClose }) {
   const dispatch = useDispatch();
-  const { formTask, progress, categories } = useSelector(
-    (state) => state.tasks
-  );
+  const { formTask, progress } = useSelector((state) => state.form);
+  const { categories } = useSelector((state) => state.tasks);
   const [currentStep, setCurrentStep] = useState("");
   const [error, setError] = useState("");
 

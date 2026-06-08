@@ -13,8 +13,8 @@ import Tooltip from "../feedback/Tooltip";
 const TaskDetail = React.lazy(() => import("./taskDetail"));
 
 function GroupTaskForm({ filter }) {
-  const { selectedTask, isCreate, isSideBarPinned } = useSelector(
-    (state) => state.tasks
+  const { selectedTask, isCreate, isSidebarPinned } = useSelector(
+    (state) => state.ui
   );
   const { tasks: fetchedAllTasks } = useFetchTask(filter);
   const {
@@ -47,7 +47,7 @@ function GroupTaskForm({ filter }) {
               {label.toLowerCase() === "completed" &&
                 tasks.filter((task) => task.status === "completed").length >
                   0 &&
-                !isSideBarPinned && (
+                !isSidebarPinned && (
                   <Tooltip>
                     <button
                       className="red-button clear-allTask"

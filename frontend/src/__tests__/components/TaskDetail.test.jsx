@@ -35,8 +35,9 @@ const SET_SELECTED = "TEST/setSelectedTask";
 function makeStore(initialTask) {
   return configureStore({
     reducer: {
-      tasks: (
-        state = { selectedTask: initialTask, categories: [] },
+      tasks: (state = { categories: [] }) => state,
+      ui: (
+        state = { selectedTask: initialTask },
         action
       ) => {
         if (action.type === SET_SELECTED) {

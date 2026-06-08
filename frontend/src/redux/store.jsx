@@ -1,5 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import taskReducer, { completedTask, writeStreakStatus } from "./taskSlice";
+import uiReducer from "./uiSlice";
+import formReducer from "./formSlice";
 import userReducer from "./userSlice";
 import summaryReducer from "./summarySlice";
 
@@ -14,6 +16,8 @@ export const streakMiddleware = (_store) => (next) => (action) => {
 export const store = configureStore({
   reducer: {
     tasks: taskReducer,
+    ui: uiReducer,
+    form: formReducer,
     user: userReducer,
     summary: summaryReducer,
   },

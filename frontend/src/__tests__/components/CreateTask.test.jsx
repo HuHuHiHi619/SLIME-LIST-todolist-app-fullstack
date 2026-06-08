@@ -31,11 +31,14 @@ vi.mock("@fortawesome/free-solid-svg-icons", () => ({ faXmark: "faXmark" }));
 vi.mock("react-datepicker/dist/react-datepicker.css", () => ({}));
 
 vi.mock("../../redux/taskSlice", () => ({
-  setFormTask:     vi.fn((p) => ({ type: "tasks/setFormTask", payload: p })),
-  addSteps:        vi.fn((p) => ({ type: "tasks/addSteps", payload: p })),
-  removeStep:      vi.fn((p) => ({ type: "tasks/removeStep", payload: p })),
   fetchCategories: vi.fn(() => ({ type: "tasks/fetchCategories" })),
   createNewTask:   vi.fn((data) => ({ type: "tasks/createNewTask", payload: data })),
+}));
+
+vi.mock("../../redux/formSlice", () => ({
+  setFormTask: vi.fn((p) => ({ type: "form/setFormTask", payload: p })),
+  addSteps:    vi.fn((p) => ({ type: "form/addSteps", payload: p })),
+  removeStep:  vi.fn((p) => ({ type: "form/removeStep", payload: p })),
 }));
 
 vi.mock("../../redux/summarySlice", () => ({

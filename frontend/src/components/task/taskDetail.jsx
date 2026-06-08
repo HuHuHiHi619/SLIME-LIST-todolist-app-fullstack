@@ -17,7 +17,7 @@ import {
 
 function TaskDetail({ onClose }) {
   const dispatch = useDispatch();
-  const { selectedTask } = useSelector((state) => state.tasks);
+  const { selectedTask } = useSelector((state) => state.ui);
   const categories = useSelector((state) => state.tasks.categories);
 
   const [isUpdating, setIsUpdating] = useState(false);
