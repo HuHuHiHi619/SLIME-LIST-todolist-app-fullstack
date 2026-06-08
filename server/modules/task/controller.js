@@ -1,19 +1,10 @@
 const { isValidObjectId, Types } = require("mongoose");
-const { handleError } = require("../../controllers/helperController");
+const { handleError } = require("../../shared/errors");
 const { buildUserFilter } = require("../../shared/utils/userFilter");
 const { TASK_STATUSES } = require("../../shared/utils/taskConstants");
 const taskService = require("./service");
-
-const { ServiceError } = taskService;
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-const sendServiceError = (res, error) => {
-  if (error.name === "ServiceError") {
-    return res.status(error.statusCode).json({ error: error.message });
-  }
-  return null; // caller should call handleError
-};
+const { CreateTaskSchema, UpdateTaskSchema } = require("./schema");
+const { sendServiceError } = require("../../shared/errors");
 
 // ── GET /task  and  GET /task/:id ─────────────────────────────────────────────
 
@@ -79,7 +70,10 @@ exports.createTask = async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const savedTask = await taskService.createTask(req.body, formatUser, req.guestId);
+    const parsed = CreateTaskSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+
+    const savedTask = await taskService.createTask(parsed.data, formatUser, req.guestId);
     return res.status(201).json(savedTask);
   } catch (error) {
     return sendServiceError(res, error) || handleError(res, error, "Failed to create new task");
@@ -97,12 +91,15 @@ exports.updatedTask = async (req, res) => {
     if (!userFilter) return res.status(401).json({ error: "Unauthorized" });
     if (!formatId) return res.status(400).json({ error: "Invalid task ID" });
 
+    const parsed = UpdateTaskSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+
     const updated = await taskService.updateTask(
       formatId,
       userFilter,
       formatUser,
       req.guestId,
-      req.body
+      parsed.data
     );
     return res.status(200).json(updated);
   } catch (error) {

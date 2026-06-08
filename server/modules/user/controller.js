@@ -1,7 +1,6 @@
 const path = require("path");
-const { validationResult } = require("express-validator");
-const { upload, UPLOADS_DIR } = require("../../middleware/upload");
-const { handleError } = require("../../controllers/helperController");
+const { UPLOADS_DIR } = require("../../middleware/upload");
+const { handleError } = require("../../shared/errors");
 const { cookieOptions } = require("../../shared/utils/cookieOptions");
 const {
   setAuthCookies,
@@ -10,31 +9,19 @@ const {
   clearAccessCookie,
 } = require("../auth");
 const userService = require("./service");
-
-const sendServiceError = (res, error) => {
-  if (error.name === "ServiceError") {
-    return res.status(error.statusCode).json({ error: error.message });
-  }
-  return null; // caller falls back to generic handling
-};
+const { RegisterSchema, LoginSchema } = require("./schema");
+const { sendServiceError } = require("../../shared/errors");
 
 // ── POST /register ─────────────────────────────────────────────────────────────
 
 exports.register = async (req, res) => {
-  upload(req, res, async (error) => {
-    if (error) {
-      console.error("File upload error:", error);
-      return res.status(400).json({ error: error.message });
-    }
-  });
-
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ error: errors.array() });
+    const parsed = RegisterSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: parsed.error.issues[0].message });
     }
 
-    const { username, password, theme, notification, lastCompleted } = req.body;
+    const { username, password, theme, notification, lastCompleted } = parsed.data;
     const imageProfile = req.file
       ? path.join(UPLOADS_DIR, req.file.filename)
       : null;
@@ -60,12 +47,12 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).send({ error: errors.array() });
+    const parsed = LoginSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).send({ error: parsed.error.issues[0].message });
     }
 
-    const { username, password } = req.body;
+    const { username, password } = parsed.data;
     const result = await userService.loginUser({
       username,
       password,
