@@ -1,7 +1,8 @@
 ﻿import React, { useState } from "react";
 import { register } from "../../functions/authen";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserData, loginUser } from "../../redux/userSlice";
+import { loginUser } from "../../redux/userSlice";
+import queryClient from "../../lib/queryClient";
 import InputField from "../forms/inputField";
 import usePopup from "../../hooks/usePopup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -43,8 +44,8 @@ function AuthForm({ isRegister, setActiveTab }) {
         await new Promise((res) => setTimeout(res, 300));
         setActiveTab("login");
       } else {
-        const response = await dispatch(loginUser(user)).unwrap();
-        await dispatch(fetchUserData()).unwrap();
+        await dispatch(loginUser(user)).unwrap();
+        queryClient.invalidateQueries({ queryKey: ["user"] });
       }
     } catch (err) {
       console.error("AuthForm error:", err);
