@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchSummary,
-  fetchSummaryByCategory,
-} from "../../redux/summarySlice";
+import { useSummaryQuery, useSummaryByCategoryQuery } from "../../hooks/queries/useSummary";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { motion, animate } from "framer-motion";
 import ProgressBar from "./ProgressBar";
@@ -80,15 +76,8 @@ const GradientCircularProgressbar = ({ percentage }) => {
 };
 
 function Summary() {
-  const dispatch = useDispatch();
-  const { summary, summaryCategory } = useSelector((state) => state.summary);
-  const { isSummaryUpdated } = useSelector((state) => state.tasks);
-  const { userData } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    dispatch(fetchSummary());
-    dispatch(fetchSummaryByCategory());
-  }, [dispatch, isSummaryUpdated, userData]);
+  const { data: summary = [] } = useSummaryQuery();
+  const { data: summaryCategory = [] } = useSummaryByCategoryQuery();
 
  
 
@@ -127,7 +116,7 @@ function Summary() {
                     {item.completedRate === 100 ? (
                       <div className="font-bold tracking-wide text-2xl">
                         <p>CONGRATS !</p>
-                        <p>IT'S OVER 9000</p>
+                        <p>IT&apos;S OVER 9000</p>
                       </div>
                     ) : (
                       <div>

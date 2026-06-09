@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCategories, createNewTask } from "../../redux/taskSlice";
 import { setFormTask, addSteps, removeStep } from "../../redux/formSlice";
+import { useCategoriesQuery, useCreateTaskMutation } from "../../hooks/queries/useTasks";
 import "react-datepicker/dist/react-datepicker.css";
 import InputField from "../forms/inputField";
 import DeadlinePicker from "../forms/DeadlinePicker";
@@ -12,17 +12,14 @@ import ProgressField from "../dashboard/ProgressField";
 import Tooltip from "../feedback/Tooltip";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import { toDayISO } from "../../functions/date";
-import {
-  fetchSummary,
-  fetchSummaryByCategory,
-} from "../../redux/summarySlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function CreateTask({ onClose }) {
   const dispatch = useDispatch();
   const { formTask, progress } = useSelector((state) => state.form);
-  const { categories } = useSelector((state) => state.tasks);
+  const { data: categories = [] } = useCategoriesQuery();
+  const createMutation = useCreateTaskMutation();
   const [currentStep, setCurrentStep] = useState("");
   const [error, setError] = useState("");
 
@@ -32,7 +29,6 @@ function CreateTask({ onClose }) {
       setError("Title is required.");
       return false;
     }
-
     if (formTask.title.length > 50) {
       setError("Title cannot more than 50 characters.");
       return false;
@@ -78,11 +74,9 @@ function CreateTask({ onClose }) {
     dispatch(removeStep(index));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validator()) {
-      return;
-    }
+    if (!validator()) return;
 
     const taskData = {
       ...formTask,
@@ -91,23 +85,11 @@ function CreateTask({ onClose }) {
       startDate: formTask.startDate || toDayISO(new Date(new Date().setHours(0, 0, 0, 0))),
     };
 
-    try {
-      await dispatch(createNewTask(taskData)).unwrap();
-      try {
-        await dispatch(fetchSummary()).unwrap();
-        await dispatch(fetchSummaryByCategory()).unwrap();
-      } catch {
-        // summary refresh is non-fatal; task was created
-      }
-      onClose();
-    } catch (error) {
-      setError("Failed to create task. Please try again.");
-    }
+    createMutation.mutate(taskData, {
+      onSuccess: () => onClose(),
+      onError: () => setError("Failed to create task. Please try again."),
+    });
   };
-
-  useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
 
   return (
     <FadeUpContainer>
@@ -204,12 +186,12 @@ function CreateTask({ onClose }) {
             <div className="flex justify-between items-center">
               <div className="flex flex-col gap-2">
                 <div className="flex gap-2">
-    
                 </div>
               </div>
               <button
                 type="submit"
                 className="register tracking-wider"
+                disabled={createMutation.isPending}
               >
                 CREATE
               </button>

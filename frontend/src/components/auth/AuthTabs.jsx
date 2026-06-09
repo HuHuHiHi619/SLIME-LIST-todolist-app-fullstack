@@ -62,5 +62,6 @@ const AuthTabs = forwardRef((props,ref) => {
   
   );
 })
+AuthTabs.displayName = "AuthTabs";
 
 export default AuthTabs;

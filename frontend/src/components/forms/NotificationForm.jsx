@@ -15,7 +15,7 @@ import Tooltip from "../feedback/Tooltip";
 import { AnimatePresence } from "framer-motion";
 
 const NotificationForm = () => {
-  const { instruction } = useSelector((state) => state.summary);
+  const { instruction } = useSelector((state) => state.ui);
   const { handleIsInstruct, popupInstructRef } = usePopup();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 

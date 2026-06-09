@@ -1,16 +1,9 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchNotification } from "../../redux/summarySlice";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt } from "@fortawesome/free-solid-svg-icons";
 
 function NotificationField() {
-  const dispatch = useDispatch();
-  const { notification } = useSelector((state) => state.summary);
- 
-  useEffect(() => {
-    dispatch(fetchNotification());
-  }, [dispatch]);
+  const notification = [];
   return (
     <div className="relative">
       <div className="absolute top-12 -right-12 mt-2  w-[300px] h-[300px]  bg-purpleMain rounded-2xl p-6 list-shadow">

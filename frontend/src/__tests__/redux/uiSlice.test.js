@@ -6,6 +6,8 @@ import reducer, {
   setHover,
   toggleSidebarPinned,
   setSelectedTask,
+  setTaskError,
+  clearTaskError,
 } from "../../redux/uiSlice";
 
 const init = () => reducer(undefined, { type: "@@INIT" });
@@ -21,6 +23,7 @@ describe("uiSlice — initial state", () => {
     expect(state.isSidebarPinned).toBe(false);
     expect(state.activeMenu).toBe("");
     expect(state.selectedTask).toBe(null);
+    expect(state.taskError).toBe(null);
   });
 });
 
@@ -76,55 +79,14 @@ describe("uiSlice — UI toggles", () => {
   });
 });
 
-describe("uiSlice — extraReducers: selectedTask sync", () => {
-  it("updatedTask.fulfilled updates selectedTask when IDs match", () => {
-    const state = {
-      ...init(),
-      selectedTask: { _id: "a", title: "old", category: "x" },
-      isTaskDetail: true,
-    };
-    const next = reducer(state, {
-      type: "task/updateTask/fulfilled",
-      payload: { _id: "a", title: "new", category: "y" },
-    });
-    expect(next.selectedTask.title).toBe("new");
-    expect(next.selectedTask.category).toBe("y");
+describe("uiSlice — taskError", () => {
+  it("setTaskError stores the message", () => {
+    const state = reducer(init(), setTaskError("network error"));
+    expect(state.taskError).toBe("network error");
   });
 
-  it("updatedTask.fulfilled does not touch selectedTask when IDs differ", () => {
-    const state = {
-      ...init(),
-      selectedTask: { _id: "b", title: "other" },
-    };
-    const next = reducer(state, {
-      type: "task/updateTask/fulfilled",
-      payload: { _id: "a", title: "new" },
-    });
-    expect(next.selectedTask._id).toBe("b");
-  });
-
-  it("completedTask.fulfilled updates selectedTask status when IDs match", () => {
-    const state = {
-      ...init(),
-      selectedTask: { _id: "a", status: "pending" },
-      isTaskDetail: true,
-    };
-    const next = reducer(state, {
-      type: "task/completedTask/fulfilled",
-      payload: { _id: "a", status: "completed" },
-    });
-    expect(next.selectedTask.status).toBe("completed");
-  });
-
-  it("completedTask.fulfilled does not touch selectedTask when IDs differ", () => {
-    const state = {
-      ...init(),
-      selectedTask: { _id: "b", status: "pending" },
-    };
-    const next = reducer(state, {
-      type: "task/completedTask/fulfilled",
-      payload: { _id: "a", status: "completed" },
-    });
-    expect(next.selectedTask.status).toBe("pending");
+  it("clearTaskError resets to null", () => {
+    const errored = reducer(init(), setTaskError("boom"));
+    expect(reducer(errored, clearTaskError()).taskError).toBe(null);
   });
 });

@@ -1,53 +1,36 @@
-﻿import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import InputField from "../forms/inputField";
 import StartDatePicker from "../forms/StartDatePicker";
 import DeadlinePicker from "../forms/DeadlinePicker";
 import ProgressField from "../dashboard/ProgressField";
 import CategoryTagField from "../forms/CategoryTagField";
 import PriorityField from "../forms/PriorityField";
-import { updatedTask } from "../../redux/taskSlice";
 import { toDayISO } from "../../functions/date";
 import { debounce } from "lodash";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import FadeUpContainer from "../animation/FadeUpContainer";
-import {
-  fetchSummary,
-  fetchSummaryByCategory,
-} from "../../redux/summarySlice";
+import { useCategoriesQuery, useUpdateTaskMutation } from "../../hooks/queries/useTasks";
 
 function TaskDetail({ onClose }) {
-  const dispatch = useDispatch();
   const { selectedTask } = useSelector((state) => state.ui);
-  const categories = useSelector((state) => state.tasks.categories);
+  const { data: categories = [] } = useCategoriesQuery();
+  const updateMutation = useUpdateTaskMutation();
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [editedTask, setEditedTask] = useState(selectedTask || {});
   const [currentStep, setCurrentStep] = useState("");
 
+  // mutate is stable across renders (TQ guarantee) — safe to close over in a ref-initialized debounce
   const debouncedUpdateTask = useRef(
-    debounce(async (taskData) => {
-      try {
-        setIsUpdating(true);
-        const taskId = taskData._id;
-        const result = await dispatch(
-          updatedTask({ taskId, taskData })
-        ).unwrap();
-
-        if (result) {
-          await Promise.all([
-            dispatch(fetchSummaryByCategory()),
-            dispatch(fetchSummary()),
-          ]);
-        }
-      } catch (error) {
-        console.error("Failed to update task:", error);
-        return null;
-      } finally {
-        setIsUpdating(false);
-      }
+    debounce((taskData) => {
+      setIsUpdating(true);
+      updateMutation.mutate(
+        { taskId: taskData._id, taskData },
+        { onSettled: () => setIsUpdating(false) }
+      );
     }, 500)
   ).current;
-  // update state every time selectedtask changed
+
   useEffect(() => {
     if (!isUpdating && selectedTask) {
       setEditedTask(selectedTask);
@@ -56,7 +39,6 @@ function TaskDetail({ onClose }) {
 
   useEffect(() => {
     return () => {
-      // บังคับ run debounce เมื่อ unmount
       debouncedUpdateTask.flush();
     };
   }, [debouncedUpdateTask]);
@@ -66,21 +48,21 @@ function TaskDetail({ onClose }) {
       const { name, value } = e.target;
       const updatedValue = value.trim() === "" ? "" : value;
       setEditedTask((prevTask) => {
-        const updatedTask = { ...prevTask };
+        const next = { ...prevTask };
         if (name === "category") {
           if (value === "no category") {
-            updatedTask[name] = "";
+            next[name] = "";
           } else {
             const selectedCat = categories.find(
               (category) => category.categoryName === value
             );
-            updatedTask[name] = selectedCat ? selectedCat : "";
+            next[name] = selectedCat ? selectedCat : "";
           }
         } else {
-          updatedTask[name] = updatedValue;
+          next[name] = updatedValue;
         }
-        debouncedUpdateTask(updatedTask);
-        return updatedTask;
+        debouncedUpdateTask(next);
+        return next;
       });
     },
     [categories, debouncedUpdateTask]
@@ -93,11 +75,9 @@ function TaskDetail({ onClose }) {
   const handleDateChange = useCallback(
     (date, field) => {
       setEditedTask((prevTask) => {
-        // แปลง date เป็น string เพื่อเก็บใน redux (shared helper — see P5 #18)
-        const updatedTask = { ...prevTask, [field]: toDayISO(date) };
-
-        debouncedUpdateTask(updatedTask);
-        return updatedTask;
+        const next = { ...prevTask, [field]: toDayISO(date) };
+        debouncedUpdateTask(next);
+        return next;
       });
     },
     [debouncedUpdateTask]
@@ -111,7 +91,7 @@ function TaskDetail({ onClose }) {
             ...(prevTask.progress?.steps || []),
             { label: currentStep, completed: false },
           ];
-          const updatedTask = {
+          const next = {
             ...prevTask,
             progress: {
               ...prevTask.progress,
@@ -123,8 +103,8 @@ function TaskDetail({ onClose }) {
                   : false,
             },
           };
-          debouncedUpdateTask(updatedTask);
-          return updatedTask;
+          debouncedUpdateTask(next);
+          return next;
         });
         setCurrentStep("");
       }
@@ -137,7 +117,7 @@ function TaskDetail({ onClose }) {
       setEditedTask((prevTask) => {
         const updatedSteps =
           prevTask.progress?.steps.filter((_, i) => i !== index) || [];
-        const updatedTask = {
+        const next = {
           ...prevTask,
           progress: {
             ...prevTask.progress,
@@ -149,8 +129,8 @@ function TaskDetail({ onClose }) {
                 : false,
           },
         };
-        debouncedUpdateTask(updatedTask);
-        return updatedTask;
+        debouncedUpdateTask(next);
+        return next;
       });
     },
     [debouncedUpdateTask]
@@ -164,7 +144,7 @@ function TaskDetail({ onClose }) {
             i === index ? { ...step, completed: !step.completed } : step
           ) || [];
 
-        const updatedTask = {
+        const next = {
           ...prevTask,
           progress: {
             steps: updatedSteps,
@@ -175,8 +155,8 @@ function TaskDetail({ onClose }) {
                 : false,
           },
         };
-        debouncedUpdateTask(updatedTask);
-        return updatedTask;
+        debouncedUpdateTask(next);
+        return next;
       });
     },
     [debouncedUpdateTask]
@@ -283,4 +263,3 @@ function TaskDetail({ onClose }) {
 }
 
 export default TaskDetail;
-

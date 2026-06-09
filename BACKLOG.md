@@ -33,9 +33,9 @@ on any fix plan before coding (standing memory).
 ## Housekeeping / parked
 
 - **#22** One orphan guest task `PASS-create-*` left in **dev** Atlas from a verify run (guest cookie gone, not deletable via UI). Harmless; drop it next time you're in dev Atlas.
-- **Prod data (parked from P0):** prod Atlas `slimelist` is completely empty. If real prod users/tasks were ever expected, the data is not where `.env.production`'s `MONGO_URI` points — chase before trusting prod.
+- **Prod data:** prod Atlas `slimelist` is completely empty — verify `MONGO_URI` in `.env.production` points to the right cluster before any real-user deploy. → **Pre-deploy checklist item.**
 - **Dependabot:** GitHub reports vulnerabilities on the default branch — separate track, not triaged.
-- **Lint not green repo-wide:** `react/prop-types` fails across prop-taking components (e.g. `PublicRoute.jsx`) because `prop-types` was never installed. `npm run lint` is already non-green — install `prop-types` + annotate, or disable the rule in eslint config, before letting lint gate CI.
+- **Lint green:** `npm run lint` passes (0 errors, 69 warnings). Warnings are legacy unused `React` imports — not blocking. New code must stay error-free.
 
 ---
 
@@ -46,10 +46,7 @@ Most of `components/pages/ui/`, `animation/`, `user/` (`Home`, `AllTask`, `Upcom
 
 ---
 
-## Suggested skills / tooling
-`/scrutinize` (before any fix plan) · `/diagnose` (trace-before-fix) · `/verify` (run the app after a change) ·
-`/tdd` (Vitest/Jest regressions) · `/code-review` before committing a phase ·
-`server-patterns` skill before editing backend modules.
+
 
 ## Related (reference, don't duplicate)
 Completed work: [`.claude/history/COMPLETED-2026-06.md`](.claude/history/COMPLETED-2026-06.md) ·

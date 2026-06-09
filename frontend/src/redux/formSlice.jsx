@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createNewTask } from "./taskSlice";
 
 // Safe date coercion for form fields. `undefined` = field absent → keep current;
 // `null` = explicit clear → stay null; an invalid date keeps the current value.
@@ -66,12 +65,6 @@ const formSlice = createSlice({
       );
       state.progress.history.timestamps = new Date().toISOString();
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(createNewTask.fulfilled, (state) => {
-      state.formTask = initialState.formTask;
-      state.progress = initialState.progress;
-    });
   },
 });
 

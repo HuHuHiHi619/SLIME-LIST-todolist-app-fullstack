@@ -82,19 +82,3 @@ describe("formSlice — addSteps / removeStep", () => {
   });
 });
 
-describe("formSlice — extraReducers: createNewTask.fulfilled auto-reset", () => {
-  it("resets formTask and progress after task creation", () => {
-    const dirty = {
-      ...init(),
-      formTask: { ...init().formTask, title: "My Task" },
-      progress: { ...init().progress, totalSteps: 3, steps: [{ label: "a" }] },
-    };
-    const next = reducer(dirty, {
-      type: "task/createNewTask/fulfilled",
-      payload: { _id: "new" },
-    });
-    expect(next.formTask.title).toBe("");
-    expect(next.progress.totalSteps).toBe(0);
-    expect(next.progress.steps).toEqual([]);
-  });
-});

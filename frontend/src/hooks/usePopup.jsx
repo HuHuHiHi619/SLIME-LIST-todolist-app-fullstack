@@ -1,24 +1,20 @@
-﻿import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  completedTask,
-  removedTask,
-  removedCategory,
-  removedAllTask,
-} from "../redux/taskSlice";
 import {
   setSelectedTask,
   toggleCreatePopup,
   togglePopup,
   setHover,
   toggleSidebarPinned,
+  toggleInstructPopup,
 } from "../redux/uiSlice";
-import { toggleInstructPopup } from "../redux/summarySlice";
+import { toggleRegisterPopup } from "../redux/userSlice";
 import {
-  fetchSummary,
-  fetchSummaryByCategory,
-} from "../redux/summarySlice";
-import { fetchUserData, toggleRegisterPopup } from "../redux/userSlice";
+  useCompleteTaskMutation,
+  useRemoveTaskMutation,
+  useRemoveAllTaskMutation,
+  useRemoveCategoryMutation,
+} from "./queries/useTasks";
 
 function usePopup() {
   const dispatch = useDispatch();
@@ -28,12 +24,16 @@ function usePopup() {
   const sidebarRef = useRef(null);
   const popupRegisterRef = useRef(null);
   const { isPopup } = useSelector((state) => state.ui);
-  
 
-  const handleIsCreate = async () => {
+  const completeTaskMutation = useCompleteTaskMutation();
+  const removeTaskMutation = useRemoveTaskMutation();
+  const removeAllTaskMutation = useRemoveAllTaskMutation();
+  const removeCategoryMutation = useRemoveCategoryMutation();
+
+  const handleIsCreate = () => {
     dispatch(toggleCreatePopup());
-    await dispatch(fetchSummary()).unwrap();
   };
+
   const handleIsInstruct = () => {
     dispatch(toggleInstructPopup());
   };
@@ -45,9 +45,11 @@ function usePopup() {
   const handleCloseDetail = () => {
     dispatch(setSelectedTask(null));
   };
+
   const handleToggleSidebar = () => {
     dispatch(toggleSidebarPinned());
   };
+
   const handleToggleRegister = () => {
     dispatch(toggleRegisterPopup());
   };
@@ -62,44 +64,21 @@ function usePopup() {
     dispatch(togglePopup(mode));
   };
 
-  const handleCompletedTask = async (task) => {
-    try {
-      await dispatch(completedTask(task._id)).unwrap();
-      await dispatch(fetchSummary()).unwrap();
-      await dispatch(fetchUserData()).unwrap();
-    } catch {
-      // failure surfaced via TaskErrorToast (rejected matcher)
-    }
+  const handleCompletedTask = (task) => {
+    completeTaskMutation.mutate(task._id);
   };
 
-  const handleRemovedTask = async (task) => {
-    try {
-      await dispatch(removedTask(task._id)).unwrap();
-      await dispatch(fetchSummary()).unwrap();
-    } catch {
-      // failure surfaced via TaskErrorToast (rejected matcher)
-    }
+  const handleRemovedTask = (task) => {
+    removeTaskMutation.mutate(task._id);
   };
 
-  const handleRemovedAllTask = async () => {
-    try {
-      await dispatch(removedAllTask()).unwrap();
-      await dispatch(fetchSummary()).unwrap();
-    } catch {
-      // failure surfaced via TaskErrorToast (rejected matcher)
-    }
+  const handleRemovedAllTask = () => {
+    removeAllTaskMutation.mutate();
   };
 
-  const handleRemovedItem = async (id, type) => {
-    try {
-      if (type === "category") {
-        // Pessimistic: removedCategory.fulfilled removes it from the list only
-        // after the server confirms (no optimistic remove → no rollback needed).
-        await dispatch(removedCategory(id)).unwrap();
-        await dispatch(fetchSummaryByCategory()).unwrap();
-      }
-    } catch {
-      // failure surfaced via TaskErrorToast (rejected matcher)
+  const handleRemovedItem = (id, type) => {
+    if (type === "category") {
+      removeCategoryMutation.mutate(id);
     }
   };
 
@@ -157,4 +136,3 @@ function usePopup() {
 }
 
 export default usePopup;
-
