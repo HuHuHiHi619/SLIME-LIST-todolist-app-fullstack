@@ -1,8 +1,7 @@
 ﻿import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
-import { fetchUserData } from "../../redux/userSlice";
 import FlameBox from "../animation/FlameBox";
 import Tooltip from "../feedback/Tooltip";
 import ReactDOM from "react-dom";
@@ -10,7 +9,6 @@ import ReactDOM from "react-dom";
 import FadeUpContainer from "../animation/FadeUpContainer";
 
 function StreakField() {
-  const dispatch = useDispatch();
   const { userData, isAuthenticated } = useSelector((state) => state.user);
   const [streakPopup, setStreakPopup] = useState(false);
   const [lastPopupDate, setLastPopupDate] = useState(
@@ -53,12 +51,6 @@ function StreakField() {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
-
-  useEffect(() => {
-    if (userData.id) {
-      dispatch(fetchUserData(userData.id));
-    }
-  }, [dispatch, userData.id]);
 
   const streak = userData.currentStreak;
 

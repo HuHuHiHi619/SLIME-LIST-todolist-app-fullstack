@@ -1,9 +1,7 @@
-﻿import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUserData } from "../../redux/userSlice";
+﻿import React from "react";
+import { useSelector } from "react-redux";
 
 function BadgeField() {
-  const dispatch = useDispatch();
   const { userData, isAuthenticated } = useSelector((state) => state.user);
   const badgeImages = {
     gold : "./images/Gold-badge.png",
@@ -12,11 +10,6 @@ function BadgeField() {
     iron : "./images/Iron-badge.png"
   }
 
-  useEffect(() => {
-    if (userData.id) {
-      dispatch(fetchUserData(userData.id));
-    }
-  }, [dispatch, userData.id]);
   return (
     <div className="justify-start items-center  ">
       {isAuthenticated ? (
