@@ -1,18 +1,17 @@
-﻿import React, { useState, useEffect, useRef } from "react";
-import { debounce } from "lodash";
-import { useDispatch, useSelector } from "react-redux";
-import { clearSearchResults, fetchSearchTasks } from "../../redux/taskSlice";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import SearchTaskList from "../task/SearchTaskList";
 import usePopup from "../../hooks/usePopup";
 import { motion } from "framer-motion";
+import { useSearchTasksQuery } from "../../hooks/queries/useTasks";
 
 function SearchField({ handleSearchToggle, isSearchOpen, className, alwaysOpen = false }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const { searchResults } = useSelector((state) => state.tasks);
   const { selectedTask } = useSelector((state) => state.ui);
   const { isAuthenticated } = useSelector((state) => state.user);
+  const { data: searchResults = [] } = useSearchTasksQuery(searchTerm);
 
   const {
     handleIsCreate,
@@ -20,25 +19,9 @@ function SearchField({ handleSearchToggle, isSearchOpen, className, alwaysOpen =
     handleCompletedTask,
     handleRemovedTask,
   } = usePopup();
-  const dispatch = useDispatch();
-
-  // useRef.current keeps a single debounced fn across renders (recreating it
-  // each render defeated debouncing). dispatch is stable, so capturing it once
-  // is safe. >50 chars: no-op; empty: clear only; 1–50: search.
-  const debounceSearch = useRef(
-    debounce((term) => {
-      if (!term) {
-        dispatch(clearSearchResults());
-      } else if (term.length <= 50) {
-        dispatch(fetchSearchTasks(term));
-      }
-    }, 500)
-  ).current;
 
   const handleSearch = (e) => {
-    const { value } = e.target;
-    setSearchTerm(value);
-    debounceSearch(value);
+    setSearchTerm(e.target.value);
   };
 
   const handleSearchTaskClick = (task) => {
@@ -48,31 +31,20 @@ function SearchField({ handleSearchToggle, isSearchOpen, className, alwaysOpen =
     }, 100);
   };
 
-  useEffect(() => {
-    return () => {
-      debounceSearch.cancel();
-      dispatch(clearSearchResults());
-    };
-  }, [dispatch, debounceSearch]);
-
   return (
     <>
       {isAuthenticated ? (
         <div className="relative">
-         
-      
-            <button>
-              <FontAwesomeIcon
-                icon={faSearch}
-                onClick={handleSearchToggle}
-                className={`z-30 absolute top-2.5 hover:text-purpleBorder text-xl text-gray-400 cursor-pointer transition-transform duration-300 ${
-                  isSearchOpen ? "translate-x-[-200%] left-16" : "translate-x-0 -left-2"
-                }`}
-              />
-            </button>
-        
+          <button>
+            <FontAwesomeIcon
+              icon={faSearch}
+              onClick={handleSearchToggle}
+              className={`z-30 absolute top-2.5 hover:text-purpleBorder text-xl text-gray-400 cursor-pointer transition-transform duration-300 ${
+                isSearchOpen ? "translate-x-[-200%] left-16" : "translate-x-0 -left-2"
+              }`}
+            />
+          </button>
 
-          {/* ถ้า alwaysOpen = true ใช้ input ธรรมดา, ถ้าไม่ใช้ motion.input */}
           {alwaysOpen ? (
             <input
               type="text"
@@ -130,4 +102,3 @@ function SearchField({ handleSearchToggle, isSearchOpen, className, alwaysOpen =
 }
 
 export default SearchField;
-

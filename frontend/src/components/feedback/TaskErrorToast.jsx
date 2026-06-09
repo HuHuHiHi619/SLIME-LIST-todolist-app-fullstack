@@ -1,14 +1,13 @@
-﻿import { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearTaskError } from "../../redux/taskSlice";
+import { clearTaskError } from "../../redux/uiSlice";
 
-// Surfaces task mutation failures (#21 / P4 #2). Reads state.tasks.error — which the
-// rejected matcher in taskSlice sets — and auto-dismisses. Mounted once at App level.
-// Self-rolled (no toast dependency); reuses the bg-purpleMain styling idiom.
+// Surfaces task mutation failures. Reads state.ui.taskError — set by mutation onError
+// via setTaskError — and auto-dismisses. Mounted once at App level.
 const AUTO_DISMISS_MS = 4000;
 
 const TaskErrorToast = () => {
-  const error = useSelector((state) => state.tasks.error);
+  const error = useSelector((state) => state.ui.taskError);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -53,4 +52,3 @@ const TaskErrorToast = () => {
 };
 
 export default TaskErrorToast;
-

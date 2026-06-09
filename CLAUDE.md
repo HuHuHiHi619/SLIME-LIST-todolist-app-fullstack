@@ -117,3 +117,8 @@ Act as a Senior Full-Stack Developer and Mentor. Explain the architectural "why"
 ### Security Rules
 - When reading `.env` files, never print actual secret values. Show keys as: `SECRET_KEY=******`
 - Never include real credentials in any code suggestions.
+
+## Suggested skills / tooling
+`/scrutinize` (before any fix plan) · `/diagnose` (trace-before-fix) · `/verify` (run the app after a change) ·
+`/tdd` (Vitest/Jest regressions) · `/code-review` before committing a phase ·
+`server-patterns` skill before editing backend modules.

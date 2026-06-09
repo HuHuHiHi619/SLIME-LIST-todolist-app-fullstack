@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { updatedTask, completedTask } from "./taskSlice";
 
 const initialState = {
   isCreate: false,
@@ -10,6 +9,8 @@ const initialState = {
   isSidebarPinned: false,
   activeMenu: "",
   selectedTask: null,
+  taskError: null,
+  instruction: false,
 };
 
 const uiSlice = createSlice({
@@ -37,29 +38,15 @@ const uiSlice = createSlice({
       // Deterministic: a task opens the detail panel, null closes it.
       state.isTaskDetail = action.payload != null;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(updatedTask.fulfilled, (state, action) => {
-        const updated = action.payload;
-        if (state.selectedTask && state.selectedTask._id === updated._id) {
-          state.selectedTask = {
-            ...state.selectedTask,
-            ...updated,
-            category: updated.category,
-          };
-        }
-      })
-      .addCase(completedTask.fulfilled, (state, action) => {
-        const completedTaskId = action.payload._id;
-        const updatedTaskData = action.payload.updatedTask || action.payload;
-        if (state.selectedTask && state.selectedTask._id === completedTaskId) {
-          state.selectedTask = {
-            ...state.selectedTask,
-            status: updatedTaskData.status,
-          };
-        }
-      });
+    setTaskError(state, action) {
+      state.taskError = action.payload;
+    },
+    clearTaskError(state) {
+      state.taskError = null;
+    },
+    toggleInstructPopup(state) {
+      state.instruction = !state.instruction;
+    },
   },
 });
 
@@ -70,5 +57,8 @@ export const {
   setHover,
   toggleSidebarPinned,
   setSelectedTask,
+  setTaskError,
+  clearTaskError,
+  toggleInstructPopup,
 } = uiSlice.actions;
 export default uiSlice.reducer;

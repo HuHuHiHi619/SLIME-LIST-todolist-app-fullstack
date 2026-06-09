@@ -4,6 +4,14 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
+vi.mock("../../hooks/queries/useTasks", () => ({
+  useCategoriesQuery: vi.fn(() => ({ data: [] })),
+  useUpdateTaskMutation: vi.fn(() => ({
+    mutate: vi.fn(),
+    isPending: false,
+  })),
+}));
+
 // Stub all child UI components — we only care about the effect / state behaviour
 vi.mock("../../components/forms/inputField", () => ({
   default: ({ value, onChange, name }) => (

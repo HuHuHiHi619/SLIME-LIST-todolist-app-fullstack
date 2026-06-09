@@ -1,4 +1,4 @@
-﻿/* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 
@@ -30,9 +30,9 @@ vi.mock("@fortawesome/react-fontawesome", () => ({ FontAwesomeIcon: () => null }
 vi.mock("@fortawesome/free-solid-svg-icons", () => ({ faXmark: "faXmark" }));
 vi.mock("react-datepicker/dist/react-datepicker.css", () => ({}));
 
-vi.mock("../../redux/taskSlice", () => ({
-  fetchCategories: vi.fn(() => ({ type: "tasks/fetchCategories" })),
-  createNewTask:   vi.fn((data) => ({ type: "tasks/createNewTask", payload: data })),
+vi.mock("../../hooks/queries/useTasks", () => ({
+  useCategoriesQuery: vi.fn(() => ({ data: [] })),
+  useCreateTaskMutation: vi.fn(),
 }));
 
 vi.mock("../../redux/formSlice", () => ({
@@ -41,13 +41,8 @@ vi.mock("../../redux/formSlice", () => ({
   removeStep:  vi.fn((p) => ({ type: "form/removeStep", payload: p })),
 }));
 
-vi.mock("../../redux/summarySlice", () => ({
-  fetchSummary:           vi.fn(() => ({ type: "summary/fetchSummary" })),
-  fetchSummaryByCategory: vi.fn(() => ({ type: "summary/fetchSummaryByCategory" })),
-}));
-
 import CreateTask from "../../components/task/CreateTask";
-import { createNewTask } from "../../redux/taskSlice";
+import { useCreateTaskMutation } from "../../hooks/queries/useTasks";
 import { useDispatch, useSelector } from "react-redux";
 
 const baseFormTask = {
@@ -63,7 +58,6 @@ const baseFormTask = {
 const baseSelector = {
   formTask: { ...baseFormTask },
   progress: { steps: [], totalSteps: 0, completedSteps: 0 },
-  categories: [],
 };
 
 function submitForm() {
@@ -72,24 +66,19 @@ function submitForm() {
   );
 }
 
-describe("CreateTask — BL #20 summary-fetch failure regression", () => {
-  let mockDispatch;
+describe("CreateTask — mutation success / failure", () => {
+  let mockMutate;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockDispatch = vi.fn();
-    useDispatch.mockReturnValue(mockDispatch);
+    mockMutate = vi.fn();
+    useCreateTaskMutation.mockReturnValue({ mutate: mockMutate, isPending: false });
+    useDispatch.mockReturnValue(vi.fn());
     useSelector.mockReturnValue(baseSelector);
   });
 
-  it("calls onClose even when fetchSummary rejects after successful task creation", async () => {
-    mockDispatch.mockImplementation((action) => {
-      if (action?.type === "summary/fetchSummary") {
-        return { unwrap: () => Promise.reject(new Error("network")) };
-      }
-      return { unwrap: () => Promise.resolve({ _id: "t1" }) };
-    });
-
+  it("calls onClose when mutate fires the onSuccess callback", async () => {
+    mockMutate.mockImplementation((_data, { onSuccess }) => onSuccess());
     const onClose = vi.fn();
     render(<CreateTask onClose={onClose} />);
 
@@ -98,14 +87,8 @@ describe("CreateTask — BL #20 summary-fetch failure regression", () => {
     expect(onClose).toHaveBeenCalledOnce();
   });
 
-  it("does NOT call onClose when createNewTask rejects", async () => {
-    mockDispatch.mockImplementation((action) => {
-      if (action?.type === "tasks/createNewTask") {
-        return { unwrap: () => Promise.reject(new Error("server error")) };
-      }
-      return { unwrap: () => Promise.resolve({}) };
-    });
-
+  it("does NOT call onClose when mutate fires the onError callback", async () => {
+    mockMutate.mockImplementation((_data, { onError }) => onError(new Error("server error")));
     const onClose = vi.fn();
     render(<CreateTask onClose={onClose} />);
 
@@ -113,17 +96,25 @@ describe("CreateTask — BL #20 summary-fetch failure regression", () => {
 
     expect(onClose).not.toHaveBeenCalled();
   });
+
+  it("shows an inline error message when mutation fails", async () => {
+    mockMutate.mockImplementation((_data, { onError }) => onError(new Error("fail")));
+    render(<CreateTask onClose={() => {}} />);
+
+    await act(async () => { submitForm(); });
+
+    expect(screen.getByText(/failed to create task/i)).toBeTruthy();
+  });
 });
 
 describe("CreateTask — BL #24 startDate midnight regression", () => {
-  let mockDispatch;
+  let mockMutate;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockDispatch = vi
-      .fn()
-      .mockReturnValue({ unwrap: () => Promise.resolve({ _id: "t1" }) });
-    useDispatch.mockReturnValue(mockDispatch);
+    mockMutate = vi.fn();
+    useCreateTaskMutation.mockReturnValue({ mutate: mockMutate, isPending: false });
+    useDispatch.mockReturnValue(vi.fn());
     useSelector.mockReturnValue({
       ...baseSelector,
       formTask: { ...baseFormTask, startDate: "" },
@@ -135,8 +126,8 @@ describe("CreateTask — BL #24 startDate midnight regression", () => {
 
     await act(async () => { submitForm(); });
 
-    expect(createNewTask).toHaveBeenCalled();
-    const taskData = createNewTask.mock.calls[0][0];
+    expect(mockMutate).toHaveBeenCalled();
+    const taskData = mockMutate.mock.calls[0][0];
     const startDate = new Date(taskData.startDate);
     expect(startDate.getUTCHours()).toBe(0);
     expect(startDate.getUTCMinutes()).toBe(0);
@@ -155,9 +146,7 @@ describe("CreateTask — BL #24 startDate midnight regression", () => {
 
     await act(async () => { submitForm(); });
 
-    const taskData = createNewTask.mock.calls[0][0];
+    const taskData = mockMutate.mock.calls[0][0];
     expect(taskData.startDate).toBe(explicit);
   });
 });
-
-

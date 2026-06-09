@@ -12,12 +12,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCategories, setCategories } from "../../redux/taskSlice";
-import {
-  setActiveMenu,
-  toggleSidebarPinned,
-  togglePopup,
-} from "../../redux/uiSlice";
+import { setActiveMenu, toggleSidebarPinned, togglePopup } from "../../redux/uiSlice";
+import { useCategoriesQuery } from "../../hooks/queries/useTasks";
+import queryClient from "../../lib/queryClient";
 import SidebarLink from "./SidebarLink";
 import CreateEntity from "../task/CreateEntity";
 import usePopup from "../../hooks/usePopup";
@@ -28,7 +25,7 @@ function Sidebar() {
   const dispatch = useDispatch();
   const { activeMenu, isHover, isPopup, isSidebarPinned, popupMode } =
     useSelector((state) => state.ui);
-  const { categories } = useSelector((state) => state.tasks);
+  const { data: categories = [] } = useCategoriesQuery();
  
 
   const {
@@ -40,17 +37,12 @@ function Sidebar() {
     sidebarRef,
   } = usePopup();
 
-  const handleAddItem = async (newItem) => {
+  const handleAddItem = async () => {
     if (popupMode === "category") {
-      dispatch(setCategories([...categories, newItem]));
-      await dispatch(fetchCategories()).unwrap();
+      await queryClient.invalidateQueries({ queryKey: ["categories"] });
     }
     dispatch(togglePopup(""));
   };
-
-  useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
 
   useEffect(() => {
     dispatch(setActiveMenu(location.pathname));

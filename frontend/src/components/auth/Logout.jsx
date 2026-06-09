@@ -1,10 +1,9 @@
 ﻿import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { logoutUser, toggleRegisterPopup } from "../../redux/userSlice";
-import { clearTask } from "../../redux/taskSlice";
+import queryClient from "../../lib/queryClient";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { clearSummaryState } from "../../redux/summarySlice";
 import FadeUpContainer from "../animation/FadeUpContainer";
 
 import ReactDOM from "react-dom";
@@ -18,7 +17,10 @@ function Logout() {
       const response = await dispatch(logoutUser()).unwrap();
       localStorage.clear();
 
-      await Promise.all([dispatch(clearTask()), dispatch(clearSummaryState())]);
+      queryClient.removeQueries({ queryKey: ["tasks"] });
+      queryClient.removeQueries({ queryKey: ["summary"] });
+      queryClient.removeQueries({ queryKey: ["summaryByCategory"] });
+      queryClient.setQueryData(["user"], null);
     } catch (error) {
       console.error("Logout failed:", error);
       alert("Logout failed. Please try again.");

@@ -2,10 +2,10 @@ import { describe, it, expect } from "vitest";
 import reducer, {
   loginUser,
   logoutUser,
-  fetchUserData,
   toggleRegisterPopup,
   setAuthError,
   restoreState,
+  setUserData,
 } from "../../redux/userSlice";
 
 const init = () => reducer(undefined, { type: "@@INIT" });
@@ -71,7 +71,7 @@ describe("userSlice — login lifecycle", () => {
   });
 });
 
-describe("userSlice — logout and fetch", () => {
+describe("userSlice — logout and setUserData", () => {
   it("logoutUser.fulfilled resets to guest defaults", () => {
     const loggedIn = {
       ...init(),
@@ -85,32 +85,12 @@ describe("userSlice — logout and fetch", () => {
     expect(state.userData.id).toBe("");
   });
 
-  it("fetchUserData.fulfilled merges profile and authenticates", () => {
-    const state = reducer(init(), {
-      type: fetchUserData.fulfilled.type,
-      payload: { id: "u9", username: "bob", currentStreak: 4 },
-    });
+  it("setUserData merges profile and authenticates", () => {
+    const state = reducer(init(), setUserData({ id: "u9", username: "bob", currentStreak: 4 }));
     expect(state.isAuthenticated).toBe(true);
     expect(state.isGuest).toBe(false);
     expect(state.userData.id).toBe("u9");
     expect(state.userData.currentStreak).toBe(4);
-  });
-
-  it("fetchUserData.rejected clears auth and records error from payload", () => {
-    const state = reducer(
-      { ...init(), isAuthenticated: true },
-      { type: fetchUserData.rejected.type, payload: "expired" }
-    );
-    expect(state.loading).toBe(false);
-    expect(state.isAuthenticated).toBe(false);
-    expect(state.authError).toBe("expired");
-  });
-
-  it("fetchUserData.rejected resets isGuest to true even when previously authenticated", () => {
-    const loggedIn = { ...init(), isAuthenticated: true, isGuest: false };
-    const state = reducer(loggedIn, { type: fetchUserData.rejected.type, payload: "token expired" });
-    expect(state.isGuest).toBe(true);
-    expect(state.isAuthenticated).toBe(false);
   });
 
   it("restoreState userData is a fresh object, not shared with a previous reset", () => {
