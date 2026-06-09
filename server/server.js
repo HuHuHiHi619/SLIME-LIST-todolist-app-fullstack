@@ -17,7 +17,6 @@ const {
   resetDailyStreakStatus,
 } = require("./job/cronJob");
 
-const imagesPath = path.join(__dirname, "../images/badges");
 connectDb();
 app.use(morgan("dev"));
 app.use(
@@ -43,8 +42,6 @@ app.use(
   compression(),
   express.static(path.join(__dirname, "uploads"))
 );
-app.use("/images", compression(), express.static(imagesPath));
-
 checkOverdueTasks();
 
 readdirSync("./Routes").map((route) =>

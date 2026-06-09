@@ -55,7 +55,6 @@ const resetDailyStreakStatus = async () => {
           
       if(isStreakBroken){
         user.currentStreak = 0
-        user.currentBadge = "iron"
         user.alreadyCompletedToday = false
         await user.save()
       }

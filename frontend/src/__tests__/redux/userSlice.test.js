@@ -15,7 +15,6 @@ describe("userSlice — initial state", () => {
     const state = init();
     expect(state.isAuthenticated).toBe(false);
     expect(state.isGuest).toBe(true);
-    expect(state.userData.currentBadge).toBe("iron");
     expect(state.userData.id).toBe("");
   });
 });

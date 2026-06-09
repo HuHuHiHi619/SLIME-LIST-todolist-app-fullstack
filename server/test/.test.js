@@ -1,4 +1,4 @@
-const { updateUserStreak, calculateBadge } = require("../shared/services/streakService");
+const { updateUserStreak } = require("../shared/services/streakService");
 const User = require("../Models/User");
 const { resetDailyStreakStatus } = require("../job/cronJob");
 const { startOfDay, subDays, differenceInDays } = require("date-fns");
@@ -30,7 +30,6 @@ describe("updateUserStreak", () => {
       alreadyCompletedToday: true,
       lastCompleted: currentDate,
       bestStreak: 5,
-      currentBadge: "silver",
       save: jest.fn(),
     };
 
@@ -49,7 +48,6 @@ describe("updateUserStreak", () => {
       alreadyCompletedToday: false,
       lastCompleted: null,
       bestStreak: 0,
-      currentBadge: "iron",
       save: jest.fn(),
     };
 
@@ -73,7 +71,6 @@ describe("updateUserStreak", () => {
       lastCompleted: yesterday,
       alreadyCompletedToday: false,
       bestStreak: 10,
-      currentBadge: "bronze",
       save: jest.fn(),
     };
 
@@ -95,7 +92,6 @@ describe("updateUserStreak", () => {
       lastCompleted: currentDate,
       alreadyCompletedToday: false,
       bestStreak: 5,
-      currentBadge: "bronze",
       save: jest.fn(),
     };
 
@@ -118,7 +114,6 @@ describe("updateUserStreak", () => {
       lastCompleted: twoDaysAgo,
       alreadyCompletedToday: false,
       bestStreak: 10,
-      currentBadge: "bronze",
       save: jest.fn(),
     };
 
@@ -132,30 +127,6 @@ describe("updateUserStreak", () => {
     expect(mockConsole.log).toHaveBeenCalledWith("Starting new streak");
   });
 
-  it("should update badge if streak qualifies for a new badge", async () => {
-    const yesterday = startOfDay(subDays(new Date(), 1));
-    const mockUser = {
-      _id: "123",
-      currentStreak: 4,
-      alreadyCompletedToday: false,
-      lastCompleted: yesterday,
-      bestStreak: 15,
-      currentBadge: "iron",
-      save: jest.fn(),
-    };
-
-    User.findById.mockResolvedValue(mockUser);
-
-    const result = await updateUserStreak("123", true);
-
-    expect(result.oldBadge).toBe("iron");
-    expect(result.currentStreak).toBe(5);
-    expect(result.newBadge).toBe("bronze");
-    expect(result.badgeChange).toBe(true);
-    expect(mockUser.currentBadge).toBe("bronze");
-    expect(mockUser.save).toHaveBeenCalled();
-    expect(mockConsole.log).toHaveBeenCalledWith("Badge updated:", "iron", "->", "bronze");
-  });
 });
 
 describe('resetDailyStreakStatus', () => {
