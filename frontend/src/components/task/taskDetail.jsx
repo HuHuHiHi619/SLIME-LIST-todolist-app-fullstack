@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import InputField from "../forms/inputField";
-import StartDatePicker from "../forms/StartDatePicker";
 import DeadlinePicker from "../forms/DeadlinePicker";
 import ProgressField from "../dashboard/ProgressField";
 import CategoryTagField from "../forms/CategoryTagField";
@@ -200,13 +199,6 @@ function TaskDetail({ onClose }) {
               placeholder="CATEGORY"
               handleInputChange={handleInputChange}
               showTag={false}
-            />
-            <StartDatePicker
-              id="startDate"
-              name="startDate"
-              selected={editedTask.startDate}
-              onChange={(date) => handleDateChange(date, "startDate")}
-              placeholder="START DATE"
             />
             <DeadlinePicker
               id="deadline"

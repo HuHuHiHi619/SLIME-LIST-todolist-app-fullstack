@@ -1,18 +1,16 @@
 const { CreateTaskSchema, UpdateTaskSchema } = require("../../modules/task/schema");
 
 describe("CreateTaskSchema", () => {
-  it("rejects missing title and startDate", () => {
+  it("rejects missing title", () => {
     const result = CreateTaskSchema.safeParse({});
     expect(result.success).toBe(false);
     const fields = result.error.flatten().fieldErrors;
     expect(fields.title).toBeDefined();
-    expect(fields.startDate).toBeDefined();
   });
 
   it("rejects invalid priority", () => {
     const result = CreateTaskSchema.safeParse({
       title: "Task",
-      startDate: "2026-07-01",
       priority: "URGENT",
     });
     expect(result.success).toBe(false);
@@ -20,17 +18,13 @@ describe("CreateTaskSchema", () => {
   });
 
   it("accepts a valid minimal body", () => {
-    const result = CreateTaskSchema.safeParse({
-      title: "Task",
-      startDate: "2026-07-01",
-    });
+    const result = CreateTaskSchema.safeParse({ title: "Task" });
     expect(result.success).toBe(true);
   });
 
   it("accepts all optional fields", () => {
     const result = CreateTaskSchema.safeParse({
       title: "Task",
-      startDate: "2026-07-01",
       note: "a note",
       deadline: "2026-08-01",
       category: "Work",

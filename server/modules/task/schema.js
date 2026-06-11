@@ -14,7 +14,6 @@ const ProgressSchema = z
 const CreateTaskSchema = z.object({
   title: z.string().min(1),
   note: z.string().optional(),
-  startDate: z.string().min(1),
   deadline: z.string().nullable().optional(),
   category: z.string().optional(),
   progress: ProgressSchema,
@@ -24,7 +23,6 @@ const CreateTaskSchema = z.object({
 const UpdateTaskSchema = z.object({
   title: z.string().min(1).optional(),
   note: z.string().optional(),
-  startDate: z.string().optional(),
   deadline: z.string().nullable().optional(),
   category: z.string().nullable().optional(),
   progress: ProgressSchema,

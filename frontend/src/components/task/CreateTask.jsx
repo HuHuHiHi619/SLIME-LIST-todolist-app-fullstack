@@ -5,7 +5,6 @@ import { useCategoriesQuery, useCreateTaskMutation } from "../../hooks/queries/u
 import "react-datepicker/dist/react-datepicker.css";
 import InputField from "../forms/inputField";
 import DeadlinePicker from "../forms/DeadlinePicker";
-import StartDatePicker from "../forms/StartDatePicker";
 import CategoryTagField from "../forms/CategoryTagField";
 import PriorityField from "../forms/PriorityField";
 import ProgressField from "../dashboard/ProgressField";
@@ -62,12 +61,8 @@ function CreateTask({ onClose }) {
     }
   };
 
-  const handleDateChange = (date, field) => {
-    if (field === "startDate") {
-      dispatch(setFormTask({ startDate: toDayISO(date) ?? toDayISO(new Date(new Date().setHours(0, 0, 0, 0))) }));
-    } else if (field === "deadline") {
-      dispatch(setFormTask({ deadline: toDayISO(date) }));
-    }
+  const handleDateChange = (date) => {
+    dispatch(setFormTask({ deadline: toDayISO(date) }));
   };
 
   const handleRemoveStep = (index) => {
@@ -82,7 +77,6 @@ function CreateTask({ onClose }) {
       ...formTask,
       priority: formTask.priority || "low",
       progress,
-      startDate: formTask.startDate || toDayISO(new Date(new Date().setHours(0, 0, 0, 0))),
     };
 
     createMutation.mutate(taskData, {
@@ -138,22 +132,13 @@ function CreateTask({ onClose }) {
                 handleInputChange={handleInputChange}
                 showTag={false}
               />
-              <StartDatePicker
-                id="startDate"
-                name="startDate"
-                selected={
-                  formTask.startDate ? new Date(formTask.startDate) : new Date(new Date().setHours(0, 0, 0, 0))
-                }
-                onChange={(date) => handleDateChange(date, "startDate")}
-                placeholder="START DATE"
-              />
               <DeadlinePicker
                 id="deadline"
                 name="Deadline"
                 selected={
                   formTask.deadline ? new Date(formTask.deadline) : null
                 }
-                onChange={(date) => handleDateChange(date, "deadline")}
+                onChange={handleDateChange}
                 placeholder="DEADLINE"
               />
               <PriorityField
