@@ -107,12 +107,6 @@ Act as a Senior Full-Stack Developer and Mentor. Explain the architectural "why"
 - When working on backend tasks, read and follow `server/CLAUDE.md`.
 - Ask before reading across workspaces.
 
-### Workflow
-1. **Look Before You Leap** — explore the directory and read relevant files before suggesting changes.
-2. **Plan Mode First** — present a plan and get confirmation before editing any file.
-3. **No Silent Fixes** — never edit a file without user confirmation on the proposed plan.
-4. **Incremental Phases** — divide work into sequential phases; never edit Phase N+1 before Phase N passes all tests.
-5. **Phase-End Update** — once a phase is complete and tests are green, update the relevant `MIGRATION.md` to record what was done and the test result.
 
 ### Security Rules
 - When reading `.env` files, never print actual secret values. Show keys as: `SECRET_KEY=******`
@@ -122,3 +116,27 @@ Act as a Senior Full-Stack Developer and Mentor. Explain the architectural "why"
 `/scrutinize` (before any fix plan) · `/diagnose` (trace-before-fix) · `/verify` (run the app after a change) ·
 `/tdd` (Vitest/Jest regressions) · `/code-review` before committing a phase ·
 `server-patterns` skill before editing backend modules.
+
+---
+
+## Canonical Docs
+
+Read these before making design decisions. They define the live domain model.
+
+| Doc | About |
+|-----|-------|
+| `.claude/docs/PRODUCT_VISION.md` | Product goal, core loop, pillars |
+| `.claude/docs/GAMIFICATION_SYSTEM.md` | EXP/happiness/streak constants, evolution gates |
+| `.claude/docs/UX_UI_ARCHITECTURE.md` | Navigation, layouts, roadmap phases |
+| `.claude/docs/USER_FLOW.md` | Guest / auth / pomodoro user flows |
+| `.claude/assets/ASSET_ROADMAP.md` | Art phases and layer system |
+| `docs/adr/` | Architecture Decision Records — read before reversing a design decision |
+
+---
+
+## Plan Priority
+
+- Active plan: `.claude/plans/active.md`
+- Queue: `.claude/plans/queue.md`
+
+Always read `.claude/plans/active.md` before starting work. Never begin Phase N+1 without completing Phase N and marking it done in the plan.

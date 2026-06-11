@@ -28,6 +28,7 @@ function TaskForm({ filter }) {
         {fetchedTasks.length > 0 ? (
           <div className="mx-6 mb-6 mt-6">
             <TaskList
+              allTasks={fetchedTasks}
               label="TASKS"
               handleCompletedTask={handleCompletedTask}
               handleRemovedTask={handleRemovedTask}

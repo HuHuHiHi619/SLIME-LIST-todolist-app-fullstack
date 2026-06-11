@@ -1,6 +1,8 @@
 const cron = require("node-cron");
 const Tasks = require("../Models/Tasks");
 const User = require("../Models/User");
+const Pet = require("../Models/Pet");
+const { calcEvolutionStage } = require("../modules/pet/helpers");
 const { startOfDay , subDays } = require("date-fns");
 const { overdueThreshold } = require("../shared/utils/deadlineUtils");
 
@@ -8,7 +10,7 @@ const checkOverdueTasks = () => {
   cron.schedule("0 0 * * *", async () => {
     await updateOverdueTasks();
     await resetDailyStreakStatus();
-   
+    await decayPetHappiness();
   });
 };
 
@@ -72,8 +74,25 @@ const resetDailyStreakStatus = async () => {
   }
 };
 
+const decayPetHappiness = async () => {
+  try {
+    const today = startOfDay(new Date());
+    const pets = await Pet.find({ lastDecayDate: { $lt: today } });
+    for (const pet of pets) {
+      pet.happiness      = Math.max(pet.happiness - 1, 0);
+      pet.lastDecayDate  = today;
+      pet.evolutionStage = calcEvolutionStage(pet.level, pet.happiness);
+      await pet.save();
+    }
+    console.log(`Decayed happiness for ${pets.length} pets.`);
+  } catch (error) {
+    console.error("Error decaying pet happiness:", error);
+  }
+};
+
 module.exports = {
   checkOverdueTasks,
   updateOverdueTasks,
-  resetDailyStreakStatus
+  resetDailyStreakStatus,
+  decayPetHappiness,
 };

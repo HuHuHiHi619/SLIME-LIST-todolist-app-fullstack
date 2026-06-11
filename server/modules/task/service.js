@@ -230,6 +230,8 @@ const toggleCompletion = async (formatId, userFilter, formatUser) => {
       const updatedTask = await task.save();
       return { type: "completed_with_streak", updatedTask, userUpdate };
     }
+    const updatedTask = await task.save();
+    return { type: "completed_guest", updatedTask };
   } else if (task.status === "completed") {
     task.status = "pending";
     task.progress.steps.forEach((step) => (step.completed = false));

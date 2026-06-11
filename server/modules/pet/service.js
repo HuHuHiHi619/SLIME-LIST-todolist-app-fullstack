@@ -10,9 +10,15 @@ const {
 } = require("./helpers");
 
 const getPet = async ({ userId, guestId }) => {
-  if (userId)  return (await repo.findByUser(userId))  ?? (await repo.createForUser(userId));
-  if (guestId) return (await repo.findByGuest(guestId)) ?? (await repo.createForGuest(guestId));
-  throw new Error("userId or guestId required");
+  if (!userId && !guestId) throw new Error("userId or guestId required");
+  const find   = userId  ? () => repo.findByUser(userId)    : () => repo.findByGuest(guestId);
+  const create = userId  ? () => repo.createForUser(userId) : () => repo.createForGuest(guestId);
+  try {
+    return (await find()) ?? (await create());
+  } catch (err) {
+    if (err.code === 11000) return find();
+    throw err;
+  }
 };
 
 const awardTaskReward = async ({ userId, guestId, priority, currentStreak = 0 }) => {

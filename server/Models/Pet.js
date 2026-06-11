@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const PetSchema = new mongoose.Schema(
   {
-    userId:  { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
-    guestId: { type: String, index: true },
+    userId:  { type: mongoose.Schema.Types.ObjectId, ref: "User", unique: true, sparse: true },
+    guestId: { type: String, unique: true, sparse: true },
     exp:            { type: Number, default: 0 },
     level:          { type: Number, default: 0 },
     happiness:      { type: Number, default: 50, min: 0, max: 100 },

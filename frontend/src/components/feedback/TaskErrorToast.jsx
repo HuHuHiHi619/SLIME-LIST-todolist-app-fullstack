@@ -22,7 +22,7 @@ const TaskErrorToast = () => {
     <div
       role="alert"
       aria-live="assertive"
-      className="fixed bottom-4 right-4 z-50 max-w-sm rounded-lg bg-purpleMain text-white shadow-lg p-4 flex items-start gap-3"
+      className="fixed bottom-4 right-4 z-[1100] max-w-sm rounded-lg bg-purpleMain text-white shadow-lg p-4 flex items-start gap-3"
     >
       <svg
         className="h-6 w-6 flex-shrink-0 text-amber-400"
