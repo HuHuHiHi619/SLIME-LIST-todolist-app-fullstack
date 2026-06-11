@@ -33,4 +33,7 @@ Per `.claude/assets/ASSET_ROADMAP.md`. Coin system, inventory, costume slots (He
 
 ---
 
+## Backend note 
+- are startDate and deadline necessary?
+
 _Add new phases here. Move to active.md when starting._
