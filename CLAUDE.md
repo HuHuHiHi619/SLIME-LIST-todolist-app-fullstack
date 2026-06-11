@@ -18,7 +18,7 @@ npm run dev        # Dev server on port 5173
 npm run build      # Production build
 npm run lint       # ESLint check
 npm run preview    # Preview production build
-npm test           # Vitest — 96 tests across 14 files
+npm test           # Vitest — 83 tests across 17 files
 ```
 
 ### Backend (`/server`)
@@ -26,7 +26,7 @@ npm test           # Vitest — 96 tests across 14 files
 npm run dev        # nodemon dev server on port 5000
 npm run dev:local  # Dev with local MongoDB (USE_LOCAL_DB=true)
 npm start          # Production
-npm test           # Jest (10s timeout) — 25 tests
+npm test           # Jest (10s timeout) — 93 tests
 ```
 
 ### Docker (full stack)
