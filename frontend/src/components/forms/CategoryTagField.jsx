@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 import { faFolder, faChevronDown } from "@fortawesome/free-solid-svg-icons";
@@ -9,7 +9,6 @@ function CategoryTagField({
   value,
   entities = [],
   placeholder,
-  showTag = false // รองรับ prop นี้เพื่อความเข้ากันได้กับโค้ดเดิม
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [localValue,setLocalValue] = useState(value || "No category") 

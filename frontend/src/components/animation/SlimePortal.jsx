@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Slime Component
 
 export const BouncingSlime = ({
-  size = 200,
   duration = 2,
   isLooping = false,
   repeatCount = 0,

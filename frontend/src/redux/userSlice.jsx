@@ -31,16 +31,12 @@ const MIN_LOADING_MS = 2500;
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const minimumLoading = async (promise, minTimeMs = MIN_LOADING_MS) => {
   const startTime = Date.now();
-  try{
-    const result = await promise // await function ที่รับมา
-    const remainingTime = minTimeMs - (Date.now() - startTime) // เอาเวลาที่กำหนด - (เวลาปัจจุบัน - เวลาที่เริ่ม)
-    if(remainingTime > 0) {
-      await delay(remainingTime) // ดึงเวลารอด้วย delay
-    }
-    return result
-  } catch(error){
-    throw error
+  const result = await promise
+  const remainingTime = minTimeMs - (Date.now() - startTime)
+  if(remainingTime > 0) {
+    await delay(remainingTime)
   }
+  return result
 }
 // Thunks
 export const loginUser = createAsyncThunk(

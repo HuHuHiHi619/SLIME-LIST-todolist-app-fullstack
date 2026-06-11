@@ -74,7 +74,7 @@ axios.interceptors.response.use(
       console.log("Interceptor: Starting refresh process...");
 
       try {
-        const refreshResponse = await axios.post(refreshTokenUrl, {}, {});
+        await axios.post(refreshTokenUrl, {}, {});
 
         console.log("Interceptor: Refresh token call successful.");
 

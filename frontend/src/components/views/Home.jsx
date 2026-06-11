@@ -1,4 +1,3 @@
-import React from "react";
 import TaskForm from "../task/TaskForm";
 import Summary from "../dashboard/Summary.jsx";
 import StreakField from "../dashboard/StreakField";

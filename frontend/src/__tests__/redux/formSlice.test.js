@@ -13,7 +13,6 @@ describe("formSlice — initial state", () => {
     const state = init();
     expect(state.formTask.title).toBe("");
     expect(state.formTask.status).toBe("pending");
-    expect(state.formTask.startDate).toBe(null);
     expect(state.formTask.deadline).toBe(null);
     expect(state.progress.steps).toEqual([]);
     expect(state.progress.totalSteps).toBe(0);
@@ -28,26 +27,20 @@ describe("formSlice — setFormTask", () => {
     expect(state.formTask.note).toBe("N");
   });
 
-  it("converts startDate to ISO", () => {
-    const state = reducer(init(), setFormTask({ startDate: "2026-05-20" }));
-    expect(typeof state.formTask.startDate).toBe("string");
-    expect(state.formTask.startDate).toContain("2026-05-20");
-  });
-
   it("deadline: null clears to null, not epoch 1970", () => {
     const seeded = reducer(init(), setFormTask({ deadline: "2026-05-20" }));
     const cleared = reducer(seeded, setFormTask({ deadline: null }));
     expect(cleared.formTask.deadline).toBe(null);
   });
 
-  it("an invalid date does not throw and keeps the prior value", () => {
-    const seeded = reducer(init(), setFormTask({ startDate: "2026-05-20" }));
-    const prior = seeded.formTask.startDate;
+  it("an invalid deadline does not throw and keeps the prior value", () => {
+    const seeded = reducer(init(), setFormTask({ deadline: "2026-05-20" }));
+    const prior = seeded.formTask.deadline;
     let next;
     expect(() => {
-      next = reducer(seeded, setFormTask({ startDate: "not-a-date" }));
+      next = reducer(seeded, setFormTask({ deadline: "not-a-date" }));
     }).not.toThrow();
-    expect(next.formTask.startDate).toBe(prior);
+    expect(next.formTask.deadline).toBe(prior);
   });
 });
 

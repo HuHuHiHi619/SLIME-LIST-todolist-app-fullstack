@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 
@@ -17,7 +16,6 @@ vi.mock("../../components/forms/inputField", () => ({
     />
   ),
 }));
-vi.mock("../../components/forms/StartDatePicker",   () => ({ default: () => null }));
 vi.mock("../../components/forms/DeadlinePicker",    () => ({ default: () => null }));
 vi.mock("../../components/dashboard/ProgressField",     () => ({ default: () => null }));
 vi.mock("../../components/forms/CategoryTagField",  () => ({ default: () => null }));
@@ -48,7 +46,6 @@ import { useDispatch, useSelector } from "react-redux";
 const baseFormTask = {
   title: "Test task",
   note: "",
-  startDate: "",
   deadline: null,
   category: "",
   priority: "low",
@@ -107,46 +104,3 @@ describe("CreateTask — mutation success / failure", () => {
   });
 });
 
-describe("CreateTask — BL #24 startDate midnight regression", () => {
-  let mockMutate;
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockMutate = vi.fn();
-    useCreateTaskMutation.mockReturnValue({ mutate: mockMutate, isPending: false });
-    useDispatch.mockReturnValue(vi.fn());
-    useSelector.mockReturnValue({
-      ...baseSelector,
-      formTask: { ...baseFormTask, startDate: "" },
-    });
-  });
-
-  it("defaults to UTC midnight when formTask.startDate is unset", async () => {
-    render(<CreateTask onClose={() => {}} />);
-
-    await act(async () => { submitForm(); });
-
-    expect(mockMutate).toHaveBeenCalled();
-    const taskData = mockMutate.mock.calls[0][0];
-    const startDate = new Date(taskData.startDate);
-    expect(startDate.getUTCHours()).toBe(0);
-    expect(startDate.getUTCMinutes()).toBe(0);
-    expect(startDate.getUTCSeconds()).toBe(0);
-    expect(startDate.getUTCMilliseconds()).toBe(0);
-  });
-
-  it("preserves an explicit startDate already set in formTask", async () => {
-    const explicit = "2026-06-10T00:00:00.000Z";
-    useSelector.mockReturnValue({
-      ...baseSelector,
-      formTask: { ...baseFormTask, startDate: explicit },
-    });
-
-    render(<CreateTask onClose={() => {}} />);
-
-    await act(async () => { submitForm(); });
-
-    const taskData = mockMutate.mock.calls[0][0];
-    expect(taskData.startDate).toBe(explicit);
-  });
-});

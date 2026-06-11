@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 
 const FadeUpContainer = ({ children, delay = 0, direction = 'up' }) => {

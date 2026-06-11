@@ -13,7 +13,6 @@ const initialState = {
   formTask: {
     title: "",
     note: "",
-    startDate: null,
     deadline: null,
     category: "",
     status: "pending",
@@ -34,11 +33,10 @@ const formSlice = createSlice({
   initialState,
   reducers: {
     setFormTask(state, action) {
-      const { startDate, deadline, ...rest } = action.payload;
+      const { deadline, ...rest } = action.payload;
       state.formTask = {
         ...state.formTask,
         ...rest,
-        startDate: toIsoDate(startDate, state.formTask.startDate),
         deadline: toIsoDate(deadline, state.formTask.deadline),
       };
     },

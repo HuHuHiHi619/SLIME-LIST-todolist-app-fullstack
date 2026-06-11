@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import SearchField from "./SearchField";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import Logout from "../auth/Logout";
@@ -26,7 +26,7 @@ const NotificationForm = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!menuRef.current && menuRef.current.contains(event.target)) {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false);
         setIsSearchOpen(false);
       }

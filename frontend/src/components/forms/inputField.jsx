@@ -1,5 +1,3 @@
-import React from 'react'
-
 function InputField({type,placeholder,id,name,value,onChange,onKeyDown,className}) {
   return (
     <input 

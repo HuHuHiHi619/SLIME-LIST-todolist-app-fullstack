@@ -124,7 +124,7 @@ const getTasksFlat = async (filter) => {
 // ── Write operations ──────────────────────────────────────────────────────────
 
 const createTask = async (data, formatUser, guestId) => {
-  const { title, note, startDate, deadline, category, progress, priority } = data;
+  const { title, note, deadline, category, progress, priority } = data;
 
   const categoryId = category ? await lookupCategoryByName(category, formatUser, guestId) : null;
 
@@ -138,30 +138,15 @@ const createTask = async (data, formatUser, guestId) => {
     formatProgress.allStepsCompleted = formatProgress.steps.every((s) => s.completed);
   }
 
-  // Date validation — compare UTC date strings (YYYY-MM-DD) to avoid timezone issues
-  const startDateObj = parseISO(startDate);
-  if (!isValid(startDateObj)) throw new ServiceError("Invalid start date format");
-
   let deadlineObj = null;
   if (deadline) {
     deadlineObj = parseISO(deadline);
     if (!isValid(deadlineObj)) throw new ServiceError("Invalid deadline format");
   }
 
-  if (deadlineObj && startDateObj > deadlineObj) {
-    throw new ServiceError("Start date cannot be after deadline!");
-  }
-
-  const todayUTC = new Date().toISOString().slice(0, 10);
-  const startUTC = startDateObj.toISOString().slice(0, 10);
-  if (startUTC < todayUTC) {
-    throw new ServiceError("Start date cannot be in the past!");
-  }
-
   const newTask = {
     title,
     note: note || "",
-    startDate: startDateObj,
     deadline: deadlineObj || null,
     category: categoryId,
     progress: formatProgress,
@@ -182,7 +167,6 @@ const updateTask = async (formatId, userFilter, formatUser, guestId, data) => {
   const final = {
     title: updateData.title || existing.title,
     note: updateData.note !== undefined ? updateData.note : existing.note,
-    startDate: updateData.startDate ? new Date(updateData.startDate) : existing.startDate,
     deadline: updateData.deadline !== undefined
       ? (updateData.deadline ? new Date(updateData.deadline) : null)
       : existing.deadline,

@@ -1,4 +1,4 @@
-import React, { useState , forwardRef} from "react";
+import { useState, forwardRef } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import AuthForm from "./AuthForm";
 import { motion } from "framer-motion";

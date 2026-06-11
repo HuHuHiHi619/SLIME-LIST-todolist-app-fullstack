@@ -1,6 +1,5 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import StaggerContainer from "../animation/StaggerContainer";
 function SearchTaskList({
