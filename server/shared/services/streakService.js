@@ -4,13 +4,6 @@ const User = require("../../Models/User");
 
 const STREAK_TIMEZONE = "Asia/Bangkok";
 
-const calculateBadge = (streakDays) => {
-  if (streakDays > 15) return "gold";
-  if (streakDays > 10) return "silver";
-  if (streakDays >= 1) return "bronze";
-  return "iron";
-};
-
 const updateUserStreak = async (userId, completed, taskCompletionDetails = {}) => {
   console.log("Updating streak for user:", userId, "completed:", completed);
   try {
@@ -69,15 +62,6 @@ const updateUserStreak = async (userId, completed, taskCompletionDetails = {}) =
         console.log("Already completed today, no streak update needed");
       }
 
-      const newBadge = calculateBadge(user.currentStreak);
-      if (newBadge !== user.currentBadge) {
-        user.badgeChange = true;
-        user.oldBadge = user.currentBadge;
-        user.newBadge = newBadge;
-        user.currentBadge = newBadge;
-        console.log("Badge updated:", user.oldBadge, "->", user.newBadge);
-      }
-
       if (Object.keys(taskCompletionDetails).length > 0) {
         user.taskDetails = taskCompletionDetails;
       }
@@ -93,4 +77,4 @@ const updateUserStreak = async (userId, completed, taskCompletionDetails = {}) =
   }
 };
 
-module.exports = { STREAK_TIMEZONE, calculateBadge, updateUserStreak };
+module.exports = { STREAK_TIMEZONE, updateUserStreak };

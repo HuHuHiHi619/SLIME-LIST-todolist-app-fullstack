@@ -6,26 +6,8 @@ function DashboardTab() {
   const { userData } = useSelector((state) => state.user);
   const { summary } = useSelector((state) => state.summary);
 
-  const badgeImages = {
-    gold: "./images/Gold-badge.png",
-    silver: "./images/Silver-badge.png",
-    bronze: "./images/Bronze-badge.png",
-    iron: "./images/Iron-badge.png",
-  };
-
   return (
     <div className="flex  items-center justify-between gap-4">
-      <div className="w-[52px] bg-purpleGradient p-0.5 rounded-xl">
-        <div className="bg-purpleSidebar rounded-lg p-2.5">
-          <img
-            className="w-full h-full object-contain"
-            src={
-              badgeImages[userData.currentBadge] || "./images/Iron-badge.png"
-            }
-            alt=""
-          />
-        </div>
-      </div>
       <div className="flex items-center border-fuchsia-400 border-2 p-2.5 rounded-xl">
         <FontAwesomeIcon
           icon={faFire}

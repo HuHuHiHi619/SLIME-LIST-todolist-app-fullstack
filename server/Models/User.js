@@ -14,11 +14,6 @@ const UserSchema = new mongoose.Schema(
     currentStreak: { type: Number, default: 0 },
     bestStreak: { type: Number, default: 0 },
     alreadyCompletedToday: { type: Boolean, default: false },
-    currentBadge: {
-      type: String,
-      enum: ["iron", "bronze", "silver", "gold"],
-      default: "iron",
-    },
     settings: {
       theme: { type: String, enum: ["light", "dark"], default: "dark" },
       notification: { type: Boolean, default: true },

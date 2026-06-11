@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBoltLightning,
   faLifeRing,
-  faTrophy,
   faCalendarDays,
   faFire,
   faUser,
@@ -31,13 +30,6 @@ const profileFields = [
     valueKey: "bestStreak",
     color: "text-yellow-400",
     suffix: " days"
-  },
-  {
-    icon: faTrophy,
-    label: "Current Badge",
-    valueKey: "currentBadge",
-    color: "text-purple-400",
-    transform: (v) => v?.toUpperCase() || "NO BADGE",
   },
   {
     icon: faCalendarDays,
@@ -107,7 +99,7 @@ function Settings() {
                     </h1>
                     <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
                       <span className="bg-blue-500/20 text-blue-300 p-3 px-5 rounded-full ">
-                        {userData?.currentBadge || ''}
+                        {userData?.username || ''}
                       </span>
                     </div>
                   </div>

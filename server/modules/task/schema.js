@@ -15,7 +15,7 @@ const CreateTaskSchema = z.object({
   title: z.string().min(1),
   note: z.string().optional(),
   startDate: z.string().min(1),
-  deadline: z.string().optional(),
+  deadline: z.string().nullable().optional(),
   category: z.string().optional(),
   progress: ProgressSchema,
   priority: z.enum(["low", "medium", "high"]).optional(),

@@ -3,6 +3,7 @@ import TaskForm from "../task/TaskForm";
 import Summary from "../dashboard/Summary.jsx";
 import StreakField from "../dashboard/StreakField";
 import BadgeField from "../dashboard/BadgeField";
+import PetPanel from "../dashboard/PetPanel";
 import FadeUpContainer from "../animation/FadeUpContainer";
 function Home() {
   return (
@@ -31,6 +32,13 @@ function Home() {
       <div className="px-4 lg:px-0 lg:col-start-2 lg:row-start-3 lg:pl-2 lg:mr-6">
         <FadeUpContainer direction="up" delay={0.4}>
           <Summary />
+        </FadeUpContainer>
+      </div>
+
+      {/* 5. PET — scaffold, will be redesigned */}
+      <div className="px-4 lg:px-0 lg:col-start-2 lg:row-start-4 lg:pl-2 lg:mr-6">
+        <FadeUpContainer direction="up" delay={0.5}>
+          <PetPanel />
         </FadeUpContainer>
       </div>
 

@@ -13,6 +13,7 @@ import { getCategoryData } from "../../functions/category";
 import { removeCategory } from "../../functions/category";
 import { setStreakStatus, writeStreakStatus } from "../../redux/taskSlice";
 import { setSelectedTask, setTaskError } from "../../redux/uiSlice";
+import { applyPetReward } from "../../redux/petSlice";
 import { resetFormTask } from "../../redux/formSlice";
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
@@ -97,12 +98,15 @@ export function useCompleteTaskMutation() {
         writeStreakStatus(data.user);
         dispatch(setStreakStatus(data.user));
       }
+      queryClient.invalidateQueries({ queryKey: ["pet"] });
+      if (data.petReward) {
+        dispatch(applyPetReward(data.petReward));
+      }
       const completedId = data._id;
       const updatedStatus = (data.updatedTask || data).status;
       if (selectedTask && selectedTask._id === completedId) {
         dispatch(setSelectedTask({ ...selectedTask, status: updatedStatus }));
       }
-      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
     onError: (error) => {
       dispatch(setTaskError(error?.message ?? "Failed to complete task"));

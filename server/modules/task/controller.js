@@ -3,6 +3,7 @@ const { handleError } = require("../../shared/errors");
 const { buildUserFilter } = require("../../shared/utils/userFilter");
 const { TASK_STATUSES } = require("../../shared/utils/taskConstants");
 const taskService = require("./service");
+const petService = require("../pet/service");
 const { CreateTaskSchema, UpdateTaskSchema } = require("./schema");
 const { sendServiceError } = require("../../shared/errors");
 
@@ -120,9 +121,27 @@ exports.completedTask = async (req, res) => {
 
     const result = await taskService.toggleCompletion(formatId, userFilter, formatUser);
 
-    if (result.type === "completed_with_streak") {
-      return res.status(200).json({ updatedTask: result.updatedTask, user: result.userUpdate });
+    if (result.type === "completed_with_streak" || result.type === "completed_guest") {
+      const currentStreak = result.userUpdate?.currentStreak ?? 0;
+      let petReward = null;
+      try {
+        petReward = await petService.awardTaskReward({
+          userId:  formatUser,
+          guestId: req.guestId,
+          priority: result.updatedTask.priority,
+          currentStreak,
+        });
+      } catch (petErr) {
+        console.error("awardTaskReward failed (task already saved):", petErr.message);
+      }
+
+      return res.status(200).json({
+        updatedTask: result.updatedTask,
+        user: result.userUpdate,
+        petReward,
+      });
     }
+
     return res.status(200).json({ message: "Task is complete", updatedTask: result.updatedTask });
   } catch (error) {
     return sendServiceError(res, error) || handleError(res, error, "Failed to complete task");

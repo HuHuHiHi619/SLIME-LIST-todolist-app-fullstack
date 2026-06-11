@@ -8,7 +8,6 @@ const makeDefaultState = () => ({
     currentStreak: 0,
     bestStreak: 0,
     alreadyCompletedToday: null,
-    currentBadge: "iron",
     settings: {
       theme: "dark",
       notification: true,

@@ -14,6 +14,7 @@ import AuthProvider from "./components/auth/AuthProvider";
 import PublicRoute from "./components/auth/PublicRoute";
 import LoadingPage from "./components/animation/LoadingPage";
 import TaskErrorToast from "./components/feedback/TaskErrorToast";
+import PetRewardToast from "./components/feedback/PetRewardToast";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // --- Lazy Loaded Components (Code Splitting) ---
@@ -34,6 +35,7 @@ function App() {
     <AuthProvider skip={isGuest}>
       <ErrorBoundary>
         <TaskErrorToast />
+        <PetRewardToast />
         <BrowserRouter>
           <Suspense fallback={<LoadingPage />}>
             <Routes>
