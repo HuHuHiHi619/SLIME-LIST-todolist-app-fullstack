@@ -1,6 +1,6 @@
-﻿import React, { useState } from "react";
+﻿import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { logoutUser, toggleRegisterPopup } from "../../redux/userSlice";
+import { logoutUser } from "../../redux/userSlice";
 import queryClient from "../../lib/queryClient";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,7 +14,7 @@ function Logout() {
 
   const handleLogout = async () => {
     try {
-      const response = await dispatch(logoutUser()).unwrap();
+      await dispatch(logoutUser()).unwrap();
       localStorage.clear();
 
       queryClient.removeQueries({ queryKey: ["tasks"] });

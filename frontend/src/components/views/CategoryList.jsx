@@ -1,4 +1,3 @@
-import React from "react";
 import TaskForm from "../task/TaskForm";
 import { useParams } from "react-router-dom";
 import FadeUpContainer from "../animation/FadeUpContainer";

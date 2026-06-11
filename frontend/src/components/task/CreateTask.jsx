@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormTask, addSteps, removeStep } from "../../redux/formSlice";
 import { useCategoriesQuery, useCreateTaskMutation } from "../../hooks/queries/useTasks";
@@ -130,7 +130,6 @@ function CreateTask({ onClose }) {
                 entities={categories}
                 placeholder="CATEGORY"
                 handleInputChange={handleInputChange}
-                showTag={false}
               />
               <DeadlinePicker
                 id="deadline"

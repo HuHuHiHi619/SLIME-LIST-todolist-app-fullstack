@@ -11,7 +11,7 @@ Branch: `chore/housekeeping`
   - Frontend: 0 vulnerabilities (axios→1.17.0, react-router-dom→6.30.4, postcss+follow-redirects via audit fix)
   - Server: 2 moderate remain — uuid inside node-cron transitive; fix requires `--force`→uuid@14 (breaking). Skipped.
 - [x] **`startDate` / `deadline`** — Dropped `startDate` (redundant with `createdAt`, unused in queries/UI). `deadline` kept — powers Upcoming view and overdue cron.
-- [ ] **Lint warnings** — 69 warnings from legacy unused `React` imports. Clean them up; all new code must stay error-free.
+- [x] **Lint warnings** — Cleared all 67 warnings: removed legacy `React` imports across 44 files, dropped 5 stale eslint-disable directives, fixed 15 specific unused-var/dead-code warnings, suppressed one intentional dep-array deviation with targeted disable.
 - [ ] **Frontend audit** — `components/pages/ui/`, `animation/`, `user/` (`Home`, `AllTask`, `Upcoming`, `Category`, `Sidebar`, `Navbar`, date pickers, `ProgressField`, `Summary`) — full pass before Phase 3.
 - [ ] **#22 Orphan task** — Drop guest task `PASS-create-*` in dev Atlas console (guest cookie gone, not deletable via UI).
 

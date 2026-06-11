@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSummaryQuery, useSummaryByCategoryQuery } from "../../hooks/queries/useSummary";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { motion, animate } from "framer-motion";

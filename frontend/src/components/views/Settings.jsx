@@ -1,4 +1,3 @@
-import React from "react";
 import { useSelector } from "react-redux";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

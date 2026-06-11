@@ -1,9 +1,6 @@
-/* eslint-disable react/prop-types, react/display-name -- trivial test wrapper */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React from "react";
-
 import { useSummaryQuery, useSummaryByCategoryQuery } from "../../../hooks/queries/useSummary";
 
 vi.mock("../../../functions/summary", () => ({
@@ -17,9 +14,10 @@ function makeWrapper() {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false, throwOnError: false } },
   });
-  return ({ children }) => (
-    <QueryClientProvider client={client}>{children}</QueryClientProvider>
-  );
+  function Wrapper({ children }) {
+    return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  }
+  return Wrapper;
 }
 
 describe("useSummaryQuery", () => {

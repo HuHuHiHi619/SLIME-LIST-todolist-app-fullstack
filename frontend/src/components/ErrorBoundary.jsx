@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types -- prop-types isn't used in this project (not installed) */
 import { Component } from "react";
 
 // App-level error boundary (P8). React has no default boundary — any throw in

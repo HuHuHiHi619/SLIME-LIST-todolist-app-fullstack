@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import SearchField from "./SearchField";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import Logout from "../auth/Logout";

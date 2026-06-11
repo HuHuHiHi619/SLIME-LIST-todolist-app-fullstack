@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import InputField from "../forms/inputField";
 import DeadlinePicker from "../forms/DeadlinePicker";
 import ProgressField from "../dashboard/ProgressField";
@@ -15,24 +15,23 @@ function TaskDetail({ onClose }) {
   const { data: categories = [] } = useCategoriesQuery();
   const updateMutation = useUpdateTaskMutation();
 
-  const [isUpdating, setIsUpdating] = useState(false);
   const [editedTask, setEditedTask] = useState(selectedTask || {});
   const [currentStep, setCurrentStep] = useState("");
+
+  // Always holds the latest selectedTask without being a reactive dep
+  const selectedTaskRef = useRef(selectedTask);
+  selectedTaskRef.current = selectedTask;
 
   // mutate is stable across renders (TQ guarantee) — safe to close over in a ref-initialized debounce
   const debouncedUpdateTask = useRef(
     debounce((taskData) => {
-      setIsUpdating(true);
-      updateMutation.mutate(
-        { taskId: taskData._id, taskData },
-        { onSettled: () => setIsUpdating(false) }
-      );
+      updateMutation.mutate({ taskId: taskData._id, taskData });
     }, 500)
   ).current;
 
   useEffect(() => {
-    if (!isUpdating && selectedTask) {
-      setEditedTask(selectedTask);
+    if (selectedTaskRef.current) {
+      setEditedTask(selectedTaskRef.current);
     }
   }, [selectedTask?._id]);
 
@@ -198,7 +197,6 @@ function TaskDetail({ onClose }) {
               entities={categories}
               placeholder="CATEGORY"
               handleInputChange={handleInputChange}
-              showTag={false}
             />
             <DeadlinePicker
               id="deadline"

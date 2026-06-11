@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+import { useState } from "react";
 import InputField from "../forms/inputField";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import SuccessPopup from "../feedback/SuccessPopup";

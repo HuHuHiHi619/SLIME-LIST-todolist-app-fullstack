@@ -1,4 +1,4 @@
-import { faChartBar, faFire, faBolt } from "@fortawesome/free-solid-svg-icons";
+import { faFire, faBolt } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 

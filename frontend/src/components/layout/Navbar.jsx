@@ -1,8 +1,7 @@
-﻿import { React, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 import ReactDOM from "react-dom";
 import NotificationForm from "../forms/NotificationForm";
 import usePopup from "../../hooks/usePopup";
