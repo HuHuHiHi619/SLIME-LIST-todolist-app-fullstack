@@ -4,6 +4,9 @@ const {
   getStreakMultiplier,
   EXP_REWARDS,
   HAPPINESS_REWARDS,
+  POMODORO_EXP,
+  POMODORO_HAPPINESS,
+  POMODORO_COOLDOWN_MS,
   HAPPY_BUFF_THRESHOLD,
   HAPPY_BUFF_MULTIPLIER,
 } = require("../../modules/pet/helpers");
@@ -175,5 +178,66 @@ describe("awardTaskReward pure logic", () => {
     expect(HAPPINESS_REWARDS.low).toBe(1);
     expect(HAPPINESS_REWARDS.medium).toBe(2);
     expect(HAPPINESS_REWARDS.high).toBe(3);
+  });
+});
+
+// ── awardPomodoroReward pure logic ────────────────────────────────────────────
+
+describe("awardPomodoroReward pure logic", () => {
+  const calcPomodoro = ({ happiness, streak = 0 }) => {
+    const happyBuff  = happiness >= HAPPY_BUFF_THRESHOLD ? HAPPY_BUFF_MULTIPLIER : 1;
+    const streakMult = getStreakMultiplier(streak);
+    return Math.floor(POMODORO_EXP * happyBuff * streakMult);
+  };
+
+  it("constants are correct (EXP=20, happiness=5)", () => {
+    expect(POMODORO_EXP).toBe(20);
+    expect(POMODORO_HAPPINESS).toBe(5);
+  });
+
+  it("no buffs → 20 EXP", () => {
+    expect(calcPomodoro({ happiness: 0 })).toBe(20);
+  });
+
+  it("happy buff (happiness >= 71) → Math.floor(20 * 1.2) = 24", () => {
+    expect(calcPomodoro({ happiness: 71 })).toBe(24);
+  });
+
+  it("happy buff does not apply at happiness 70", () => {
+    expect(calcPomodoro({ happiness: 70 })).toBe(20);
+  });
+
+  it("7-day streak, no happy buff → Math.floor(20 * 1.1) = 22", () => {
+    expect(calcPomodoro({ happiness: 0, streak: 7 })).toBe(22);
+  });
+
+  it("happy buff + 30-day streak → Math.floor(20 * 1.2 * 1.2) = 28", () => {
+    expect(calcPomodoro({ happiness: 71, streak: 30 })).toBe(28);
+  });
+});
+
+// ── pomodoro cooldown logic ───────────────────────────────────────────────────
+
+describe("pomodoro cooldown logic", () => {
+  const isOnCooldown = (lastPomodoroAt) =>
+    lastPomodoroAt && Date.now() - lastPomodoroAt.getTime() < POMODORO_COOLDOWN_MS;
+
+  it("null lastPomodoroAt → not on cooldown (first session)", () => {
+    expect(isOnCooldown(null)).toBeFalsy();
+  });
+
+  it("lastPomodoroAt 59s ago → on cooldown", () => {
+    const recent = new Date(Date.now() - 59 * 1000);
+    expect(isOnCooldown(recent)).toBe(true);
+  });
+
+  it("lastPomodoroAt exactly 60s ago → not on cooldown", () => {
+    const expired = new Date(Date.now() - 60 * 1000);
+    expect(isOnCooldown(expired)).toBe(false);
+  });
+
+  it("lastPomodoroAt 61s ago → not on cooldown", () => {
+    const past = new Date(Date.now() - 61 * 1000);
+    expect(isOnCooldown(past)).toBe(false);
   });
 });

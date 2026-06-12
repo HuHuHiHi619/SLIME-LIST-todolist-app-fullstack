@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import FadeUpContainer from "../animation/FadeUpContainer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,7 +8,9 @@ import {
   faCalendarDays,
   faFire,
   faUser,
+  faClock,
 } from "@fortawesome/free-solid-svg-icons";
+import { POMODORO_STORAGE_KEYS } from "../pomodoro/PomodoroTimer";
 
 const profileFields = [
   { 
@@ -44,10 +47,26 @@ const profileFields = [
   },
 ];
 
+const readMin = (key, fallback) => {
+  const v = parseInt(localStorage.getItem(key), 10);
+  return Number.isFinite(v) && v > 0 ? v : fallback;
+};
+
 function Settings() {
   const { userData, loading, error, isAuthenticated } = useSelector(
     (state) => state.user
   );
+
+  const [workMin,  setWorkMin]  = useState(() => readMin(POMODORO_STORAGE_KEYS.workMin,  25));
+  const [breakMin, setBreakMin] = useState(() => readMin(POMODORO_STORAGE_KEYS.breakMin, 5));
+  const [saved, setSaved] = useState(false);
+
+  const handleSavePomodoroSettings = () => {
+    localStorage.setItem(POMODORO_STORAGE_KEYS.workMin,  workMin);
+    localStorage.setItem(POMODORO_STORAGE_KEYS.breakMin, breakMin);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  };
 
   if (loading) {
     return (
@@ -135,7 +154,7 @@ function Settings() {
                   Profile Details
                 </h2>
               </div>
-              
+
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {profileFields.map(({ icon, label, valueKey, color, suffix = "", transform }) => (
@@ -161,7 +180,6 @@ function Settings() {
               </div>
             </div>
 
-         
           </div>
         </FadeUpContainer>
       ) : (
@@ -171,6 +189,54 @@ function Settings() {
           </p>
         </FadeUpContainer>
       )}
+
+      {/* Pomodoro Settings — available to all users, localStorage only */}
+      <div className={`${isAuthenticated ? "max-w-4xl mx-auto mt-4 px-0" : "max-w-md mx-auto mt-8 px-4"}`}>
+        <FadeUpContainer direction="up" delay={0.3}>
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl border-2 border-purpleNormal overflow-hidden">
+            <div className="bg-progressGradient p-6">
+              <h2 className="text-2xl text-white flex items-center gap-3">
+                <FontAwesomeIcon icon={faClock} />
+                Pomodoro Timer
+              </h2>
+            </div>
+            <div className="p-6 flex flex-col gap-6 md:flex-row md:items-end md:gap-8">
+              <div className="flex flex-col gap-2">
+                <label className="text-slate-400 text-xl uppercase tracking-wide">
+                  Work (minutes)
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={120}
+                  value={workMin}
+                  onChange={(e) => setWorkMin(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                  className="bg-slate-700 text-white text-xl rounded-lg px-4 py-2 w-28 border border-slate-600 focus:border-purple-400 outline-none"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-slate-400 text-xl uppercase tracking-wide">
+                  Break (minutes)
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={60}
+                  value={breakMin}
+                  onChange={(e) => setBreakMin(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                  className="bg-slate-700 text-white text-xl rounded-lg px-4 py-2 w-28 border border-slate-600 focus:border-purple-400 outline-none"
+                />
+              </div>
+              <button
+                onClick={handleSavePomodoroSettings}
+                className="bg-purpleNormal hover:bg-purpleActive text-white px-6 py-2 rounded-xl text-xl transition-colors"
+              >
+                {saved ? "Saved!" : "Save"}
+              </button>
+            </div>
+          </div>
+        </FadeUpContainer>
+      </div>
     </div>
   );
 }

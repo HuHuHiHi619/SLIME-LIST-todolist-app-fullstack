@@ -23,7 +23,8 @@ const Upcoming = lazy(() => import("./components/views/Upcoming"));
 const AllTask = lazy(() => import("./components/views/AllTask"));
 const Category = lazy(() => import("./components/views/Category"));
 const CategoryList = lazy(() => import("./components/views/CategoryList"));
-const Settings = lazy(() => import("./components/views/Settings"));
+const Settings  = lazy(() => import("./components/views/Settings"));
+const Pomodoro  = lazy(() => import("./components/views/Pomodoro"));
 
 // Authentication Pages
 const AuthTabs = lazy(() => import("./components/auth/AuthTabs"));
@@ -50,7 +51,8 @@ function App() {
                 path="/category/:categoryName"
                 element={<CategoryList />}
               />
-              <Route path="/settings" element={<Settings />} />
+              <Route path="/settings"  element={<Settings />} />
+              <Route path="/pomodoro" element={<Pomodoro />} />
             </Route>
 
             <Route

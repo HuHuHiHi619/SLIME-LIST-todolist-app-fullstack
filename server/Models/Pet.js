@@ -12,7 +12,9 @@ const PetSchema = new mongoose.Schema(
       enum: ["egg", "baby", "teen", "adult"],
       default: "egg",
     },
-    lastDecayDate: { type: Date, default: Date.now },
+    lastDecayDate:   { type: Date, default: Date.now },
+    pomodorosToday:  { type: Number, default: 0 },
+    lastPomodoroAt:  { type: Date, default: null },
   },
   { timestamps: true }
 );

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBolt, faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faCircleCheck, faClock } from "@fortawesome/free-solid-svg-icons";
+import { usePetQuery } from "../../hooks/queries/usePet";
 import FlameBox from "../animation/FlameBox";
 import Tooltip from "../feedback/Tooltip";
 import ReactDOM from "react-dom";
@@ -53,7 +54,7 @@ function StreakField() {
   }, []);
 
   const streak = userData.currentStreak;
-
+  const { data: pet } = usePetQuery();
 
   return (
     <div className="flex w-full gap-4">
@@ -92,6 +93,14 @@ function StreakField() {
               </div>
             </Tooltip>
           </div>
+
+          {/* POMODORO TODAY */}
+          <Tooltip description="Pomodoros Today" position="top">
+            <div className="flex items-center justify-center rounded-3xl border-2 border-orange-400 flex-1 py-3 gap-2">
+              <FontAwesomeIcon icon={faClock} className="text-orange-400 text-3xl lg:text-5xl" />
+              <p className="text-3xl lg:text-7xl text-orange-400">{pet?.pomodorosToday ?? 0}</p>
+            </div>
+          </Tooltip>
 
           {/* STREAK BAR */}
           <div

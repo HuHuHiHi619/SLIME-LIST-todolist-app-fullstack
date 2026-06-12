@@ -1,5 +1,8 @@
-const EXP_REWARDS      = { low: 10, medium: 25, high: 50 };
+const EXP_REWARDS        = { low: 10, medium: 25, high: 50 };
 const HAPPINESS_REWARDS  = { low: 1,  medium: 2,  high: 3  };
+const POMODORO_EXP         = 20;
+const POMODORO_HAPPINESS   = 5;
+const POMODORO_COOLDOWN_MS = 60 * 1000;
 const HAPPY_BUFF_THRESHOLD  = 71;
 const HAPPY_BUFF_MULTIPLIER = 1.2;
 
@@ -34,6 +37,9 @@ const applyExp = (currentExp, currentLevel, gained) => {
 module.exports = {
   EXP_REWARDS,
   HAPPINESS_REWARDS,
+  POMODORO_EXP,
+  POMODORO_HAPPINESS,
+  POMODORO_COOLDOWN_MS,
   HAPPY_BUFF_THRESHOLD,
   HAPPY_BUFF_MULTIPLIER,
   getStreakMultiplier,
