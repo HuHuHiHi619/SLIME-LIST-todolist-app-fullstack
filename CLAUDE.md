@@ -130,6 +130,8 @@ Read these before making design decisions. They define the live domain model.
 | `.claude/docs/UX_UI_ARCHITECTURE.md` | Navigation, layouts, roadmap phases |
 | `.claude/docs/USER_FLOW.md` | Guest / auth / pomodoro user flows |
 | `.claude/assets/ASSET_ROADMAP.md` | Art phases and layer system |
+| `.claude/docs/UI_TOKENS.md` | Design tokens — read before writing any Tailwind classes |
+| `.claude/designs/` | Screenshots for UI implementation reference |
 | `docs/adr/` | Architecture Decision Records — read before reversing a design decision |
 
 ---
