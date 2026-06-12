@@ -82,6 +82,7 @@ const decayPetHappiness = async () => {
       pet.happiness      = Math.max(pet.happiness - 1, 0);
       pet.lastDecayDate  = today;
       pet.evolutionStage = calcEvolutionStage(pet.level, pet.happiness);
+      pet.pomodorosToday = 0;
       await pet.save();
     }
     console.log(`Decayed happiness for ${pets.length} pets.`);

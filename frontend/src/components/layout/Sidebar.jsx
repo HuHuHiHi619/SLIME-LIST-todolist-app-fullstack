@@ -9,6 +9,7 @@ import {
   faList,
   faPlus,
   faBars,
+  faClock,
 } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -132,6 +133,16 @@ function Sidebar() {
           handleHover={handleHover}
           isHover={isHover}
           handleRemovedItem={(id) => handleRemovedItem(id, "category")}
+        />
+      </Tooltip>
+      <Tooltip description={"Pomodoro"} position="right">
+        <SidebarLink
+          to="/pomodoro"
+          icon={faClock}
+          label="POMODORO"
+          activeMenu={activeMenu}
+          handleActiveMenu={closeDrawerOnMobile}
+          isSidebarPinned={isSidebarPinned}
         />
       </Tooltip>
       <Tooltip description={"Settings"} position="right">
