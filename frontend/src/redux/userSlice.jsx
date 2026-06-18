@@ -108,7 +108,8 @@ const userSlice = createSlice({
         state.loading = true;
         state.authError = null;
       })
-      .addCase(logoutUser.fulfilled, () => makeDefaultState());
+      .addCase(logoutUser.fulfilled, () => makeDefaultState())
+      .addCase(logoutUser.rejected, () => makeDefaultState());
   },
 });
 

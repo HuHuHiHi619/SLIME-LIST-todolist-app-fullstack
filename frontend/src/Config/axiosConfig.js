@@ -42,6 +42,7 @@ axios.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       originalRequest.url !== refreshTokenUrl &&
+      originalRequest.url !== "/logout" &&
       !originalRequest._retry
     ) {
       console.log("Interceptor: Caught 401.", originalRequest.url);

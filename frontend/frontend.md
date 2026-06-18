@@ -1,16 +1,16 @@
 # frontend/CLAUDE.md
 
-React + Vite SPA for SlimeList. Supplements the root CLAUDE.md. Migration history → `frontend/MIGRATION.md`.
+React + Vite SPA for SlimeList. Supplements the root CLAUDE.md.
 
 ---
 
 ## Stack & Commands
 
-React 18 + Vite, Redux Toolkit, React Router v6, Tailwind, axios, Framer Motion. Vitest for tests.
+React 18 + Vite, Redux Toolkit, TanStack Query v5, React Router v6, Tailwind, axios, Framer Motion. Vitest for tests.
 
 ```bash
 npm run dev      # Vite dev server on :5173 (--host)
-npm test         # vitest — 96 tests across 14 files
+npm test         # vitest — 83 tests across 17 files
 npm run build    # production build
 npm run lint     # ESLint
 npm run preview  # preview production build
@@ -20,68 +20,97 @@ npm run preview  # preview production build
 
 ## Architecture
 
-### Data flow (always in this order)
+### Data flow
+
+Server state (read) → TanStack Query hooks in `src/hooks/queries/`
+Client/UI state (write/mutations) → Redux Toolkit slices + thunks → `src/functions/*.js` → axios
 
 ```
-Component → dispatch(asyncThunk) → src/functions/*.js → axios (global instance)
+Read:   Component → useXxxQuery() → axios → server
+Write:  Component → dispatch(thunk) → src/functions/*.js → axios → server
+                    └─ on success: invalidateQueries([key])
 ```
-
-1. **`src/functions/`** — domain API functions (`task.js`, `category.js`, `authen.js`, `summary.js`). Plain async axios calls, no Redux. All `throw` on error so thunks can set `error` state.
-2. **`src/redux/` slices** — async thunks call the functions layer; extraReducers update state.
-3. **Components** — dispatch thunks; never call axios directly.
 
 The global axios instance (`src/Config/axiosConfig.js`) sets `baseURL` (dev `VITE_LOCAL_API_URL`,
 prod `/api`), `withCredentials: true`, and a **401 refresh-queue interceptor**: on 401 it queues
 concurrent failures, calls `POST /refreshToken` once, replays the queue; on refresh failure it
 dispatches `logoutUser()`.
 
-### Redux — three slices
+### Redux — five slices
 
 | Slice | Owns |
 |-------|------|
-| `userSlice` | `userData` (id, username, streak, badge, settings, imageProfile), `isAuthenticated`, `isGuest`, loading/error |
-| `taskSlice` | `tasks[]`, `categories[]`, `searchResults[]`, `formTask` (shared form state), `progress` (steps), `selectedTask`, UI toggles (isCreate, isTaskDetail, isPopup, isSidebarPinned), `streakStatus` |
-| `summarySlice` | `summary[]`, `summaryCategory[]`, `notification[]`, `instruction` toggle |
+| `userSlice` | `userData` (id, username, streak, settings, imageProfile), `isAuthenticated`, `isGuest`, loading/error |
+| `taskSlice` | `tasks[]`, `categories[]`, `searchResults[]`, `selectedTask`, filter state |
+| `uiSlice` | UI toggles: `isCreate`, `isTaskDetail`, `isPopup`, `isSidebarPinned` |
+| `formSlice` | `formTask` (shared form state), `progress.steps[]` |
+| `petSlice` | `lastReward` (most recent pet reward payload for toast display only) |
 
-- **`taskSlice` owns form state** — `formTask` and `progress.steps[]` live in Redux, not local state. Dispatch `setFormTask(task)` to pre-populate the create/edit form.
-- **`isSummaryUpdated`** is a boolean toggle: mutators flip it, Summary watches it to re-fetch. It holds the *fact* of a change, not the value.
-- **`streakStatus`** is persisted to `localStorage` via `streakMiddleware` in `store.jsx` (fires after `completedTask.fulfilled`). Initial hydration uses `safeReadStreakStatus()` in `initialState`.
+- `summarySlice` **removed** — summary data fetched via `useSummary` TanStack hook.
+- Form state lives in `formSlice`, not `taskSlice`. Dispatch `setFormTask(task)` to pre-populate create/edit.
+- `streakStatus` **removed from Redux** — no longer persisted to localStorage via middleware.
+
+### TanStack Query hooks (`src/hooks/queries/`)
+
+| Hook file | Key | What it fetches |
+|-----------|-----|----------------|
+| `useTasks.js` | `['tasks']` | Task list (with filter params) |
+| `useUser.js` | `['user']` | Auth user profile |
+| `useSummary.js` | `['summary']` | Dashboard analytics |
+| `usePet.js` | `['pet']` | Pet state (exp, level, happiness, evolutionStage, pomodorosToday) |
+| `usePomodoro.js` | — | `POST /api/pet/pomodoro` mutation; invalidates `['pet']` on success |
+
+`QueryClient` configured in `src/lib/queryClient.js` and provided in `main.jsx`.
 
 ### Auth model
 
-`components/pages/authen/AuthProvider.jsx` dispatches `fetchUserData()` on mount to determine
+`components/auth/AuthProvider.jsx` dispatches `fetchUserData()` on mount to determine
 authenticated / guest / unauthenticated. `PublicRoute` redirects logged-in users away from
-`/login` and `/register`. All routes under `MainLayout` are guest-accessible — the backend enforces
-ownership via the `guestId` cookie.
+`/login` and `/register`. All routes under `MainLayout` are guest-accessible.
 
-### Routing / Modals / Styling
+### Routes
 
-- React Router v6 with `React.lazy()` + `<Suspense>`. `App.jsx` wraps everything in `<AuthProvider>`. `/` → `MainLayout` (Navbar + Sidebar + `<Outlet>`); `/login`, `/register` → `AuthTabs` behind `PublicRoute`.
-- `TaskForm` and the Create popup render via `ReactDOM.createPortal` at body level, controlled by `isCreate`/`isTaskDetail`/`isPopup` in `taskSlice`.
-- Tailwind with custom colors (`purpleMain`, `purpleActive`) + animations (`fade-out`, `fade-to-green`) in `tailwind.config.js`. Global CSS in `src/styles/` split by concern.
+| Path | Component |
+|------|-----------|
+| `/` | `Home` |
+| `/upcoming` | `Upcoming` |
+| `/all-tasks` | `AllTask` |
+| `/category` | `Category` |
+| `/category/:categoryName` | `CategoryList` |
+| `/settings` | `Settings` |
+| `/pomodoro` | `Pomodoro` |
+| `/login`, `/register` | `AuthTabs` (behind `PublicRoute`) |
 
-### UX conventions
+All main routes use `React.lazy()` + `<Suspense fallback={<LoadingPage />}>`.
 
-- `minimumLoading()` enforces a 2.5s minimum loading state on auth ops for animation polish.
-- Font Awesome icons registered globally in `src/functions/fontAwesomeIconSetup.js`, imported once in `main.jsx`.
+### Pet & Pomodoro
+
+- `PetStagePanel` (dashboard) — reads `usePetQuery()` to show level, exp, happiness, evolutionStage, pet image, mood
+- `PetRewardToast` — global toast (rendered in `App.jsx`); reads `pet.lastReward` from Redux and auto-clears
+- `PomodoroTimer` (`src/components/pomodoro/`) — countdown timer with work/break phases; calls `onComplete` callback
+- `Pomodoro` view — wraps `PomodoroTimer`; wires `onComplete` to `usePomodoroSession` mutation
+- Settings page — work/break duration inputs; values stored in `localStorage` (keys: `pomodoro_work_duration`, `pomodoro_break_duration`)
 
 ### Folder Map
 
 | Folder | Responsibility |
 |--------|---------------|
-| `src/functions/` | Thin axios wrappers per domain — no Redux, no JSX. One file per domain |
-| `src/redux/` | Three slices with async thunks; thunks call `src/functions/`, extraReducers update state |
+| `src/functions/` | Thin axios wrappers per domain — no Redux, no JSX |
+| `src/redux/` | Five slices (task, ui, form, user, pet); thunks call `src/functions/` |
+| `src/hooks/queries/` | TanStack Query hooks for server state (tasks, user, summary, pet, pomodoro) |
+| `src/hooks/` | Custom React hooks: `useFetchTask`, `usePopup` |
+| `src/lib/` | `queryClient.js` — TanStack QueryClient config |
 | `src/Config/` | Single file — global axios instance with baseURL + 401 refresh-queue interceptor |
-| `src/components/pages/` | Feature pages and sub-components by area: `authen/`, `user/`, `fixbar/`, `ui/`, `create/`, `animation/` |
-| `src/components/pages/hooks/` | Custom hooks — non-standard location (inside `pages/`, not `src/hooks/`): `useFetchTask(filter)`, `usePopup()` |
-| `src/styles/` | Global CSS split by concern: `components.css`, `layout.css`, `utils.css`, `datePicker.css` |
-| `src/__tests__/` | Vitest tests (setup + `functions/`) |
-
----
-
-## Known Issues
-
-None open. All resolved issues logged in `frontend/MIGRATION.md`.
+| `src/components/views/` | Page-level views: Home, Upcoming, AllTask, Category, CategoryList, Settings, Pomodoro |
+| `src/components/auth/` | AuthProvider, AuthTabs, PublicRoute, Logout |
+| `src/components/dashboard/` | PetStagePanel, DailyMissionsPanel, CharacterStatsPanel, ActiveBuffsPanel, ProgressField, ProgressBar |
+| `src/components/pomodoro/` | PomodoroTimer |
+| `src/components/feedback/` | PetRewardToast, TaskErrorToast, SuccessPopup, InstructionPopup, Tooltip |
+| `src/components/task/` | TaskList, TaskForm, CreateTask, CreateEntity, taskDetail, etc. |
+| `src/components/layout/` | Navbar, Sidebar, SidebarLink |
+| `src/components/animation/` | LoadingPage, FadeUpContainer, FlameBox, AutoTyping, SlimePortal, StaggerContainer |
+| `src/components/forms/` | CalendarField, CategoryTagField, DeadlinePicker, NotificationForm, PriorityField, SearchField, inputField |
+| `src/__tests__/` | Vitest tests mirroring `src/` structure |
 
 ---
 
@@ -89,51 +118,41 @@ None open. All resolved issues logged in `frontend/MIGRATION.md`.
 
 | File | Why risky | Test before touching |
 |------|-----------|----------------------|
-| `src/components/pages/hooks/usePopup.jsx` | Used by almost every interactive component; owns task complete/remove, sidebar, popup, close-on-outside-click | Manually test: complete, delete, popup open/close, sidebar toggle, click-outside dismissal |
-| `src/Config/axiosConfig.js` | All API calls flow through it; the 401 refresh-queue is fragile — mistakes cause retry loops or log users out every request | Test: normal request, 401 + valid refresh, 401 + expired refresh |
-| `src/redux/taskSlice.jsx` | Owns tasks, form state, categories, all UI toggles; used by every page | Smoke-test: create/edit/complete/delete task, filter by status |
-| `src/components/pages/create/CreateTask.jsx` | Validation fixed (`.length`); date/timezone handling normalized (BL #24); remaining risk is the progress-step logic | Test: title/note/step at boundary lengths, creation with all fields, multi-step tasks |
+| `src/Config/axiosConfig.js` | All API calls flow through it; 401 refresh-queue is fragile | Test: normal request, 401 + valid refresh, 401 + expired refresh |
+| `src/redux/taskSlice.jsx` | Owns tasks, categories, filter state; used by every page | Smoke-test: create/edit/complete/delete task, filter by status |
+| `src/hooks/queries/usePet.js` | Drives PetPanel, DashboardTab, PetRewardToast | Test after task completion and pomodoro session |
+| `src/components/feedback/PetRewardToast.jsx` | Reads `pet.lastReward` from Redux; must auto-clear | Test: complete a task, confirm toast shows and disappears |
 
 ---
 
 ## Do Not Touch
 
 - `src/Config/axiosConfig.js` — auth gateway for every API call; no tests cover the interceptor.
-- `src/redux/taskSlice.jsx` — largest slice; owns form + task + UI state; a broken reducer corrupts the whole task UI.
+- `src/redux/taskSlice.jsx` — owns task + filter state; a broken reducer corrupts the whole task UI.
 
 ---
 
 ## Development Gotchas
 
-### Error propagation
-- All `src/functions/*.js` now `throw` on error (Phase 1), so `createAsyncThunk` rejects and the slice `error` state is set. (Previously they swallowed errors and thunks resolved as fulfilled.)
+### TanStack Query invalidation
+- After any mutation (task complete, pomodoro), call `queryClient.invalidateQueries(['pet'])` (and `['tasks']` / `['user']` as needed). Forgetting invalidation causes stale UI that doesn't reflect server changes.
 
-### localStorage
-- `streakStatus` is read from `localStorage` at slice init via `safeReadStreakStatus()` and written back via `streakMiddleware` in `store.jsx` (BL #7). Reducers are pure — do not add localStorage writes inside reducer bodies.
+### Pomodoro cooldown
+- `POST /api/pet/pomodoro` enforces a 60s cooldown server-side; returns 429 on abuse. The `Pomodoro` view surfaces this as a user-visible error message.
+
+### Error propagation
+- All `src/functions/*.js` `throw` on error, so `createAsyncThunk` rejects and slice `error` state is set.
 
 ### Auth interceptor
 - A bad `ACCESS_TOKEN_SECRET`, an expired token, and a tampered token all surface the same way: 401 → refresh attempt → potential logout. The interceptor does not distinguish them.
 
 ---
 
-## Migration status
-
-Phases 0–7 complete; all known issues resolved. No open items remain.
-Full phase history and resolved-issue log: **`frontend/MIGRATION.md`**.
-
-
 ## Task Separation Rule
+
 Every frontend task must declare its concern before starting:
-- VISUAL: CSS/Tailwind/layout — use ui-polish skill
-- LOGIC: Redux/handler/API
+- VISUAL: CSS/Tailwind/layout
+- LOGIC: Redux/TanStack/handler/API
 - ANIMATION: Framer Motion/transition
+
 Never mix concerns in one phase.
-
-## Visual Verification
-After every UI change, run Playwright screenshots
-at mobile (390px), tablet (768px), desktop (1280px).
-/verify triggers this automatically.
-
----
-
-

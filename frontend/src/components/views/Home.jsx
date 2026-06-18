@@ -1,46 +1,27 @@
-import TaskForm from "../task/TaskForm";
-import Summary from "../dashboard/Summary.jsx";
-import StreakField from "../dashboard/StreakField";
-import BadgeField from "../dashboard/BadgeField";
-import PetPanel from "../dashboard/PetPanel";
+import PetStagePanel from "../dashboard/PetStagePanel";
+import DailyMissionsPanel from "../dashboard/DailyMissionsPanel";
+import CharacterStatsPanel from "../dashboard/CharacterStatsPanel";
+import ActiveBuffsPanel from "../dashboard/ActiveBuffsPanel";
 import FadeUpContainer from "../animation/FadeUpContainer";
+
 function Home() {
   return (
     <div id="home">
+      <FadeUpContainer direction="up" delay={0.1}>
+        <PetStagePanel />
+      </FadeUpContainer>
 
-      {/* 1. STATS — mobile: first; desktop: right col row 1 */}
-      <div className="px-4 lg:px-0 lg:col-start-2 lg:row-start-1 lg:pl-2 lg:mt-6 lg:mr-6">
-        <FadeUpContainer direction="up" delay={0.2}>
-          <StreakField />
-        </FadeUpContainer>
-      </div>
+      <FadeUpContainer direction="up" delay={0.2}>
+        <DailyMissionsPanel />
+      </FadeUpContainer>
 
-      {/* 2. TASKS — mobile: second; desktop: left col, spans all 3 rows */}
-      <div className="lg:col-start-1 lg:row-start-1 lg:row-span-3">
-        <TaskForm filter={{ status: "pending" }} />
-      </div>
+      <FadeUpContainer direction="up" delay={0.3}>
+        <CharacterStatsPanel />
+      </FadeUpContainer>
 
-      {/* 3. BADGE — mobile: third; desktop: right col row 2 */}
-      <div className="px-4 lg:px-0 lg:col-start-2 lg:row-start-2 lg:pl-2 lg:mr-6">
-        <FadeUpContainer direction="up" delay={0.3}>
-          <BadgeField />
-        </FadeUpContainer>
-      </div>
-
-      {/* 4. PROGRESS — mobile: fourth; desktop: right col row 3 */}
-      <div className="px-4 lg:px-0 lg:col-start-2 lg:row-start-3 lg:pl-2 lg:mr-6">
-        <FadeUpContainer direction="up" delay={0.4}>
-          <Summary />
-        </FadeUpContainer>
-      </div>
-
-      {/* 5. PET — scaffold, will be redesigned */}
-      <div className="px-4 lg:px-0 lg:col-start-2 lg:row-start-4 lg:pl-2 lg:mr-6">
-        <FadeUpContainer direction="up" delay={0.5}>
-          <PetPanel />
-        </FadeUpContainer>
-      </div>
-
+      <FadeUpContainer direction="up" delay={0.4}>
+        <ActiveBuffsPanel />
+      </FadeUpContainer>
     </div>
   );
 }
