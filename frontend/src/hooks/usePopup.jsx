@@ -4,8 +4,6 @@ import {
   setSelectedTask,
   toggleCreatePopup,
   togglePopup,
-  setHover,
-  toggleSidebarPinned,
   toggleInstructPopup,
 } from "../redux/uiSlice";
 import { toggleRegisterPopup } from "../redux/userSlice";
@@ -21,7 +19,6 @@ function usePopup() {
   const popupRef = useRef(null);
   const popupEnRef = useRef(null);
   const popupInstructRef = useRef(null);
-  const sidebarRef = useRef(null);
   const popupRegisterRef = useRef(null);
   const { isPopup } = useSelector((state) => state.ui);
 
@@ -46,16 +43,8 @@ function usePopup() {
     dispatch(setSelectedTask(null));
   };
 
-  const handleToggleSidebar = () => {
-    dispatch(toggleSidebarPinned());
-  };
-
   const handleToggleRegister = () => {
     dispatch(toggleRegisterPopup());
-  };
-
-  const handleHover = (id) => {
-    dispatch(setHover(id));
   };
 
   const handlePopup = (e, mode) => {
@@ -121,9 +110,7 @@ function usePopup() {
     handleRemovedTask,
     handleRemovedAllTask,
     handleRemovedItem,
-    handleToggleSidebar,
     handleToggleRegister,
-    handleHover,
     handlePopup,
     handleIsInstruct,
     handleClose,
@@ -131,7 +118,6 @@ function usePopup() {
     popupEnRef,
     popupInstructRef,
     popupRegisterRef,
-    sidebarRef,
   };
 }
 

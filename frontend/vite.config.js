@@ -9,15 +9,10 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/__tests__/setup.js',
   },
-   server: {
-    host: '0.0.0.0',  
+  server: {
+    host: '0.0.0.0',
     port: 5173,
-    strictPort: true, // ถ้ามี process ใช้ port นี้อยู่ จะ error แทนสุ่มพอร์ตใหม่
-    hmr: {
-      host: 'localhost',
-      port: 5173,
-      clientPort: 5173
-    },
+    strictPort: true,
     watch: {
       usePolling: true,
       interval: 1000

@@ -1,10 +1,7 @@
 import { describe, it, expect } from "vitest";
 import reducer, {
   toggleCreatePopup,
-  setActiveMenu,
   togglePopup,
-  setHover,
-  toggleSidebarPinned,
   setSelectedTask,
   setTaskError,
   clearTaskError,
@@ -19,23 +16,12 @@ describe("uiSlice — initial state", () => {
     expect(state.isTaskDetail).toBe(false);
     expect(state.isPopup).toBe(false);
     expect(state.popupMode).toBe("");
-    expect(state.isHover).toBe(null);
-    expect(state.isSidebarPinned).toBe(false);
-    expect(state.activeMenu).toBe("");
     expect(state.selectedTask).toBe(null);
     expect(state.taskError).toBe(null);
   });
 });
 
 describe("uiSlice — UI toggles", () => {
-  it("setActiveMenu stores the menu name", () => {
-    expect(reducer(init(), setActiveMenu("home")).activeMenu).toBe("home");
-  });
-
-  it("setHover stores the hovered id", () => {
-    expect(reducer(init(), setHover("t1")).isHover).toBe("t1");
-  });
-
   it("toggleCreatePopup flips isCreate", () => {
     expect(reducer(init(), toggleCreatePopup()).isCreate).toBe(true);
   });
@@ -51,10 +37,6 @@ describe("uiSlice — UI toggles", () => {
     const closed = reducer(open, togglePopup(""));
     expect(closed.isPopup).toBe(false);
     expect(closed.popupMode).toBe("");
-  });
-
-  it("toggleSidebarPinned flips the flag", () => {
-    expect(reducer(init(), toggleSidebarPinned()).isSidebarPinned).toBe(true);
   });
 
   it("setSelectedTask stores the selected task and opens detail", () => {
