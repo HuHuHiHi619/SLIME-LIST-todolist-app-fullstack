@@ -5,9 +5,6 @@ const initialState = {
   isTaskDetail: false,
   isPopup: false,
   popupMode: "",
-  isHover: null,
-  isSidebarPinned: false,
-  activeMenu: "",
   selectedTask: null,
   taskError: null,
   instruction: false,
@@ -20,18 +17,9 @@ const uiSlice = createSlice({
     toggleCreatePopup(state) {
       state.isCreate = !state.isCreate;
     },
-    setActiveMenu(state, action) {
-      state.activeMenu = action.payload;
-    },
     togglePopup(state, action) {
       state.isPopup = !state.isPopup;
       state.popupMode = action.payload || "";
-    },
-    setHover(state, action) {
-      state.isHover = action.payload;
-    },
-    toggleSidebarPinned(state) {
-      state.isSidebarPinned = !state.isSidebarPinned;
     },
     setSelectedTask(state, action) {
       state.selectedTask = action.payload || null;
@@ -52,10 +40,7 @@ const uiSlice = createSlice({
 
 export const {
   toggleCreatePopup,
-  setActiveMenu,
   togglePopup,
-  setHover,
-  toggleSidebarPinned,
   setSelectedTask,
   setTaskError,
   clearTaskError,

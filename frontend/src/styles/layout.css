@@ -3,55 +3,22 @@
 }
 
 .layout-container {
-    @apply h-full w-full flex flex-col;
+  @apply h-full w-full flex flex-col;
 }
 
 #nav-bar {
-  @apply h-16 bg-purpleNavbar border-b border-b-purpleNormal flex justify-between items-center py-2 md:py-2 z-50;
-}
-
-.content-wrapper {
-  @apply flex flex-grow w-full overflow-hidden;
-}
-
-#side-bar {
-  @apply absolute h-full  z-40 bg-purpleSidebar bg-opacity-50 md:pt-4;
-  @apply lg:relative;
-  width: 17rem;
-  max-width: 17rem;
-  min-width: 17rem;
-  transition: transform 0.3s ease;
-}
-
-#side-bar.sidebar-collapsed {
-  @apply -translate-x-full lg:translate-x-0;
-  width: 5rem;
-  min-width: 5rem;
-  transition: transform 0.3s ease;
-}
-
-@media (min-width: 1024px) {
-  #side-bar {
-    transition: width 0.3s ease;
-  }
-
-  #side-bar.sidebar-collapsed {
-    transition: width 0.3s ease;
-  }
-}
-
-@media (max-width: 1023px) {
-  #side-bar .active-pill {
-    transition: opacity 0.3s ease;
-  }
-
-  #side-bar.sidebar-collapsed .active-pill {
-    opacity: 0;
-  }
+  @apply bg-purpleNavbar border-b border-b-purpleNormal;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 4rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
 .main-content {
-  @apply  flex-grow overflow-auto bg-darkBackground w-full;
+  @apply flex-grow overflow-auto bg-darkBackground w-full;
 }
 
 #home {

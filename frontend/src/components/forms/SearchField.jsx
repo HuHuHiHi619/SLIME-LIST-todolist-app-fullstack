@@ -35,15 +35,17 @@ function SearchField({ handleSearchToggle, isSearchOpen, className, alwaysOpen =
     <>
       {isAuthenticated ? (
         <div className="relative">
-          <button>
-            <FontAwesomeIcon
-              icon={faSearch}
-              onClick={handleSearchToggle}
-              className={`z-30 absolute top-2.5 hover:text-purpleBorder text-xl text-gray-400 cursor-pointer transition-transform duration-300 ${
-                isSearchOpen ? "translate-x-[-200%] left-16" : "translate-x-0 -left-2"
-              }`}
-            />
-          </button>
+          {!alwaysOpen && (
+            <button>
+              <FontAwesomeIcon
+                icon={faSearch}
+                onClick={handleSearchToggle}
+                className={`z-30 absolute top-2.5 hover:text-purpleBorder text-xl text-gray-400 cursor-pointer transition-transform duration-300 ${
+                  isSearchOpen ? "translate-x-[-200%] left-16" : "translate-x-0 -left-2"
+                }`}
+              />
+            </button>
+          )}
 
           {alwaysOpen ? (
             <input
