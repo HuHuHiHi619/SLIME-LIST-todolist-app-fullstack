@@ -10,6 +10,8 @@ Planned phases after the active plan completes. Ordered by priority.
 
 ---
 
+---
+
 ## Phase 3 — Cosmetic Unlocks / Inventory
 
 Per `.claude/assets/ASSET_ROADMAP.md`. Coin system, inventory, costume slots (Head, Face, Back). Layer system: body/ + head/ + face/ composed on frontend.
