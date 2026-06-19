@@ -49,6 +49,9 @@ function TaskRow({ task, isSelected, onCheck, onClick, onDelete }) {
   const exp       = EXP_BY_PRIORITY[priority]  ?? 10;
   const coin      = COIN_BY_PRIORITY[priority] ?? 5;
   const hasSteps  = task.progress?.totalSteps > 0;
+  const categoryName = typeof task.category === "string"
+    ? task.category
+    : task.category?.categoryName ?? null;
 
   return (
     <li
@@ -106,10 +109,10 @@ function TaskRow({ task, isSelected, onCheck, onClick, onDelete }) {
             </span>
 
             {/* Category badge */}
-            {task.category?.categoryName && (
+            {categoryName && (
               <span className="flex items-center gap-1 text-xs text-gray-300 bg-white/5 rounded-full px-2 py-0.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-purpleBorder flex-shrink-0" />
-                {task.category.categoryName}
+                {categoryName}
               </span>
             )}
 
