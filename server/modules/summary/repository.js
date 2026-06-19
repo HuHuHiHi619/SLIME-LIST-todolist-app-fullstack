@@ -62,29 +62,6 @@ const getCompletedRateByCategoryAggregate = (userFilter) =>
         },
       },
     },
-    {
-      $lookup: {
-        from: "categories",
-        localField: "category",
-        foreignField: "_id",
-        as: "categoryInfo",
-      },
-    },
-    { $unwind: { path: "$categoryInfo", preserveNullAndEmptyArrays: true } },
-    {
-      $project: {
-        category: {
-          $cond: {
-            if: { $eq: ["$category", "No Category"] },
-            then: "No Category",
-            else: { $ifNull: ["$categoryInfo.categoryName", "No Category"] },
-          },
-        },
-        totalTasks: 1,
-        completedTasks: 1,
-        completedRate: 1,
-      },
-    },
     { $sort: { category: 1 } },
   ]);
 
