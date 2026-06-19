@@ -1,0 +1,35 @@
+# Active Plan — Phase 3 (revised): UI Redesign, Pet-First
+
+**Completed: 2026-06-19**
+
+_Agreed via grilling session, 2026-06-12. Reorders SLIME_PROGRESSION build order: Dashboard Redesign (step 4) is pulled ahead of Phase 2 Emotional Attachment (step 3) because the latter requires new assets and this phase creates **no assets**._
+
+## Outcome
+All four build steps shipped. PRs: shell (#22), dashboard (#21), tasks merge (#24), focus page (#25). Docs synced in #(this docs PR). **Pet nav cut** — Pet is a Dashboard panel (PetStagePanel), not a nav destination; no separate Pet page was built.
+
+## Scope
+Same theme, all pages restructured. No new asset files. No backend changes (one exception: none — "daily mission" and "buff & progress" are re-presentations of existing systems: today's tasks, streak + `getStreakMultiplier` EXP buff, evolution progress).
+
+## Design source
+A desktop-only visual prototype exists outside the repo. When ready, screenshots + spec doc land in a `design/` folder in this repo. Prototype is a **visual spec only** — no code import. Mobile layouts are derived per-page during build (stacking), approved in the running app; mobile is part of each page's definition of done.
+
+## Decisions
+- **Navigation:** Sidebar is killed. Navbar carries: Dashboard | Tasks | Focus (Pomodoro). ~~Pet nav item added in step 4 when Pet page is built.~~ **Pet nav cut (2026-06-19) — no Pet page; pet lives on the dashboard.** Settings + Instructions + Logout move into avatar dropdown menu (AvatarMenu.jsx).
+- **Dashboard:** Big pet screen · daily mission (today's tasks, with quick-add) · character stat · buff & progress (streak days, EXP multiplier, evolution progress). Old widgets (StreakField, Summary) map into these panels per spec.
+- **Badges:** killed in the UI (BadgeField removed from dashboard). Backend badge logic/fields untouched. Record as a small ADR when removed.
+- **Pet visuals:** no pet assets exist in repo. Temp: reuse `frontend/public/images/Logo-slime.png` + existing Framer Motion patterns (`SlimePortal.jsx`). Pet component must take `evolutionStage`/`happiness` as props from day one so real assets later are a drop-in.
+- **Tasks page:** merges AllTask / Upcoming / Category routes into one filtered page (already prescribed by UX_UI_ARCHITECTURE.md).
+- **Focus page:** brand-new view (does not exist today) — pomodoro timer.
+- **Guest mode:** full access on all redesigned pages (existing rule, unchanged).
+
+## Build order (one shippable PR each)
+0. **Prereq:** TanStack Phase 2D — ✅ DONE (rolled into step 2). Deleted: DashboardTab, BadgeField, PetPanel, StreakField, Summary. summarySlice was already absent.
+1. **Shell:** ✅ DONE — branch `phase3/navbar-redesign` (PR #22). Grid navbar (logo | links | avatar), sidebar killed, uiSlice pruned (removed isSidebarPinned/activeMenu/isHover), AvatarMenu.jsx replaces NotificationForm. Nav: Dashboard → `/`, Tasks → `/all-tasks`, Focus → `/pomodoro`.
+2. **Dashboard:** ✅ DONE — branch `phase3/dashboard-redesign` (PR #21). 4 panels built. 5 bugs fixed. See `.claude/history/2026-06-18-dashboard-handoff.md`.
+3. **Tasks merge:** ✅ DONE — branch `phase3/tasks-redesign` (PR #24). 4 routes → 1 `/tasks` page with filters; backend `category` → String. Category-chip bug found in review and fixed.
+4. **Focus page:** ✅ DONE — branch `phase3/focus-redesign` (PR #25). Pomodoro view + slime design tokens. `.slime-root` global-host bug found in review and fixed.
+
+After each step: update UX_UI_ARCHITECTURE.md to match reality. ✅ done in docs PR.
+
+## Not in this phase
+New assets · daily-mission/buff backend systems · Phase 3 customization (inventory/coins) · badge backend removal.
