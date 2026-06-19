@@ -25,8 +25,10 @@ vi.mock("../../components/animation/FadeUpContainer", () => ({
   default: ({ children }) => <>{children}</>,
 }));
 vi.mock("@fortawesome/react-fontawesome", () => ({ FontAwesomeIcon: () => null }));
-vi.mock("@fortawesome/free-solid-svg-icons", () => ({ faXmark: "faXmark" }));
-vi.mock("react-datepicker/dist/react-datepicker.css", () => ({}));
+vi.mock("@fortawesome/free-solid-svg-icons", () => ({
+  faXmark: "faXmark", faPlus: "faPlus", faCheck: "faCheck",
+  faBolt: "faBolt", faCalendarAlt: "faCalendarAlt", faChevronDown: "faChevronDown",
+}));
 
 vi.mock("../../hooks/queries/useTasks", () => ({
   useCategoriesQuery: vi.fn(() => ({ data: [] })),

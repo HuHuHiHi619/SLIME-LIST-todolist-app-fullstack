@@ -11,7 +11,7 @@ const { getTaskDeadlineRange } = require("../../shared/utils/deadlineUtils");
 const repository = require("./repository");
 
 const { STATUS_ORDER, PRIORITY_ORDER, PRIORITIES } = require("../../shared/utils/taskConstants");
-const { ServiceError, compareTasksForFlatList, lookupCategoryByName } = require("./helpers");
+const { ServiceError, compareTasksForFlatList } = require("./helpers");
 
 // ── Read operations ───────────────────────────────────────────────────────────
 
@@ -126,7 +126,7 @@ const getTasksFlat = async (filter) => {
 const createTask = async (data, formatUser, guestId) => {
   const { title, note, deadline, category, progress, priority } = data;
 
-  const categoryId = category ? await lookupCategoryByName(category, formatUser, guestId) : null;
+  const categoryId = category || null;
 
   let formatProgress = { steps: [], totalSteps: 0, allStepsCompleted: false };
   if (progress && typeof progress === "object" && Array.isArray(progress.steps)) {
@@ -176,12 +176,7 @@ const updateTask = async (formatId, userFilter, formatUser, guestId, data) => {
   };
 
   if (updateData.category !== undefined) {
-    if (!updateData.category) {
-      final.category = null;
-    } else {
-      final.category = await lookupCategoryByName(updateData.category, formatUser, guestId);
-      if (!final.category) throw new ServiceError("Category not found");
-    }
+    final.category = updateData.category || null;
   } else {
     final.category = existing.category;
   }
