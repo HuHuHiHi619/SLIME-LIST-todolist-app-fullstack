@@ -45,6 +45,84 @@ html {
   color-scheme: dark;
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   SLIME DESIGN TOKENS — see .claude/docs/UI_TOKENS.md
+   Brand palette is theme-independent (:root). Surface/theme tokens
+   live on .slime-root and flip on [data-theme="day"]. Night is default.
+───────────────────────────────────────────────────────────────── */
+:root {
+  /* Brand palette */
+  --violet:      #7C5CFF;
+  --violet-ink:  #A88BFF;
+  --violet-deep: #5E46D6;
+  --pink:        #E37DDE;
+  --pink-soft:   #FF9ECF;
+  --mint:        #2BB795;
+  --mint-ink:    #7DE3B0;
+  --amber:       #E0A53A;
+  --amber-deep:  #DE6F31;
+  --gold:        #F2C24B;
+  --danger:      #E2553D;
+
+  /* Evolution tier strokes */
+  --tier-iron:   #9AA0B5;
+  --tier-bronze: #D9925A;
+  --tier-silver: #C7D1E0;
+  --tier-gold:   #F2C24B;
+}
+
+.slime-root {
+  --slime-page:     radial-gradient(ellipse at top, #181734 0%, #100F26 60%);
+  --slime-card:     linear-gradient(180deg,#1C1B3C 0%,#15142F 100%);
+  --slime-card2:    linear-gradient(180deg,#1A1937 0%,#15142F 100%);
+  --slime-pop:      linear-gradient(180deg,#211F44 0%,#171633 100%);
+  --slime-nav:      rgba(20,19,44,0.85);
+  --slime-ink:      #ffffff;
+  --slime-muted:    #9999E3;
+  --slime-muted2:   #8888C8;
+  --slime-soft:     #C7C7F0;
+  --slime-exp-ink:  #C9B6FF;
+  --slime-amber-ink:#E8A678;
+  --slime-coin-ink: #F4D78A;
+  --slime-bd:       rgba(153,153,227,0.20);
+  --slime-bd2:      rgba(153,153,227,0.18);
+  --slime-bd3:      rgba(153,153,227,0.16);
+  --slime-bd4:      rgba(153,153,227,0.14);
+  --slime-bd5:      rgba(153,153,227,0.28);
+  --slime-fill:     rgba(255,255,255,0.03);
+  --slime-fill2:    rgba(255,255,255,0.05);
+  --slime-track:    rgba(255,255,255,0.06);
+  --slime-row:      rgba(255,255,255,0.025);
+  --slime-shadow:   0 24px 60px rgba(0,0,0,0.35);
+
+  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+
+.slime-root[data-theme="day"] {
+  --slime-page:     radial-gradient(125% 125% at 18% 0%, #FFF1FA 0%, #F3EEFF 42%, #E7F0FF 100%);
+  --slime-card:     linear-gradient(180deg,#FFFFFF 0%,#FBF7FF 100%);
+  --slime-card2:    linear-gradient(180deg,#FFFFFF 0%,#F7F3FF 100%);
+  --slime-pop:      linear-gradient(180deg,#FFFFFF 0%,#F8F4FF 100%);
+  --slime-nav:      rgba(255,255,255,0.82);
+  --slime-ink:      #2E2766;
+  --slime-muted:    #7B77BC;
+  --slime-muted2:   #9692CF;
+  --slime-soft:     #5C5798;
+  --slime-exp-ink:  #6E4FE0;
+  --slime-amber-ink:#C2701C;
+  --slime-coin-ink: #B07F08;
+  --slime-bd:       rgba(124,92,255,0.22);
+  --slime-bd2:      rgba(124,92,255,0.18);
+  --slime-bd3:      rgba(124,92,255,0.16);
+  --slime-bd4:      rgba(124,92,255,0.13);
+  --slime-bd5:      rgba(124,92,255,0.30);
+  --slime-fill:     rgba(124,92,255,0.06);
+  --slime-fill2:    rgba(124,92,255,0.07);
+  --slime-track:    rgba(124,92,255,0.13);
+  --slime-row:      rgba(124,92,255,0.05);
+  --slime-shadow:   0 18px 44px rgba(124,92,255,0.18);
+}
+
 /* Pixel-art rendering for slime badge sprites.
    Apply class="slime-pixel" to <img> elements using sprite assets. */
 .slime-pixel {
