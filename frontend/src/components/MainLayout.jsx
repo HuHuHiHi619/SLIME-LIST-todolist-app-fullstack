@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 function MainLayout() {
   return (
-    <section id="mainLayout">
+    <section id="mainLayout" className="slime-root">
       <div className="layout-container">
         <Navbar />
         <main className="main-content">
