@@ -38,7 +38,7 @@ exports.getTask = async (req, res) => {
 
     if (category) {
       const cats = Array.isArray(category) ? category : [category];
-      baseFilter.category = { $in: cats.map((c) => new Types.ObjectId(c)) };
+      baseFilter.category = { $in: cats };
     }
 
     if (groupByCategory) {

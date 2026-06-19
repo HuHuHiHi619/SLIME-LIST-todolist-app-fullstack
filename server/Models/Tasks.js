@@ -6,11 +6,7 @@ const TasksSchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true, maxLength: 100 },
     note: { type: String, trim: true, maxLength: 1000 ,default: "" },
     deadline: {type: Date},
-    category: 
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Category",
-      },
+    category: { type: String },
     progress: {
       steps: [
         {

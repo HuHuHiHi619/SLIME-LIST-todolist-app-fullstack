@@ -1,10 +1,10 @@
-﻿import { BrowserRouter, Route, Routes } from "react-router-dom";
+﻿import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import { useSelector } from "react-redux"; 
+import { useSelector } from "react-redux";
 
 // --- Configuration & Utilities ---
-import "./Config/axiosConfig"; 
-import "./App.css"; 
+import "./Config/axiosConfig";
+import "./App.css";
 
 // --- Layout Component ---
 import MainLayout from "./components/MainLayout"; // Main application layout
@@ -18,11 +18,8 @@ import PetRewardToast from "./components/feedback/PetRewardToast";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // --- Lazy Loaded Components (Code Splitting) ---
-const Home = lazy(() => import("./components/views/Home"));
-const Upcoming = lazy(() => import("./components/views/Upcoming"));
-const AllTask = lazy(() => import("./components/views/AllTask"));
-const Category = lazy(() => import("./components/views/Category"));
-const CategoryList = lazy(() => import("./components/views/CategoryList"));
+const Home      = lazy(() => import("./components/views/Home"));
+const TasksPage = lazy(() => import("./pages/TasksPage"));
 const Settings  = lazy(() => import("./components/views/Settings"));
 const Pomodoro  = lazy(() => import("./components/views/Pomodoro"));
 
@@ -43,15 +40,15 @@ function App() {
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />} />
 
-              <Route path="/upcoming" element={<Upcoming />} />
-              <Route path="/all-tasks" element={<AllTask />} />
-              <Route path="/category" element={<Category />} />
+              <Route path="/tasks" element={<TasksPage />} />
 
-              <Route
-                path="/category/:categoryName"
-                element={<CategoryList />}
-              />
-              <Route path="/settings"  element={<Settings />} />
+              {/* Legacy routes → redirect to unified tasks page */}
+              <Route path="/all-tasks"              element={<Navigate to="/tasks" replace />} />
+              <Route path="/upcoming"               element={<Navigate to="/tasks" replace />} />
+              <Route path="/category"               element={<Navigate to="/tasks" replace />} />
+              <Route path="/category/:categoryName" element={<Navigate to="/tasks" replace />} />
+
+              <Route path="/settings" element={<Settings />} />
               <Route path="/pomodoro" element={<Pomodoro />} />
             </Route>
 
